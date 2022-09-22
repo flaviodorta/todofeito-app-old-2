@@ -1,0 +1,40 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply h-screen w-screen bg-gray-100 font-roboto;
+  }
+}
+
+@layer components {
+  /* navbar */
+  .navbar {
+    @apply w-full h-12 bg-blue-600 flex justify-between items-center px-2 md:px-10;
+  }
+
+  .navbar-buttons-wrapper {
+    @apply flex space-x-2 items-center;
+  }
+
+  .navbar-button {
+    @apply hover:bg-white/20 outline-none rounded-md p-2;
+  }
+
+  .navbar-icon {
+    @apply fill-white h-[18px] w-[18px];
+  }
+
+  .navbar-search-icon {
+    @apply group-hover:fill-gray-600 fill-white w-4 h-4 absolute left-2 z-10  duration-150;
+  }
+
+  .navbar-open-search-icon {
+    @apply group-hover:opacity-100 absolute outline-none text-[9px] border-gray-400 text-gray-600 border-[1px] rounded-sm right-2 opacity-0 z-10 w-4 h-4 text-center duration-150;
+  }
+
+  .navbar-search-bar {
+    @apply group-hover:bg-white/100 group-hover:text-gray-900 placeholder:text-sm placeholder:text-white group-hover:placeholder:text-gray-600 text-sm font-light h-6 rounded-sm bg-white/20 outline-none pl-8 duration-150;
+  }
+}
