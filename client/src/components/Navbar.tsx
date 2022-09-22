@@ -1,6 +1,8 @@
-import { motion, Variants } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useState } from 'react';
+import { searchBar } from '../helpers/variants';
 import { useToggle } from '../hooks/useToggle';
+import { useUIStore } from '../zustand/stores';
 import {
   BarsSolidIcon as SidebarIcon,
   HomeOutlineIcon as HomeIcon,
@@ -10,33 +12,37 @@ import {
   MagnifyingGlassSolidIcon as SearchIcon,
 } from './Icons';
 
-export const searchBar: Variants = {
-  initial: {
-    width: 180,
-    transition: {
-      duration: 0.1,
-    },
-  },
-  animate: {
-    width: 300,
-    transition: {
-      duration: 0.1,
-    },
-  },
+const Label = ({
+  content,
+  className,
+}: {
+  content: string;
+  className?: string;
+}) => {
+  return (
+    <div
+      className={`${className} group-hover:opacity-100 whitespace-nowrap bg-gray-900 text-xs text-white rounded-md px-3 py-2 opacity-0 absolute left-1/2 -bottom-12 -translate-x-1/2`}
+    >
+      {content}
+    </div>
+  );
 };
 
 export const Navbar = () => {
   const [isSearchBarOpen, toggleSearchBar] = useToggle(false);
   const [searchInput, setSearchInput] = useState('');
+  const { isMenuOpen, toggleMenu } = useUIStore((state) => state);
 
   return (
-    <div className='navbar'>
+    <nav className='navbar'>
       <div className='navbar-buttons-wrapper'>
-        <button className='navbar-button'>
+        <button onClick={toggleMenu} className='navbar-button group'>
           <SidebarIcon className='navbar-icon' />
+          <Label content={isMenuOpen ? 'Close menu' : 'Open menu'} />
         </button>
-        <button className='navbar-button'>
+        <button className='navbar-button group'>
           <HomeIcon className='navbar-icon w-[20px] h-[20px]' />
+          <Label content='Go to home' />
         </button>
         <div
           onFocus={toggleSearchBar}
@@ -72,16 +78,19 @@ export const Navbar = () => {
       </div>
 
       <div className='navbar-buttons-wrapper'>
-        <button className='navbar-button'>
+        <button className='navbar-button group'>
           <AddTodoIcon className='navbar-icon' />
+          <Label content='Add todo' />
         </button>
-        <button className='navbar-button'>
+        <button className='navbar-button group'>
           <CompletedTodosIcon className='navbar-icon' />
+          <Label content='Open productivity' />
         </button>
-        <button className='navbar-button'>
+        <button className='navbar-button group'>
           <UserIcon className='navbar-icon' />
+          <Label content='Open profile menu' className='-left-1' />
         </button>
       </div>
-    </div>
+    </nav>
   );
 };

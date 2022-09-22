@@ -4,7 +4,7 @@
 
 @layer base {
   body {
-    @apply h-screen w-screen bg-gray-100 font-roboto;
+    @apply h-screen w-screen bg-gray-100 font-roboto overflow-hidden;
   }
 }
 
@@ -19,7 +19,7 @@
   }
 
   .navbar-button {
-    @apply hover:bg-white/20 outline-none rounded-md p-2;
+    @apply relative hover:bg-white/20 outline-none rounded-md p-2;
   }
 
   .navbar-icon {
