@@ -37,4 +37,24 @@
   .navbar-search-bar {
     @apply group-hover:bg-white/100 group-hover:text-gray-900 placeholder:text-sm placeholder:text-white group-hover:placeholder:text-gray-600 text-sm font-light h-6 rounded-sm bg-white/20 outline-none pl-8 duration-150;
   }
+
+  /* label */
+
+  .label {
+    @apply group-hover:opacity-100 whitespace-nowrap bg-gray-900 text-xs text-white shadow-lg rounded-md px-3 py-2 opacity-0 absolute left-1/2 -bottom-12 -translate-x-1/2;
+  }
+
+  /* search bar */
+
+  .dropdown-result {
+    @apply py-2 px-4 hover:bg-black/10 cursor-pointer w-full;
+  }
+
+  .dropdown-searchbar-no-results {
+    @apply py-2 px-4 text-sm font-light text-gray-600 w-full block;
+  }
+
+  .dropdown-searchbar-title {
+    @apply py-2 px-4 font-bold text-sm text-black/80 w-full block;
+  }
 }
