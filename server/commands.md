@@ -6,3 +6,6 @@ yarn add --dev ts-node
 yarn add --dev prettier
 yarn add --dev eslint
 npx eslint --init
+yarn add --dev jasmine
+npx jasmine init
+yarn add --dev supertest
