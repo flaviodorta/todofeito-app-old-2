@@ -9,7 +9,6 @@ const errorMiddleware = (
 ) => {
   const status = error.status || 500;
   const message = error.message || 'Whops, something went wrong!';
-
   res.status(404).json({ status, message });
 };
 
