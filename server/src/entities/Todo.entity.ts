@@ -6,7 +6,7 @@ export class Todo {
   id: string;
 
   @Column()
-  name: string;
+  title: string;
 
   @Column()
   description: string;
