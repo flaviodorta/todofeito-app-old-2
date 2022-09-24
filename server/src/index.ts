@@ -1,10 +1,12 @@
-import express, { Application, Request, Response } from 'express';
+import 'reflect-metadata';
+import express, { Application } from 'express';
 import morgan from 'morgan';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
-import errorMiddleware from './middleware/error.middleware';
+import errorMiddleware from './middleware/Error.middleware';
 import config from './config';
 import { AppDataSource } from './database';
+import { routes } from './routes';
 
 const app: Application = express();
 
@@ -24,27 +26,9 @@ AppDataSource.initialize()
     app.use(morgan('common'));
     app.use(helmet());
     app.use(limiter);
-
-    app.get('/', (req: Request, res: Response) => {
-      res.json({
-        message: 'Hello World',
-      });
-    });
-    app.post('/', (req: Request, res: Response) => {
-      // console.log(req.body);
-      res.json({
-        message: 'Hello World',
-        data: req.body,
-      });
-    });
+    app.use(routes);
 
     app.use(errorMiddleware);
-
-    app.use((_req: Request, res: Response) => {
-      res.status(404).json({
-        message: 'Oh you are lost',
-      });
-    });
 
     app.listen(PORT, () => {
       console.log(`Server running in port: ${PORT}`);

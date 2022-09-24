@@ -1,15 +1,20 @@
-import { Column, CreateDateColumn, Entity, PrimaryColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity('todo')
 export class Todo {
-  @PrimaryColumn('uuid')
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column()
   title: string;
 
   @Column()
-  description: string;
+  description?: string;
 
   @CreateDateColumn()
   created_at: Date;

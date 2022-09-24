@@ -17,5 +17,6 @@ module.exports = {
     'no-console': 1,
     'no-var': 'error',
     'prefer-const': 'error',
+    '@typescript-eslint/no-namespace': 'off',
   },
 };

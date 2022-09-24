@@ -1,6 +1,6 @@
-import { Todo } from 'src/entities/Todo.entity';
-import { Like } from 'typeorm';
 import { TodoRepository } from '../repositories';
+import { Todo } from '../entities/Todo.entity';
+import { Like } from 'typeorm';
 
 interface IRequest {
   id: string;
@@ -10,9 +10,7 @@ interface IRequest {
 }
 
 export class TodosServices {
-  public async findTodosBySearchedText({
-    searchedText,
-  }: IRequest): Promise<Todo[]> {
+  public async getBySearchedText({ searchedText }: IRequest): Promise<Todo[]> {
     const searchedTodosByTitle = await TodoRepository.findBy({
       title: Like(`%${searchedText}%`),
     });
@@ -27,44 +25,36 @@ export class TodosServices {
     return searchedTodos;
   }
 
-  public async getAllTodos(): Promise<Todo[]> {
+  public async getAll(): Promise<Todo[]> {
     const allTodos = TodoRepository.find();
 
     return allTodos;
   }
 
-  public async createTodo({ title, description }: IRequest) {
-    const todo = TodoRepository.create({ title, description });
+  public async create({ title, description }: IRequest): Promise<Todo> {
+    if (!description) description = '';
 
+    const todo = await TodoRepository.create({ title, description });
     await TodoRepository.save(todo);
+    return todo;
   }
 
-  public async updateTodo({ id, title, description }: IRequest): Promise<Todo> {
+  public async update({ id, title, description }: IRequest): Promise<Todo> {
     const todo = await TodoRepository.findOneBy({ id });
 
     if (todo === null) {
       throw new Error('Todo not found');
     }
 
-    if (title && description) {
-      todo.title = title;
-      todo.description = description;
-    }
-
-    if (title) {
-      todo.title = title;
-    }
-
-    if (description) {
-      todo.description = description;
-    }
+    todo.title = title;
+    todo.description = description;
 
     await TodoRepository.save(todo);
 
     return todo;
   }
 
-  public async deleteTodo({ id }: IRequest): Promise<void> {
+  public async delete({ id }: IRequest): Promise<void> {
     const todo = await TodoRepository.findOneBy({ id });
 
     if (!todo) {
@@ -74,3 +64,5 @@ export class TodosServices {
     await TodoRepository.remove(todo);
   }
 }
+
+export const todosServices = new TodosServices();

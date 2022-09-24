@@ -17,6 +17,7 @@
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
     "strictPropertyInitialization": false,
+    "typeRoots": ["src/@types/", "node_modules/@types/"],
     "baseUrl": ".",
     // "paths": {
     //   "*": ["node_modules", "src/*"]
@@ -27,7 +28,7 @@
     //     "transform": "typescript-transform-paths",
     //     "exclude": ["**/node_modules/**"]
     //   }
-    // ]
+    // ],
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules"]
