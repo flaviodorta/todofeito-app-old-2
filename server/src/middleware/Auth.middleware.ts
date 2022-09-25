@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import { verify } from 'jsonwebtoken';
 import { config } from '../config';
 
-interface TokenPayload {
+interface ITokenPayload {
   iat: number;
   exp: number;
   sub: string;
@@ -22,7 +22,7 @@ export const isAuthenticated = (
   const [, token] = authHeader.split(' ');
 
   try {
-    const decodedToken = verify(token, config.jwt.secret) as TokenPayload;
+    const decodedToken = verify(token, config.jwt.secret) as ITokenPayload;
 
     const { sub } = decodedToken;
 

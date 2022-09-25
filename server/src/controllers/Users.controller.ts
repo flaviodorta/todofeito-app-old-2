@@ -37,14 +37,13 @@ class UsersController {
   }
 
   public async update(req: IRequest, res: Response): Promise<Response> {
-    const { id, name, email, password, avatar } = req.body;
+    const { id, name, email, password } = req.body;
 
     const user = await usersServices.update({
       id,
       name,
       email,
       password,
-      avatar,
     });
 
     return res.json(user);
@@ -54,6 +53,17 @@ class UsersController {
     const { id } = req.body;
 
     const user = await usersServices.delete({ id });
+
+    return res.json(user);
+  }
+
+  public async updateAvatar(req: Request, res: Response): Promise<Response> {
+    const { id, avatar } = req.body;
+
+    const user = await usersServices.updateAvatar({
+      id,
+      avatar,
+    });
 
     return res.json(user);
   }

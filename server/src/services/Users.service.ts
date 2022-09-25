@@ -1,8 +1,11 @@
+import path from 'path';
+import fs from 'fs';
 import { compare, hash } from 'bcryptjs';
 import { sign } from 'jsonwebtoken';
 import { User } from '../entities/User.entity';
 import { usersRepository } from '../repositories';
 import { config } from '../config';
+import { uploadConfig } from '../helpers/upload';
 
 interface IRequest {
   id: string;
@@ -58,8 +61,7 @@ export class UsersServices {
     name,
     email,
     password,
-    avatar,
-  }: IRequest): Promise<User> {
+  }: Pick<IRequest, 'id' | 'email' | 'name' | 'password'>): Promise<User> {
     const user = await usersRepository.findById(id);
 
     if (!user) {
@@ -69,7 +71,6 @@ export class UsersServices {
     if (name) user.name = name;
     if (email) user.email = email;
     if (password) user.password = password;
-    if (avatar) user.avatar = avatar;
 
     await usersRepository.save(user);
 
@@ -107,6 +108,32 @@ export class UsersServices {
     });
 
     return { user, token };
+  }
+
+  public async updateAvatar({
+    id,
+    avatar,
+  }: Pick<IRequest, 'id' | 'avatar'>): Promise<User> {
+    const user = await usersRepository.findById(id);
+
+    if (!user) throw new Error('User not found');
+
+    if (user.avatar) {
+      const userAvatarFilepath = path.join(uploadConfig.directory, user.avatar);
+      const userAvatarFileExist = await fs.promises.stat(userAvatarFilepath);
+
+      if (userAvatarFileExist) {
+        await fs.promises.unlink(userAvatarFilepath);
+      }
+    }
+
+    user.avatar = avatar;
+
+    await usersRepository.save(user);
+
+    console.log(avatar);
+
+    return user;
   }
 }
 

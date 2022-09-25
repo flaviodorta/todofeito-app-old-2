@@ -10,6 +10,7 @@ import errorMiddleware from './middleware/Error.middleware';
 import { config } from './config';
 import { dataSource } from './database';
 import { routes } from './routes';
+import { uploadConfig } from './helpers/upload';
 
 const app: Application = express();
 
@@ -28,6 +29,7 @@ dataSource
 
     app.use(cors());
     app.use(express.json());
+    app.use('/files', express.static(uploadConfig.directory));
     app.use(morgan('common'));
     app.use(helmet());
     app.use(limiter);
