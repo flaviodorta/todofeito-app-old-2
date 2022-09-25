@@ -1,6 +1,8 @@
-import { hash } from 'bcryptjs';
+import { compare, hash } from 'bcryptjs';
+import { sign } from 'jsonwebtoken';
 import { User } from '../entities/User.entity';
 import { usersRepository } from '../repositories';
+import { config } from '../config';
 
 interface IRequest {
   id: string;
@@ -82,6 +84,29 @@ export class UsersServices {
     }
 
     await usersRepository.remove(user);
+  }
+
+  public async createSessions({
+    email,
+    password,
+  }: Pick<IRequest, 'email' | 'password'>): Promise<{
+    user: User;
+    token: string;
+  }> {
+    const user = await usersRepository.findByEmail(email);
+
+    if (!user) throw new Error('User not exist');
+
+    const isCorrectPassword = await compare(password, user.password);
+
+    if (!isCorrectPassword) throw new Error('Incorrect password');
+
+    const token = sign({}, config.jwt.secret, {
+      subject: user.id,
+      expiresIn: config.jwt.expiresIn,
+    });
+
+    return { user, token };
   }
 }
 

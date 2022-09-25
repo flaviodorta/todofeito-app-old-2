@@ -1,5 +1,5 @@
 import { DataSource } from 'typeorm';
-import config from './config';
+import { config } from './config';
 
 const { postgres_username, postgres_password, postgres_db } = config;
 

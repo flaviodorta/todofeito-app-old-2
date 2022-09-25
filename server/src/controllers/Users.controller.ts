@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { usersServices } from '../services/User.service';
+import { usersServices } from '../services/Users.service';
 
 interface IBody {
   id: string;

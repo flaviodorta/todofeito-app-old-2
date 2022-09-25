@@ -7,7 +7,7 @@ import { errors } from 'celebrate';
 import cors from 'cors';
 import rateLimit from 'express-rate-limit';
 import errorMiddleware from './middleware/Error.middleware';
-import config from './config';
+import { config } from './config';
 import { dataSource } from './database';
 import { routes } from './routes';
 
