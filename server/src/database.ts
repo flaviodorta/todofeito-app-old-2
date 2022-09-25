@@ -5,7 +5,7 @@ const { postgres_username, postgres_password, postgres_db } = config;
 
 const port_db = Number(config.port_db) || 5432;
 
-export const AppDataSource = new DataSource({
+export const dataSource = new DataSource({
   type: 'postgres',
   host: 'localhost',
   port: port_db,
@@ -14,5 +14,4 @@ export const AppDataSource = new DataSource({
   database: postgres_db,
   migrations: ['./src/migrations/*.ts'],
   entities: ['./src/entities/*.ts'],
-  synchronize: true,
 });

@@ -10,7 +10,9 @@ interface IRequest {
 }
 
 export class TodosServices {
-  public async getBySearchedText({ searchedText }: IRequest): Promise<Todo[]> {
+  public async getBySearchedText({
+    searchedText,
+  }: Pick<IRequest, 'searchedText'>): Promise<Todo[]> {
     const searchedTodosByTitle = await TodoRepository.findBy({
       title: Like(`%${searchedText}%`),
     });
@@ -31,7 +33,10 @@ export class TodosServices {
     return allTodos;
   }
 
-  public async create({ title, description }: IRequest): Promise<Todo> {
+  public async create({
+    title,
+    description,
+  }: Pick<IRequest, 'title' | 'description'>): Promise<Todo> {
     if (!description) description = '';
 
     const todo = await TodoRepository.create({ title, description });
@@ -39,22 +44,26 @@ export class TodosServices {
     return todo;
   }
 
-  public async update({ id, title, description }: IRequest): Promise<Todo> {
+  public async update({
+    id,
+    title,
+    description,
+  }: Pick<IRequest, 'id' | 'title' | 'description'>): Promise<Todo> {
     const todo = await TodoRepository.findOneBy({ id });
 
     if (todo === null) {
       throw new Error('Todo not found');
     }
 
-    todo.title = title;
-    todo.description = description;
+    todo.title = title as string;
+    todo.description = description as string;
 
     await TodoRepository.save(todo);
 
     return todo;
   }
 
-  public async delete({ id }: IRequest): Promise<void> {
+  public async delete({ id }: Pick<IRequest, 'id'>): Promise<void> {
     const todo = await TodoRepository.findOneBy({ id });
 
     if (!todo) {

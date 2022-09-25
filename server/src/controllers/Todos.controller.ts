@@ -14,9 +14,9 @@ interface IRequest extends Request {
 
 class TodosController {
   public async getAll(req: Request, res: Response): Promise<Response> {
-    const todosList = await todosServices.getAll();
+    const allTodos = await todosServices.getAll();
 
-    return res.json(todosList);
+    return res.json(allTodos);
   }
 
   public async getByText(req: IRequest, res: Response): Promise<Response> {
@@ -24,7 +24,7 @@ class TodosController {
 
     const todo = await todosServices.getBySearchedText({ searchedText });
 
-    return res.json({ todo });
+    return res.json(todo);
   }
 
   public async create(req: IRequest, res: Response): Promise<Response> {
@@ -32,7 +32,7 @@ class TodosController {
 
     const todo = await todosServices.create({ title, description });
 
-    return res.json({ todo });
+    return res.json(todo);
   }
 
   public async update(req: IRequest, res: Response): Promise<Response> {
@@ -40,7 +40,7 @@ class TodosController {
 
     const todo = await todosServices.update({ id, title, description });
 
-    return res.json({ todo });
+    return res.json(todo);
   }
 
   public async delete(req: IRequest, res: Response): Promise<Response> {

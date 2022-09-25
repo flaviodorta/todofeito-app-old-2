@@ -1,16 +1,20 @@
 import 'reflect-metadata';
+import 'express-async-errors';
 import express, { Application } from 'express';
 import morgan from 'morgan';
 import helmet from 'helmet';
+import { errors } from 'celebrate';
+import cors from 'cors';
 import rateLimit from 'express-rate-limit';
 import errorMiddleware from './middleware/Error.middleware';
 import config from './config';
-import { AppDataSource } from './database';
+import { dataSource } from './database';
 import { routes } from './routes';
 
 const app: Application = express();
 
-AppDataSource.initialize()
+dataSource
+  .initialize()
   .then(() => {
     const PORT = config.port_server || 8000;
 
@@ -22,12 +26,13 @@ AppDataSource.initialize()
       message: 'Too many requests from this IP',
     });
 
+    app.use(cors());
     app.use(express.json());
     app.use(morgan('common'));
     app.use(helmet());
     app.use(limiter);
     app.use(routes);
-
+    app.use(errors());
     app.use(errorMiddleware);
 
     app.listen(PORT, () => {

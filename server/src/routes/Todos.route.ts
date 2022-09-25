@@ -1,10 +1,58 @@
 import { Router } from 'express';
 import { todoController } from '../controllers/Todos.controller';
+import { celebrate, Joi, Segments } from 'celebrate';
 
 export const todosRouter = Router();
 
-todosRouter.get('/', todoController.getAll);
-todosRouter.get('/search', todoController.getByText);
-todosRouter.post('/', todoController.create);
-todosRouter.put('/:id', todoController.update);
-todosRouter.delete('/:id', todoController.delete);
+todosRouter.get(
+  '/',
+  celebrate({
+    [Segments.PARAMS]: {
+      id: Joi.string().uuid().required(),
+    },
+  }),
+  todoController.getAll
+);
+
+todosRouter.get(
+  '/search',
+  celebrate({
+    [Segments.BODY]: {
+      searchedText: Joi.string(),
+    },
+  }),
+  todoController.getByText
+);
+
+todosRouter.post(
+  '/',
+  celebrate({
+    [Segments.BODY]: {
+      title: Joi.string().required(),
+      description: Joi.string().required(),
+    },
+  }),
+  todoController.create
+);
+
+todosRouter.put(
+  '/:id',
+  celebrate({
+    [Segments.BODY]: {
+      id: Joi.string().uuid().required(),
+      title: Joi.string().required(),
+      description: Joi.string().required(),
+    },
+  }),
+  todoController.update
+);
+
+todosRouter.delete(
+  '/:id',
+  celebrate({
+    [Segments.BODY]: {
+      id: Joi.string().uuid().required(),
+    },
+  }),
+  todoController.delete
+);
