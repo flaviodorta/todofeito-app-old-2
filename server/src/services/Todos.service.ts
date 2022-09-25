@@ -1,4 +1,4 @@
-import { TodoRepository } from '../repositories';
+import { todosRepository } from '../repositories';
 import { Todo } from '../entities/Todo.entity';
 import { Like } from 'typeorm';
 
@@ -13,10 +13,10 @@ export class TodosServices {
   public async getBySearchedText({
     searchedText,
   }: Pick<IRequest, 'searchedText'>): Promise<Todo[]> {
-    const searchedTodosByTitle = await TodoRepository.findBy({
+    const searchedTodosByTitle = await todosRepository.findBy({
       title: Like(`%${searchedText}%`),
     });
-    const searchedTodosByDescription = await TodoRepository.findBy({
+    const searchedTodosByDescription = await todosRepository.findBy({
       description: Like(`%${searchedText}%`),
     });
     const searchedTodos = [
@@ -28,7 +28,7 @@ export class TodosServices {
   }
 
   public async getAll(): Promise<Todo[]> {
-    const allTodos = TodoRepository.find();
+    const allTodos = todosRepository.find();
 
     return allTodos;
   }
@@ -39,8 +39,8 @@ export class TodosServices {
   }: Pick<IRequest, 'title' | 'description'>): Promise<Todo> {
     if (!description) description = '';
 
-    const todo = await TodoRepository.create({ title, description });
-    await TodoRepository.save(todo);
+    const todo = await todosRepository.create({ title, description });
+    await todosRepository.save(todo);
     return todo;
   }
 
@@ -49,7 +49,7 @@ export class TodosServices {
     title,
     description,
   }: Pick<IRequest, 'id' | 'title' | 'description'>): Promise<Todo> {
-    const todo = await TodoRepository.findOneBy({ id });
+    const todo = await todosRepository.findOneBy({ id });
 
     if (todo === null) {
       throw new Error('Todo not found');
@@ -58,19 +58,19 @@ export class TodosServices {
     todo.title = title as string;
     todo.description = description as string;
 
-    await TodoRepository.save(todo);
+    await todosRepository.save(todo);
 
     return todo;
   }
 
   public async delete({ id }: Pick<IRequest, 'id'>): Promise<void> {
-    const todo = await TodoRepository.findOneBy({ id });
+    const todo = await todosRepository.findOneBy({ id });
 
     if (!todo) {
       throw new Error('Todo not found');
     }
 
-    await TodoRepository.remove(todo);
+    await todosRepository.remove(todo);
   }
 }
 

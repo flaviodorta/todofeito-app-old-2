@@ -4,15 +4,7 @@ import { celebrate, Joi, Segments } from 'celebrate';
 
 export const todosRouter = Router();
 
-todosRouter.get(
-  '/',
-  celebrate({
-    [Segments.PARAMS]: {
-      id: Joi.string().uuid().required(),
-    },
-  }),
-  todoController.getAll
-);
+todosRouter.get('/', todoController.getAll);
 
 todosRouter.get(
   '/search',

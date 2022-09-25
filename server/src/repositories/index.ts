@@ -2,9 +2,9 @@ import { dataSource } from '../database';
 import { Todo } from '../entities/Todo.entity';
 import { User } from '../entities/User.entity';
 
-export const TodoRepository = dataSource.getRepository(Todo);
+export const todosRepository = dataSource.getRepository(Todo);
 
-export const UserRepository = dataSource.getRepository(User).extend({
+export const usersRepository = dataSource.getRepository(User).extend({
   async findByName(name: string) {
     return this.createQueryBuilder('user')
       .where('user.name = :name', { name })

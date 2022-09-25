@@ -1,6 +1,5 @@
-import { resolve } from 'path';
-import { User } from 'src/entities/User.entity';
-import { UserRepository } from 'src/repositories';
+import { User } from '../entities/User.entity';
+import { usersRepository } from '../repositories';
 
 interface IRequest {
   id: string;
@@ -12,9 +11,19 @@ interface IRequest {
 
 export class UsersServices {
   public async getAll(): Promise<User[]> {
-    const allUsers = UserRepository.find();
+    const allUsers = usersRepository.find();
 
     return allUsers;
+  }
+
+  public async getById({ id }: Pick<IRequest, 'id'>): Promise<User> {
+    const user = await usersRepository.findById(id);
+
+    if (!user) {
+      throw new Error('User not exist');
+    }
+
+    return user;
   }
 
   public async create({
@@ -22,15 +31,15 @@ export class UsersServices {
     email,
     password,
   }: Pick<IRequest, 'name' | 'email' | 'password'>): Promise<User> {
-    const emailExists = await UserRepository.findByEmail(email);
+    const emailExists = await usersRepository.findByEmail(email);
 
     if (emailExists) {
       throw new Error('Email addres already userd');
     }
 
-    const user = await UserRepository.create({ name, email, password });
+    const user = await usersRepository.create({ name, email, password });
 
-    await UserRepository.save(user);
+    await usersRepository.save(user);
 
     return user;
   }
@@ -42,7 +51,7 @@ export class UsersServices {
     password,
     avatar,
   }: IRequest): Promise<User> {
-    const user = await UserRepository.findById(id);
+    const user = await usersRepository.findById(id);
 
     if (!user) {
       throw new Error('User not found');
@@ -53,19 +62,19 @@ export class UsersServices {
     if (password) user.password = password;
     if (avatar) user.avatar = avatar;
 
-    await UserRepository.save(user);
+    await usersRepository.save(user);
 
     return user;
   }
 
   public async delete({ id }: Pick<IRequest, 'id'>): Promise<void> {
-    const user = await UserRepository.findById(id);
+    const user = await usersRepository.findById(id);
 
     if (!user) {
       throw new Error('user not found');
     }
 
-    await UserRepository.remove(user);
+    await usersRepository.remove(user);
   }
 }
 
