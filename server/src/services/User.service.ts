@@ -1,3 +1,4 @@
+import { hash } from 'bcryptjs';
 import { User } from '../entities/User.entity';
 import { usersRepository } from '../repositories';
 
@@ -37,7 +38,13 @@ export class UsersServices {
       throw new Error('Email addres already userd');
     }
 
-    const user = await usersRepository.create({ name, email, password });
+    const hashedPassword = await hash(password, 8);
+
+    const user = await usersRepository.create({
+      name,
+      email,
+      password: hashedPassword,
+    });
 
     await usersRepository.save(user);
 
