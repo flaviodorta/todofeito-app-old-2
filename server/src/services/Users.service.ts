@@ -3,9 +3,10 @@ import fs from 'fs';
 import { compare, hash } from 'bcryptjs';
 import { sign } from 'jsonwebtoken';
 import { User } from '../entities/User.entity';
-import { usersRepository } from '../repositories';
+import { usersRepository, userTokensRepository } from '../repositories';
 import { config } from '../config';
 import { uploadConfig } from '../helpers/upload';
+import { addHours, isAfter } from 'date-fns';
 
 interface IRequest {
   id: string;
@@ -13,6 +14,7 @@ interface IRequest {
   email: string;
   password: string;
   avatar: string;
+  token: string;
 }
 
 export class UsersServices {
@@ -134,6 +136,42 @@ export class UsersServices {
     console.log(avatar);
 
     return user;
+  }
+
+  public async sendForgotPasswordEmail({
+    email,
+  }: Pick<IRequest, 'email'>): Promise<void> {
+    const user = await usersRepository.findByEmail(email);
+
+    if (!user) throw new Error('User not exist');
+
+    console.log(user);
+
+    const token = await userTokensRepository.generate(user.id);
+
+    console.log(token);
+  }
+
+  public async resetForgotPasswordEmail({
+    token,
+    password,
+  }: Pick<IRequest, 'token' | 'password'>): Promise<void> {
+    const userToken = await userTokensRepository.findByToken(token);
+
+    if (!userToken) throw new Error('User does not exist');
+
+    const user = await usersRepository.findById(userToken.user_id);
+
+    if (!user) throw new Error('User does not exist');
+
+    const tokenCreatedAt = userToken.created_at;
+    const compareDate = addHours(tokenCreatedAt, 2);
+
+    if (isAfter(Date.now(), compareDate)) throw new Error('Token expired');
+
+    user.password = await hash(password, 8);
+
+    await usersRepository.save(user);
   }
 }
 

@@ -7,6 +7,7 @@ interface IBody {
   email: string;
   password: string;
   avatar: string;
+  token: string;
 }
 
 interface IRequest extends Request {
@@ -57,7 +58,7 @@ class UsersController {
     return res.json(user);
   }
 
-  public async updateAvatar(req: Request, res: Response): Promise<Response> {
+  public async updateAvatar(req: IRequest, res: Response): Promise<Response> {
     const { id, avatar } = req.body;
 
     const user = await usersServices.updateAvatar({
@@ -66,6 +67,28 @@ class UsersController {
     });
 
     return res.json(user);
+  }
+
+  public async sendForgotPasswordEmail(
+    req: IRequest,
+    res: Response
+  ): Promise<Response> {
+    const { email } = req.body;
+
+    await usersServices.sendForgotPasswordEmail({ email });
+
+    return res.status(204).json();
+  }
+
+  public async resetForgotPasswordEmail(
+    req: IRequest,
+    res: Response
+  ): Promise<Response> {
+    const { token, password } = req.body;
+
+    await usersServices.resetForgotPasswordEmail({ token, password });
+
+    return res.status(204).json();
   }
 }
 
