@@ -4,3 +4,5 @@ export { PlusSolidIcon } from './Icons/PlusSolidIcon';
 export { ArrowGrowthIcon } from './Icons/ArrowGrothIcon';
 export { CircleUserSolidIcon } from './Icons/CircleUserSolidIcon';
 export { MagnifyingGlassSolidIcon } from './Icons/MagnifyingGlassSolidIcon';
+export { GearIcon } from './Icons/GearIcon';
+export { LogoutIcon } from './Icons/LogoutIcon';

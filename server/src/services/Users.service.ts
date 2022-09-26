@@ -7,6 +7,7 @@ import { usersRepository, userTokensRepository } from '../repositories';
 import { config } from '../config';
 import { uploadConfig } from '../helpers/upload';
 import { addHours, isAfter } from 'date-fns';
+import { EthrealMail } from '../helpers/EtherealMail';
 
 interface IRequest {
   id: string;
@@ -145,11 +146,14 @@ export class UsersServices {
 
     if (!user) throw new Error('User not exist');
 
-    console.log(user);
-
     const token = await userTokensRepository.generate(user.id);
 
     console.log(token);
+
+    await EthrealMail.sendMail({
+      to: email,
+      body: `Solicitação de redefinição de senha recebida: ${token.token}`,
+    });
   }
 
   public async resetForgotPasswordEmail({

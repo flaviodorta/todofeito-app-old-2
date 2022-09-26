@@ -76,7 +76,9 @@ export const SearchBar = () => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
-            className='absolute w-full rounded-sm top-10 shadow-2xl bg-white'
+            className={`dropdown-searchbar-container ${
+              searchInput.value ? 'border-[1px]' : ''
+            }`}
           >
             {searchInput.value && (
               <span className='dropdown-searchbar-title'>Results</span>
