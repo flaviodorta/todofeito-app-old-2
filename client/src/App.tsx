@@ -1,15 +1,22 @@
 import { Layout } from './components/Layout';
 import { Navbar } from './components/Navbar';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { BasePage } from './pages/BasePage';
 
 const queryClient = new QueryClient();
 
 export default function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <Layout>
+    <Layout>
+      <QueryClientProvider client={queryClient}>
         <Navbar />
-      </Layout>
-    </QueryClientProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path='/today' element={<BasePage activePage={'today'} />} />
+          </Routes>
+        </BrowserRouter>
+      </QueryClientProvider>
+    </Layout>
   );
 }

@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 @layer base {
-  body {
+  #root {
     @apply h-screen w-screen bg-gray-100 font-roboto overflow-hidden;
   }
 }

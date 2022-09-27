@@ -76,7 +76,7 @@ export const Navbar = () => {
                     <span className='text-sm font-bold'>
                       {firstName} {lastName}
                     </span>
-                    <span className='text-xs font-light text-gray-500'>
+                    <span className='text-xs font-light text-gray-900'>
                       {email}
                     </span>
                   </div>
