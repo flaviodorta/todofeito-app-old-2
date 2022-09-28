@@ -93,7 +93,7 @@
   /* date picker */
 
   .date-picker-container {
-    @apply w-64 h-fit text-xs bg-white shadow-2xl border-[1px] border-gray-100;
+    @apply w-fit h-fit text-xs bg-white shadow-2xl border-[1px] border-gray-100;
   }
 
   .date-picker-calendar {

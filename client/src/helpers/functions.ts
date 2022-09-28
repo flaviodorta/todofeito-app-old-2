@@ -6,6 +6,7 @@ import {
   isThursday,
   isFriday,
   isSaturday,
+  lastDayOfMonth,
 } from 'date-fns';
 
 export const getWeekNumber = (day: Date) => {
@@ -43,5 +44,7 @@ export const getMonthNumber = (date: Date) => date.getMonth();
 export const getYearNumber = (date: Date) => date.getFullYear();
 export const getMonthName = (date: Date, lang: string) =>
   date.toLocaleString(lang, { month: 'long' });
-export const getTotalLastDaysInMonth = (date: Date) =>
-  getDayNumberInWeek(date) + 1;
+export const getTotalLastDaysInMonth = (date: Date) => {
+  const lastDate = lastDayOfMonth(date);
+  return getDayNumberInWeek(lastDate) + 1;
+};
