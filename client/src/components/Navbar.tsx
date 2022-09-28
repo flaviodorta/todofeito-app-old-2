@@ -1,5 +1,5 @@
 import { SearchBar } from './SearchBar';
-import { userUserStore, useUIStore } from '../zustand/stores';
+import { useUserStore, useUIStore } from '../zustand';
 import { Label } from './Label';
 import {
   BarsSolidIcon as SidebarIcon,
@@ -15,8 +15,8 @@ import { DropdownButtons } from './DropdownButtons';
 export type INavbarButtonClicked = '' | 'user-icon';
 
 export const Navbar = () => {
-  const { isMenuOpen, toggleMenu } = useUIStore((state) => state);
-  const { fullName, email } = userUserStore((state) => state);
+  const { isMenuOpen, toggleMenu } = useUIStore();
+  const { fullName, email } = useUserStore();
   const [buttonClicked, setButtonClicked] = useState<INavbarButtonClicked>('');
 
   const fullNameSplitted = fullName.split(' ');

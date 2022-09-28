@@ -6,3 +6,5 @@ export { CircleUserSolidIcon } from './Icons/CircleUserSolidIcon';
 export { MagnifyingGlassSolidIcon } from './Icons/MagnifyingGlassSolidIcon';
 export { GearIcon } from './Icons/GearIcon';
 export { LogoutIcon } from './Icons/LogoutIcon';
+export { ArrowIcon } from './Icons/ArrowIcon';
+export { CircleIcon } from './Icons/CircleIcon';

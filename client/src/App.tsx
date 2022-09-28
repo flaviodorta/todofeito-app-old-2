@@ -14,6 +14,7 @@ export default function App() {
         <BrowserRouter>
           <Routes>
             <Route path='/today' element={<BasePage activePage={'today'} />} />
+            <Route path='*' element={<BasePage activePage={'today'} />} />
           </Routes>
         </BrowserRouter>
       </QueryClientProvider>

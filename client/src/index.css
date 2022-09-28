@@ -89,4 +89,29 @@
   .dropdown-buttons-user-info {
     @apply flex flex-col gap-1 justify-center text-left;
   }
+
+  /* date picker */
+
+  .date-picker-container {
+    @apply w-64 h-fit text-xs bg-white shadow-2xl border-[1px] border-gray-100;
+  }
+
+  .date-picker-calendar {
+    @apply overflow-scroll;
+  }
+
+  .date-picker-icons-wrapper {
+    @apply w-6 h-6 flex items-center justify-center hover:bg-gray-100 rounded-[3px];
+  }
+
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .no-scrollbar {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
 }
