@@ -15,7 +15,7 @@ import { DropdownButtons } from './DropdownButtons';
 export type INavbarButtonClicked = '' | 'user-icon';
 
 export const Navbar = () => {
-  const { isMenuOpen, toggleMenu } = useUIStore();
+  const { isMenuOpen, toggleMenu, toggleAddTodoModal } = useUIStore();
   const { fullName, email } = useUserStore();
   const [buttonClicked, setButtonClicked] = useState<INavbarButtonClicked>('');
 
@@ -50,7 +50,7 @@ export const Navbar = () => {
 
       {/* add todo icon */}
       <div className='navbar-buttons-wrapper'>
-        <button className='navbar-button group'>
+        <button onClick={toggleAddTodoModal} className='navbar-button group'>
           <AddTodoIcon className='navbar-icon' />
           <Label content='Add todo' />
         </button>
@@ -65,6 +65,7 @@ export const Navbar = () => {
           {buttonClicked !== 'user-icon' && (
             <Label content='Open profile menu' className='-left-1' />
           )}
+          {/* dropdow user icon */}
           {buttonClicked === 'user-icon' && (
             <DropdownButtons className='right-0 w-64'>
               <div className='dropdown-buttons-option-container'>

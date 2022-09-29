@@ -1,6 +1,9 @@
+import { useUIStore } from '../../zustand';
+import { AddTodoModal } from '../AddTodoModal';
 import { DatePicker } from '../DatePicker';
 
 export const TodayTodos = () => {
+  const { isAddTodoModalOpen } = useUIStore();
   const date = new Date();
   const month = date.toLocaleString('en', { month: 'short' });
   const dayOfWeek = date.toLocaleString('en', {
@@ -18,7 +21,7 @@ export const TodayTodos = () => {
           </p>
         </div>
 
-        <DatePicker />
+        {isAddTodoModalOpen && <AddTodoModal />}
       </div>
     </div>
   );

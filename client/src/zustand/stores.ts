@@ -1,6 +1,6 @@
 import create from 'zustand';
 import { isDesktop } from 'react-device-detect';
-import { IUser, UIState } from '../helpers/types';
+import { ICalendar, IDay, IMonth, IUser, UIState } from '../helpers/types';
 import {
   getDayNameInWeek,
   getDayNumberInMonth,
@@ -10,53 +10,35 @@ import {
   getYearNumber,
   sortDaysByWeekOrder,
 } from '../helpers/functions';
-import { getDaysInMonth } from 'date-fns';
+import { getDaysInMonth, getYear } from 'date-fns';
 import { RefObject } from 'react';
 
 export const UIStore = create<UIState>((set) => ({
   isMenuOpen: isDesktop ? true : false,
-  toggleMenu: () => set((state) => ({ isMenuOpen: !state.isMenuOpen })),
+  isAddTodoModalOpen: false,
+  isDatePickerOpen: false,
+  dropdownPosition: { x: 0, y: 0 },
+  setDropdownPosition: (x: number, y: number) =>
+    set((state) => ({
+      ...state,
+      isDatePickerOpen: !state.isDatePickerOpen,
+      dropdownPosition: { x, y },
+    })),
+  toggleMenu: () =>
+    set((state) => ({ ...state, isMenuOpen: !state.isMenuOpen })),
+  toggleAddTodoModal: () =>
+    set((state) => ({
+      ...state,
+      isAddTodoModalOpen: !state.isAddTodoModalOpen,
+    })),
+  toggleDatePicker: () =>
+    set((state) => ({ ...state, isDatePickerOpen: !state.isDatePickerOpen })),
 }));
 
 export const userStore = create<IUser>((set) => ({
   fullName: 'Flávio Dorta',
   email: 'dorta.dev@gmail.com',
 }));
-
-export interface IDay {
-  nameInWeek: string;
-  numberInMonth: number;
-}
-
-export interface IMonth {
-  name: string;
-  number: number;
-  totalDays: number;
-  totalOfLastDays: number;
-}
-
-export interface IPreviousMonth {
-  totalDays: number;
-  totalOfLastDays: number;
-}
-
-export interface ICalendar {
-  lang: string;
-  today: Date;
-  lastDateOfPreviousMonth: Date;
-  selectedDayRef: {
-    current: HTMLElement | null;
-    date: { day: number; month: number; year: number } | null;
-  };
-  currentDay: IDay;
-  currentMonth: IMonth;
-  currentYear: number;
-  previousMonth: IPreviousMonth;
-  weekDaysNamesSorted: string[];
-  setSelectedDayRef: (ref: RefObject<HTMLSpanElement>, date: Date) => void;
-  goToNextMonth: () => void;
-  goToPreviousMonth: () => void;
-}
 
 export const calendarStore = create<ICalendar>((set, get) => {
   const lang = window.navigator.language || 'default';
@@ -120,6 +102,19 @@ export const calendarStore = create<ICalendar>((set, get) => {
           },
         },
       })),
+    goToCurrentMonth: () => {
+      set((state) => ({
+        ...state,
+        currentYear: getYear(today),
+        currentMonth: {
+          number: getMonthNumber(today),
+          name: getMonthName(today, get().lang),
+          totalDays: getDaysInMonth(today),
+          totalOfLastDays: getTotalLastDaysInMonth(today),
+        },
+        previousMonth: get().currentMonth,
+      }));
+    },
     goToNextMonth: () => {
       if (get().currentMonth.number === 11) {
         const newCurrentDate = new Date(get().currentYear + 1, 0, 1);

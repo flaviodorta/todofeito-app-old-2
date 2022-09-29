@@ -8,8 +8,8 @@ const queryClient = new QueryClient();
 
 export default function App() {
   return (
-    <Layout>
-      <QueryClientProvider client={queryClient}>
+    <QueryClientProvider client={queryClient}>
+      <Layout>
         <Navbar />
         <BrowserRouter>
           <Routes>
@@ -17,7 +17,7 @@ export default function App() {
             <Route path='*' element={<BasePage activePage={'today'} />} />
           </Routes>
         </BrowserRouter>
-      </QueryClientProvider>
-    </Layout>
+      </Layout>
+    </QueryClientProvider>
   );
 }

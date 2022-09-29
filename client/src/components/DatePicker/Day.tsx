@@ -1,6 +1,6 @@
 import { getMonth, getYear, isToday } from 'date-fns';
-import { useEffect, useRef } from 'react';
-import { getDayNumberInMonth, getMonthNumber } from '../../helpers/functions';
+import { useRef } from 'react';
+import { getDayNumberInMonth } from '../../helpers/functions';
 import { useCalendarStore } from '../../zustand';
 import { motion } from 'framer-motion';
 
@@ -26,8 +26,8 @@ export const Day = (props: Props) => {
       ref={ref}
       onClick={() => setSelectedDayRef(ref, date)}
       className={`${className} group ${
-        isSelected && ' font-bold bg-blue-600/90'
-      } w-7 h-7 cursor-pointer select-none text-center rounded-full relative flex items-center justify-center duration-150`}
+        isSelected && 'font-bold bg-blue-600/90'
+      } w-7 h-7 cursor-pointer select-none text-center rounded-full relative flex items-center justify-center transition-[background] duration-150`}
     >
       {getDayNumberInMonth(date)}
       {isToday(date) && (

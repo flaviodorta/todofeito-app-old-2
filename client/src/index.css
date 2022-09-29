@@ -4,7 +4,7 @@
 
 @layer base {
   #root {
-    @apply h-screen w-screen bg-gray-100 font-roboto overflow-hidden;
+    @apply h-screen w-screen relative bg-gray-100 font-roboto overflow-hidden;
   }
 }
 
@@ -93,7 +93,7 @@
   /* date picker */
 
   .date-picker-container {
-    @apply w-fit h-fit text-xs bg-white shadow-2xl border-[1px] border-gray-100;
+    @apply text-xs bg-white shadow-2xl border-[1px] border-gray-100;
   }
 
   .date-picker-calendar {
