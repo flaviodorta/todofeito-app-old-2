@@ -23,3 +23,28 @@ export const searchBar: Variants = {
     },
   },
 };
+
+export const addTodoModal: Variants = {
+  initial: {
+    scale: 0.4,
+    opacity: 0,
+    y: -50,
+    x: '-50%',
+    transition: {
+      duration: 0.1,
+      type: 'tween',
+      ease: 'linear',
+    },
+  },
+  animate: {
+    scale: 1,
+    opacity: 1,
+    y: -150,
+    x: '-50%',
+    transition: {
+      duration: 0.1,
+      type: 'tween',
+      ease: 'linear',
+    },
+  },
+};

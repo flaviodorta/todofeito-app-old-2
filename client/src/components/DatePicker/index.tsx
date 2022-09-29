@@ -1,11 +1,12 @@
 import React, { forwardRef, useRef } from 'react';
-import { useOnClickOutside } from '../../hooks/useOnClickOutside';
 import { useCalendarStore, useUIStore } from '../../zustand';
 import { Backdrop } from '../Backdrop';
 import { Month } from './Month';
 
 interface Props {
   className?: string;
+  left: number;
+  top: number;
   parentRef?: React.RefObject<HTMLElement>;
 }
 
@@ -34,7 +35,11 @@ export const DatePicker = forwardRef<HTMLDivElement, Props>(
     return (
       <>
         <Backdrop handleClose={toggleDatePicker} />
-        <div ref={ref} className={`${props.className} date-picker-container`}>
+        <div
+          ref={ref}
+          style={{ left: props.left, top: props.top }}
+          className={`${props.className} -translate-x-1/2 date-picker-container shadow-3xl`}
+        >
           <div className='p-3'>
             <div className='flex items-center justify-between'>
               <span className='font-bold capitalize'>

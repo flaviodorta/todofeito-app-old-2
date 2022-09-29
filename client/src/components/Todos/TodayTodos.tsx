@@ -1,6 +1,5 @@
 import { useUIStore } from '../../zustand';
 import { AddTodoModal } from '../AddTodoModal';
-import { DatePicker } from '../DatePicker';
 
 export const TodayTodos = () => {
   const { isAddTodoModalOpen } = useUIStore();

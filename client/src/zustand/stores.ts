@@ -21,7 +21,6 @@ export const UIStore = create<UIState>((set) => ({
   setDropdownPosition: (x: number, y: number) =>
     set((state) => ({
       ...state,
-      isDatePickerOpen: !state.isDatePickerOpen,
       dropdownPosition: { x, y },
     })),
   toggleMenu: () =>
