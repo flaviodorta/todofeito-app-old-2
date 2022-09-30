@@ -30,19 +30,19 @@ export const SelectLabelOption = (
   return (
     <div
       onClick={onClickLabel}
-      className='cursor-pointer w-full hover:bg-gray-100 py-1.5 outline-none flex items-center justify-start'
+      className='cursor-pointer w-full hover:bg-gray-100 outline-none flex items-center justify-start'
     >
       <span className='px-4'>
         <LabelIcon width='16px' height='16px' className='fill-gray-500' />
       </span>
-      <span className='py-1 text-sm  whitespace-nowrap text-clip'>
+      <span className='text-sm py-2 whitespace-nowrap text-clip'>
         {props.label}
       </span>
-      <div className='ml-auto px-4 py-1 flex items-center justify-center'>
+      <div className='ml-auto px-4 py-2 flex items-center justify-center'>
         <input
           checked={checked}
           type='checkbox'
-          className='ring-0 w-4 rounded-none h-4 outline-none bg-gray-400'
+          className='ring-0 w-4 h-4 rounded-none outline-none bg-gray-400'
         />
       </div>
     </div>
