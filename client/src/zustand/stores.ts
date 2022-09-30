@@ -1,12 +1,12 @@
 import create from 'zustand';
 import { isDesktop } from 'react-device-detect';
 import {
-  ICalendar,
+  ICalendar as ICalendarStore,
   IDay,
   IMonth,
-  ISelectDropdownTypes,
-  IUser,
-  UIState,
+  ISelectDropdownTypes as IRenderableElements,
+  IUser as IUserStore,
+  UIState as IUIStore,
 } from '../helpers/types';
 import {
   getDayNameInWeek,
@@ -20,16 +20,16 @@ import {
 import { getDaysInMonth, getYear } from 'date-fns';
 import { RefObject } from 'react';
 
-export const UIStore = create<UIState>((set, get) => ({
+export const UIStore = create<IUIStore>((set, get) => ({
   renderedElements: isDesktop ? ['sidebar'] : [],
   dropdownPosition: { x: 0, y: 0 },
-  isElementRendered: (element: ISelectDropdownTypes) => {
+  isElementRendered: (element: IRenderableElements) => {
     return get().renderedElements.includes(element);
   },
-  setRenderedElements: (selectType: ISelectDropdownTypes, show: boolean) => {
+  setRenderedElements: (element: IRenderableElements, show: boolean) => {
     if (show === false) {
       const selectsDropdownsWithElementRemoved = get().renderedElements.filter(
-        (type: string) => type !== selectType
+        (type: string) => type !== element
       );
       set((state) => ({
         ...state,
@@ -39,7 +39,7 @@ export const UIStore = create<UIState>((set, get) => ({
     if (show === true) {
       set((state) => ({
         ...state,
-        renderedElements: [...state.renderedElements, selectType],
+        renderedElements: [...state.renderedElements, element],
       }));
     }
   },
@@ -50,12 +50,12 @@ export const UIStore = create<UIState>((set, get) => ({
     })),
 }));
 
-export const userStore = create<IUser>((set) => ({
+export const userStore = create<IUserStore>((set) => ({
   fullName: 'Flávio Dorta',
   email: 'dorta.dev@gmail.com',
 }));
 
-export const calendarStore = create<ICalendar>((set, get) => {
+export const calendarStore = create<ICalendarStore>((set, get) => {
   const lang = window.navigator.language || 'default';
   const today = new Date();
 

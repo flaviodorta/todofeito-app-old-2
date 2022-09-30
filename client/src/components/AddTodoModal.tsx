@@ -1,8 +1,11 @@
-import { AnimatePresence, motion } from 'framer-motion';
+import {
+  AnimatePresence,
+  motion,
+  useIsomorphicLayoutEffect,
+} from 'framer-motion';
 import { useRef, useState } from 'react';
 import { useUIStore } from '../zustand';
 import { useDimensions } from '../hooks/useDimensions';
-import { useIsomorphicLayoutEffect } from '../hooks/useIsomorphicLayoutEffect';
 import Textarea from 'react-expanding-textarea';
 import { FlagSolidIcon, InboxSolidIcon, LabelIcon } from './Icons';
 import { CalendarRegularIcon } from './Icons/Icons/CalendarRegularIcon';
@@ -40,14 +43,14 @@ export const AddTodoModal = () => {
       dueDateDimensions.y + dueDateDimensions.height
     );
   };
-  const onClickProjects = () => {
+  const onClickProject = () => {
     setRenderedElements('project', true);
     setDropdownPosition(
       projectDimensions.x + projectDimensions.width / 2,
       projectDimensions.y + projectDimensions.height
     );
   };
-  const onClickLabels = () => {
+  const onClickLabel = () => {
     setRenderedElements('label', true);
     setDropdownPosition(
       labelDimensions.x + labelDimensions.width / 2,
@@ -64,6 +67,7 @@ export const AddTodoModal = () => {
 
   const onClickCloseAddTodoModal = () => setRenderedElements('add-todo', false);
 
+  // measure dimensions when animation modal finishes
   const shouldMeasureDimensions = () => {
     shouldMeasureDueDateDimensions();
     shouldMeasureProjectDimensions();
@@ -71,18 +75,49 @@ export const AddTodoModal = () => {
     shouldMeasurePriorityDimensions();
   };
 
+  // set new measures when window sizes changes
+  useIsomorphicLayoutEffect(() => {
+    if (isElementRendered('date-picker'))
+      setDropdownPosition(
+        dueDateDimensions.x + dueDateDimensions.width / 2,
+        dueDateDimensions.y + dueDateDimensions.height
+      );
+
+    if (isElementRendered('project'))
+      setDropdownPosition(
+        projectDimensions.x + projectDimensions.width / 2,
+        projectDimensions.y + projectDimensions.height
+      );
+
+    if (isElementRendered('label'))
+      setDropdownPosition(
+        labelDimensions.x + labelDimensions.width / 2,
+        labelDimensions.y + labelDimensions.height
+      );
+
+    if (isElementRendered('priority'))
+      setDropdownPosition(
+        priorityDimensions.x + priorityDimensions.width / 2,
+        priorityDimensions.y + priorityDimensions.height
+      );
+  }, [
+    dueDateDimensions,
+    projectDimensions,
+    labelDimensions,
+    priorityDimensions,
+  ]);
+
   return (
     <>
       <Backdrop handleClose={onClickCloseAddTodoModal} />
       <AnimatePresence>
         {isElementRendered('add-todo') && (
           <motion.div
-            key='modal'
             ref={addTodoModalRef}
             variants={addTodoModal}
             initial='initial'
             animate='animate'
-            exit='initial'
+            exit='exit'
             onAnimationComplete={shouldMeasureDimensions}
             className={`${
               isElementRendered('add-todo') &&
@@ -130,7 +165,7 @@ export const AddTodoModal = () => {
                 {/* select project */}
                 <div
                   ref={projectRef}
-                  onClick={onClickProjects}
+                  onClick={onClickProject}
                   className={`${
                     isElementRendered('project') && 'bg-gray-200'
                   } w-22 select-none relative flex gap-1 p-1.5 text-gray-800 tracking-wide cursor-pointer items-center border-[1px] border-gray-300 rounded-sm`}
@@ -147,7 +182,7 @@ export const AddTodoModal = () => {
               <div className='flex gap-2'>
                 <div
                   ref={labelRef}
-                  onClick={onClickLabels}
+                  onClick={onClickLabel}
                   className={`${
                     isElementRendered('label') && 'bg-gray-200'
                   } group cursor-pointer h-7 w-7 flex items-center justify-center hover:bg-gray-200 duration-100`}

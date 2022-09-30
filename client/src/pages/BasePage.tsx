@@ -2,26 +2,22 @@ import { DatePicker } from '../components/DatePicker';
 import { TodayTodos } from '../components/Content/TodayTodos';
 import { useUIStore } from '../zustand';
 import {
-  SelectProjectDropdown,
+  SelectProject,
   SelectProjectOption,
-} from '../components/Selects/SelectProjectDropdown';
+} from '../components/Selects/SelectProject';
 import {
-  SelectLabelDropdown,
+  SelectLabel,
   SelectLabelOption,
-} from '../components/Selects/SelectLabelDropdown';
+} from '../components/Selects/SelectLabel';
 import {
-  SelectPriorityDropdown,
+  SelectPriority,
   SelectPriorityOption,
-} from '../components/Selects/SelectPriorityDropdown';
+} from '../components/Selects/SelectPriority';
 import { Fragment } from 'react';
 
 export const BasePage = ({ activePage }: { activePage: string }) => {
-  const {
-    dropdownPosition,
-    renderedElements: selectsDropdowns,
-    isElementRendered: isSelectShow,
-  } = useUIStore();
-  console.log(dropdownPosition.x);
+  const { dropdownPosition, isElementRendered: isSelectShow } = useUIStore();
+
   const projects = [
     'projeto 1',
     'projeto 2',
@@ -30,7 +26,14 @@ export const BasePage = ({ activePage }: { activePage: string }) => {
     'projeto 5',
     'projeto 6',
   ];
-
+  const labels = [
+    'label 1',
+    'label 2',
+    'label 3',
+    'label 4',
+    'label 5',
+    'label 6',
+  ];
   const colors = ['red', 'yellow', 'blue', 'white'];
 
   return (
@@ -46,39 +49,33 @@ export const BasePage = ({ activePage }: { activePage: string }) => {
       )}
 
       {isSelectShow('project') && (
-        <SelectProjectDropdown
-          left={dropdownPosition.x}
-          top={dropdownPosition.y}
-        >
+        <SelectProject left={dropdownPosition.x} top={dropdownPosition.y}>
           {projects.map((project, i) => (
             <Fragment key={i}>
-              <SelectProjectOption text={project} />
+              <SelectProjectOption content={project} />
             </Fragment>
           ))}
-        </SelectProjectDropdown>
+        </SelectProject>
       )}
 
       {isSelectShow('label') && (
-        <SelectLabelDropdown left={dropdownPosition.x} top={dropdownPosition.y}>
+        <SelectLabel left={dropdownPosition.x} top={dropdownPosition.y}>
           {projects.map((project, i) => (
             <Fragment key={i}>
-              <SelectLabelOption text={project} />
+              <SelectLabelOption content={project} />
             </Fragment>
           ))}
-        </SelectLabelDropdown>
+        </SelectLabel>
       )}
 
       {isSelectShow('priority') && (
-        <SelectPriorityDropdown
-          left={dropdownPosition.x}
-          top={dropdownPosition.y}
-        >
+        <SelectPriority left={dropdownPosition.x} top={dropdownPosition.y}>
           {colors.map((color, i) => (
             <Fragment key={i}>
-              <SelectPriorityOption text={color} flagColor={color} />
+              <SelectPriorityOption content={color} flagColor={color} />
             </Fragment>
           ))}
-        </SelectPriorityDropdown>
+        </SelectPriority>
       )}
     </>
   );
