@@ -16,6 +16,7 @@ export const AddTodoModal = () => {
     setDropdownPosition,
     setSelect,
     selectsDropdowns,
+    isSelectShow,
   } = useUIStore();
 
   const [input, setInput] = useState<{ title: string; description: string }>({
@@ -109,7 +110,9 @@ export const AddTodoModal = () => {
                 <div
                   ref={dueDateRef}
                   onClick={onClickDueData}
-                  className='w-22 relative flex gap-1 p-1.5 text-gray-800 tracking-wide cursor-pointer items-center border-[1px] border-gray-300 rounded-sm'
+                  className={`${
+                    isSelectShow('date-picker') && 'bg-gray-200'
+                  } w-22 relative flex gap-1 p-1.5 text-gray-800 tracking-wide cursor-pointer items-center border-[1px] border-gray-300 rounded-sm`}
                 >
                   <InboxSolidIcon
                     width='11px'
@@ -123,7 +126,9 @@ export const AddTodoModal = () => {
                 <div
                   ref={projectRef}
                   onClick={onClickProjects}
-                  className='relative w-22 h-8 flex gap-1 p-1.5 text-gray-800 tracking-wide cursor-pointer items-center border-[1px] border-gray-300 rounded-sm'
+                  className={`${
+                    isSelectShow('project') && 'bg-gray-200'
+                  } w-22 relative flex gap-1 p-1.5 text-gray-800 tracking-wide cursor-pointer items-center border-[1px] border-gray-300 rounded-sm`}
                 >
                   <CalendarRegularIcon
                     width='11px'
@@ -138,7 +143,9 @@ export const AddTodoModal = () => {
                 <div
                   ref={labelRef}
                   onClick={onClickLabels}
-                  className='group cursor-pointer h-7 w-7 flex items-center justify-center hover:bg-gray-200 duration-100'
+                  className={`${
+                    isSelectShow('label') && 'bg-gray-200'
+                  } group cursor-pointer h-7 w-7 flex items-center justify-center hover:bg-gray-200 duration-100`}
                 >
                   <LabelIcon
                     height='16px'
@@ -149,7 +156,9 @@ export const AddTodoModal = () => {
                 <div
                   ref={priorityRef}
                   onClick={onClickPriority}
-                  className='group cursor-pointer h-7 w-7 flex items-center justify-center hover:bg-gray-200 duration-100'
+                  className={`${
+                    isSelectShow('priority') && 'bg-gray-200'
+                  } group cursor-pointer h-7 w-7 flex items-center justify-center hover:bg-gray-200 duration-100`}
                 >
                   <FlagSolidIcon
                     height='15px'
