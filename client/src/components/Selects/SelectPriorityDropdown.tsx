@@ -29,7 +29,7 @@ export const SelectPriorityOption = (
 
 export const SelectPriorityDropdown = (props: ISelectDropdownProps) => {
   const { className } = props;
-  const { setSelect } = useUIStore();
+  const { setRenderedElements: setSelect } = useUIStore();
 
   return (
     <>

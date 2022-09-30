@@ -2,7 +2,7 @@ import { useUIStore } from '../../zustand';
 import { AddTodoModal } from '../AddTodoModal';
 
 export const TodayTodos = () => {
-  const { isAddTodoModalOpen } = useUIStore();
+  const { isElementRendered } = useUIStore();
   const date = new Date();
   const month = date.toLocaleString('en', { month: 'short' });
   const dayOfWeek = date.toLocaleString('en', {
@@ -20,7 +20,7 @@ export const TodayTodos = () => {
           </p>
         </div>
 
-        {isAddTodoModalOpen && <AddTodoModal />}
+        {isElementRendered('add-todo') && <AddTodoModal />}
       </div>
     </div>
   );

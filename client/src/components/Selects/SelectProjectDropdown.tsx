@@ -29,7 +29,7 @@ export const SelectProjectOption = (
 
 export const SelectProjectDropdown = (props: ISelectDropdownProps) => {
   const { className } = props;
-  const { setSelect } = useUIStore();
+  const { setRenderedElements: setSelect } = useUIStore();
 
   return (
     <>

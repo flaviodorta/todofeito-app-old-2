@@ -11,12 +11,10 @@ import { Backdrop } from './Backdrop';
 
 export const AddTodoModal = () => {
   const {
-    isAddTodoModalOpen,
-    toggleAddTodoModal,
     setDropdownPosition,
-    setSelect,
-    selectsDropdowns,
-    isSelectShow,
+    setRenderedElements,
+    renderedElements,
+    isElementRendered,
   } = useUIStore();
 
   const [input, setInput] = useState<{ title: string; description: string }>({
@@ -36,33 +34,35 @@ export const AddTodoModal = () => {
     useDimensions<HTMLDivElement>({ withInitialAnimation: true });
 
   const onClickDueData = () => {
-    setSelect('date-picker', true);
+    setRenderedElements('date-picker', true);
     setDropdownPosition(
       dueDateDimensions.x + dueDateDimensions.width / 2,
       dueDateDimensions.y + dueDateDimensions.height
     );
   };
   const onClickProjects = () => {
-    setSelect('project', true);
+    setRenderedElements('project', true);
     setDropdownPosition(
       projectDimensions.x + projectDimensions.width / 2,
       projectDimensions.y + projectDimensions.height
     );
   };
   const onClickLabels = () => {
-    setSelect('label', true);
+    setRenderedElements('label', true);
     setDropdownPosition(
       labelDimensions.x + labelDimensions.width / 2,
       labelDimensions.y + labelDimensions.height
     );
   };
   const onClickPriority = () => {
-    setSelect('priority', true);
+    setRenderedElements('priority', true);
     setDropdownPosition(
       priorityDimensions.x + priorityDimensions.width / 2,
       priorityDimensions.y + priorityDimensions.height
     );
   };
+
+  const onClickCloseAddTodoModal = () => setRenderedElements('add-todo', false);
 
   const shouldMeasureDimensions = () => {
     shouldMeasureDueDateDimensions();
@@ -73,9 +73,9 @@ export const AddTodoModal = () => {
 
   return (
     <>
-      <Backdrop handleClose={toggleAddTodoModal} />
+      <Backdrop handleClose={onClickCloseAddTodoModal} />
       <AnimatePresence>
-        {isAddTodoModalOpen && (
+        {isElementRendered('add-todo') && (
           <motion.div
             key='modal'
             ref={addTodoModalRef}
@@ -85,7 +85,12 @@ export const AddTodoModal = () => {
             exit='initial'
             onAnimationComplete={shouldMeasureDimensions}
             className={`${
-              isAddTodoModalOpen && selectsDropdowns.length === 0 && 'z-[100]'
+              isElementRendered('add-todo') &&
+              !renderedElements.includes('date-picker') &&
+              !renderedElements.includes('project') &&
+              !renderedElements.includes('label') &&
+              !renderedElements.includes('priority') &&
+              'z-[100]'
             } shadow-2xl border-gray-300 bg-white border-[1px] p-5 flex flex-col gap-4 fixed left-1/2 top-1/3 h-fit w-[36rem] rounded-sm`}
           >
             <input
@@ -111,7 +116,7 @@ export const AddTodoModal = () => {
                   ref={dueDateRef}
                   onClick={onClickDueData}
                   className={`${
-                    isSelectShow('date-picker') && 'bg-gray-200'
+                    isElementRendered('date-picker') && 'bg-gray-200'
                   } w-22 select-none relative flex gap-1 p-1.5 text-gray-800 tracking-wide cursor-pointer items-center border-[1px] border-gray-300 rounded-sm`}
                 >
                   <InboxSolidIcon
@@ -127,7 +132,7 @@ export const AddTodoModal = () => {
                   ref={projectRef}
                   onClick={onClickProjects}
                   className={`${
-                    isSelectShow('project') && 'bg-gray-200'
+                    isElementRendered('project') && 'bg-gray-200'
                   } w-22 select-none relative flex gap-1 p-1.5 text-gray-800 tracking-wide cursor-pointer items-center border-[1px] border-gray-300 rounded-sm`}
                 >
                   <CalendarRegularIcon
@@ -144,7 +149,7 @@ export const AddTodoModal = () => {
                   ref={labelRef}
                   onClick={onClickLabels}
                   className={`${
-                    isSelectShow('label') && 'bg-gray-200'
+                    isElementRendered('label') && 'bg-gray-200'
                   } group cursor-pointer h-7 w-7 flex items-center justify-center hover:bg-gray-200 duration-100`}
                 >
                   <LabelIcon
@@ -157,7 +162,7 @@ export const AddTodoModal = () => {
                   ref={priorityRef}
                   onClick={onClickPriority}
                   className={`${
-                    isSelectShow('priority') && 'bg-gray-200'
+                    isElementRendered('priority') && 'bg-gray-200'
                   } group cursor-pointer h-7 w-7 flex items-center justify-center hover:bg-gray-200 duration-100`}
                 >
                   <FlagSolidIcon
@@ -171,7 +176,7 @@ export const AddTodoModal = () => {
 
             <div className='flex justify-end gap-2'>
               <button
-                onClick={toggleAddTodoModal}
+                onClick={onClickCloseAddTodoModal}
                 className='text-center select-none p-2 outline-none rounded-sm font-medium text-sm h-fit w-fit bg-gray-200 hover:bg-gray-300 hover:text-700 text-gray-600'
               >
                 Cancel

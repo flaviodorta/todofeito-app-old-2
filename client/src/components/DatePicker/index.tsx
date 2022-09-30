@@ -20,7 +20,8 @@ export const DatePicker = forwardRef<HTMLDivElement, Props>(
       goToPreviousMonth,
       goToCurrentMonth,
     } = useCalendarStore();
-    const { setSelect, isSelectShow } = useUIStore();
+    const { setRenderedElements: setSelect, isElementRendered: isSelectShow } =
+      useUIStore();
 
     const weekDaysFirstLetterSorted = weekDaysNamesSorted.map((dayName) => (
       <span className='uppercase text-gray-400'>{dayName.substring(0, 1)}</span>

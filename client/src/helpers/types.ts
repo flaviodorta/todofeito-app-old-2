@@ -1,19 +1,20 @@
 export type ISelectDropdownTypes =
+  | 'sidebar'
+  | 'add-todo'
   | 'date-picker'
   | 'project'
   | 'label'
   | 'priority';
 
 export interface UIState {
-  isMenuOpen: boolean;
-  isAddTodoModalOpen: boolean;
   dropdownPosition: { x: number; y: number };
-  selectsDropdowns: ISelectDropdownTypes[];
-  toggleMenu: () => void;
-  toggleAddTodoModal: () => void;
+  renderedElements: ISelectDropdownTypes[];
   setDropdownPosition: (x: number, y: number) => void;
-  isSelectShow: (selectType: ISelectDropdownTypes) => boolean;
-  setSelect: (selectType: ISelectDropdownTypes, show: boolean) => void;
+  isElementRendered: (selectType: ISelectDropdownTypes) => boolean;
+  setRenderedElements: (
+    selectType: ISelectDropdownTypes,
+    show: boolean
+  ) => void;
 }
 
 export interface Country {

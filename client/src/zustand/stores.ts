@@ -20,31 +20,26 @@ import {
 import { getDaysInMonth, getYear } from 'date-fns';
 import { RefObject } from 'react';
 
-// type x = ('a' | 'b' | 'c')[];
-// const X: x = ['a', 'b']
-
 export const UIStore = create<UIState>((set, get) => ({
-  isMenuOpen: isDesktop ? true : false,
-  isAddTodoModalOpen: false,
+  renderedElements: isDesktop ? ['sidebar'] : [],
   dropdownPosition: { x: 0, y: 0 },
-  selectsDropdowns: [],
-  isSelectShow: (selectType: ISelectDropdownTypes) => {
-    return get().selectsDropdowns.includes(selectType);
+  isElementRendered: (element: ISelectDropdownTypes) => {
+    return get().renderedElements.includes(element);
   },
-  setSelect: (selectType: ISelectDropdownTypes, show: boolean) => {
+  setRenderedElements: (selectType: ISelectDropdownTypes, show: boolean) => {
     if (show === false) {
-      const selectsDropdownsWithElementRemoved = get().selectsDropdowns.filter(
+      const selectsDropdownsWithElementRemoved = get().renderedElements.filter(
         (type: string) => type !== selectType
       );
       set((state) => ({
         ...state,
-        selectsDropdowns: selectsDropdownsWithElementRemoved,
+        renderedElements: selectsDropdownsWithElementRemoved,
       }));
     }
     if (show === true) {
       set((state) => ({
         ...state,
-        selectsDropdowns: [...state.selectsDropdowns, selectType],
+        renderedElements: [...state.renderedElements, selectType],
       }));
     }
   },
@@ -52,13 +47,6 @@ export const UIStore = create<UIState>((set, get) => ({
     set((state) => ({
       ...state,
       dropdownPosition: { x, y },
-    })),
-  toggleMenu: () =>
-    set((state) => ({ ...state, isMenuOpen: !state.isMenuOpen })),
-  toggleAddTodoModal: () =>
-    set((state) => ({
-      ...state,
-      isAddTodoModalOpen: !state.isAddTodoModalOpen,
     })),
 }));
 

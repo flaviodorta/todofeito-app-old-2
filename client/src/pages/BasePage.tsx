@@ -16,7 +16,11 @@ import {
 import { Fragment } from 'react';
 
 export const BasePage = ({ activePage }: { activePage: string }) => {
-  const { dropdownPosition, selectsDropdowns, isSelectShow } = useUIStore();
+  const {
+    dropdownPosition,
+    renderedElements: selectsDropdowns,
+    isElementRendered: isSelectShow,
+  } = useUIStore();
   console.log(dropdownPosition.x);
   const projects = [
     'projeto 1',
