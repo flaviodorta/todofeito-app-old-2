@@ -1,6 +1,13 @@
 import create from 'zustand';
 import { isDesktop } from 'react-device-detect';
-import { ICalendar, IDay, IMonth, IUser, UIState } from '../helpers/types';
+import {
+  ICalendar,
+  IDay,
+  IMonth,
+  ISelectDropdownTypes,
+  IUser,
+  UIState,
+} from '../helpers/types';
 import {
   getDayNameInWeek,
   getDayNumberInMonth,
@@ -13,11 +20,34 @@ import {
 import { getDaysInMonth, getYear } from 'date-fns';
 import { RefObject } from 'react';
 
-export const UIStore = create<UIState>((set) => ({
+// type x = ('a' | 'b' | 'c')[];
+// const X: x = ['a', 'b']
+
+export const UIStore = create<UIState>((set, get) => ({
   isMenuOpen: isDesktop ? true : false,
   isAddTodoModalOpen: false,
-  isDatePickerOpen: false,
   dropdownPosition: { x: 0, y: 0 },
+  selectsDropdowns: [],
+  isSelectShow: (selectType: ISelectDropdownTypes) => {
+    return get().selectsDropdowns.includes(selectType);
+  },
+  setSelect: (selectType: ISelectDropdownTypes, show: boolean) => {
+    if (show === false) {
+      const selectsDropdownsWithElementRemoved = get().selectsDropdowns.filter(
+        (type: string) => type !== selectType
+      );
+      set((state) => ({
+        ...state,
+        selectsDropdowns: selectsDropdownsWithElementRemoved,
+      }));
+    }
+    if (show === true) {
+      set((state) => ({
+        ...state,
+        selectsDropdowns: [...state.selectsDropdowns, selectType],
+      }));
+    }
+  },
   setDropdownPosition: (x: number, y: number) =>
     set((state) => ({
       ...state,
@@ -30,8 +60,6 @@ export const UIStore = create<UIState>((set) => ({
       ...state,
       isAddTodoModalOpen: !state.isAddTodoModalOpen,
     })),
-  toggleDatePicker: () =>
-    set((state) => ({ ...state, isDatePickerOpen: !state.isDatePickerOpen })),
 }));
 
 export const userStore = create<IUser>((set) => ({

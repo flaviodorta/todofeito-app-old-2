@@ -20,9 +20,7 @@ export const DatePicker = forwardRef<HTMLDivElement, Props>(
       goToPreviousMonth,
       goToCurrentMonth,
     } = useCalendarStore();
-    const { toggleDatePicker } = useUIStore();
-
-    const datePickerRef = useRef<HTMLDivElement>(null);
+    const { setSelect, isSelectShow } = useUIStore();
 
     const weekDaysFirstLetterSorted = weekDaysNamesSorted.map((dayName) => (
       <span className='uppercase text-gray-400'>{dayName.substring(0, 1)}</span>
@@ -30,15 +28,15 @@ export const DatePicker = forwardRef<HTMLDivElement, Props>(
 
     const monthNameShort = currentMonth.name.substring(0, 3);
 
-    // useOnClickOutside(datePickerRef, toggleDatePicker, props.parentRef);
-
     return (
       <>
-        <Backdrop handleClose={toggleDatePicker} />
+        <Backdrop handleClose={() => setSelect('date-picker', false)} />
         <div
           ref={ref}
           style={{ left: props.left, top: props.top }}
-          className={`${props.className} -translate-x-1/2 date-picker-container shadow-3xl`}
+          className={`${props.className} ${
+            isSelectShow('date-picker') && 'z-[100]'
+          } -translate-x-1/2 date-picker-container shadow-3xl`}
         >
           <div className='p-3'>
             <div className='flex items-center justify-between'>

@@ -5,7 +5,6 @@ import { useToggle } from '../hooks/useToggle';
 import { MagnifyingGlassSolidIcon as SearchIcon } from './Icons';
 import { fetchCountries } from '../api';
 import { useQuery } from '@tanstack/react-query';
-import { spawn } from 'child_process';
 
 export const SearchBar = () => {
   const [isSearchBarOpen, toggleSearchBar] = useToggle(false);

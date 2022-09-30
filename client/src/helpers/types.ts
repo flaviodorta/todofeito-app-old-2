@@ -1,12 +1,19 @@
+export type ISelectDropdownTypes =
+  | 'date-picker'
+  | 'project'
+  | 'label'
+  | 'priority';
+
 export interface UIState {
   isMenuOpen: boolean;
   isAddTodoModalOpen: boolean;
-  isDatePickerOpen: boolean;
   dropdownPosition: { x: number; y: number };
+  selectsDropdowns: ISelectDropdownTypes[];
   toggleMenu: () => void;
   toggleAddTodoModal: () => void;
-  toggleDatePicker: () => void;
   setDropdownPosition: (x: number, y: number) => void;
+  isSelectShow: (selectType: ISelectDropdownTypes) => boolean;
+  setSelect: (selectType: ISelectDropdownTypes, show: boolean) => void;
 }
 
 export interface Country {

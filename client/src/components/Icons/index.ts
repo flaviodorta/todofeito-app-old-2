@@ -10,3 +10,5 @@ export { ArrowIcon } from './Icons/ArrowIcon';
 export { CircleIcon } from './Icons/CircleIcon';
 export { InboxSolidIcon } from './Icons/InboxSolidIcon';
 export { CalendarRegularIcon } from './Icons/CalendarRegularIcon';
+export { LabelIcon } from './Icons/LabelIcon';
+export { FlagSolidIcon } from './Icons/FlagSolidIcon';
