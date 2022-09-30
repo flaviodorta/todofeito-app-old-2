@@ -15,8 +15,6 @@ export const AddTodoModal = () => {
     toggleAddTodoModal,
     setDropdownPosition,
     setSelect,
-    isSelectShow,
-    dropdownPosition,
     selectsDropdowns,
   } = useUIStore();
 
@@ -36,10 +34,34 @@ export const AddTodoModal = () => {
   const [priorityDimensions, priorityRef, shouldMeasurePriorityDimensions] =
     useDimensions<HTMLDivElement>({ withInitialAnimation: true });
 
-  const onClickDueData = () => setSelect('date-picker', true);
-  const onClickProjects = () => setSelect('project', true);
-  const onClickLabels = () => setSelect('label', true);
-  const onClickPriority = () => setSelect('priority', true);
+  const onClickDueData = () => {
+    setSelect('date-picker', true);
+    setDropdownPosition(
+      dueDateDimensions.x,
+      dueDateDimensions.y + dueDateDimensions.height
+    );
+  };
+  const onClickProjects = () => {
+    setSelect('project', true);
+    setDropdownPosition(
+      projectDimensions.x,
+      projectDimensions.y + projectDimensions.height
+    );
+  };
+  const onClickLabels = () => {
+    setSelect('label', true);
+    setDropdownPosition(
+      labelDimensions.x,
+      labelDimensions.y + labelDimensions.height
+    );
+  };
+  const onClickPriority = () => {
+    setSelect('priority', true);
+    setDropdownPosition(
+      priorityDimensions.x,
+      priorityDimensions.y + priorityDimensions.height
+    );
+  };
 
   const shouldMeasureDimensions = () => {
     shouldMeasureDueDateDimensions();
@@ -47,45 +69,6 @@ export const AddTodoModal = () => {
     shouldMeasureLabelDimensions();
     shouldMeasurePriorityDimensions();
   };
-
-  console.log(isSelectShow('project'), dropdownPosition);
-
-  useIsomorphicLayoutEffect(() => {
-    if (isSelectShow('date-picker')) {
-      setDropdownPosition(
-        dueDateDimensions.x,
-        dueDateDimensions.y + dueDateDimensions.height
-      );
-    }
-
-    if (isSelectShow('project')) {
-      setDropdownPosition(
-        projectDimensions.x,
-        projectDimensions.y + projectDimensions.height
-      );
-    }
-
-    if (isSelectShow('label')) {
-      setDropdownPosition(
-        labelDimensions.x,
-        labelDimensions.y + labelDimensions.height
-      );
-    }
-
-    if (isSelectShow('priority')) {
-      setDropdownPosition(
-        priorityDimensions.x,
-        priorityDimensions.y + priorityDimensions.height
-      );
-    }
-  }, [
-    dueDateDimensions,
-    projectDimensions,
-    labelDimensions,
-    priorityDimensions,
-  ]);
-
-  console.log(selectsDropdowns);
 
   return (
     <>

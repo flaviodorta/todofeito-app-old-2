@@ -36,7 +36,7 @@ export const DatePicker = forwardRef<HTMLDivElement, Props>(
           style={{ left: props.left, top: props.top }}
           className={`${props.className} ${
             isSelectShow('date-picker') && 'z-[100]'
-          } -translate-x-1/2 date-picker-container shadow-3xl`}
+          } -translate-x-1/2 translate-y-2 date-picker-container shadow-3xl`}
         >
           <div className='p-3'>
             <div className='flex items-center justify-between'>

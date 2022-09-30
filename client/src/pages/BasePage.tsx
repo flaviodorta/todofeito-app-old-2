@@ -13,6 +13,7 @@ import {
   SelectPriorityDropdown,
   SelectPriorityOption,
 } from '../components/Selects/SelectPriorityDropdown';
+import { Fragment } from 'react';
 
 export const BasePage = ({ activePage }: { activePage: string }) => {
   const { dropdownPosition, selectsDropdowns, isSelectShow } = useUIStore();
@@ -45,16 +46,20 @@ export const BasePage = ({ activePage }: { activePage: string }) => {
           left={dropdownPosition.x}
           top={dropdownPosition.y}
         >
-          {projects.map((project) => (
-            <SelectProjectOption text={project} />
+          {projects.map((project, i) => (
+            <Fragment key={i}>
+              <SelectProjectOption text={project} />
+            </Fragment>
           ))}
         </SelectProjectDropdown>
       )}
 
       {isSelectShow('label') && (
         <SelectLabelDropdown left={dropdownPosition.x} top={dropdownPosition.y}>
-          {projects.map((project) => (
-            <SelectLabelOption text={project} />
+          {projects.map((project, i) => (
+            <Fragment key={i}>
+              <SelectLabelOption text={project} />
+            </Fragment>
           ))}
         </SelectLabelDropdown>
       )}
@@ -64,8 +69,10 @@ export const BasePage = ({ activePage }: { activePage: string }) => {
           left={dropdownPosition.x}
           top={dropdownPosition.y}
         >
-          {colors.map((color) => (
-            <SelectPriorityOption text={color} flagColor={color} />
+          {colors.map((color, i) => (
+            <Fragment key={i}>
+              <SelectPriorityOption text={color} flagColor={color} />
+            </Fragment>
           ))}
         </SelectPriorityDropdown>
       )}

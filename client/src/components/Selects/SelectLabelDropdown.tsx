@@ -41,7 +41,7 @@ export const SelectLabelDropdown = (props: ISelectDropdownProps) => {
       <Backdrop handleClose={() => setSelect('label', false)} />
       <div
         style={{ position: 'absolute', left: props.left, top: props.top }}
-        className='absolute shadow-3xl border-[1px] border-gray-200 overflow-hidden z-[100] rounded-sm w-fit h-fit bg-white'
+        className='-translate-x-1/2 translate-y-2 absolute shadow-3xl border-[1px] border-gray-200 overflow-hidden z-[100] rounded-sm w-fit h-fit bg-white'
       >
         <div className='h-fit'>
           <input
