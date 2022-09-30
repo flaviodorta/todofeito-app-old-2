@@ -1,7 +1,7 @@
 import create from 'zustand';
 import { isDesktop } from 'react-device-detect';
 import {
-  ICalendar as ICalendarStore,
+  ICalendarStore,
   IDay,
   IMonth,
   ISelectDropdownTypes as IRenderableElements,
@@ -99,12 +99,18 @@ export const calendarStore = create<ICalendarStore>((set, get) => {
     lang: lang,
     today: today,
     lastDateOfPreviousMonth: lastDateOfPreviousMonth,
-    selectedDayRef: { current: null, date: null },
+    selectedDayRef: { current: null },
+    selectedDay: null,
     currentDay: currentDay,
     currentMonth: currentMonth,
     currentYear: currentYear,
     previousMonth: previousMonth,
     weekDaysNamesSorted: weekDaysNamesSorted,
+    setSelectedDay: (date: Date) =>
+      set((state) => ({
+        ...state,
+        selectedDay: date,
+      })),
     setSelectedDayRef: (ref: RefObject<HTMLElement>, date: Date) =>
       set((state) => ({
         ...state,

@@ -18,10 +18,14 @@ export const SelectProjectOption = (
 ): JSX.Element => {
   return (
     <div className='hover:bg-gray-200 flex justify-start'>
-      <span className='flex items-center justify-center p-2'>
+      <span className='flex items-center justify-center px-2'>
         <span className='w-2 h-2 bg-gray-400 rounded-full' />
       </span>
-      <span className='p-3 justify-self-start text-sm'>{props.content}</span>
+      <span className='flex w-full justify-between items-center pl-1 pr-2 py-1.5 justify-self-start text-sm'>
+        {props.content}
+
+        <span className='h-2 w-3 scale-75 -rotate-45 border-l-[2px] border-b-[2px] border-gray-700' />
+      </span>
     </div>
   );
 };

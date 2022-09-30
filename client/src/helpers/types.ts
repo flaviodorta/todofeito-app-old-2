@@ -17,6 +17,15 @@ export interface UIState {
   ) => void;
 }
 
+export interface IAddTodoStore {
+  title: string;
+  description: string;
+  datePicker: Date;
+  projects: string[];
+  labels: string[];
+  priority: number;
+}
+
 export interface Country {
   name: {
     common: string;
@@ -45,19 +54,20 @@ export interface IPreviousMonth {
   totalOfLastDays: number;
 }
 
-export interface ICalendar {
+export interface ICalendarStore {
   lang: string;
   today: Date;
   lastDateOfPreviousMonth: Date;
   selectedDayRef: {
     current: HTMLElement | null;
-    date: { day: number; month: number; year: number } | null;
   };
+  selectedDay: Date | null;
   currentDay: IDay;
   currentMonth: IMonth;
   currentYear: number;
   previousMonth: IPreviousMonth;
   weekDaysNamesSorted: string[];
+  setSelectedDay: (date: Date) => void;
   goToCurrentMonth: () => void;
   setSelectedDayRef: (
     ref: React.RefObject<HTMLSpanElement>,

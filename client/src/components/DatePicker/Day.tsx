@@ -11,20 +11,26 @@ interface Props {
 
 export const Day = (props: Props) => {
   const { className, date } = props;
-  const { selectedDayRef, setSelectedDayRef } = useCalendarStore();
+  const { selectedDayRef, selectedDay, setSelectedDayRef, setSelectedDay } =
+    useCalendarStore();
   const ref = useRef<HTMLSpanElement>(null);
 
   let isSelected =
     ref.current === selectedDayRef.current &&
-    selectedDayRef.date &&
-    selectedDayRef.date.day === getDayNumberInMonth(date) &&
-    selectedDayRef.date.month === getMonth(date) &&
-    selectedDayRef.date.year === getYear(date);
+    selectedDay &&
+    getDayNumberInMonth(selectedDay) === getDayNumberInMonth(date) &&
+    getMonth(selectedDay) === getMonth(date) &&
+    getYear(selectedDay) === getYear(date);
+
+  const onClickDay = () => {
+    setSelectedDay(date);
+    setSelectedDayRef(ref, date);
+  };
 
   return (
     <span
       ref={ref}
-      onClick={() => setSelectedDayRef(ref, date)}
+      onClick={onClickDay}
       className={`${className} group ${
         isSelected && 'font-bold bg-blue-600/90'
       } w-7 h-7 cursor-pointer select-none text-center rounded-full relative flex items-center justify-center transition-[background] duration-150`}
