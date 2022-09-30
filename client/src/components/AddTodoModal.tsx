@@ -38,28 +38,28 @@ export const AddTodoModal = () => {
   const onClickDueData = () => {
     setSelect('date-picker', true);
     setDropdownPosition(
-      dueDateDimensions.x,
+      dueDateDimensions.x + dueDateDimensions.width / 2,
       dueDateDimensions.y + dueDateDimensions.height
     );
   };
   const onClickProjects = () => {
     setSelect('project', true);
     setDropdownPosition(
-      projectDimensions.x,
+      projectDimensions.x + projectDimensions.width / 2,
       projectDimensions.y + projectDimensions.height
     );
   };
   const onClickLabels = () => {
     setSelect('label', true);
     setDropdownPosition(
-      labelDimensions.x,
+      labelDimensions.x + labelDimensions.width / 2,
       labelDimensions.y + labelDimensions.height
     );
   };
   const onClickPriority = () => {
     setSelect('priority', true);
     setDropdownPosition(
-      priorityDimensions.x,
+      priorityDimensions.x + priorityDimensions.width / 2,
       priorityDimensions.y + priorityDimensions.height
     );
   };
@@ -93,7 +93,7 @@ export const AddTodoModal = () => {
               placeholder='Todo name'
               value={input.title}
               onChange={(e) => setInput({ ...input, title: e.target.value })}
-              className='w-full outline-none font-medium placeholder:font-medium placeholder:text-gray-400'
+              className='w-full select-none outline-none font-medium placeholder:font-medium placeholder:text-gray-400'
             />
             <Textarea
               placeholder='Description'
@@ -102,7 +102,7 @@ export const AddTodoModal = () => {
               onChange={(e) =>
                 setInput({ ...input, description: e.target.value })
               }
-              className='w-full text-sm outline-none resize-none placeholder:text-400 placeholder:text-sm'
+              className='w-full select-none text-sm outline-none resize-none placeholder:text-400 placeholder:text-sm'
             />
             <div className='flex items-center justify-between '>
               <div className='flex gap-2'>
@@ -112,7 +112,7 @@ export const AddTodoModal = () => {
                   onClick={onClickDueData}
                   className={`${
                     isSelectShow('date-picker') && 'bg-gray-200'
-                  } w-22 relative flex gap-1 p-1.5 text-gray-800 tracking-wide cursor-pointer items-center border-[1px] border-gray-300 rounded-sm`}
+                  } w-22 select-none relative flex gap-1 p-1.5 text-gray-800 tracking-wide cursor-pointer items-center border-[1px] border-gray-300 rounded-sm`}
                 >
                   <InboxSolidIcon
                     width='11px'
@@ -128,7 +128,7 @@ export const AddTodoModal = () => {
                   onClick={onClickProjects}
                   className={`${
                     isSelectShow('project') && 'bg-gray-200'
-                  } w-22 relative flex gap-1 p-1.5 text-gray-800 tracking-wide cursor-pointer items-center border-[1px] border-gray-300 rounded-sm`}
+                  } w-22 select-none relative flex gap-1 p-1.5 text-gray-800 tracking-wide cursor-pointer items-center border-[1px] border-gray-300 rounded-sm`}
                 >
                   <CalendarRegularIcon
                     width='11px'
@@ -172,7 +172,7 @@ export const AddTodoModal = () => {
             <div className='flex justify-end gap-2'>
               <button
                 onClick={toggleAddTodoModal}
-                className='text-center p-2 outline-none rounded-sm font-medium text-sm h-fit w-fit bg-gray-200 hover:bg-gray-300 hover:text-700 text-gray-600'
+                className='text-center select-none p-2 outline-none rounded-sm font-medium text-sm h-fit w-fit bg-gray-200 hover:bg-gray-300 hover:text-700 text-gray-600'
               >
                 Cancel
               </button>
@@ -181,7 +181,7 @@ export const AddTodoModal = () => {
                   !input.title
                     ? 'cursor-not-allowed bg-blue-400'
                     : 'bg-blue-600 hover:bg-blue-700'
-                } text-center p-2 outline-none rounded-sm font-medium text-sm h-fit w-fit text-white hover:text-gray-200`}
+                } text-center select-none p-2 outline-none rounded-sm font-medium text-sm h-fit w-fit text-white hover:text-gray-200`}
               >
                 Add todo
               </button>
