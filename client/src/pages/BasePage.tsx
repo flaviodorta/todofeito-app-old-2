@@ -20,7 +20,7 @@ export const BasePage = ({ activePage }: { activePage: string }) => {
 
   const projects = [
     'projeto 1',
-    'projeto 2',
+    'projeto 2 asdasdas asd asd asd asd asdassd',
     'projeto 3',
     'projeto 4',
     'projeto 5',
@@ -52,7 +52,7 @@ export const BasePage = ({ activePage }: { activePage: string }) => {
         <SelectProject left={dropdownPosition.x} top={dropdownPosition.y}>
           {projects.map((project, i) => (
             <Fragment key={i}>
-              <SelectProjectOption content={project} />
+              <SelectProjectOption project={project} />
             </Fragment>
           ))}
         </SelectProject>
@@ -62,7 +62,7 @@ export const BasePage = ({ activePage }: { activePage: string }) => {
         <SelectLabel left={dropdownPosition.x} top={dropdownPosition.y}>
           {projects.map((project, i) => (
             <Fragment key={i}>
-              <SelectLabelOption content={project} />
+              <SelectLabelOption label={project} />
             </Fragment>
           ))}
         </SelectLabel>
@@ -72,7 +72,7 @@ export const BasePage = ({ activePage }: { activePage: string }) => {
         <SelectPriority left={dropdownPosition.x} top={dropdownPosition.y}>
           {colors.map((color, i) => (
             <Fragment key={i}>
-              <SelectPriorityOption content={color} flagColor={color} />
+              <SelectPriorityOption priority={i + 1} flagColor={color} />
             </Fragment>
           ))}
         </SelectPriority>

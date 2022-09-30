@@ -4,7 +4,7 @@ import {
   useIsomorphicLayoutEffect,
 } from 'framer-motion';
 import { useRef, useState } from 'react';
-import { useUIStore } from '../zustand';
+import { useAddTodoStore, useUIStore } from '../zustand';
 import { useDimensions } from '../hooks/useDimensions';
 import Textarea from 'react-expanding-textarea';
 import { FlagSolidIcon, InboxSolidIcon, LabelIcon } from './Icons';
@@ -20,10 +20,7 @@ export const AddTodoModal = () => {
     isElementRendered,
   } = useUIStore();
 
-  const [input, setInput] = useState<{ title: string; description: string }>({
-    title: '',
-    description: '',
-  });
+  const { title, description, setTitle, setDescription } = useAddTodoStore();
 
   const addTodoModalRef = useRef<HTMLDivElement>(null);
 
@@ -131,17 +128,15 @@ export const AddTodoModal = () => {
             <input
               type='text'
               placeholder='Todo name'
-              value={input.title}
-              onChange={(e) => setInput({ ...input, title: e.target.value })}
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
               className='w-full select-none outline-none font-medium placeholder:font-medium placeholder:text-gray-400'
             />
             <Textarea
               placeholder='Description'
               rows={2}
-              value={input.description}
-              onChange={(e) =>
-                setInput({ ...input, description: e.target.value })
-              }
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
               className='w-full select-none text-sm outline-none resize-none placeholder:text-400 placeholder:text-sm'
             />
             <div className='flex items-center justify-between '>
@@ -218,7 +213,7 @@ export const AddTodoModal = () => {
               </button>
               <button
                 className={`${
-                  !input.title
+                  !title
                     ? 'cursor-not-allowed bg-blue-400'
                     : 'bg-blue-600 hover:bg-blue-700'
                 } text-center select-none p-2 outline-none rounded-sm font-medium text-sm h-fit w-fit text-white hover:text-gray-200`}

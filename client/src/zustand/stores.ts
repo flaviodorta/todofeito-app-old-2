@@ -55,6 +55,44 @@ export const userStore = create<IUserStore>((set) => ({
   email: 'dorta.dev@gmail.com',
 }));
 
+export interface IAddTodoStore {
+  title: string;
+  description: string;
+  date: Date | null;
+  project: string;
+  labels: string[];
+  priority: number;
+  setTitle: (title: string) => void;
+  setDescription: (description: string) => void;
+  setDate: (date: Date) => void;
+  setProject: (project: string) => void;
+  addLabel: (label: string) => void;
+  removeLabel: (label: string) => void;
+  setPriority: (priority: number) => void;
+}
+
+export const addTodoStore = create<IAddTodoStore>((set, get) => ({
+  title: '',
+  description: '',
+  date: null,
+  project: '',
+  labels: [],
+  priority: 4,
+  setTitle: (title: string) => set((state) => ({ ...state, title })),
+  setDescription: (description: string) =>
+    set((state) => ({ ...state, description })),
+  setDate: (date: Date) => set((state) => ({ ...state, date })),
+  setProject: (project: string) => set((state) => ({ ...state, project })),
+  addLabel: (label: string) =>
+    set((state) => ({ ...state, labels: [...state.labels, label] })),
+  removeLabel: (label: string) =>
+    set((state) => ({
+      ...state,
+      labels: state.labels.filter((removedLabel) => label !== removedLabel),
+    })),
+  setPriority: (priority: number) => set((state) => ({ ...state, priority })),
+}));
+
 export const calendarStore = create<ICalendarStore>((set, get) => {
   const lang = window.navigator.language || 'default';
   const today = new Date();
@@ -91,6 +129,7 @@ export const calendarStore = create<ICalendarStore>((set, get) => {
   const weekDays = Array.from({ length: 7 }).map(
     (_, i) => new Date(currentYear, currentYear, currentDay.numberInMonth + i)
   );
+
   const weekDaysNamesSorted = sortDaysByWeekOrder(weekDays).map((date) =>
     getDayNameInWeek(date, lang)
   );
