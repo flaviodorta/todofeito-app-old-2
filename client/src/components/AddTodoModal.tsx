@@ -1,4 +1,3 @@
-import { useCalendarStore } from '../zustand';
 import Textarea from 'react-expanding-textarea';
 import {
   CalendarRegularIcon,
@@ -19,27 +18,11 @@ import { DatePicker } from './DatePicker';
 import { SelectProject } from './Selects/SelectProject';
 import { SelectLabel } from './Selects/SelectLabel';
 import { SelectPriority } from './Selects/SelectPriority';
-import { labelColors, labelHoverColors } from '../helpers/constants';
-import { IPriorityLabelColors, IRenderableElements } from '../helpers/types';
+import { labelColors, labelHoverColors, language } from '../helpers/constants';
+import { IRenderableElements, ISelectedDate } from '../helpers/types';
 import { Backdrop } from './Backdrop';
-import { AnimatePresence, motion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { addTodoModal } from '../helpers/variants';
-
-export type IRenderedElement =
-  | 'date-picker'
-  | 'project'
-  | 'label'
-  | 'priority'
-  | null;
-
-export interface IAddTodoInputs {
-  title: string;
-  description: string;
-  project: string;
-  labels: string[];
-  priority: number | null;
-  priorityLabelColor: IPriorityLabelColors;
-}
 
 interface IAddTodoModalProps {
   isAddTodoModalOpen: boolean;
@@ -47,8 +30,7 @@ interface IAddTodoModalProps {
 }
 
 export const AddTodoModal = (props: IAddTodoModalProps) => {
-  const { isAddTodoModalOpen, toggleAddTodoModal } = props;
-  const { selectedDay, lang } = useCalendarStore();
+  const { toggleAddTodoModal } = props;
 
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -62,6 +44,22 @@ export const AddTodoModal = (props: IAddTodoModalProps) => {
     'label 5',
   ]);
   const [checkedLabels, setCheckedLabels] = useState<string[]>([]);
+
+  const [selectedDate, setSelectedDate] = useState<ISelectedDate>({
+    ref: { current: null },
+    date: null,
+  });
+
+  const [renderedSelect, setRenderedSelect] = useState<{
+    type: IRenderableElements;
+    position: { x: number; y: number };
+  }>({
+    type: null,
+    position: {
+      x: 0,
+      y: 0,
+    },
+  });
 
   const addLabel = (label: string) =>
     setLabels((state) => sortAlphabetic([...state, label]));
@@ -79,18 +77,10 @@ export const AddTodoModal = (props: IAddTodoModalProps) => {
       state.filter((removedLabel) => label !== removedLabel)
     );
 
-  const [renderedSelect, setRenderedSelect] = useState<{
-    type: IRenderableElements;
-    position: { x: number; y: number };
-  }>({
-    type: null,
-    position: {
-      x: 0,
-      y: 0,
-    },
-  });
-
-  const monthNameShort = getMonthName(selectedDay, lang).substring(0, 3);
+  const monthNameShort = getMonthName(selectedDate.date, language).substring(
+    0,
+    3
+  );
 
   const [dueDateDimensions, dueDateRef, shouldMeasureDueDateDimensions] =
     useDimensions<HTMLDivElement>({ withInitialAnimation: true });
@@ -221,6 +211,8 @@ export const AddTodoModal = (props: IAddTodoModalProps) => {
           renderedElement={renderedSelect.type}
           className={`z-[100] absolute w-60 h-fit `}
           handleCloseSelect={handleCloseSelect}
+          selectedDate={selectedDate}
+          setSelectedDate={setSelectedDate}
         />
       )}
 
@@ -308,8 +300,10 @@ export const AddTodoModal = (props: IAddTodoModalProps) => {
               />
 
               <span className='text-xs capitalize'>
-                {selectedDay
-                  ? `${monthNameShort} ${getDayNumberInMonth(selectedDay)}`
+                {selectedDate.date
+                  ? `${monthNameShort} ${getDayNumberInMonth(
+                      selectedDate.date
+                    )}`
                   : 'Due data'}
               </span>
             </div>

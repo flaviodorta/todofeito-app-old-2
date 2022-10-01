@@ -89,3 +89,19 @@ export interface IAddTodoStore {
   setPriority: (priority: number) => void;
   setPriorityLabelColor: (priorityLabelColor: IPriorityLabelColors) => void;
 }
+
+export interface IAddTodoInputs {
+  title: string;
+  description: string;
+  project: string;
+  labels: string[];
+  priority: number | null;
+  priorityLabelColor: IPriorityLabelColors;
+}
+
+export type ISelectedDate = {
+  ref: {
+    current: HTMLElement | null;
+  };
+  date: Date | null;
+};

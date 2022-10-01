@@ -193,7 +193,7 @@ export const AddTodoItem = () => {
 
   return (
     <>
-      {renderedSelect.type === 'date-picker-select' && (
+      {/* {renderedSelect.type === 'date-picker-select' && (
         <DatePicker
           left={renderedSelect.position.x}
           top={renderedSelect.position.y}
@@ -201,7 +201,7 @@ export const AddTodoItem = () => {
           className={`z-[100] absolute w-60 h-fit `}
           handleCloseSelect={handleCloseSelect}
         />
-      )}
+      )} */}
 
       {renderedSelect.type === 'project-select' && (
         <SelectProject

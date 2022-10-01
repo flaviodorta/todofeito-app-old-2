@@ -1,69 +1,114 @@
 import { Fragment, useEffect, useRef } from 'react';
-import { useCalendarStore } from '../../zustand';
+import { IDay, IMonth } from '../../helpers/types';
 import { Day } from './Day';
 
-export const Month = () => {
-  const { currentMonth, previousMonth, currentYear, setSelectedDayRef } =
-    useCalendarStore();
+type ISelectedDate = {
+  ref: {
+    current: HTMLElement | null;
+  };
+  date: Date | null;
+};
 
+interface ICalendar {
+  currentDay: IDay;
+  currentMonth: IMonth;
+  currentYear: number;
+  previousMonth: IMonth;
+}
+
+interface IMonthProps {
+  calendar: ICalendar;
+  selectedDate: ISelectedDate;
+  setSelectedDate: React.Dispatch<React.SetStateAction<ISelectedDate>>;
+}
+
+export const Month = ({
+  calendar,
+  selectedDate,
+  setSelectedDate,
+}: IMonthProps) => {
   const ref = useRef<HTMLDivElement>(null);
 
   // prevent select all days in grid
-  useEffect(() => setSelectedDayRef(ref, new Date()), []);
+  useEffect(
+    () =>
+      setSelectedDate((state) => ({
+        ref: ref,
+        date: new Date(),
+      })),
+    []
+  );
 
   const daysGrid = () => {
-    if (previousMonth.totalOfLastDays < 7) {
+    if (calendar.previousMonth.totalOfLastDays < 7) {
       const totalDaysInGrid =
-        currentMonth.totalDays + previousMonth.totalOfLastDays;
+        calendar.currentMonth.totalDays +
+        calendar.previousMonth.totalOfLastDays;
 
       return Array.from({ length: totalDaysInGrid }).map((_, i) => {
         if (
-          i < previousMonth.totalOfLastDays &&
-          previousMonth.totalOfLastDays < 7
+          i < calendar.previousMonth.totalOfLastDays &&
+          calendar.previousMonth.totalOfLastDays < 7
         ) {
           const dateLastMonth = new Date(
-            currentYear,
-            currentMonth.number - 1,
-            previousMonth.totalDays - previousMonth.totalOfLastDays + i + 1
+            calendar.currentYear,
+            calendar.currentMonth.number - 1,
+            calendar.previousMonth.totalDays -
+              calendar.previousMonth.totalOfLastDays +
+              i +
+              1
           );
 
           return (
             <Fragment key={i}>
-              <Day date={dateLastMonth} className='text-gray-400' />
+              <Day
+                date={dateLastMonth}
+                selectedDate={selectedDate}
+                setSelectedDate={setSelectedDate}
+                className='text-gray-400'
+              />
             </Fragment>
           );
         }
         const dateCurrentMonth = new Date(
-          currentYear,
-          currentMonth.number,
-          i - previousMonth.totalOfLastDays + 1
+          calendar.currentYear,
+          calendar.currentMonth.number,
+          i - calendar.previousMonth.totalOfLastDays + 1
         );
         return (
           <Fragment key={i}>
-            <Day date={dateCurrentMonth} />
+            <Day
+              date={dateCurrentMonth}
+              selectedDate={selectedDate}
+              setSelectedDate={setSelectedDate}
+            />
           </Fragment>
         );
       });
     }
 
-    const totalDaysInGrid = currentMonth.totalDays;
+    const totalDaysInGrid = calendar.currentMonth.totalDays;
 
     return Array.from({ length: totalDaysInGrid }).map((_, i) => {
       const dateCurrentMonth = new Date(
-        currentYear,
-        currentMonth.number,
+        calendar.currentYear,
+        calendar.currentMonth.number,
         i + 1
       );
       return (
         <Fragment key={i}>
-          <Day date={dateCurrentMonth} />
+          <Day
+            date={dateCurrentMonth}
+            selectedDate={selectedDate}
+            setSelectedDate={setSelectedDate}
+          />
         </Fragment>
       );
     });
   };
 
   return (
-    <div ref={ref} className='px-4 my-2 grid grid-cols-7 gap-1 w-fit h-fit '>
+    <div ref={ref} className='w-full px-4 my-2 grid grid-cols-7 gap-1'>
       {daysGrid()}
     </div>
   );

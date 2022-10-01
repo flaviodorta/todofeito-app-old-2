@@ -13,3 +13,6 @@ export const labelHoverColors = [
   'group-hover:fill-blue-600',
   'group-hover:fill-gray-500',
 ];
+
+export const language =
+  typeof window !== 'undefined' ? window.navigator.language : 'default';

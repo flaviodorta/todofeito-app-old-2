@@ -4,6 +4,7 @@
 
 # to do
 
+- change date picker states to internal state
 - create projects content
 - add todos items in content with draglabe list
 - add sidebar resizable (react-resizable)
