@@ -1,13 +1,5 @@
+import { ICalendarStore, IDay, IMonth } from '../../helpers/types';
 import create from 'zustand';
-import { isDesktop } from 'react-device-detect';
-import {
-  ICalendarStore,
-  IDay,
-  IMonth,
-  ISelectDropdownTypes as IRenderableElements,
-  IUser as IUserStore,
-  UIState as IUIStore,
-} from '../helpers/types';
 import {
   getDayNameInWeek,
   getDayNumberInMonth,
@@ -15,99 +7,9 @@ import {
   getMonthNumber,
   getTotalLastDaysInMonth,
   getYearNumber,
-  sortAlphabetic,
   sortDaysByWeekOrder,
-} from '../helpers/functions';
+} from '../../helpers/functions';
 import { getDaysInMonth, getYear } from 'date-fns';
-import { RefObject } from 'react';
-
-export const UIStore = create<IUIStore>((set, get) => ({
-  renderedElements: isDesktop ? ['sidebar'] : [],
-  dropdownPosition: { x: 0, y: 0 },
-  isElementRendered: (element: IRenderableElements) => {
-    return get().renderedElements.includes(element);
-  },
-  setRenderedElements: (element: IRenderableElements, show: boolean) => {
-    if (show === false) {
-      const selectsDropdownsWithElementRemoved = get().renderedElements.filter(
-        (type: string) => type !== element
-      );
-      set((state) => ({
-        ...state,
-        renderedElements: selectsDropdownsWithElementRemoved,
-      }));
-    }
-    if (show === true) {
-      set((state) => ({
-        ...state,
-        renderedElements: [...state.renderedElements, element],
-      }));
-    }
-  },
-  setDropdownPosition: (x: number, y: number) =>
-    set((state) => ({
-      ...state,
-      dropdownPosition: { x, y },
-    })),
-}));
-
-export const userStore = create<IUserStore>((set) => ({
-  fullName: 'Flávio Dorta',
-  email: 'dorta.dev@gmail.com',
-}));
-
-export type IPriorityLabelColors =
-  | 'fill-red-600'
-  | 'fill-orange-600'
-  | 'fill-yellow-600'
-  | 'fill-blue-600'
-  | null;
-
-export interface IAddTodoStore {
-  title: string;
-  description: string;
-  date: Date | null;
-  project: string;
-  labels: string[];
-  priority: number;
-  priorityLabelColor: IPriorityLabelColors;
-  setTitle: (title: string) => void;
-  setDescription: (description: string) => void;
-  setDate: (date: Date) => void;
-  setProject: (project: string) => void;
-  addLabel: (label: string) => void;
-  removeLabel: (label: string) => void;
-  setPriority: (priority: number) => void;
-  setPriorityLabelColor: (priorityLabelColor: IPriorityLabelColors) => void;
-}
-
-export const addTodoStore = create<IAddTodoStore>((set, get) => ({
-  title: '',
-  description: '',
-  date: null,
-  project: '',
-  labels: [],
-  priority: 5,
-  priorityLabelColor: null,
-  setTitle: (title: string) => set((state) => ({ ...state, title })),
-  setDescription: (description: string) =>
-    set((state) => ({ ...state, description })),
-  setDate: (date: Date) => set((state) => ({ ...state, date })),
-  setProject: (project: string) => set((state) => ({ ...state, project })),
-  addLabel: (label: string) =>
-    set((state) => ({
-      ...state,
-      labels: sortAlphabetic([...state.labels, label]),
-    })),
-  removeLabel: (label: string) =>
-    set((state) => ({
-      ...state,
-      labels: state.labels.filter((removedLabel) => label !== removedLabel),
-    })),
-  setPriority: (priority: number) => set((state) => ({ ...state, priority })),
-  setPriorityLabelColor: (priorityLabelColor: IPriorityLabelColors) =>
-    set((state) => ({ ...state, priorityLabelColor })),
-}));
 
 export const calendarStore = create<ICalendarStore>((set, get) => {
   const lang = window.navigator.language || 'default';
@@ -166,7 +68,7 @@ export const calendarStore = create<ICalendarStore>((set, get) => {
         ...state,
         selectedDay: date,
       })),
-    setSelectedDayRef: (ref: RefObject<HTMLElement>, date: Date) =>
+    setSelectedDayRef: (ref: React.RefObject<HTMLElement>, date: Date) =>
       set((state) => ({
         ...state,
         selectedDayRef: {

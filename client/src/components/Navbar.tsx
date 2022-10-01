@@ -1,5 +1,5 @@
 import { SearchBar } from './SearchBar';
-import { useUserStore, useUIStore } from '../zustand';
+import { useUserStore } from '../zustand';
 import { Label } from './Label';
 import {
   BarsSolidIcon as SidebarIcon,
@@ -14,10 +14,16 @@ import { DropdownButtons } from './DropdownButtons';
 
 export type INavbarButtonClicked = '' | 'user-icon';
 
-export const Navbar = () => {
-  const { isElementRendered, setRenderedElements } = useUIStore();
+interface INavbarProps {
+  isSidebarOpen: boolean;
+  toggleSidebar: () => void;
+  toggleAddTodoModal: () => void;
+}
+
+export const Navbar = (props: INavbarProps) => {
   const { fullName, email } = useUserStore();
   const [buttonClicked, setButtonClicked] = useState<INavbarButtonClicked>('');
+  const { isSidebarOpen, toggleSidebar, toggleAddTodoModal } = props;
 
   const fullNameSplitted = fullName.split(' ');
   const firstName = fullNameSplitted[0];
@@ -29,25 +35,13 @@ export const Navbar = () => {
   const onClickNavbarButton = (buttonClicked: INavbarButtonClicked) =>
     setButtonClicked(buttonClicked);
 
-  const onClickMenuButton = () => {
-    if (isElementRendered('sidebar')) {
-      setRenderedElements('sidebar', false);
-    } else {
-      setRenderedElements('sidebar', true);
-    }
-  };
-
-  const onClickAddTodoButton = () => setRenderedElements('add-todo', true);
-
   return (
     <nav className='navbar'>
       <div className='navbar-buttons-wrapper'>
         {/* sidebar icon */}
-        <button onClick={onClickMenuButton} className='navbar-button group'>
+        <button onClick={toggleSidebar} className='navbar-button group'>
           <SidebarIcon className='navbar-icon' />
-          <Label
-            content={isElementRendered('sidebar') ? 'Close menu' : 'Open menu'}
-          />
+          <Label content={isSidebarOpen ? 'Close menu' : 'Open menu'} />
         </button>
 
         {/* home icon */}
@@ -62,7 +56,7 @@ export const Navbar = () => {
 
       {/* add todo icon */}
       <div className='navbar-buttons-wrapper'>
-        <button onClick={onClickAddTodoButton} className='navbar-button group'>
+        <button onClick={toggleAddTodoModal} className='navbar-button group'>
           <AddTodoIcon className='navbar-icon' />
           <Label content='Add todo' />
         </button>

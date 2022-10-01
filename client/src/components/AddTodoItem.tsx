@@ -13,7 +13,7 @@ import {
   getMonthName,
   sortAlphabetic,
 } from '../helpers/functions';
-import { Fragment, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { LabelAddTodoModal } from './LabelAddTodoModal';
 import { DatePicker } from './DatePicker';
 import { SelectProject } from './Selects/SelectProject';
@@ -21,12 +21,9 @@ import { SelectLabel } from './Selects/SelectLabel';
 import { SelectPriority } from './Selects/SelectPriority';
 import { labelColors, labelHoverColors } from '../helpers/constants';
 import { IPriorityLabelColors, IRenderableElements } from '../helpers/types';
-import { Backdrop } from './Backdrop';
-import { AnimatePresence, motion } from 'framer-motion';
-import { addTodoModal } from '../helpers/variants';
 
 export type IRenderedElement =
-  | 'date-picker'
+  | 'date-picker-select'
   | 'project'
   | 'label'
   | 'priority'
@@ -41,13 +38,7 @@ export interface IAddTodoInputs {
   priorityLabelColor: IPriorityLabelColors;
 }
 
-interface IAddTodoModalProps {
-  isAddTodoModalOpen: boolean;
-  toggleAddTodoModal: () => void;
-}
-
-export const AddTodoModal = (props: IAddTodoModalProps) => {
-  const { isAddTodoModalOpen, toggleAddTodoModal } = props;
+export const AddTodoItem = () => {
   const { selectedDay, lang } = useCalendarStore();
 
   const [title, setTitle] = useState('');
@@ -79,6 +70,7 @@ export const AddTodoModal = (props: IAddTodoModalProps) => {
       state.filter((removedLabel) => label !== removedLabel)
     );
 
+  // need to be a complex state beacuse states changes simutaneous
   const [renderedSelect, setRenderedSelect] = useState<{
     type: IRenderableElements;
     position: { x: number; y: number };
@@ -92,24 +84,13 @@ export const AddTodoModal = (props: IAddTodoModalProps) => {
 
   const monthNameShort = getMonthName(selectedDay, lang).substring(0, 3);
 
-  const [dueDateDimensions, dueDateRef, shouldMeasureDueDateDimensions] =
-    useDimensions<HTMLDivElement>({ withInitialAnimation: true });
-  const [projectDimensions, projectRef, shouldMeasureProjectDimensions] =
-    useDimensions<HTMLDivElement>({ withInitialAnimation: true });
-  const [labelDimensions, labelRef, shouldMeasureLabelDimensions] =
-    useDimensions<HTMLDivElement>({ withInitialAnimation: true });
-  const [priorityDimensions, priorityRef, shouldMeasurePriorityDimensions] =
-    useDimensions<HTMLDivElement>({ withInitialAnimation: true });
+  const [dueDateDimensions, dueDateRef] = useDimensions<HTMLDivElement>();
+  const [projectDimensions, projectRef] = useDimensions<HTMLDivElement>();
+  const [labelDimensions, labelRef] = useDimensions<HTMLDivElement>();
+  const [priorityDimensions, priorityRef] = useDimensions<HTMLDivElement>();
 
   const onClickAddTodoButton = () => {
     // send data to the server
-  };
-
-  const shouldMeasureDimensions = () => {
-    shouldMeasureDueDateDimensions();
-    shouldMeasureProjectDimensions();
-    shouldMeasureLabelDimensions();
-    shouldMeasurePriorityDimensions();
   };
 
   const onClickDueData = () =>
@@ -125,11 +106,11 @@ export const AddTodoModal = (props: IAddTodoModalProps) => {
 
   const onClickProject = () =>
     setRenderedSelect({
-      type: 'project-select',
       position: {
         x: projectDimensions.x + projectDimensions.width / 2,
         y: projectDimensions.y + projectDimensions.height,
       },
+      type: 'project-select',
     });
 
   const onClickLabel = () =>
@@ -143,11 +124,11 @@ export const AddTodoModal = (props: IAddTodoModalProps) => {
 
   const onClickPriority = () =>
     setRenderedSelect({
-      type: 'priority-select',
       position: {
         x: priorityDimensions.x + priorityDimensions.width / 2,
         y: priorityDimensions.y + priorityDimensions.height,
       },
+      type: 'priority-select',
     });
 
   // const onClickCloseAddTodoModal = () => setElement('add-todo');
@@ -200,7 +181,7 @@ export const AddTodoModal = (props: IAddTodoModalProps) => {
 
   const projects = [
     'projeto 1',
-    'projeto 2',
+    'projeto 2 asdasdas asd asd asd asd asdassd',
     'projeto 3',
     'projeto 4',
     'projeto 5',
@@ -212,8 +193,6 @@ export const AddTodoModal = (props: IAddTodoModalProps) => {
 
   return (
     <>
-      <Backdrop handleClose={toggleAddTodoModal} className='z-60' />
-
       {renderedSelect.type === 'date-picker-select' && (
         <DatePicker
           left={renderedSelect.position.x}
@@ -260,112 +239,104 @@ export const AddTodoModal = (props: IAddTodoModalProps) => {
         />
       )}
 
-      <motion.div
-        variants={addTodoModal}
-        initial='initial'
-        animate='animate'
-        exit='exit'
-        onAnimationComplete={shouldMeasureDimensions}
-        className='z-70 shadow-3xl border-gray-300 bg-white border-[1px] p-5 flex flex-col gap-4 fixed left-1/2 top-1/3 h-fit w-[36rem] rounded-sm'
-      >
-        {checkedLabels.length > 0 && (
-          <div className='w-full flex-wrap h-fit gap-1 flex justify-start'>
-            {checkedLabels.map((label, i) => (
-              <Fragment key={i}>
+      <div className='h-fit w-full'>
+        <div className='border-gray-200 bg-white border-[1px] p-4 flex flex-col gap-4 h-fit w-full rounded-sm'>
+          {checkedLabels.length > 0 && (
+            <div className='w-full flex-wrap h-fit gap-1 flex justify-start'>
+              {checkedLabels.map((label) => (
                 <LabelAddTodoModal label={label} />
-              </Fragment>
-            ))}
-          </div>
-        )}
-        <input
-          type='text'
-          placeholder='Todo name'
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          className='break-words w-full select-none outline-none font-medium placeholder:font-medium placeholder:text-gray-400'
-        />
-        <Textarea
-          placeholder='Description'
-          rows={2}
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          className='w-full select-none text-sm outline-none resize-none placeholder:text-400 placeholder:text-sm'
-        />
-        <div className='flex items-center justify-between'>
-          <div className='flex gap-2 flex-wrap'>
-            {/* select date */}
-            <div
-              ref={dueDateRef}
-              onClick={onClickDueData}
-              className={`${
-                renderedSelect.type === 'date-picker-select' && 'bg-gray-200'
-              } w-22 select-none relative flex gap-1 p-1.5 text-gray-800 tracking-wide cursor-pointer items-center border-[1px] border-gray-300 rounded-sm`}
-            >
-              <CalendarRegularIcon
-                width='11px'
-                height='11px'
-                className='fill-purple-700 -translate-y-[1px]'
-              />
+              ))}
+            </div>
+          )}
+          <input
+            type='text'
+            placeholder='Todo name'
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            className='break-words w-full select-none outline-none font-medium placeholder:font-medium placeholder:text-gray-400'
+          />
+          <Textarea
+            placeholder='Description'
+            rows={2}
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            className='w-full select-none text-sm outline-none resize-none placeholder:text-400 placeholder:text-sm'
+          />
+          <div className='flex items-center justify-between'>
+            <div className='flex gap-2 flex-wrap'>
+              {/* select date */}
+              <div
+                ref={dueDateRef}
+                onClick={onClickDueData}
+                className={`${
+                  renderedSelect.type === 'date-picker-select' && 'bg-gray-200'
+                } w-22 select-none relative flex gap-1 p-1.5 text-gray-800 tracking-wide cursor-pointer items-center border-[1px] border-gray-300 rounded-sm`}
+              >
+                <CalendarRegularIcon
+                  width='11px'
+                  height='11px'
+                  className='fill-purple-700 -translate-y-[1px]'
+                />
 
-              <span className='text-xs capitalize'>
-                {selectedDay
-                  ? `${monthNameShort} ${getDayNumberInMonth(selectedDay)}`
-                  : 'Due data'}
-              </span>
+                <span className='text-xs capitalize'>
+                  {selectedDay
+                    ? `${monthNameShort} ${getDayNumberInMonth(selectedDay)}`
+                    : 'Due data'}
+                </span>
+              </div>
+
+              {/* select project */}
+              <div
+                ref={projectRef}
+                onClick={onClickProject}
+                className={`${
+                  renderedSelect.type === 'project-select' && 'bg-gray-200'
+                } w-22 select-none relative flex gap-1 p-1.5 text-gray-800 tracking-wide cursor-pointer items-center border-[1px] border-gray-300 rounded-sm`}
+              >
+                <InboxSolidIcon
+                  width='11px'
+                  height='11px'
+                  className='fill-sky-600 -translate-y-[1px]'
+                />
+                <span className='text-xs capitalize'>
+                  {selectedProject ? selectedProject : 'Inbox'}
+                </span>
+              </div>
             </div>
 
-            {/* select project */}
-            <div
-              ref={projectRef}
-              onClick={onClickProject}
-              className={`${
-                renderedSelect.type === 'project-select' && 'bg-gray-200'
-              } w-22 select-none relative flex gap-1 p-1.5 text-gray-800 tracking-wide cursor-pointer items-center border-[1px] border-gray-300 rounded-sm`}
-            >
-              <InboxSolidIcon
-                width='11px'
-                height='11px'
-                className='fill-sky-600 -translate-y-[1px]'
-              />
-              <span className='text-xs capitalize'>
-                {selectedProject ? selectedProject : 'Inbox'}
-              </span>
-            </div>
-          </div>
-
-          <div className='flex gap-2'>
-            <div
-              ref={labelRef}
-              onClick={onClickLabel}
-              className={`${
-                renderedSelect.type === 'label-select' && 'bg-gray-200'
-              } group cursor-pointer h-7 w-7 flex items-center justify-center hover:bg-gray-200 duration-100`}
-            >
-              <LabelIcon
-                height='16px'
-                width='16px'
-                className='fill-gray-400 group-hover:fill-gray-500 duration-100'
-              />
-            </div>
-            <div
-              ref={priorityRef}
-              onClick={onClickPriority}
-              className={`${
-                renderedSelect.type === 'priority-select' && 'bg-gray-200'
-              } group cursor-pointer h-7 w-7 flex items-center justify-center hover:bg-gray-200 duration-100`}
-            >
-              <FlagSolidIcon
-                height='15px'
-                width='15px'
-                className={`${labelColors[selectedPriority]} ${labelHoverColors[selectedPriority]}  duration-100`}
-              />
+            <div className='flex gap-2'>
+              <div
+                ref={labelRef}
+                onClick={onClickLabel}
+                className={`${
+                  renderedSelect.type === 'label-select' && 'bg-gray-200'
+                } group cursor-pointer h-7 w-7 flex items-center justify-center hover:bg-gray-200 duration-100`}
+              >
+                <LabelIcon
+                  height='16px'
+                  width='16px'
+                  className='fill-gray-400 group-hover:fill-gray-500 duration-100'
+                />
+              </div>
+              <div
+                ref={priorityRef}
+                onClick={onClickPriority}
+                className={`${
+                  renderedSelect.type === 'priority-select' && 'bg-gray-200'
+                } group cursor-pointer h-7 w-7 flex items-center justify-center hover:bg-gray-200 duration-100`}
+              >
+                <FlagSolidIcon
+                  height='15px'
+                  width='15px'
+                  className={`${labelColors[selectedPriority]} ${labelHoverColors[selectedPriority]}  duration-100`}
+                />
+              </div>
             </div>
           </div>
         </div>
-
-        <div className='flex justify-end gap-2'>
+        <div className='mt-2 flex w-full justify-end gap-2'>
           <button
-            onClick={toggleAddTodoModal}
+            // onClick={onClickCloseAddTodoModal}
             className='text-center select-none p-2 outline-none rounded-sm font-medium text-sm h-fit w-fit bg-gray-200 hover:bg-gray-300 hover:text-700 text-gray-600'
           >
             Cancel
@@ -381,7 +352,7 @@ export const AddTodoModal = (props: IAddTodoModalProps) => {
             Add todo
           </button>
         </div>
-      </motion.div>
+      </div>
     </>
   );
 };

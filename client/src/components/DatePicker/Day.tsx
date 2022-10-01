@@ -1,7 +1,7 @@
 import { getMonth, getYear, isToday } from 'date-fns';
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import { getDayNumberInMonth } from '../../helpers/functions';
-import { useAddTodoStore, useCalendarStore } from '../../zustand';
+import { useCalendarStore } from '../../zustand';
 import { motion } from 'framer-motion';
 
 interface Props {
@@ -13,7 +13,6 @@ export const Day = (props: Props) => {
   const { className, date } = props;
   const { selectedDayRef, selectedDay, setSelectedDayRef, setSelectedDay } =
     useCalendarStore();
-  const { setDate, date: x } = useAddTodoStore();
 
   const ref = useRef<HTMLSpanElement>(null);
 
@@ -26,7 +25,6 @@ export const Day = (props: Props) => {
 
   const onClickDay = () => {
     setSelectedDay(date);
-    setDate(date);
     setSelectedDayRef(ref, date);
   };
 

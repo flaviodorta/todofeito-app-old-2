@@ -10,7 +10,7 @@ export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <Layout>
-        <Navbar />
+        {/* <Navbar /> */}
         <BrowserRouter>
           <Routes>
             <Route path='/today' element={<BasePage activePage={'today'} />} />

@@ -1,8 +1,14 @@
-export const Backdrop = ({ handleClose }: { handleClose: () => void }) => {
+export const Backdrop = ({
+  handleClose,
+  className,
+}: {
+  handleClose: () => void;
+  className?: string;
+}) => {
   return (
     <div
       onClick={handleClose}
-      className='absolute w-screen top-0 left-0 z-[90] h-screen bg-black/0'
+      className={`${className} fixed w-screen top-0 left-0 h-screen bg-black/0`}
     />
   );
 };

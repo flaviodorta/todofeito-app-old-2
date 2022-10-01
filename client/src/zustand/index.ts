@@ -1,6 +1,5 @@
-import { UIStore, userStore, calendarStore, addTodoStore } from './stores';
+import { userStore } from './stores/userStore';
+import { calendarStore } from './stores/calendarStore';
 
-export const useUIStore = () => UIStore((state) => state);
 export const useUserStore = () => userStore((state) => state);
 export const useCalendarStore = () => calendarStore((state) => state);
-export const useAddTodoStore = () => addTodoStore((state) => state);

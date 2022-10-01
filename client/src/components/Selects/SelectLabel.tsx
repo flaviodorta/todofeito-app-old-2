@@ -1,30 +1,27 @@
-import { useToggle } from '../../hooks/useToggle';
-import { useAddTodoStore, useUIStore } from '../../zustand';
+import { Fragment, useState } from 'react';
 import { Backdrop } from '../Backdrop';
 import { LabelIcon } from '../Icons';
 
-interface ISelectLabelProps {
-  className?: string;
-  children: React.ReactNode;
-  left: number;
-  top: number;
-}
-
 interface ISelectLabelOptionProps {
   label: string;
+  checkedLabels: string[];
+  addCheckedLabel: (label: string) => void;
+  removeCheckedLabel: (label: string) => void;
 }
 
 export const SelectLabelOption = (
   props: ISelectLabelOptionProps
 ): JSX.Element => {
-  const { addLabel, removeLabel, labels } = useAddTodoStore();
-  const isChecked = labels.includes(props.label);
-  const [checked, toggleChecked] = useToggle(isChecked);
+  const { label, checkedLabels, addCheckedLabel, removeCheckedLabel } = props;
+
+  const isChecked = checkedLabels.includes(label);
+
+  const [checked, toggleChecked] = useState(isChecked);
 
   const onClickLabel = () => {
-    if (!isChecked) addLabel(props.label);
-    else removeLabel(props.label);
-    toggleChecked();
+    if (!isChecked) addCheckedLabel(label);
+    else removeCheckedLabel(label);
+    toggleChecked((checked) => !checked);
   };
 
   return (
@@ -35,12 +32,11 @@ export const SelectLabelOption = (
       <span className='px-4'>
         <LabelIcon width='16px' height='16px' className='fill-gray-500' />
       </span>
-      <span className='text-sm py-2 whitespace-nowrap text-clip'>
-        {props.label}
-      </span>
+      <span className='text-sm py-2 whitespace-nowrap text-clip'>{label}</span>
       <div className='ml-auto px-4 py-2 flex items-center justify-center'>
         <input
           checked={checked}
+          onChange={(e) => toggleChecked(e.target.checked)}
           type='checkbox'
           className='ring-0 w-4 h-4 rounded-none outline-none bg-gray-400'
         />
@@ -49,16 +45,38 @@ export const SelectLabelOption = (
   );
 };
 
+interface ISelectLabelProps {
+  className?: string;
+  left: number;
+  top: number;
+  labels: string[];
+  checkedLabels: string[];
+  handleCloseSelect: () => void;
+  addLabel: (label: string) => void;
+  removeLabel: (label: string) => void;
+  addCheckedLabel: (label: string) => void;
+  removeCheckedLabel: (label: string) => void;
+}
+
 export const SelectLabel = (props: ISelectLabelProps) => {
-  const { className } = props;
-  const { setRenderedElements } = useUIStore();
+  const {
+    left,
+    top,
+    labels,
+    handleCloseSelect,
+    addLabel,
+    removeLabel,
+    checkedLabels,
+    addCheckedLabel,
+    removeCheckedLabel,
+  } = props;
 
   return (
     <>
-      <Backdrop handleClose={() => setRenderedElements('label', false)} />
+      <Backdrop handleClose={handleCloseSelect} className='z-80' />
       <div
-        style={{ position: 'absolute', left: props.left, top: props.top }}
-        className='-translate-x-1/2 translate-y-2 absolute shadow-3xl border-[1px] border-gray-200 overflow-hidden z-[100] rounded-sm w-fit h-fit bg-white'
+        style={{ position: 'absolute', left: left, top: top }}
+        className='-translate-x-1/2 translate-y-2 absolute shadow-3xl border-[1px] border-gray-200 overflow-hidden z-90 rounded-sm w-fit h-fit bg-white'
       >
         <div className='h-fit'>
           <input
@@ -68,7 +86,19 @@ export const SelectLabel = (props: ISelectLabelProps) => {
           />
         </div>
         <div className='dropdown-select overflow-y-scroll h-32 w-full'>
-          {props.children}
+          {labels.map((label, i) => (
+            <Fragment key={i}>
+              <SelectLabelOption
+                label={label}
+                labels={labels}
+                checkedLabels={checkedLabels}
+                addCheckedLabel={addCheckedLabel}
+                removeCheckedLabel={removeCheckedLabel}
+                addLabel={addLabel}
+                removeLabel={removeLabel}
+              />
+            </Fragment>
+          ))}
         </div>
       </div>
     </>

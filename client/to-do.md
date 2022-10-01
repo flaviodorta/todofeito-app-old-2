@@ -1,7 +1,10 @@
-# to do
+# completed
 
 - refactor add todo modal options styles
-- add sidebar resizable (react-resizable)
+
+# to do
+
 - create projects content
 - add todos items in content with draglabe list
-- create edit modal, add project modal
+- add sidebar resizable (react-resizable)
+- create edit modal, add project modal, user settings modal

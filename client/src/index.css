@@ -5,6 +5,7 @@
 @layer base {
   #root {
     @apply h-screen w-screen relative bg-gray-100 font-roboto overflow-hidden;
+    -webkit-font-smoothing: antialiased;
   }
 }
 

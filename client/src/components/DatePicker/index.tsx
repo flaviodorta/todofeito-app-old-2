@@ -1,5 +1,5 @@
-import React, { forwardRef, useRef } from 'react';
-import { useCalendarStore, useUIStore } from '../../zustand';
+import React, { forwardRef } from 'react';
+import { useCalendarStore } from '../../zustand';
 import { Backdrop } from '../Backdrop';
 import { Month } from './Month';
 
@@ -8,10 +8,13 @@ interface Props {
   left: number;
   top: number;
   parentRef?: React.RefObject<HTMLElement>;
+  renderedElement: string;
+  handleCloseSelect: () => void;
 }
 
 export const DatePicker = forwardRef<HTMLDivElement, Props>(
   (props, ref): JSX.Element => {
+    const { handleCloseSelect } = props;
     const {
       weekDaysNamesSorted,
       currentMonth,
@@ -20,8 +23,6 @@ export const DatePicker = forwardRef<HTMLDivElement, Props>(
       goToPreviousMonth,
       goToCurrentMonth,
     } = useCalendarStore();
-    const { setRenderedElements: setSelect, isElementRendered: isSelectShow } =
-      useUIStore();
 
     const weekDaysFirstLetterSorted = weekDaysNamesSorted.map((dayName) => (
       <span className='uppercase text-gray-400'>{dayName.substring(0, 1)}</span>
@@ -31,12 +32,12 @@ export const DatePicker = forwardRef<HTMLDivElement, Props>(
 
     return (
       <>
-        <Backdrop handleClose={() => setSelect('date-picker', false)} />
+        <Backdrop handleClose={handleCloseSelect} />
         <div
           ref={ref}
           style={{ left: props.left, top: props.top }}
           className={`${props.className} ${
-            isSelectShow('date-picker') && 'z-[100]'
+            props.renderedElement === 'date-picker' && 'z-[100]'
           } -translate-x-1/2 translate-y-2 date-picker-container shadow-3xl`}
         >
           <div className='p-3'>
