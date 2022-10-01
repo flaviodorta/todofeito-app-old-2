@@ -90,12 +90,9 @@ export const SelectLabel = (props: ISelectLabelProps) => {
             <Fragment key={i}>
               <SelectLabelOption
                 label={label}
-                labels={labels}
                 checkedLabels={checkedLabels}
                 addCheckedLabel={addCheckedLabel}
                 removeCheckedLabel={removeCheckedLabel}
-                addLabel={addLabel}
-                removeLabel={removeLabel}
               />
             </Fragment>
           ))}
