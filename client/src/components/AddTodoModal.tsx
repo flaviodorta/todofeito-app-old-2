@@ -61,6 +61,15 @@ export const AddTodoModal = (props: IAddTodoModalProps) => {
     },
   });
 
+  const [dueDateDimensions, dueDateRef, shouldMeasureDueDateDimensions] =
+    useDimensions<HTMLDivElement>({ withInitialAnimation: true });
+  const [projectDimensions, projectRef, shouldMeasureProjectDimensions] =
+    useDimensions<HTMLDivElement>({ withInitialAnimation: true });
+  const [labelDimensions, labelRef, shouldMeasureLabelDimensions] =
+    useDimensions<HTMLDivElement>({ withInitialAnimation: true });
+  const [priorityDimensions, priorityRef, shouldMeasurePriorityDimensions] =
+    useDimensions<HTMLDivElement>({ withInitialAnimation: true });
+
   const addLabel = (label: string) =>
     setLabels((state) => sortAlphabetic([...state, label]));
 
@@ -82,18 +91,12 @@ export const AddTodoModal = (props: IAddTodoModalProps) => {
     3
   );
 
-  const [dueDateDimensions, dueDateRef, shouldMeasureDueDateDimensions] =
-    useDimensions<HTMLDivElement>({ withInitialAnimation: true });
-  const [projectDimensions, projectRef, shouldMeasureProjectDimensions] =
-    useDimensions<HTMLDivElement>({ withInitialAnimation: true });
-  const [labelDimensions, labelRef, shouldMeasureLabelDimensions] =
-    useDimensions<HTMLDivElement>({ withInitialAnimation: true });
-  const [priorityDimensions, priorityRef, shouldMeasurePriorityDimensions] =
-    useDimensions<HTMLDivElement>({ withInitialAnimation: true });
-
   const onClickAddTodoButton = () => {
     // send data to the server
   };
+
+  const handleCloseSelect = () =>
+    setRenderedSelect((state) => ({ ...state, type: null }));
 
   const shouldMeasureDimensions = () => {
     shouldMeasureDueDateDimensions();
@@ -196,9 +199,6 @@ export const AddTodoModal = (props: IAddTodoModalProps) => {
     'projeto 5',
     'projeto 6',
   ];
-
-  const handleCloseSelect = () =>
-    setRenderedSelect((state) => ({ ...state, type: null }));
 
   return (
     <>

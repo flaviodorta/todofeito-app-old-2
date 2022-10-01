@@ -1,5 +1,6 @@
-import { getDaysInMonth } from 'date-fns';
+import { getDaysInMonth, getYear } from 'date-fns';
 import React, { forwardRef, useState } from 'react';
+import { language } from '../../helpers/constants';
 import {
   getDayNameInWeek,
   getDayNumberInMonth,
@@ -9,8 +10,7 @@ import {
   getYearNumber,
   sortDaysByWeekOrder,
 } from '../../helpers/functions';
-import { IDay, IMonth, ISelectedDate } from '../../helpers/types';
-import { useCalendarStore } from '../../zustand';
+import { ICalendar, IDay, IMonth, ISelectedDate } from '../../helpers/types';
 import { Backdrop } from '../Backdrop';
 import { Month } from './Month';
 
@@ -28,37 +28,29 @@ interface IDatePickerProps {
 export const DatePicker = forwardRef<HTMLDivElement, IDatePickerProps>(
   (props, ref): JSX.Element => {
     const { handleCloseSelect, selectedDate, setSelectedDate } = props;
-    const {
-      // weekDaysNamesSorted,
-      // currentMonth,
-      // currentYear,
-      goToNextMonth,
-      goToPreviousMonth,
-      goToCurrentMonth,
-    } = useCalendarStore();
 
     const lang = window.navigator.language || 'default';
     const today = new Date();
-    const date = selectedDate.date ? selectedDate.date : today;
+    const date = selectedDate.date;
 
     // changes
 
-    const currentYear = getYearNumber(date);
+    const currentYear = getYearNumber(today);
 
     const currentDay: IDay = {
-      numberInMonth: getDayNumberInMonth(date),
-      nameInWeek: getDayNameInWeek(date, lang),
+      numberInMonth: getDayNumberInMonth(today),
+      nameInWeek: getDayNameInWeek(today, lang),
     };
 
     const currentMonth: IMonth = {
-      name: getMonthName(date, lang),
-      number: getMonthNumber(date),
-      totalDays: getDaysInMonth(date),
+      name: getMonthName(today, lang),
+      number: getMonthNumber(today),
+      totalDays: getDaysInMonth(today),
       totalOfLastDays: getTotalLastDaysInMonth(
         new Date(
-          getYearNumber(date),
-          getMonthNumber(date),
-          getTotalLastDaysInMonth(date)
+          getYearNumber(today),
+          getMonthNumber(today),
+          getTotalLastDaysInMonth(today)
         )
       ),
     };
@@ -85,26 +77,112 @@ export const DatePicker = forwardRef<HTMLDivElement, IDatePickerProps>(
     );
 
     const weekDaysFirstLetterSorted = weekDaysNamesSorted.map((dayName) => (
-      <span className='flex-center uppercase text-gray-400'>
+      <span className='flex-center w-7 h-7 uppercase text-gray-400'>
         {dayName.substring(0, 1)}
       </span>
     ));
 
-    const monthNameShort = currentMonth.name.substring(0, 3);
-
-    interface ICalendar {
-      currentDay: IDay;
-      currentMonth: IMonth;
-      currentYear: number;
-      previousMonth: IMonth;
-    }
-
+    // terminar
     const [calendar, setCalendar] = useState<ICalendar>({
       currentDay,
       currentMonth,
       currentYear,
       previousMonth,
     });
+
+    const monthNameShort = calendar.currentMonth.name.substring(0, 3);
+
+    const goToCurrentMonth = () =>
+      setCalendar((state) => ({
+        currentDay,
+        currentMonth,
+        currentYear,
+        previousMonth,
+      }));
+
+    const goToNextMonth = () =>
+      setCalendar((state) => {
+        if (state.currentMonth.number === 11) {
+          const newCurrentDate = new Date(state.currentYear + 1, 0, 1);
+          return {
+            ...state,
+            currentYear: getYear(newCurrentDate),
+            currentMonth: {
+              number: getMonthNumber(newCurrentDate),
+              name: getMonthName(newCurrentDate, language),
+              totalDays: getDaysInMonth(newCurrentDate),
+              totalOfLastDays: getTotalLastDaysInMonth(newCurrentDate),
+            },
+            previousMonth: state.currentMonth,
+          };
+        }
+
+        const newCurrentDate = new Date(
+          state.currentYear,
+          state.currentMonth.number + 1,
+          1
+        );
+        return {
+          ...state,
+          currentMonth: {
+            number: getMonthNumber(newCurrentDate),
+            name: getMonthName(newCurrentDate, language),
+            totalDays: getDaysInMonth(newCurrentDate),
+            totalOfLastDays: getTotalLastDaysInMonth(newCurrentDate),
+          },
+          previousMonth: state.currentMonth,
+        };
+      });
+
+    const goToPreviousMonth = () =>
+      setCalendar((state) => {
+        if (state.currentMonth.number === 0) {
+          const newCurrentDate = new Date(state.currentYear - 1, 11, 1);
+          const newPreviousDate = new Date(state.currentYear - 1, 10, 1);
+          return {
+            ...state,
+            currentYear: getYear(newCurrentDate),
+            currentMonth: {
+              number: getMonthNumber(newCurrentDate),
+              name: getMonthName(newCurrentDate, language),
+              totalDays: getDaysInMonth(newCurrentDate),
+              totalOfLastDays: getTotalLastDaysInMonth(newCurrentDate),
+            },
+            previousMonth: {
+              number: getMonthNumber(newPreviousDate),
+              name: getMonthName(newPreviousDate, language),
+              totalDays: getDaysInMonth(newPreviousDate),
+              totalOfLastDays: getTotalLastDaysInMonth(newPreviousDate),
+            },
+          };
+        }
+
+        const newCurrentDate = new Date(
+          state.currentYear,
+          state.currentMonth.number - 1,
+          1
+        );
+        const newPreviousDate = new Date(
+          state.currentYear,
+          state.currentMonth.number - 2,
+          1
+        );
+        return {
+          ...state,
+          currentMonth: {
+            number: getMonthNumber(newCurrentDate),
+            name: getMonthName(newCurrentDate, language),
+            totalDays: getDaysInMonth(newCurrentDate),
+            totalOfLastDays: getTotalLastDaysInMonth(newCurrentDate),
+          },
+          previousMonth: {
+            number: getMonthNumber(newPreviousDate),
+            name: getMonthName(newPreviousDate, language),
+            totalDays: getDaysInMonth(newPreviousDate),
+            totalOfLastDays: getTotalLastDaysInMonth(newPreviousDate),
+          },
+        };
+      });
 
     return (
       <>
@@ -117,7 +195,7 @@ export const DatePicker = forwardRef<HTMLDivElement, IDatePickerProps>(
           <div className='p-3'>
             <div className='flex items-center justify-between'>
               <span className='font-bold capitalize'>
-                {monthNameShort} {currentYear}
+                {monthNameShort} {calendar.currentYear}
               </span>
               <div className='flex justify-between gap-3 mr-2'>
                 {/* previous month */}

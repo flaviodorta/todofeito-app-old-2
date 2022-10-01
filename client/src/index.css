@@ -7,6 +7,12 @@
     @apply h-screen w-screen relative bg-gray-100 font-roboto overflow-hidden;
     -webkit-font-smoothing: antialiased;
   }
+
+  *,
+  *::before,
+  *::after {
+    @apply select-none;
+  }
 }
 
 @layer components {

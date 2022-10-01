@@ -2,13 +2,7 @@ import { getMonth, getYear, isToday } from 'date-fns';
 import { useRef } from 'react';
 import { getDayNumberInMonth } from '../../helpers/functions';
 import { motion } from 'framer-motion';
-
-type ISelectedDate = {
-  ref: {
-    current: HTMLElement | null;
-  };
-  date: Date | null;
-};
+import { ISelectedDate } from '../../helpers/types';
 
 interface IDayProps {
   className?: string;
@@ -39,7 +33,7 @@ export const Day = (props: IDayProps) => {
       onClick={onClickDay}
       className={`${className} group ${
         isSelected && 'font-bold bg-blue-600/90'
-      } h-6 cursor-pointer select-none text-center rounded-full relative flex-center transition-[background] duration-150`}
+      } h-7 w-7 cursor-pointer select-none text-center rounded-full relative flex-center transition-[background] duration-150`}
     >
       {getDayNumberInMonth(date)}
       {isToday(date) && (

@@ -105,3 +105,19 @@ export type ISelectedDate = {
   };
   date: Date | null;
 };
+
+export interface ICalendar {
+  currentDay: IDay;
+  currentMonth: IMonth;
+  currentYear: number;
+  previousMonth: IMonth;
+}
+
+export interface IAddTodoInputs {
+  title: string;
+  description: string;
+  project: string;
+  labels: string[];
+  priority: number | null;
+  priorityLabelColor: IPriorityLabelColors;
+}

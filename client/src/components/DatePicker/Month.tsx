@@ -1,20 +1,6 @@
 import { Fragment, useEffect, useRef } from 'react';
-import { IDay, IMonth } from '../../helpers/types';
+import { ICalendar, IDay, IMonth, ISelectedDate } from '../../helpers/types';
 import { Day } from './Day';
-
-type ISelectedDate = {
-  ref: {
-    current: HTMLElement | null;
-  };
-  date: Date | null;
-};
-
-interface ICalendar {
-  currentDay: IDay;
-  currentMonth: IMonth;
-  currentYear: number;
-  previousMonth: IMonth;
-}
 
 interface IMonthProps {
   calendar: ICalendar;
@@ -30,14 +16,14 @@ export const Month = ({
   const ref = useRef<HTMLDivElement>(null);
 
   // prevent select all days in grid
-  useEffect(
-    () =>
-      setSelectedDate((state) => ({
-        ref: ref,
-        date: new Date(),
-      })),
-    []
-  );
+  // useEffect(
+  //   () =>
+  //     // setSelectedDate({
+  //     //   ref: ref,
+  //     //   date: null,
+  //     // }),
+  //   []
+  // );
 
   const daysGrid = () => {
     if (calendar.previousMonth.totalOfLastDays < 7) {

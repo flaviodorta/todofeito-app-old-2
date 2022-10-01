@@ -1,4 +1,3 @@
-import { useCalendarStore } from '../zustand';
 import Textarea from 'react-expanding-textarea';
 import {
   CalendarRegularIcon,
@@ -19,28 +18,10 @@ import { DatePicker } from './DatePicker';
 import { SelectProject } from './Selects/SelectProject';
 import { SelectLabel } from './Selects/SelectLabel';
 import { SelectPriority } from './Selects/SelectPriority';
-import { labelColors, labelHoverColors } from '../helpers/constants';
-import { IPriorityLabelColors, IRenderableElements } from '../helpers/types';
-
-export type IRenderedElement =
-  | 'date-picker-select'
-  | 'project'
-  | 'label'
-  | 'priority'
-  | null;
-
-export interface IAddTodoInputs {
-  title: string;
-  description: string;
-  project: string;
-  labels: string[];
-  priority: number | null;
-  priorityLabelColor: IPriorityLabelColors;
-}
+import { labelColors, labelHoverColors, language } from '../helpers/constants';
+import { IRenderableElements, ISelectedDate } from '../helpers/types';
 
 export const AddTodoItem = () => {
-  const { selectedDay, lang } = useCalendarStore();
-
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [selectedProject, setSelectedProject] = useState('');
@@ -52,7 +33,30 @@ export const AddTodoItem = () => {
     'label 4',
     'label 5',
   ]);
+
+  // need to be a complex state beacuse states changes simutaneous
+  const [renderedSelect, setRenderedSelect] = useState<{
+    type: IRenderableElements;
+    position: { x: number; y: number };
+  }>({
+    type: null,
+    position: {
+      x: 0,
+      y: 0,
+    },
+  });
+
+  const [selectedDate, setSelectedDate] = useState<ISelectedDate>({
+    ref: { current: null },
+    date: null,
+  });
+
   const [checkedLabels, setCheckedLabels] = useState<string[]>([]);
+
+  const [dueDateDimensions, dueDateRef] = useDimensions<HTMLDivElement>();
+  const [projectDimensions, projectRef] = useDimensions<HTMLDivElement>();
+  const [labelDimensions, labelRef] = useDimensions<HTMLDivElement>();
+  const [priorityDimensions, priorityRef] = useDimensions<HTMLDivElement>();
 
   const addLabel = (label: string) =>
     setLabels((state) => sortAlphabetic([...state, label]));
@@ -70,28 +74,17 @@ export const AddTodoItem = () => {
       state.filter((removedLabel) => label !== removedLabel)
     );
 
-  // need to be a complex state beacuse states changes simutaneous
-  const [renderedSelect, setRenderedSelect] = useState<{
-    type: IRenderableElements;
-    position: { x: number; y: number };
-  }>({
-    type: null,
-    position: {
-      x: 0,
-      y: 0,
-    },
-  });
-
-  const monthNameShort = getMonthName(selectedDay, lang).substring(0, 3);
-
-  const [dueDateDimensions, dueDateRef] = useDimensions<HTMLDivElement>();
-  const [projectDimensions, projectRef] = useDimensions<HTMLDivElement>();
-  const [labelDimensions, labelRef] = useDimensions<HTMLDivElement>();
-  const [priorityDimensions, priorityRef] = useDimensions<HTMLDivElement>();
+  const monthNameShort = getMonthName(selectedDate.date, language).substring(
+    0,
+    3
+  );
 
   const onClickAddTodoButton = () => {
     // send data to the server
   };
+
+  const handleCloseSelect = () =>
+    setRenderedSelect((state) => ({ ...state, type: null }));
 
   const onClickDueData = () =>
     setRenderedSelect({
@@ -188,20 +181,19 @@ export const AddTodoItem = () => {
     'projeto 6',
   ];
 
-  const handleCloseSelect = () =>
-    setRenderedSelect((state) => ({ ...state, type: null }));
-
   return (
     <>
-      {/* {renderedSelect.type === 'date-picker-select' && (
+      {renderedSelect.type === 'date-picker-select' && (
         <DatePicker
           left={renderedSelect.position.x}
           top={renderedSelect.position.y}
           renderedElement={renderedSelect.type}
           className={`z-[100] absolute w-60 h-fit `}
           handleCloseSelect={handleCloseSelect}
+          selectedDate={selectedDate}
+          setSelectedDate={setSelectedDate}
         />
-      )} */}
+      )}
 
       {renderedSelect.type === 'project-select' && (
         <SelectProject
@@ -279,8 +271,10 @@ export const AddTodoItem = () => {
                 />
 
                 <span className='text-xs capitalize'>
-                  {selectedDay
-                    ? `${monthNameShort} ${getDayNumberInMonth(selectedDay)}`
+                  {selectedDate.date
+                    ? `${monthNameShort} ${getDayNumberInMonth(
+                        selectedDate.date
+                      )}`
                     : 'Due data'}
                 </span>
               </div>
@@ -335,10 +329,7 @@ export const AddTodoItem = () => {
           </div>
         </div>
         <div className='mt-2 flex w-full justify-end gap-2'>
-          <button
-            // onClick={onClickCloseAddTodoModal}
-            className='text-center select-none p-2 outline-none rounded-sm font-medium text-sm h-fit w-fit bg-gray-200 hover:bg-gray-300 hover:text-700 text-gray-600'
-          >
+          <button className='text-center select-none p-2 outline-none rounded-sm font-medium text-sm h-fit w-fit bg-gray-200 hover:bg-gray-300 hover:text-700 text-gray-600'>
             Cancel
           </button>
           <button
