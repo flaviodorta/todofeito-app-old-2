@@ -36,15 +36,22 @@ export const sortDaysByWeekOrder = (arr: Date[]): Date[] => {
   return aux;
 };
 
-export const getDayNumberInMonth = (date: Date) => date.getDate();
-export const getDayNumberInWeek = (date: Date) => date.getDay();
-export const getDayNameInWeek = (date: Date, lang: string) =>
-  date.toLocaleString(lang, { weekday: 'long' });
-export const getMonthNumber = (date: Date) => date.getMonth();
-export const getYearNumber = (date: Date) => date.getFullYear();
-export const getMonthName = (date: Date, lang: string) =>
-  date.toLocaleString(lang, { month: 'long' });
+export const getDayNumberInMonth = (date: Date | null) =>
+  (date ? date : new Date()).getDate();
+export const getDayNumberInWeek = (date: Date | null) =>
+  (date ? date : new Date()).getDay();
+export const getDayNameInWeek = (date: Date | null, lang: string) =>
+  (date ? date : new Date()).toLocaleString(lang, { weekday: 'long' });
+export const getMonthNumber = (date: Date | null) =>
+  (date ? date : new Date()).getMonth();
+export const getYearNumber = (date: Date | null) =>
+  (date ? date : new Date()).getFullYear();
+export const getMonthName = (date: Date | null, lang: string) =>
+  (date ? date : new Date()).toLocaleString(lang, { month: 'long' });
 export const getTotalLastDaysInMonth = (date: Date) => {
   const lastDate = lastDayOfMonth(date);
   return getDayNumberInWeek(lastDate) + 1;
 };
+
+export const sortAlphabetic = (arr: string[]) =>
+  arr.sort((a, b) => a.localeCompare(b));

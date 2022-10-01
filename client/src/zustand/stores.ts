@@ -15,6 +15,7 @@ import {
   getMonthNumber,
   getTotalLastDaysInMonth,
   getYearNumber,
+  sortAlphabetic,
   sortDaysByWeekOrder,
 } from '../helpers/functions';
 import { getDaysInMonth, getYear } from 'date-fns';
@@ -55,6 +56,13 @@ export const userStore = create<IUserStore>((set) => ({
   email: 'dorta.dev@gmail.com',
 }));
 
+export type IPriorityLabelColors =
+  | 'fill-red-600'
+  | 'fill-orange-600'
+  | 'fill-yellow-600'
+  | 'fill-blue-600'
+  | null;
+
 export interface IAddTodoStore {
   title: string;
   description: string;
@@ -62,6 +70,7 @@ export interface IAddTodoStore {
   project: string;
   labels: string[];
   priority: number;
+  priorityLabelColor: IPriorityLabelColors;
   setTitle: (title: string) => void;
   setDescription: (description: string) => void;
   setDate: (date: Date) => void;
@@ -69,6 +78,7 @@ export interface IAddTodoStore {
   addLabel: (label: string) => void;
   removeLabel: (label: string) => void;
   setPriority: (priority: number) => void;
+  setPriorityLabelColor: (priorityLabelColor: IPriorityLabelColors) => void;
 }
 
 export const addTodoStore = create<IAddTodoStore>((set, get) => ({
@@ -77,20 +87,26 @@ export const addTodoStore = create<IAddTodoStore>((set, get) => ({
   date: null,
   project: '',
   labels: [],
-  priority: 4,
+  priority: 5,
+  priorityLabelColor: null,
   setTitle: (title: string) => set((state) => ({ ...state, title })),
   setDescription: (description: string) =>
     set((state) => ({ ...state, description })),
   setDate: (date: Date) => set((state) => ({ ...state, date })),
   setProject: (project: string) => set((state) => ({ ...state, project })),
   addLabel: (label: string) =>
-    set((state) => ({ ...state, labels: [...state.labels, label] })),
+    set((state) => ({
+      ...state,
+      labels: sortAlphabetic([...state.labels, label]),
+    })),
   removeLabel: (label: string) =>
     set((state) => ({
       ...state,
       labels: state.labels.filter((removedLabel) => label !== removedLabel),
     })),
   setPriority: (priority: number) => set((state) => ({ ...state, priority })),
+  setPriorityLabelColor: (priorityLabelColor: IPriorityLabelColors) =>
+    set((state) => ({ ...state, priorityLabelColor })),
 }));
 
 export const calendarStore = create<ICalendarStore>((set, get) => {

@@ -1,4 +1,5 @@
 import { useAddTodoStore, useUIStore } from '../../zustand';
+import { IPriorityLabelColors } from '../../zustand/stores';
 import { Backdrop } from '../Backdrop';
 import { FlagSolidIcon } from '../Icons';
 
@@ -17,13 +18,8 @@ interface ISelectPriorityOptionProps {
 export const SelectPriorityOption = (
   props: ISelectPriorityOptionProps
 ): JSX.Element => {
-  const { setPriority, priority } = useAddTodoStore();
+  const { setPriority, setPriorityLabelColor, priority } = useAddTodoStore();
   const { setRenderedElements } = useUIStore();
-
-  const onClickPriority = () => {
-    setPriority(props.priority);
-    setRenderedElements('priority', false);
-  };
 
   const colors = [
     'fill-red-600',
@@ -31,6 +27,12 @@ export const SelectPriorityOption = (
     'fill-yellow-600',
     'fill-blue-600',
   ];
+
+  const onClickPriority = () => {
+    setPriority(props.priority);
+    setPriorityLabelColor(colors[props.priority - 1] as IPriorityLabelColors);
+    setRenderedElements('priority', false);
+  };
 
   return (
     <div

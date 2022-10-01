@@ -9,6 +9,12 @@
 }
 
 @layer components {
+  /* custom utilities */
+
+  .flex-center {
+    @apply flex items-center justify-center;
+  }
+
   /* navbar */
   .navbar {
     @apply w-full h-12 bg-blue-600 flex justify-between items-center px-2 md:px-10;
