@@ -1,5 +1,5 @@
 import { getMonth, getYear, isToday } from 'date-fns';
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { getDayNumberInMonth } from '../../helpers/functions';
 import { motion } from 'framer-motion';
 import { ISelectedDate } from '../../helpers/types';
@@ -7,8 +7,8 @@ import { ISelectedDate } from '../../helpers/types';
 interface IDayProps {
   className?: string;
   date: Date;
-  selectedDate: ISelectedDate;
-  setSelectedDate: React.Dispatch<React.SetStateAction<ISelectedDate>>;
+  selectedDate: Date | null;
+  setSelectedDate: React.Dispatch<React.SetStateAction<Date | null>>;
 }
 
 export const Day = (props: IDayProps) => {
@@ -17,15 +17,12 @@ export const Day = (props: IDayProps) => {
   const ref = useRef<HTMLSpanElement>(null);
 
   let isSelected =
-    ref.current === selectedDate.ref.current &&
-    selectedDate.date &&
-    getDayNumberInMonth(selectedDate.date) === getDayNumberInMonth(date) &&
-    getMonth(selectedDate.date) === getMonth(date) &&
-    getYear(selectedDate.date) === getYear(date);
+    selectedDate &&
+    getDayNumberInMonth(selectedDate) === getDayNumberInMonth(date) &&
+    getMonth(selectedDate) === getMonth(date) &&
+    getYear(selectedDate) === getYear(date);
 
-  const onClickDay = () => {
-    setSelectedDate({ ref, date });
-  };
+  const onClickDay = () => setSelectedDate(date);
 
   return (
     <span

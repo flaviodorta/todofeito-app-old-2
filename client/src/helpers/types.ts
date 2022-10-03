@@ -2,7 +2,7 @@ export type IRenderableElements =
   | 'sidebar'
   | 'add-todo-modal'
   | 'add-todo-item'
-  | 'date-picker-select'
+  | 'date-picker'
   | 'project-select'
   | 'label-select'
   | 'priority-select'

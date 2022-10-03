@@ -1,5 +1,5 @@
 import { getDaysInMonth, getYear } from 'date-fns';
-import React, { forwardRef, useState } from 'react';
+import React, { forwardRef, useEffect, useState } from 'react';
 import { language } from '../../helpers/constants';
 import {
   getDayNameInWeek,
@@ -10,30 +10,24 @@ import {
   getYearNumber,
   sortDaysByWeekOrder,
 } from '../../helpers/functions';
-import { ICalendar, IDay, IMonth, ISelectedDate } from '../../helpers/types';
+import { ICalendar, IDay, IMonth } from '../../helpers/types';
 import { Backdrop } from '../Backdrop';
 import { Month } from './Month';
 
 interface IDatePickerProps {
   className?: string;
-  left: number;
-  top: number;
-  parentRef?: React.RefObject<HTMLElement>;
-  renderedElement: string;
-  selectedDate: ISelectedDate;
-  setSelectedDate: React.Dispatch<React.SetStateAction<ISelectedDate>>;
-  handleCloseSelect: () => void;
+  parentRef: React.RefObject<HTMLDivElement>;
+  selectedDate: Date | null;
+  setSelectedDate: React.Dispatch<React.SetStateAction<Date | null>>;
+  closeSelect: () => void;
 }
 
 export const DatePicker = forwardRef<HTMLDivElement, IDatePickerProps>(
   (props, ref): JSX.Element => {
-    const { handleCloseSelect, selectedDate, setSelectedDate } = props;
+    const { closeSelect, selectedDate, setSelectedDate, parentRef } = props;
 
     const lang = window.navigator.language || 'default';
     const today = new Date();
-    const date = selectedDate.date;
-
-    // changes
 
     const currentYear = getYearNumber(today);
 
@@ -184,13 +178,21 @@ export const DatePicker = forwardRef<HTMLDivElement, IDatePickerProps>(
         };
       });
 
+    const [parentWidth, setParentWidth] = useState(0);
+
+    useEffect(() => {
+      if (parentRef.current)
+        setParentWidth(parentRef.current.getBoundingClientRect().width);
+    }, [parentRef.current]);
+
+    const translateParentWidth = `translate-x-${parentWidth}`;
+
     return (
       <>
-        <Backdrop handleClose={handleCloseSelect} className='z-90' />
+        <Backdrop close={closeSelect} />
         <div
           ref={ref}
-          style={{ left: props.left, top: props.top }}
-          className={`${props.className} z-100 -translate-x-1/2 translate-y-2 date-picker-container shadow-3xl`}
+          className={`${translateParentWidth} absolute w-60 h-fit top-9 z-60 -translate-x-1/2 date-picker-container shadow-3xl`}
         >
           <div className='p-3'>
             <div className='flex items-center justify-between'>

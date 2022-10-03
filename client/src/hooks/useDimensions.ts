@@ -39,10 +39,6 @@ export function useDimensions<T extends HTMLElement = HTMLElement>({
   });
   const [node, ref] = useState<T | null>();
 
-  // const ref = useCallback((node: T | null) => {
-  //   setNode(node);
-  // }, []);
-
   useIsomorphicLayoutEffect(() => {
     if (node && typeof window !== 'undefined') {
       const measure = () => {

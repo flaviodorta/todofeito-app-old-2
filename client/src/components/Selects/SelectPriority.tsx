@@ -7,13 +7,13 @@ interface ISelectPriorityOptionProps {
   priority: number;
   selectedPriority: number;
   setSelectedPriority: (priority: number) => void;
-  handleCloseSelect: () => void;
+  closeSelect: () => void;
 }
 
 export const SelectPriorityOption = (
   props: ISelectPriorityOptionProps
 ): JSX.Element => {
-  const { priority, selectedPriority, setSelectedPriority, handleCloseSelect } =
+  const { priority, selectedPriority, setSelectedPriority, closeSelect } =
     props;
 
   const colors: IPriorityLabelColors[] = [
@@ -27,7 +27,7 @@ export const SelectPriorityOption = (
   const onClickPriority = () => {
     setSelectedPriority(priority);
     // setPriorityLabelColor(colors[props.priority - 1] as IPriorityLabelColors);
-    handleCloseSelect();
+    closeSelect();
   };
 
   return (
@@ -55,31 +55,19 @@ export const SelectPriorityOption = (
 };
 
 interface ISelectPriorityProps {
-  className?: string;
-  left: number;
-  top: number;
   selectedPriority: number;
   setSelectedPriority: (priority: number) => void;
-  handleCloseSelect: () => void;
+  closeSelect: () => void;
 }
 
 export const SelectPriority = (props: ISelectPriorityProps) => {
-  const {
-    left,
-    top,
-    selectedPriority,
-    handleCloseSelect,
-    setSelectedPriority,
-  } = props;
+  const { selectedPriority, closeSelect, setSelectedPriority } = props;
 
   return (
     <>
-      <Backdrop handleClose={handleCloseSelect} className='z-70' />
+      <Backdrop close={closeSelect} />
 
-      <div
-        style={{ position: 'absolute', left: left, top: top }}
-        className='-translate-x-1/2 translate-y-2 absolute shadow-3xl border-[1px] border-gray-200 overflow-hidden z-80 rounded-sm w-fit h-fit bg-white'
-      >
+      <div className='top-9 absolute shadow-3xl border-[1px] border-gray-200 overflow-hidden z-60 rounded-sm w-fit h-fit bg-white'>
         <div className='dropdown-select overflow-y-scroll h-fit w-full'>
           {Array.from({ length: 4 }).map((_, i) => (
             <Fragment key={i}>
@@ -87,7 +75,7 @@ export const SelectPriority = (props: ISelectPriorityProps) => {
                 priority={i}
                 selectedPriority={selectedPriority}
                 setSelectedPriority={setSelectedPriority}
-                handleCloseSelect={handleCloseSelect}
+                closeSelect={closeSelect}
               />
             </Fragment>
           ))}

@@ -5,23 +5,19 @@ interface ISelectProjectOptionProps {
   project: string;
   selectedProject: string;
   setSelectedProject: (project: string) => void;
-  handleCloseSelect: () => void;
+  closeSelect: () => void;
 }
 
 export const SelectProjectOption = (
   props: ISelectProjectOptionProps
 ): JSX.Element => {
-  const { project, selectedProject, setSelectedProject, handleCloseSelect } =
-    props;
-
-  const onClickProject = () => {
-    setSelectedProject(project);
-    handleCloseSelect();
-  };
-
+  const { project, selectedProject, setSelectedProject, closeSelect } = props;
   return (
     <div
-      onClick={onClickProject}
+      onClick={() => {
+        setSelectedProject(project);
+        closeSelect();
+      }}
       className='hover:bg-gray-200 flex justify-start'
     >
       <span className='flex items-center justify-center px-2'>
@@ -41,33 +37,19 @@ export const SelectProjectOption = (
 };
 
 interface ISelectProjectProps {
-  className?: string;
-  left: number;
-  top: number;
   projects: string[];
   selectedProject: string;
-  handleCloseSelect: () => void;
+  closeSelect: () => void;
   setSelectedProject: (project: string) => void;
 }
 
 export const SelectProject = (props: ISelectProjectProps) => {
-  const {
-    className,
-    left,
-    top,
-    projects,
-    selectedProject,
-    handleCloseSelect,
-    setSelectedProject,
-  } = props;
+  const { projects, selectedProject, closeSelect, setSelectedProject } = props;
 
   return (
     <>
-      <Backdrop handleClose={handleCloseSelect} className='z-80' />
-      <div
-        style={{ position: 'absolute', left: left, top: top }}
-        className={`${className} -translate-x-1/2 translate-y-2 absolute shadow-3xl border-[1px] border-gray-200 overflow-hidden z-90 rounded-sm w-fit h-fit bg-white`}
-      >
+      <Backdrop close={closeSelect} />
+      <div className='top-9 -translate-x-1/4 absolute shadow-3xl border-[1px] border-gray-200 overflow-hidden z-60 rounded-sm w-fit h-fit bg-white'>
         <div className='h-fit'>
           <input
             placeholder='Type a project'
@@ -82,7 +64,7 @@ export const SelectProject = (props: ISelectProjectProps) => {
                 project={project}
                 selectedProject={selectedProject}
                 setSelectedProject={setSelectedProject}
-                handleCloseSelect={handleCloseSelect}
+                closeSelect={closeSelect}
               />
             </Fragment>
           ))}

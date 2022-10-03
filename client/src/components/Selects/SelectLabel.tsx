@@ -46,12 +46,9 @@ export const SelectLabelOption = (
 };
 
 interface ISelectLabelProps {
-  className?: string;
-  left: number;
-  top: number;
   labels: string[];
   checkedLabels: string[];
-  handleCloseSelect: () => void;
+  closeSelect: () => void;
   addLabel: (label: string) => void;
   removeLabel: (label: string) => void;
   addCheckedLabel: (label: string) => void;
@@ -60,12 +57,8 @@ interface ISelectLabelProps {
 
 export const SelectLabel = (props: ISelectLabelProps) => {
   const {
-    left,
-    top,
     labels,
-    handleCloseSelect,
-    addLabel,
-    removeLabel,
+    closeSelect,
     checkedLabels,
     addCheckedLabel,
     removeCheckedLabel,
@@ -73,11 +66,8 @@ export const SelectLabel = (props: ISelectLabelProps) => {
 
   return (
     <>
-      <Backdrop handleClose={handleCloseSelect} className='z-80' />
-      <div
-        style={{ position: 'absolute', left: left, top: top }}
-        className='-translate-x-1/2 translate-y-2 absolute shadow-3xl border-[1px] border-gray-200 overflow-hidden z-90 rounded-sm w-fit h-fit bg-white'
-      >
+      <Backdrop close={closeSelect} />
+      <div className='top-9 absolute shadow-3xl border-[1px] border-gray-200 overflow-hidden z-60 rounded-sm w-fit h-fit bg-white'>
         <div className='h-fit'>
           <input
             placeholder='Type a label'

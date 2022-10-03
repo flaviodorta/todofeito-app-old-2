@@ -1,11 +1,11 @@
-import { Fragment, useEffect, useRef } from 'react';
-import { ICalendar, IDay, IMonth, ISelectedDate } from '../../helpers/types';
+import { Fragment, useRef } from 'react';
+import { ICalendar } from '../../helpers/types';
 import { Day } from './Day';
 
 interface IMonthProps {
   calendar: ICalendar;
-  selectedDate: ISelectedDate;
-  setSelectedDate: React.Dispatch<React.SetStateAction<ISelectedDate>>;
+  selectedDate: Date | null;
+  setSelectedDate: React.Dispatch<React.SetStateAction<Date | null>>;
 }
 
 export const Month = ({
