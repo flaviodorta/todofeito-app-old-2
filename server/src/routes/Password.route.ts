@@ -2,9 +2,9 @@ import { Router } from 'express';
 import { celebrate, Joi, Segments } from 'celebrate';
 import { usersController } from '../controllers/Users.controller';
 
-export const passwordRoutes = Router();
+export const passwordRouter = Router();
 
-passwordRoutes.get(
+passwordRouter.post(
   '/forgot',
   celebrate({
     [Segments.BODY]: {
@@ -14,7 +14,7 @@ passwordRoutes.get(
   usersController.sendForgotPasswordEmail
 );
 
-passwordRoutes.get(
+passwordRouter.post(
   '/reset',
   celebrate({
     [Segments.BODY]: {

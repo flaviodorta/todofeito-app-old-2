@@ -90,6 +90,31 @@ class UsersController {
 
     return res.status(204).json();
   }
+
+  // profile controller
+
+  public async showProfile(req: Request, res: Response): Promise<Response> {
+    const user_id = req.user.id;
+
+    const user = await usersServices.showProfile({ user_id });
+
+    return res.json(user);
+  }
+
+  public async updateProfile(req: Request, res: Response): Promise<Response> {
+    const user_id = req.user.id;
+    const { name, email, password, old_password } = req.body;
+
+    const user = await usersServices.updateProfile({
+      user_id,
+      name,
+      email,
+      password,
+      old_password,
+    });
+
+    return res.json(user);
+  }
 }
 
 export const usersController = new UsersController();

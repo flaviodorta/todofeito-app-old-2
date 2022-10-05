@@ -11,9 +11,11 @@ import { EthrealMail } from '../helpers/EtherealMail';
 
 interface IRequest {
   id: string;
+  user_id: string;
   name: string;
   email: string;
   password: string;
+  old_password: string;
   avatar: string;
   token: string;
 }
@@ -146,13 +148,28 @@ export class UsersServices {
 
     if (!user) throw new Error('User not exist');
 
-    const token = await userTokensRepository.generate(user.id);
+    const { token } = await userTokensRepository.generate(user.id);
 
-    console.log(token);
+    const forgotPasswordTemplate = path.resolve(
+      __dirname,
+      '..',
+      'views',
+      'ForgotPassword.hbs'
+    );
 
     await EthrealMail.sendMail({
-      to: email,
-      body: `Solicitação de redefinição de senha recebida: ${token.token}`,
+      to: {
+        name: user.name,
+        email: user.email,
+      },
+      subject: '[API Vendas] Recuperação de Senha',
+      templateData: {
+        file: forgotPasswordTemplate,
+        variables: {
+          name: user.name,
+          link: `http://localhost:3000/reset_password?token=${token}`,
+        },
+      },
     });
   }
 
@@ -177,6 +194,57 @@ export class UsersServices {
 
     await usersRepository.save(user);
   }
-}
 
+  public async showProfile({
+    user_id,
+  }: Pick<IRequest, 'user_id'>): Promise<User> {
+    const user = await usersRepository.findById(user_id);
+
+    if (!user) throw new Error('User nnot found');
+
+    return user;
+  }
+
+  public async updateProfile({
+    user_id,
+    name,
+    email,
+    password,
+    old_password,
+  }: Pick<
+    IRequest,
+    'user_id' | 'name' | 'email' | 'password' | 'old_password'
+  >): Promise<User> {
+    const user = await usersRepository.findById(user_id);
+
+    if (!user) throw new Error('User not found');
+
+    const userUpdateEmail = await usersRepository.findByEmail(email);
+
+    if (userUpdateEmail && userUpdateEmail.id !== user_id) {
+      throw new Error('There is already one user with this email');
+    }
+
+    if (password && !old_password) {
+      throw new Error('Old password is required');
+    }
+
+    if (password && old_password) {
+      const checkOldPassword = await compare(old_password, user.password);
+
+      if (!checkOldPassword) {
+        throw new Error('Old password does not match');
+      }
+
+      user.password = await hash(password, 8);
+    }
+
+    user.name = name;
+    user.email = email;
+
+    await usersRepository.save(user);
+
+    return user;
+  }
+}
 export const usersServices = new UsersServices();

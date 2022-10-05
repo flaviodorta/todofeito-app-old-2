@@ -9,3 +9,7 @@ npx eslint --init
 yarn add --dev jasmine
 npx jasmine init
 yarn add --dev supertest
+
+docker start postgres
+
+typeorm migration:create ./src/migrations/CreateMigration
