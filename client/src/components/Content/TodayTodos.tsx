@@ -1,10 +1,14 @@
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
 import { IRenderableElements } from '../../helpers/types';
 import { useToggle } from '../../hooks/useToggle';
+import { useUserStore } from '../../zustand';
 import { AddTodoItem } from '../AddTodoItem';
 import { PlusSolidIcon } from '../Icons';
+import { TodoItem } from '../TodoItem';
 
 export const TodayTodos = () => {
+  const { todos } = useUserStore();
+
   const date = new Date();
   const month = date.toLocaleString('en', { month: 'short' });
   const dayOfWeek = date.toLocaleString('en', {
@@ -21,6 +25,14 @@ export const TodayTodos = () => {
           <p className='text-gray-700 text-xs relative top-[3px]'>
             {dayOfWeek} {month} {dayOfMonth}
           </p>
+        </div>
+
+        <div>
+          {todos.notCompleted.map((todo, i) => (
+            <Fragment key={todo.id}>
+              <TodoItem todo={todo} />
+            </Fragment>
+          ))}
         </div>
 
         {/* <div onClick={openAddTodoItem} className='flex-center'> */}

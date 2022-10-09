@@ -18,8 +18,10 @@ import { SelectProject } from './Selects/SelectProject';
 import { SelectLabel } from './Selects/SelectLabel';
 import { SelectPriority } from './Selects/SelectPriority';
 import { labelColors, labelHoverColors, language } from '../helpers/constants';
-import { IRenderableElements } from '../helpers/types';
+import { IRenderableElements, ITodo } from '../helpers/types';
 import { useDimensions } from '../hooks/useDimensions';
+import { useUserStore } from '../zustand';
+import { nanoid } from 'nanoid';
 
 interface IAddTodoItemProps {
   close: () => void;
@@ -27,10 +29,11 @@ interface IAddTodoItemProps {
 
 export const AddTodoItem = (props: IAddTodoItemProps) => {
   const { close } = props;
+  const { addTodo } = useUserStore();
 
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [selectedProject, setSelectedProject] = useState('');
+  const [selectedProject, setSelectedProject] = useState('Inbox');
   const [selectedPriority, setSelectedPriority] = useState(4);
   const [labels, setLabels] = useState<string[]>([
     'label 1 as dsa asdasasd as <dsasda></dsasda>',
@@ -41,9 +44,11 @@ export const AddTodoItem = (props: IAddTodoItemProps) => {
   ]);
   const [checkedLabels, setCheckedLabels] = useState<string[]>([]);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+
   const [renderedSelect, setRenderedSelect] =
     useState<IRenderableElements>(null);
 
+  // centerlize select
   const dueDateRef = useRef<HTMLDivElement>(null);
 
   const addLabel = (label: string) =>
@@ -61,8 +66,30 @@ export const AddTodoItem = (props: IAddTodoItemProps) => {
       state.filter((removedLabel) => label !== removedLabel)
     );
 
+  const resetInputs = () => {
+    setTitle('');
+    setDescription('');
+    setSelectedProject('Inbox');
+    setSelectedPriority(4);
+    setSelectedDate(null);
+    setCheckedLabels([]);
+  };
+
   const sendTodo = () => {
-    // send data to the server
+    const todo: ITodo = {
+      id: nanoid(),
+      title,
+      description,
+      date: selectedDate,
+      labels: checkedLabels,
+      priority: selectedPriority,
+      project: selectedProject,
+      completed: false,
+    };
+
+    addTodo(todo);
+
+    resetInputs();
   };
 
   const closeSelect = () => {

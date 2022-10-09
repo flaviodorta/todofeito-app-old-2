@@ -25,6 +25,9 @@ export interface Country {
 export interface IUserStore {
   fullName: string;
   email: string;
+  todos: { completed: ITodo[]; notCompleted: ITodo[] };
+  addTodo: (todo: ITodo) => void;
+  completeTodo: (id: string) => void;
 }
 
 export interface IDay {
@@ -120,4 +123,15 @@ export interface IAddTodoInputs {
   labels: string[];
   priority: number | null;
   priorityLabelColor: IPriorityLabelColors;
+}
+
+export interface ITodo {
+  id: string;
+  title: string;
+  description: string;
+  date: Date | null;
+  project: string;
+  labels: string[];
+  priority: number;
+  completed: boolean;
 }

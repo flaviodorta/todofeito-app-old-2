@@ -178,6 +178,7 @@ export const DatePicker = forwardRef<HTMLDivElement, IDatePickerProps>(
         };
       });
 
+    // to centerlize date picker
     const [parentWidth, setParentWidth] = useState(0);
 
     useEffect(() => {
@@ -186,6 +187,7 @@ export const DatePicker = forwardRef<HTMLDivElement, IDatePickerProps>(
     }, [parentRef.current]);
 
     const translateParentWidth = `translate-x-${parentWidth}`;
+    // -----------------------------
 
     return (
       <>

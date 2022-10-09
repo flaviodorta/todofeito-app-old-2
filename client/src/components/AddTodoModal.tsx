@@ -17,10 +17,12 @@ import { SelectProject } from './Selects/SelectProject';
 import { SelectLabel } from './Selects/SelectLabel';
 import { SelectPriority } from './Selects/SelectPriority';
 import { labelColors, labelHoverColors, language } from '../helpers/constants';
-import { IRenderableElements } from '../helpers/types';
+import { IRenderableElements, ITodo } from '../helpers/types';
 import { Backdrop } from './Backdrop';
 import { motion } from 'framer-motion';
 import { addTodoModal } from '../helpers/variants';
+import { nanoid } from 'nanoid';
+import { useUserStore } from '../zustand';
 
 interface IAddTodoModalProps {
   isAddTodoModalOpen: boolean;
@@ -29,6 +31,7 @@ interface IAddTodoModalProps {
 
 export const AddTodoModal = (props: IAddTodoModalProps) => {
   const { closeAddTodoModal } = props;
+  const { addTodo } = useUserStore();
 
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -47,9 +50,9 @@ export const AddTodoModal = (props: IAddTodoModalProps) => {
     useState<IRenderableElements>(null);
 
   const dueDateRef = useRef<HTMLDivElement>(null);
-  const projetLabelRef = useRef<HTMLDivElement>(null);
-  const labelLabelRef = useRef<HTMLDivElement>(null);
-  const priorityLabelRef = useRef<HTMLDivElement>(null);
+  // const projetLabelRef = useRef<HTMLDivElement>(null);
+  // const labelLabelRef = useRef<HTMLDivElement>(null);
+  // const priorityLabelRef = useRef<HTMLDivElement>(null);
 
   const addLabel = (label: string) =>
     setLabels((state) => sortAlphabetic([...state, label]));
@@ -66,13 +69,36 @@ export const AddTodoModal = (props: IAddTodoModalProps) => {
       state.filter((removedLabel) => label !== removedLabel)
     );
 
-  const sendTodo = () => {
-    // send data to the server
-  };
-
   const closeSelect = () => {
     setRenderedSelect(null);
-    console.log('cu');
+  };
+
+  const resetInputs = () => {
+    setTitle('');
+    setDescription('');
+    setSelectedProject('Inbox');
+    setSelectedPriority(4);
+    setSelectedDate(null);
+    setCheckedLabels([]);
+  };
+
+  const sendTodo = () => {
+    const todo: ITodo = {
+      id: nanoid(),
+      title,
+      description,
+      date: selectedDate,
+      labels: checkedLabels,
+      priority: selectedPriority,
+      project: selectedProject,
+      completed: false,
+    };
+
+    addTodo(todo);
+
+    resetInputs();
+
+    closeAddTodoModal();
   };
 
   const openDatePicker = () => {
