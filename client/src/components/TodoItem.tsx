@@ -58,7 +58,7 @@ export const TodoItem = ({ todo }: ITodoItem) => {
   return (
     <>
       <div
-        className='relative w-full h-fit p-2 bg-white'
+        className='relative w-full h-fit p-2 bg-white rounded-md'
         onMouseEnter={toggleHoverOn}
         onMouseLeave={toggleHoverOff}
       >

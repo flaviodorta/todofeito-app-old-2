@@ -9,11 +9,10 @@ import {
   DropResult,
   Droppable,
   Draggable,
-  NotDraggingStyle,
-  DraggingStyle,
+  DragStart,
 } from 'react-beautiful-dnd';
-import { motion } from 'framer-motion';
 import { reorder } from '../../helpers/functions';
+import { isEmpty } from 'lodash';
 
 export const TodayTodos = () => {
   const { todos, setTodos } = useUserStore();
@@ -57,55 +56,86 @@ export const TodayTodos = () => {
 
   const queryAttr = 'data-rbd-drag-handle-draggable-id';
 
-  const onDragUpdate = (result: DropResult) => {
-    if (!result.destination) return;
-
-    const draggableId = result.draggableId;
-    const destinationIndex = result.destination.index;
-
+  const getDraggedDom = (draggableId: string) => {
     const domQuery = `[${queryAttr}='${draggableId}']`;
     const draggedDOM = document.querySelector(domQuery);
 
-    if (draggedDOM && draggedDOM.parentNode) {
-      const { clientHeight, clientWidth } = draggedDOM;
+    return draggedDOM;
+  };
 
-      const rect = draggedDOM.getBoundingClientRect();
+  const handleDragStart = (event: DragStart) => {
+    const draggedDOM = getDraggedDom(event.draggableId);
 
-      console.log(`
-        height: ${clientHeight}
-        width: ${clientWidth}
+    if (!draggedDOM) return;
 
-      `);
+    const { clientHeight, clientWidth } = draggedDOM;
+    const sourceIndex = event.source.index;
+    var clientY =
+      parseFloat(
+        window.getComputedStyle(draggedDOM.parentNode as HTMLElement).paddingTop
+      ) +
+      [...(draggedDOM.parentNode as HTMLElement).children]
+        .slice(0, sourceIndex)
+        .reduce((total, curr) => {
+          const style = window.getComputedStyle(curr);
+          const marginBottom = parseFloat(style.marginBottom);
+          return total + curr.clientHeight + marginBottom;
+        }, 0);
 
-      const clientY =
-        parseFloat(
-          window.getComputedStyle(draggedDOM.parentNode as Element).paddingTop
-        ) +
-        [...draggedDOM.parentNode.children]
-          .slice(0, destinationIndex)
-          .reduce((total, curr) => {
-            const style = window.getComputedStyle(curr);
-            console.log(curr.clientHeight);
-            const marginBottom = parseFloat(style.marginBottom);
-            return total + curr.clientHeight + marginBottom;
-          }, 0);
+    setPlaceholderProps({
+      clientHeight,
+      clientWidth,
+      clientY,
+      clientX: parseFloat(
+        window.getComputedStyle(draggedDOM.parentNode as HTMLElement)
+          .paddingLeft
+      ),
+    });
+  };
 
-      setPlaceholderProps({
-        clientHeight,
-        clientWidth,
-        clientY: rect.top - clientY,
-        clientX: rect.left,
-      });
-
-      // setPlaceholderProps({
-      //   clientHeight,
-      //   clientWidth,
-      //   clientY,
-      //   clientX: parseFloat(
-      //     window.getComputedStyle(draggedDOM.parentNode as Element).left
-      //   ),
-      // });
+  const handleDragUpdate = (event: DropResult) => {
+    if (!event.destination) {
+      return;
     }
+
+    const draggedDOM = getDraggedDom(event.draggableId);
+
+    if (!draggedDOM) {
+      return;
+    }
+
+    const { clientHeight, clientWidth } = draggedDOM;
+    const destinationIndex = event.destination.index;
+    const sourceIndex = event.source.index;
+
+    const childrenArray = [...(draggedDOM.parentNode as Element).children];
+    const movedItem = childrenArray[sourceIndex];
+    childrenArray.splice(sourceIndex, 1);
+
+    const updatedArray = [
+      ...childrenArray.slice(0, destinationIndex),
+      movedItem,
+      ...childrenArray.slice(destinationIndex + 1),
+    ];
+
+    var clientY =
+      parseFloat(
+        window.getComputedStyle(draggedDOM.parentNode as Element).paddingTop
+      ) +
+      updatedArray.slice(0, destinationIndex).reduce((total, curr) => {
+        const style = window.getComputedStyle(curr);
+        const marginBottom = parseFloat(style.marginBottom);
+        return total + curr.clientHeight + marginBottom;
+      }, 0);
+
+    setPlaceholderProps({
+      clientHeight,
+      clientWidth,
+      clientY,
+      clientX: parseFloat(
+        window.getComputedStyle(draggedDOM.parentNode as Element).paddingLeft
+      ),
+    });
   };
 
   return (
@@ -119,10 +149,18 @@ export const TodayTodos = () => {
         </div>
 
         <div className='h-fit mb-4'>
-          <DragDropContext onDragEnd={onDragEnd} onDragUpdate={onDragUpdate}>
+          <DragDropContext
+            onDragStart={handleDragStart}
+            onDragEnd={onDragEnd}
+            onDragUpdate={handleDragUpdate}
+          >
             <Droppable droppableId='tasks'>
               {(droppableProvided, droppableSnapshot) => (
-                <div ref={droppableProvided.innerRef} className='h-fit'>
+                <div
+                  ref={droppableProvided.innerRef}
+                  {...droppableProvided.droppableProps}
+                  className='h-fit relative'
+                >
                   {todos.notCompleted.map((todo, i) => (
                     <Draggable key={todo.id} draggableId={todo.id} index={i}>
                       {(draggableProvided, draggableSnapshot) => (
@@ -145,7 +183,7 @@ export const TodayTodos = () => {
                           ${
                             draggableSnapshot.isDropAnimating ? 'shadow-lg' : ''
                           }
-                          rounded-md
+                          
                           flex-center
                           transition-shadow
                           duration-75
@@ -158,16 +196,18 @@ export const TodayTodos = () => {
                   ))}
 
                   {droppableProvided.placeholder}
-                  {/* <div
-                    style={{
-                      position: 'absolute',
-                      top: placeholderProps.clientY,
-                      left: placeholderProps.clientX,
-                      height: placeholderProps.clientHeight,
-                      background: 'tomato',
-                      width: placeholderProps.clientWidth,
-                    }}
-                  /> */}
+                  {!isEmpty(placeholderProps) &&
+                    droppableSnapshot.isDraggingOver && (
+                      <div
+                        className='bg-gray-100 absolute duration-75 transition-colors'
+                        style={{
+                          top: placeholderProps.clientY,
+                          left: placeholderProps.clientX,
+                          height: placeholderProps.clientHeight,
+                          width: placeholderProps.clientWidth,
+                        }}
+                      />
+                    )}
                 </div>
               )}
             </Droppable>
