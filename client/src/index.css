@@ -106,7 +106,7 @@
   /* date picker */
 
   .date-picker-container {
-    @apply text-xs bg-white shadow-2xl border-[1px] border-gray-100;
+    @apply absolute top-9 -translate-x-1/2 text-xs bg-white shadow-2xl border-[1px] border-gray-100;
   }
 
   .date-picker-calendar {
@@ -126,5 +126,11 @@
   .no-scrollbar {
     -ms-overflow-style: none; /* IE and Edge */
     scrollbar-width: none; /* Firefox */
+  }
+
+  /* options */
+
+  .mini-button-option {
+    @apply relative h-7 w-7 flex items-center justify-center hover:bg-gray-200 duration-100;
   }
 }

@@ -191,7 +191,7 @@ export const AddTodoModal = (props: IAddTodoModalProps) => {
 
               {renderedSelect === 'date-picker' && (
                 <DatePicker
-                  className={`z-[100] absolute top-10 w-60 h-fit `}
+                  className='left-8'
                   closeSelect={closeSelect}
                   selectedDate={selectedDate}
                   setSelectedDate={setSelectedDate}

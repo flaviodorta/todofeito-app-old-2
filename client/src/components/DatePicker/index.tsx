@@ -16,7 +16,7 @@ import { Month } from './Month';
 
 interface IDatePickerProps {
   className?: string;
-  parentRef: React.RefObject<HTMLDivElement>;
+  parentRef: React.RefObject<HTMLElement>;
   selectedDate: Date | null;
   setSelectedDate: React.Dispatch<React.SetStateAction<Date | null>>;
   closeSelect: () => void;
@@ -194,7 +194,7 @@ export const DatePicker = forwardRef<HTMLDivElement, IDatePickerProps>(
         <Backdrop close={closeSelect} />
         <div
           ref={ref}
-          className={`${translateParentWidth} absolute w-60 h-fit top-9 z-60 -translate-x-1/2 date-picker-container shadow-3xl`}
+          className={`${props.className} absolute w-60 h-fit z-60 date-picker-container shadow-3xl`}
         >
           <div className='p-3'>
             <div className='flex items-center justify-between'>
@@ -205,7 +205,7 @@ export const DatePicker = forwardRef<HTMLDivElement, IDatePickerProps>(
                 {/* previous month */}
                 <span
                   onClick={goToPreviousMonth}
-                  className='group date-picker-icons-wrapper'
+                  className='group date-picker-icons-wrapper cursor-pointer'
                 >
                   <span className='group-hover:border-gray-700 translate-x-1/4 rotate-45 border-b-[1px] border-l-[1px] w-[6px] h-[6px] border-gray-400' />
                 </span>
@@ -213,7 +213,7 @@ export const DatePicker = forwardRef<HTMLDivElement, IDatePickerProps>(
                 {/* actual day */}
                 <span
                   onClick={goToCurrentMonth}
-                  className='group date-picker-icons-wrapper'
+                  className='group date-picker-icons-wrapper cursor-pointer'
                 >
                   <span className='group-hover:border-gray-700 border-[1px] border-gray-400 rounded-full w-[8px] h-[8px] rotate-90 bg-none' />
                 </span>
@@ -221,7 +221,7 @@ export const DatePicker = forwardRef<HTMLDivElement, IDatePickerProps>(
                 {/* next month */}
                 <span
                   onClick={goToNextMonth}
-                  className='group date-picker-icons-wrapper'
+                  className='group date-picker-icons-wrapper cursor-pointer'
                 >
                   <span className='group-hover:border-gray-700 -translate-x-1/4 -rotate-45 border-b-[1px] border-r-[1px] w-[6px] h-[6px] border-gray-400' />
                 </span>

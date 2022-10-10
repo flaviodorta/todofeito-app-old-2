@@ -28,6 +28,7 @@ export interface IUserStore {
   todos: { completed: ITodo[]; notCompleted: ITodo[] };
   addTodo: (todo: ITodo) => void;
   completeTodo: (id: string) => void;
+  setTodos: (todos: ITodo[]) => void;
 }
 
 export interface IDay {

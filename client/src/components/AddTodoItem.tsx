@@ -25,25 +25,48 @@ import { nanoid } from 'nanoid';
 
 interface IAddTodoItemProps {
   close: () => void;
+  inputs?: {
+    title: string;
+    description: string;
+    selectedProject: string;
+    selectedPriority: number;
+    labels: string[];
+    checkedLabels: string[];
+    selectedDate: Date;
+  };
 }
 
 export const AddTodoItem = (props: IAddTodoItemProps) => {
-  const { close } = props;
+  const { close, inputs } = props;
   const { addTodo } = useUserStore();
 
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [selectedProject, setSelectedProject] = useState('Inbox');
-  const [selectedPriority, setSelectedPriority] = useState(4);
-  const [labels, setLabels] = useState<string[]>([
-    'label 1 as dsa asdasasd as <dsasda></dsasda>',
-    'label 2 asd dsa dsa das ads asas asd ',
-    'label 3d asdsa as sd asd asd as das as das sa',
-    'label 4 das dsa asd asd asd sdsad as sad asd ',
-    'label  dasd sadsa da sd asdsa dsa as da sdsa5',
-  ]);
-  const [checkedLabels, setCheckedLabels] = useState<string[]>([]);
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [title, setTitle] = useState(inputs ? inputs.title : '');
+  const [description, setDescription] = useState(
+    inputs ? inputs.description : ''
+  );
+  const [selectedProject, setSelectedProject] = useState(
+    inputs ? inputs.selectedProject : 'Inbox'
+  );
+  const [selectedPriority, setSelectedPriority] = useState(
+    inputs ? inputs.selectedPriority : 4
+  );
+  const [labels, setLabels] = useState<string[]>(
+    inputs
+      ? inputs.labels
+      : [
+          'label 1 as dsa asdasasd as <dsasda></dsasda>',
+          'label 2 asd dsa dsa das ads asas asd ',
+          'label 3d asdsa as sd asd asd as das as das sa',
+          'label 4 das dsa asd asd asd sdsad as sad asd ',
+          'label  dasd sadsa da sd asdsa dsa as da sdsa5',
+        ]
+  );
+  const [checkedLabels, setCheckedLabels] = useState<string[]>(
+    inputs ? inputs.checkedLabels : []
+  );
+  const [selectedDate, setSelectedDate] = useState<Date | null>(
+    inputs ? inputs.selectedDate : null
+  );
 
   const [renderedSelect, setRenderedSelect] =
     useState<IRenderableElements>(null);
@@ -76,6 +99,8 @@ export const AddTodoItem = (props: IAddTodoItemProps) => {
   };
 
   const sendTodo = () => {
+    if (!title) return;
+
     const todo: ITodo = {
       id: nanoid(),
       title,
@@ -92,10 +117,7 @@ export const AddTodoItem = (props: IAddTodoItemProps) => {
     resetInputs();
   };
 
-  const closeSelect = () => {
-    setRenderedSelect(null);
-    console.log('cu');
-  };
+  const closeSelect = () => setRenderedSelect(null);
 
   const openDatePicker = () => {
     if (!renderedSelect) setRenderedSelect('date-picker');
@@ -184,6 +206,7 @@ export const AddTodoItem = (props: IAddTodoItemProps) => {
                     selectedDate={selectedDate}
                     setSelectedDate={setSelectedDate}
                     parentRef={dueDateRef}
+                    className='left-8'
                   />
                 )}
               </div>

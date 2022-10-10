@@ -20,6 +20,7 @@ export const userStore = create<IUserStore>((set, get) => ({
     const completedTodo = get().todos.notCompleted.filter(
       (todo) => todo.id === id
     )[0];
+
     set((state) => ({
       ...state,
       todos: {
@@ -28,4 +29,12 @@ export const userStore = create<IUserStore>((set, get) => ({
       },
     }));
   },
+  setTodos: (todos: ITodo[]) =>
+    set((state) => ({
+      ...state,
+      todos: {
+        completed: state.todos.completed,
+        notCompleted: todos,
+      },
+    })),
 }));
