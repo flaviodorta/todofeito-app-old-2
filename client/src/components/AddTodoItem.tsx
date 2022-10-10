@@ -54,11 +54,11 @@ export const AddTodoItem = (props: IAddTodoItemProps) => {
     inputs
       ? inputs.labels
       : [
-          'label 1 as dsa asdasasd as <dsasda></dsasda>',
-          'label 2 asd dsa dsa das ads asas asd ',
-          'label 3d asdsa as sd asd asd as das as das sa',
+          'label 1 as dsa asdasasd as sjdi 129 mksm 1982 edkmsakmdask',
+          'label 2 asd dsa dsa das ads asas asd',
+          'label 3 dasdsa as sd asd asd as das as das sa',
           'label 4 das dsa asd asd asd sdsad as sad asd ',
-          'label  dasd sadsa da sd asdsa dsa as da sdsa5',
+          'label 5 dasd sadsa da sd asdsa dsa as da sdsa5',
         ]
   );
   const [checkedLabels, setCheckedLabels] = useState<string[]>(
@@ -167,6 +167,7 @@ export const AddTodoItem = (props: IAddTodoItemProps) => {
             onChange={(e) => setTitle(e.target.value)}
             className='break-words w-full select-none outline-none font-medium placeholder:font-medium placeholder:text-gray-400'
           />
+
           <Textarea
             placeholder='Description'
             rows={2}

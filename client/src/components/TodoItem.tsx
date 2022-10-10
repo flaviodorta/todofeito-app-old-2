@@ -1,17 +1,22 @@
 import { useEffect, useRef, useState } from 'react';
 import { IRenderableElements, ITodo } from '../helpers/types';
-import { useToggle } from '../hooks/useToggle';
 import { useUserStore } from '../zustand';
-import { CalendarRegularIcon, InboxSolidIcon } from './Icons';
+import {
+  CalendarRegularIcon,
+  GripVerticalSolidIcon,
+  InboxSolidIcon,
+} from './Icons';
 import { motion } from 'framer-motion';
 import { PenSolidIcon } from './Icons/Icons/PenSolidIcon';
 import { DatePicker } from './DatePicker';
+import { DraggableProvided } from 'react-beautiful-dnd';
 
 type ITodoItem = {
   todo: ITodo;
+  draggableProvided: DraggableProvided;
 };
 
-export const TodoItem = ({ todo }: ITodoItem) => {
+export const TodoItem = ({ todo, draggableProvided }: ITodoItem) => {
   const { completeTodo } = useUserStore();
   const [checked, setChecked] = useState(todo.completed);
   const [isHover, setIsHover] = useState(false);
@@ -89,29 +94,38 @@ export const TodoItem = ({ todo }: ITodoItem) => {
         </div>
 
         {isHover && (
-          <div className='absolute flex items-center gap-2 top-1 right-0'>
-            <span className='group mini-button-option cursor-pointer'>
-              <PenSolidIcon className='fill-gray-400 group-hover:fill-gray-500' />
-            </span>
+          <>
             <span
-              className={`${
-                renderedSelect ? 'cursor-default' : 'cursor-pointer'
-              } group relative mini-button-option group-hover:opacity-100`}
-              onClick={openDatePicker}
+              {...draggableProvided.dragHandleProps}
+              style={{ cursor: 'all-scroll' }}
+              className='group cursor-crosshair w-6 h-7 rounded-md flex-center absolute -left-5 top-1.5 hover:bg-gray-300 duration-100'
             >
-              <CalendarRegularIcon className='fill-gray-400 group-hover:fill-gray-500' />
-
-              {renderedSelect === 'date-picker' && (
-                <DatePicker
-                  closeSelect={closeSelect}
-                  selectedDate={selectedDate}
-                  setSelectedDate={setSelectedDate}
-                  parentRef={dueDateRef}
-                  className='left-2'
-                />
-              )}
+              <GripVerticalSolidIcon className='fill-gray-400 group-hover:fill-gray-600 w-3 h-3.5' />
             </span>
-          </div>
+            <div className='absolute flex items-center gap-2 top-1 right-0'>
+              <span className='group mini-button-option cursor-pointer'>
+                <PenSolidIcon className='fill-gray-400 group-hover:fill-gray-500' />
+              </span>
+              <span
+                className={`${
+                  renderedSelect ? 'cursor-default' : 'cursor-pointer'
+                } group relative mini-button-option group-hover:opacity-100`}
+                onClick={openDatePicker}
+              >
+                <CalendarRegularIcon className='fill-gray-400 group-hover:fill-gray-500' />
+
+                {renderedSelect === 'date-picker' && (
+                  <DatePicker
+                    closeSelect={closeSelect}
+                    selectedDate={selectedDate}
+                    setSelectedDate={setSelectedDate}
+                    parentRef={dueDateRef}
+                    className='left-2'
+                  />
+                )}
+              </span>
+            </div>
+          </>
         )}
       </div>
     </>

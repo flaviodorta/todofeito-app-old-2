@@ -167,7 +167,6 @@ export const TodayTodos = () => {
                         <div
                           ref={draggableProvided.innerRef}
                           {...draggableProvided.draggableProps}
-                          {...draggableProvided.dragHandleProps}
                           style={
                             draggableProvided.draggableProps
                               .style as React.CSSProperties
@@ -183,13 +182,16 @@ export const TodayTodos = () => {
                           ${
                             draggableSnapshot.isDropAnimating ? 'shadow-lg' : ''
                           }
-                          
+                          outline-none
                           flex-center
                           transition-shadow
                           duration-75
                           `}
                         >
-                          <TodoItem todo={todo} />
+                          <TodoItem
+                            todo={todo}
+                            draggableProvided={draggableProvided}
+                          />
                         </div>
                       )}
                     </Draggable>

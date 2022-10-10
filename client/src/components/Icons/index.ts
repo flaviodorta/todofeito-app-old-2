@@ -12,3 +12,4 @@ export { InboxSolidIcon } from './Icons/InboxSolidIcon';
 export { CalendarRegularIcon } from './Icons/CalendarRegularIcon';
 export { LabelIcon } from './Icons/LabelIcon';
 export { FlagSolidIcon } from './Icons/FlagSolidIcon';
+export { GripVerticalSolidIcon } from './Icons/GripVerticalSolidIcon';
