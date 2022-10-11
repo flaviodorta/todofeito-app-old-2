@@ -93,39 +93,39 @@ export const TodoItem = ({ todo, draggableProvided }: ITodoItem) => {
           <InboxSolidIcon className='fill-blue-600 w-3 h-3' />
         </div>
 
+        <span
+          {...draggableProvided.dragHandleProps}
+          style={{ cursor: 'all-scroll' }}
+          className={`${
+            isHover ? 'opacity-100' : 'opacity-0'
+          } hover:opacity-100 group cursor-crosshair w-6 h-7 rounded-md flex-center absolute -left-5 top-1.5 hover:bg-gray-300 duration-100`}
+        >
+          <GripVerticalSolidIcon className='fill-gray-400 group-hover:fill-gray-600 w-3 h-3.5' />
+        </span>
         {isHover && (
-          <>
-            <span
-              {...draggableProvided.dragHandleProps}
-              style={{ cursor: 'all-scroll' }}
-              className='group cursor-crosshair w-6 h-7 rounded-md flex-center absolute -left-5 top-1.5 hover:bg-gray-300 duration-100'
-            >
-              <GripVerticalSolidIcon className='fill-gray-400 group-hover:fill-gray-600 w-3 h-3.5' />
+          <div className='absolute flex items-center gap-2 top-1 right-0'>
+            <span className='group mini-button-option cursor-pointer'>
+              <PenSolidIcon className='fill-gray-400 group-hover:fill-gray-500' />
             </span>
-            <div className='absolute flex items-center gap-2 top-1 right-0'>
-              <span className='group mini-button-option cursor-pointer'>
-                <PenSolidIcon className='fill-gray-400 group-hover:fill-gray-500' />
-              </span>
-              <span
-                className={`${
-                  renderedSelect ? 'cursor-default' : 'cursor-pointer'
-                } group relative mini-button-option group-hover:opacity-100`}
-                onClick={openDatePicker}
-              >
-                <CalendarRegularIcon className='fill-gray-400 group-hover:fill-gray-500' />
+            <span
+              className={`${
+                renderedSelect ? 'cursor-default' : 'cursor-pointer'
+              } group relative mini-button-option group-hover:opacity-100`}
+              onClick={openDatePicker}
+            >
+              <CalendarRegularIcon className='fill-gray-400 group-hover:fill-gray-500' />
 
-                {renderedSelect === 'date-picker' && (
-                  <DatePicker
-                    closeSelect={closeSelect}
-                    selectedDate={selectedDate}
-                    setSelectedDate={setSelectedDate}
-                    parentRef={dueDateRef}
-                    className='left-2'
-                  />
-                )}
-              </span>
-            </div>
-          </>
+              {renderedSelect === 'date-picker' && (
+                <DatePicker
+                  closeSelect={closeSelect}
+                  selectedDate={selectedDate}
+                  setSelectedDate={setSelectedDate}
+                  parentRef={dueDateRef}
+                  className='left-2'
+                />
+              )}
+            </span>
+          </div>
         )}
       </div>
     </>

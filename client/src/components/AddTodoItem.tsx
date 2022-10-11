@@ -22,6 +22,7 @@ import { IRenderableElements, ITodo } from '../helpers/types';
 import { useDimensions } from '../hooks/useDimensions';
 import { useUserStore } from '../zustand';
 import { nanoid } from 'nanoid';
+import { useCallback } from 'react';
 
 interface IAddTodoItemProps {
   close: () => void;
@@ -73,6 +74,7 @@ export const AddTodoItem = (props: IAddTodoItemProps) => {
 
   // centerlize select
   const dueDateRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const addLabel = (label: string) =>
     setLabels((state) => sortAlphabetic([...state, label]));
@@ -98,7 +100,7 @@ export const AddTodoItem = (props: IAddTodoItemProps) => {
     setCheckedLabels([]);
   };
 
-  const sendTodo = () => {
+  const sendTodo = useCallback(() => {
     if (!title) return;
 
     const todo: ITodo = {
@@ -115,7 +117,15 @@ export const AddTodoItem = (props: IAddTodoItemProps) => {
     addTodo(todo);
 
     resetInputs();
-  };
+  }, [
+    addTodo,
+    title,
+    description,
+    selectedDate,
+    checkedLabels,
+    selectedPriority,
+    selectedProject,
+  ]);
 
   const closeSelect = () => setRenderedSelect(null);
 
@@ -136,6 +146,17 @@ export const AddTodoItem = (props: IAddTodoItemProps) => {
   };
 
   const monthNameShort = getMonthName(selectedDate, language).substring(0, 3);
+
+  const sendTodoOnKeyUpEnter = (
+    event: React.KeyboardEvent<HTMLInputElement>
+  ) => {
+    if (
+      event.key === 'Enter' &&
+      document.activeElement !== textareaRef.current
+    ) {
+      sendTodo();
+    }
+  };
 
   const projects = [
     'projeto 1',
@@ -165,10 +186,12 @@ export const AddTodoItem = (props: IAddTodoItemProps) => {
             placeholder='Todo name'
             value={title}
             onChange={(e) => setTitle(e.target.value)}
+            onKeyUp={sendTodoOnKeyUpEnter}
             className='break-words w-full select-none outline-none font-medium placeholder:font-medium placeholder:text-gray-400'
           />
 
           <Textarea
+            ref={textareaRef}
             placeholder='Description'
             rows={2}
             value={description}
