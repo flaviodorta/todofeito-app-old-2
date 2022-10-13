@@ -143,5 +143,6 @@ export interface ITodo {
   project: string;
   labels: string[];
   priority: number;
+  checkedLabels: string[];
   completed: boolean;
 }

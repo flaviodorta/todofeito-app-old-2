@@ -17,6 +17,8 @@ type ITodoItem = {
 };
 
 export const TodoItem = ({ todo, draggableProvided }: ITodoItem) => {
+  const { title, description, date, project, priority, labels, checkedLabels } =
+    todo;
   const { completeTodo } = useUserStore();
   const [checked, setChecked] = useState(todo.completed);
   const [isHover, setIsHover] = useState(false);

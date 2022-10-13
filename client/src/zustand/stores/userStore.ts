@@ -13,13 +13,14 @@ export const userStore = create<IUserStore>((set, get) => ({
     projects: {},
   },
   reorderTodos: (todos: ITodo[], startIndex: number, endIndex: number) => {
+    console.log(todos);
     const project = todos[0].project;
 
     return set((state) => {
       if (
-        project === 'inbox' ||
-        project === 'today' ||
-        project === 'upcoming'
+        project !== 'inbox' &&
+        project !== 'today' &&
+        project !== 'upcoming'
       ) {
         return {
           ...state,

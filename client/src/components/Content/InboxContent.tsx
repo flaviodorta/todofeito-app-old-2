@@ -44,7 +44,7 @@ export const Inbox = () => {
       clientX: 0,
     });
 
-    reorderTodos(todos.today, source.index, destination.index);
+    reorderTodos(todos.inbox, source.index, destination.index);
   };
 
   const queryAttr = 'data-rbd-drag-handle-draggable-id';
@@ -213,7 +213,7 @@ export const Inbox = () => {
 
         {/* <div onClick={openAddTodoItem} className='flex-center'> */}
         {isAddTodoItemOpen && !isEditingTodo ? (
-          <AddTodoItem close={toggleAddTodoItem} />
+          <AddTodoItem close={toggleAddTodoItem} selectedProject={'inbox'} />
         ) : (
           <div
             onClick={toggleAddTodoItem}

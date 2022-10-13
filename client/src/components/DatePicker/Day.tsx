@@ -8,7 +8,7 @@ interface IDayProps {
   className?: string;
   date: Date;
   selectedDate: Date | null;
-  setSelectedDate: React.Dispatch<React.SetStateAction<Date | null>>;
+  setSelectedDate: (date: Date) => void;
 }
 
 export const Day = (props: IDayProps) => {

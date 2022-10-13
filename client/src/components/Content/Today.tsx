@@ -143,7 +143,7 @@ export const Today = () => {
       <motion.div
         initial={false}
         animate={isSidebarOpen ? { x: 0 } : { x: -48 }}
-        transition={{ duration: 0.1, bounce: 0 }}
+        transition={{ duration: 0.2, bounce: 0 }}
         className='max-w-[44rem] w-[44rem] align-bottom px-4 py-6 flex flex-col bg-white'
       >
         <div className='mb-6 flex items-center gap-2'>
@@ -223,7 +223,11 @@ export const Today = () => {
 
         {/* <div onClick={openAddTodoItem} className='flex-center'> */}
         {isAddTodoItemOpen && !isEditingTodo ? (
-          <AddTodoItem close={toggleAddTodoItem} />
+          <AddTodoItem
+            close={toggleAddTodoItem}
+            selectedProject={'today'}
+            selectedDate={new Date()}
+          />
         ) : (
           <div
             onClick={toggleAddTodoItem}

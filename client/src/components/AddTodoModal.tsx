@@ -91,6 +91,7 @@ export const AddTodoModal = (props: IAddTodoModalProps) => {
       labels: checkedLabels,
       priority: selectedPriority,
       project: selectedProject,
+      checkedLabels,
       completed: false,
     };
 

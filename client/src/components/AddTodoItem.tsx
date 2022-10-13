@@ -5,13 +5,12 @@ import {
   InboxSolidIcon,
   LabelIcon,
 } from './Icons';
-import { useIsomorphicLayoutEffect } from '../hooks/useIsomorphicLayoutEffect';
 import {
   getDayNumberInMonth,
   getMonthName,
   sortAlphabetic,
 } from '../helpers/functions';
-import { Fragment, useEffect, useRef, useState } from 'react';
+import { Fragment, useRef, useState } from 'react';
 import { LabelAddTodoModal } from './LabelAddTodoModal';
 import { DatePicker } from './DatePicker';
 import { SelectProject } from './Selects/SelectProject';
@@ -19,55 +18,51 @@ import { SelectLabel } from './Selects/SelectLabel';
 import { SelectPriority } from './Selects/SelectPriority';
 import { labelColors, labelHoverColors, language } from '../helpers/constants';
 import { IRenderableElements, ITodo } from '../helpers/types';
-import { useDimensions } from '../hooks/useDimensions';
 import { useUserStore } from '../zustand';
 import { nanoid } from 'nanoid';
 import { useCallback } from 'react';
 
 interface IAddTodoItemProps {
   close: () => void;
-  inputs?: {
-    title: string;
-    description: string;
-    selectedProject: string;
-    selectedPriority: number;
-    labels: string[];
-    checkedLabels: string[];
-    selectedDate: Date;
-  };
+  title?: string;
+  description?: string;
+  selectedProject: string;
+  selectedPriority?: number;
+  labels?: string[];
+  checkedLabels?: string[];
+  selectedDate?: Date;
 }
 
 export const AddTodoItem = (props: IAddTodoItemProps) => {
-  const { close, inputs } = props;
+  const {
+    close,
+    title,
+    description,
+    selectedProject,
+    selectedPriority,
+    selectedDate,
+    checkedLabels,
+    labels,
+  } = props;
   const { addTodo } = useUserStore();
 
-  const [title, setTitle] = useState(inputs ? inputs.title : '');
-  const [description, setDescription] = useState(
-    inputs ? inputs.description : ''
-  );
-  const [selectedProject, setSelectedProject] = useState(
-    inputs ? inputs.selectedProject : 'inbox'
-  );
-  const [selectedPriority, setSelectedPriority] = useState(
-    inputs ? inputs.selectedPriority : 4
-  );
-  const [labels, setLabels] = useState<string[]>(
-    inputs
-      ? inputs.labels
+  const [inputs, setInputs] = useState({
+    title: title ? title : '',
+    description: description ? description : '',
+    selectedProject,
+    selectedPriority: selectedPriority ? selectedPriority : 4,
+    selectedDate: selectedDate ? selectedDate : new Date(),
+    labels: labels
+      ? labels
       : [
           'label 1 as dsa asdasasd as sjdi 129 mksm 1982 edkmsakmdask',
           'label 2 asd dsa dsa das ads asas asd',
           'label 3 dasdsa as sd asd asd as das as das sa',
           'label 4 das dsa asd asd asd sdsad as sad asd ',
           'label 5 dasd sadsa da sd asdsa dsa as da sdsa5',
-        ]
-  );
-  const [checkedLabels, setCheckedLabels] = useState<string[]>(
-    inputs ? inputs.checkedLabels : []
-  );
-  const [selectedDate, setSelectedDate] = useState<Date | null>(
-    inputs ? inputs.selectedDate : null
-  );
+        ],
+    checkedLabels: checkedLabels ? checkedLabels : [],
+  });
 
   const [renderedSelect, setRenderedSelect] =
     useState<IRenderableElements>(null);
@@ -77,40 +72,55 @@ export const AddTodoItem = (props: IAddTodoItemProps) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const addLabel = (label: string) =>
-    setLabels((state) => sortAlphabetic([...state, label]));
+    setInputs((state) => ({
+      ...state,
+      labels: sortAlphabetic([...state.labels, label]),
+    }));
 
   const removeLabel = (label: string) =>
-    setLabels((state) =>
-      state.filter((removedLabel) => label !== removedLabel)
-    );
+    setInputs((state) => ({
+      ...state,
+      labels: state.labels.filter((removedLabel) => label !== removedLabel),
+    }));
+
   const addCheckedLabel = (label: string) =>
-    setCheckedLabels((state) => sortAlphabetic([...state, label]));
+    setInputs((state) => ({
+      ...state,
+      checkedLabels: sortAlphabetic([...state.checkedLabels, label]),
+    }));
 
   const removeCheckedLabel = (label: string) =>
-    setCheckedLabels((state) =>
-      state.filter((removedLabel) => label !== removedLabel)
-    );
+    setInputs((state) => ({
+      ...state,
+      checkedLabels: state.checkedLabels.filter(
+        (removedLabel) => label !== removedLabel
+      ),
+    }));
 
   const resetInputs = () => {
-    setTitle('');
-    setDescription('');
-    setSelectedProject('Inbox');
-    setSelectedPriority(4);
-    setSelectedDate(null);
-    setCheckedLabels([]);
+    setInputs((state) => ({
+      title: '',
+      description: '',
+      selectedProject: state.selectedProject,
+      selectedPriority: 4,
+      selectedDate: new Date(),
+      checkedLabels: [],
+      labels: state.labels,
+    }));
   };
 
   const sendTodo = useCallback(() => {
-    if (!title) return;
+    if (!inputs.title) return;
 
     const todo: ITodo = {
       id: nanoid(),
-      title,
-      description,
-      date: selectedDate,
-      labels: checkedLabels,
-      priority: selectedPriority,
-      project: selectedProject,
+      title: inputs.title,
+      description: inputs.description,
+      date: inputs.selectedDate,
+      labels: inputs.checkedLabels,
+      priority: inputs.selectedPriority,
+      project: inputs.selectedProject,
+      checkedLabels: inputs.checkedLabels,
       completed: false,
     };
 
@@ -119,12 +129,12 @@ export const AddTodoItem = (props: IAddTodoItemProps) => {
     resetInputs();
   }, [
     addTodo,
-    title,
-    description,
-    selectedDate,
-    checkedLabels,
-    selectedPriority,
-    selectedProject,
+    inputs.title,
+    inputs.description,
+    inputs.selectedDate,
+    inputs.checkedLabels,
+    inputs.selectedPriority,
+    inputs.selectedProject,
   ]);
 
   const closeSelect = () => setRenderedSelect(null);
@@ -145,7 +155,23 @@ export const AddTodoItem = (props: IAddTodoItemProps) => {
     if (!renderedSelect) setRenderedSelect('priority-select');
   };
 
-  const monthNameShort = getMonthName(selectedDate, language).substring(0, 3);
+  const setTitle = (title: string) =>
+    setInputs((state) => ({ ...state, title }));
+  const setDescription = (description: string) =>
+    setInputs((state) => ({ ...state, description }));
+  const setSelectedProject = (project: string) =>
+    setInputs((state) => ({ ...state, project }));
+  const setSelectedPriority = (priority: number) =>
+    setInputs((state) => ({ ...state, priority }));
+  const setSelectedDate = (date: Date) =>
+    setInputs((state) => ({ ...state, date }));
+
+  console.log(inputs);
+
+  const monthNameShort = getMonthName(inputs.selectedDate, language).substring(
+    0,
+    3
+  );
 
   const sendTodoOnKeyUpEnter = (
     event: React.KeyboardEvent<HTMLInputElement>
@@ -171,9 +197,9 @@ export const AddTodoItem = (props: IAddTodoItemProps) => {
       <div className='h-fit w-full'>
         <div className='border-gray-200 bg-white border-[1px] p-4 flex flex-col gap-4 h-fit w-full rounded-sm'>
           {/* checkeds labels */}
-          {checkedLabels.length > 0 && (
+          {inputs.checkedLabels.length > 0 && (
             <div className='w-full flex-wrap h-fit gap-1 flex justify-start'>
-              {checkedLabels.map((label, i) => (
+              {inputs.checkedLabels.map((label, i) => (
                 <Fragment key={i}>
                   <LabelAddTodoModal label={label} />
                 </Fragment>
@@ -184,7 +210,7 @@ export const AddTodoItem = (props: IAddTodoItemProps) => {
           <input
             type='text'
             placeholder='Todo name'
-            value={title}
+            value={inputs.title}
             onChange={(e) => setTitle(e.target.value)}
             onKeyUp={sendTodoOnKeyUpEnter}
             className='break-words w-full select-none outline-none font-medium placeholder:font-medium placeholder:text-gray-400'
@@ -194,7 +220,7 @@ export const AddTodoItem = (props: IAddTodoItemProps) => {
             ref={textareaRef}
             placeholder='Description'
             rows={2}
-            value={description}
+            value={inputs.description}
             onChange={(e) => setDescription(e.target.value)}
             className='w-full select-none text-sm outline-none resize-none placeholder:text-400 placeholder:text-sm'
           />
@@ -219,15 +245,17 @@ export const AddTodoItem = (props: IAddTodoItemProps) => {
                 />
 
                 <span className='text-xs capitalize'>
-                  {selectedDate
-                    ? `${monthNameShort} ${getDayNumberInMonth(selectedDate)}`
+                  {inputs.selectedDate
+                    ? `${monthNameShort} ${getDayNumberInMonth(
+                        inputs.selectedDate
+                      )}`
                     : 'Due date'}
                 </span>
 
                 {renderedSelect === 'date-picker' && (
                   <DatePicker
                     closeSelect={closeSelect}
-                    selectedDate={selectedDate}
+                    selectedDate={inputs.selectedDate}
                     setSelectedDate={setSelectedDate}
                     parentRef={dueDateRef}
                     className='left-8'
@@ -251,13 +279,13 @@ export const AddTodoItem = (props: IAddTodoItemProps) => {
                 />
 
                 <span className='text-xs capitalize'>
-                  {selectedProject ? selectedProject : 'Inbox'}
+                  {inputs.selectedProject}
                 </span>
 
                 {renderedSelect === 'project-select' && (
                   <SelectProject
                     projects={projects}
-                    selectedProject={selectedProject}
+                    selectedProject={inputs.selectedProject}
                     setSelectedProject={setSelectedProject}
                     closeSelect={closeSelect}
                   />
@@ -284,10 +312,10 @@ export const AddTodoItem = (props: IAddTodoItemProps) => {
 
                 {renderedSelect === 'label-select' && (
                   <SelectLabel
-                    checkedLabels={checkedLabels}
+                    checkedLabels={inputs.checkedLabels}
                     addCheckedLabel={addCheckedLabel}
                     removeCheckedLabel={removeCheckedLabel}
-                    labels={labels}
+                    labels={inputs.labels}
                     addLabel={addLabel}
                     removeLabel={removeLabel}
                     closeSelect={closeSelect}
@@ -307,12 +335,14 @@ export const AddTodoItem = (props: IAddTodoItemProps) => {
                 <FlagSolidIcon
                   height='15px'
                   width='15px'
-                  className={`${labelColors[selectedPriority]} ${labelHoverColors[selectedPriority]} duration-100`}
+                  className={`${labelColors[inputs.selectedPriority]} ${
+                    labelHoverColors[inputs.selectedPriority]
+                  } duration-100`}
                 />
 
                 {renderedSelect === 'priority-select' && (
                   <SelectPriority
-                    selectedPriority={selectedPriority}
+                    selectedPriority={inputs.selectedPriority}
                     setSelectedPriority={setSelectedPriority}
                     closeSelect={closeSelect}
                   />
@@ -331,7 +361,7 @@ export const AddTodoItem = (props: IAddTodoItemProps) => {
           <button
             onClick={sendTodo}
             className={`${
-              !title
+              !inputs.title
                 ? 'cursor-not-allowed bg-blue-400'
                 : 'bg-blue-600 hover:bg-blue-700'
             } text-center select-none p-2 outline-none rounded-sm font-medium text-sm h-fit w-fit text-white hover:text-gray-200`}

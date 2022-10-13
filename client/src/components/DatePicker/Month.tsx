@@ -5,7 +5,7 @@ import { Day } from './Day';
 interface IMonthProps {
   calendar: ICalendar;
   selectedDate: Date | null;
-  setSelectedDate: React.Dispatch<React.SetStateAction<Date | null>>;
+  setSelectedDate: (date: Date) => void;
 }
 
 export const Month = ({

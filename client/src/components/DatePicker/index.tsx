@@ -18,7 +18,7 @@ interface IDatePickerProps {
   className?: string;
   parentRef: React.RefObject<HTMLElement>;
   selectedDate: Date | null;
-  setSelectedDate: React.Dispatch<React.SetStateAction<Date | null>>;
+  setSelectedDate: (date: Date) => void;
   closeSelect: () => void;
 }
 
