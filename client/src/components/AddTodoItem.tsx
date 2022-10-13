@@ -138,7 +138,15 @@ export const AddTodoItem = (props: IAddTodoItemProps) => {
     resetInputs();
   };
 
-  const sendTodo = () => (editingTodoId ? sendEditedTodo() : sendNewTodo());
+  const close = () => {
+    setEditingTodoId(null);
+    closeIsAddTodoItemOpen();
+  };
+
+  const sendTodo = () => {
+    close();
+    editingTodoId ? sendEditedTodo() : sendNewTodo();
+  };
 
   const closeSelect = () => setRenderedSelect(null);
 
@@ -363,9 +371,7 @@ export const AddTodoItem = (props: IAddTodoItemProps) => {
         </div>
         <div className='mt-2 flex w-full justify-end gap-2'>
           <button
-            onClick={() =>
-              editingTodoId ? setEditingTodoId(null) : closeIsAddTodoItemOpen()
-            }
+            onClick={close}
             className='text-center select-none p-2 outline-none rounded-sm font-medium text-sm h-fit w-fit bg-gray-200 hover:bg-gray-300 hover:text-700 text-gray-600'
           >
             Cancel
