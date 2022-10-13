@@ -26,11 +26,11 @@ interface IAddTodoItemProps {
   close: () => void;
   title?: string;
   description?: string;
-  selectedProject: string;
-  selectedPriority?: number;
+  project: string;
+  priority?: number;
   labels?: string[];
   checkedLabels?: string[];
-  selectedDate?: Date;
+  date?: Date;
 }
 
 export const AddTodoItem = (props: IAddTodoItemProps) => {
@@ -38,9 +38,9 @@ export const AddTodoItem = (props: IAddTodoItemProps) => {
     close,
     title,
     description,
-    selectedProject,
-    selectedPriority,
-    selectedDate,
+    project,
+    priority,
+    date,
     checkedLabels,
     labels,
   } = props;
@@ -49,9 +49,9 @@ export const AddTodoItem = (props: IAddTodoItemProps) => {
   const [inputs, setInputs] = useState({
     title: title ? title : '',
     description: description ? description : '',
-    selectedProject,
-    selectedPriority: selectedPriority ? selectedPriority : 4,
-    selectedDate: selectedDate ? selectedDate : new Date(),
+    selectedProject: project,
+    selectedPriority: priority ? priority : 4,
+    selectedDate: date ? date : new Date(),
     labels: labels
       ? labels
       : [
@@ -159,12 +159,12 @@ export const AddTodoItem = (props: IAddTodoItemProps) => {
     setInputs((state) => ({ ...state, title }));
   const setDescription = (description: string) =>
     setInputs((state) => ({ ...state, description }));
-  const setSelectedProject = (project: string) =>
-    setInputs((state) => ({ ...state, project }));
-  const setSelectedPriority = (priority: number) =>
-    setInputs((state) => ({ ...state, priority }));
-  const setSelectedDate = (date: Date) =>
-    setInputs((state) => ({ ...state, date }));
+  const setSelectedProject = (selectedProject: string) =>
+    setInputs((state) => ({ ...state, selectedProject }));
+  const setSelectedPriority = (selectedPriority: number) =>
+    setInputs((state) => ({ ...state, selectedPriority }));
+  const setSelectedDate = (selectedDate: Date) =>
+    setInputs((state) => ({ ...state, selectedDate }));
 
   console.log(inputs);
 
@@ -185,6 +185,7 @@ export const AddTodoItem = (props: IAddTodoItemProps) => {
   };
 
   const projects = [
+    `${project}`,
     'projeto 1',
     'projeto 2',
     'projeto 3',
@@ -192,6 +193,8 @@ export const AddTodoItem = (props: IAddTodoItemProps) => {
     'projeto 5',
     'projeto 6',
   ];
+
+  console.log(inputs.selectedProject);
   return (
     <>
       <div className='h-fit w-full'>
