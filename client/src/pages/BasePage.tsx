@@ -7,8 +7,8 @@ import { Resizable } from 'react-resizable';
 import { motion } from 'framer-motion';
 
 export const BasePage = ({ content }: { content: React.ReactNode }) => {
-  // const { isSidebarOpen } = useUIStore();
-  const [isSidebarOpen, toggleSidebar] = useToggle(true);
+  const { isSidebarOpen, toggleSidebar } = useUIStore();
+  // const [isSidebarOpen, toggleSidebar] = useToggle(true);
   const [isAddTodoModalOpen, toggleAddTodoModal] = useToggle(false);
 
   const { todos } = useUserStore();

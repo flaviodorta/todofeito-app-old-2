@@ -12,10 +12,11 @@ import {
   DragStart,
 } from 'react-beautiful-dnd';
 import { isEmpty } from 'lodash';
+import { motion } from 'framer-motion';
 
 export const Inbox = () => {
   const { todos, reorderTodos } = useUserStore();
-  const { isEditingTodo } = useUIStore();
+  const { isEditingTodo, isSidebarOpen } = useUIStore();
   const [placeholderProps, setPlaceholderProps] = useState({
     clientHeight: 0,
     clientWidth: 0,
@@ -132,7 +133,12 @@ export const Inbox = () => {
 
   return (
     <div className='h-full flex justify-center bg-white'>
-      <div className='max-w-[44rem] w-[44rem] align-bottom px-4 py-6 flex flex-col bg-white'>
+      <motion.div
+        initial={false}
+        animate={isSidebarOpen ? { x: 0 } : { x: -48 }}
+        transition={{ duration: 0.2, bounce: 0 }}
+        className='max-w-[44rem] w-[44rem] align-bottom px-4 py-6 flex flex-col bg-white'
+      >
         <div className='mb-6 flex items-center gap-2'>
           <h2 className='font-bold text-xl'>Inbox</h2>
         </div>
@@ -222,7 +228,7 @@ export const Inbox = () => {
           </div>
         )}
         {/* </div> */}
-      </div>
+      </motion.div>
     </div>
   );
 };

@@ -11,12 +11,12 @@ import {
   Draggable,
   DragStart,
 } from 'react-beautiful-dnd';
-import { reorder } from '../../helpers/functions';
 import { isEmpty } from 'lodash';
+import { motion } from 'framer-motion';
 
 export const Today = () => {
   const { todos, reorderTodos } = useUserStore();
-  const { isEditingTodo } = useUIStore();
+  const { isEditingTodo, isSidebarOpen } = useUIStore();
   const [placeholderProps, setPlaceholderProps] = useState({
     clientHeight: 0,
     clientWidth: 0,
@@ -140,7 +140,12 @@ export const Today = () => {
 
   return (
     <div className='h-full flex justify-center bg-white'>
-      <div className='max-w-[44rem] w-[44rem] align-bottom px-4 py-6 flex flex-col bg-white'>
+      <motion.div
+        initial={false}
+        animate={isSidebarOpen ? { x: 0 } : { x: -48 }}
+        transition={{ duration: 0.1, bounce: 0 }}
+        className='max-w-[44rem] w-[44rem] align-bottom px-4 py-6 flex flex-col bg-white'
+      >
         <div className='mb-6 flex items-center gap-2'>
           <h2 className='font-bold text-xl'>Today</h2>
           <p className='text-gray-700 text-xs relative top-[3px]'>
@@ -233,7 +238,7 @@ export const Today = () => {
           </div>
         )}
         {/* </div> */}
-      </div>
+      </motion.div>
     </div>
   );
 };
