@@ -25,10 +25,19 @@ export interface Country {
 export interface IUserStore {
   fullName: string;
   email: string;
-  todos: { completed: ITodo[]; notCompleted: ITodo[] };
+  todos: {
+    completed: ITodo[];
+    inbox: ITodo[];
+    today: ITodo[];
+    upcoming: ITodo[];
+    projects: {
+      [key: string]: ITodo[];
+    };
+  };
+  reorderTodos: (todos: ITodo[], startIndex: number, endIndex: number) => void;
   addTodo: (todo: ITodo) => void;
-  completeTodo: (id: string) => void;
-  setTodos: (todos: ITodo[]) => void;
+  completeTodo: (todo: ITodo) => void;
+  createProject: (title: string) => void;
 }
 
 export interface IDay {

@@ -5,5 +5,5 @@ export const Label = ({
   content: string;
   className?: string;
 }) => {
-  return <div className={`${className} label`}>{content}</div>;
+  return <div className={`${className} label z-100`}>{content}</div>;
 };

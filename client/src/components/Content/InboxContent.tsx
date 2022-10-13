@@ -11,10 +11,9 @@ import {
   Draggable,
   DragStart,
 } from 'react-beautiful-dnd';
-import { reorder } from '../../helpers/functions';
 import { isEmpty } from 'lodash';
 
-export const Today = () => {
+export const Inbox = () => {
   const { todos, reorderTodos } = useUserStore();
   const { isEditingTodo } = useUIStore();
   const [placeholderProps, setPlaceholderProps] = useState({
@@ -23,13 +22,6 @@ export const Today = () => {
     clientY: 0,
     clientX: 0,
   });
-
-  const date = new Date();
-  const month = date.toLocaleString('en', { month: 'short' });
-  const dayOfWeek = date.toLocaleString('en', {
-    weekday: 'short',
-  });
-  const dayOfMonth = date.getDate();
 
   const [isAddTodoItemOpen, toggleAddTodoItem] = useToggle(false);
 
@@ -142,10 +134,7 @@ export const Today = () => {
     <div className='h-full flex justify-center bg-white'>
       <div className='max-w-[44rem] w-[44rem] align-bottom px-4 py-6 flex flex-col bg-white'>
         <div className='mb-6 flex items-center gap-2'>
-          <h2 className='font-bold text-xl'>Today</h2>
-          <p className='text-gray-700 text-xs relative top-[3px]'>
-            {dayOfWeek} {month} {dayOfMonth}
-          </p>
+          <h2 className='font-bold text-xl'>Inbox</h2>
         </div>
 
         <div className='h-fit mb-4'>
@@ -161,7 +150,7 @@ export const Today = () => {
                   {...droppableProvided.droppableProps}
                   className='h-fit relative'
                 >
-                  {todos.today.map((todo, i) => (
+                  {todos.inbox.map((todo, i) => (
                     <Draggable key={todo.id} draggableId={todo.id} index={i}>
                       {(draggableProvided, draggableSnapshot) => (
                         <div

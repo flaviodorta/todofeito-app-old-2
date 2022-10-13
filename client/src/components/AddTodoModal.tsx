@@ -137,7 +137,7 @@ export const AddTodoModal = (props: IAddTodoModalProps) => {
         initial='initial'
         animate='animate'
         exit='exit'
-        className='z-60 shadow-3xl border-gray-300 bg-white border-[1px] p-5 flex flex-col gap-4 fixed left-1/2 top-1/3 h-fit w-[36rem] rounded-sm'
+        className='z-60 shadow-4xl border-gray-300 bg-white border-[1px] p-5 flex flex-col gap-4 fixed left-1/2 top-1/3 h-fit w-[36rem] rounded-sm'
       >
         {/* labels checkeds */}
         {checkedLabels.length > 0 && (

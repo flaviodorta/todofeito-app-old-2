@@ -56,7 +56,7 @@ export const TodoItem = ({ todo, draggableProvided }: ITodoItem) => {
   const checkTodo = () => {
     setChecked(true);
     setTimeout(() => {
-      completeTodo(todo.id);
+      completeTodo(todo);
     }, 200);
   };
 

@@ -1,4 +1,5 @@
 import create from 'zustand';
+import { reorder } from '../../helpers/functions';
 import { ITodo, IUserStore } from '../../helpers/types';
 
 export const userStore = create<IUserStore>((set, get) => ({
@@ -6,35 +7,115 @@ export const userStore = create<IUserStore>((set, get) => ({
   email: 'dorta.dev@gmail.com',
   todos: {
     completed: [],
-    notCompleted: [],
+    inbox: [],
+    today: [],
+    upcoming: [],
+    projects: {},
   },
-  addTodo: (todo: ITodo) =>
-    set((state) => ({
-      ...state,
-      todos: {
-        completed: state.todos.completed,
-        notCompleted: [...state.todos.notCompleted, todo],
-      },
-    })),
-  completeTodo: (id: string) => {
-    const completedTodo = get().todos.notCompleted.filter(
-      (todo) => todo.id === id
-    )[0];
+  reorderTodos: (todos: ITodo[], startIndex: number, endIndex: number) => {
+    const project = todos[0].project;
 
-    set((state) => ({
-      ...state,
-      todos: {
-        completed: [...state.todos.completed, completedTodo],
-        notCompleted: state.todos.notCompleted.filter((todo) => todo.id !== id),
-      },
-    }));
+    return set((state) => {
+      if (
+        project === 'inbox' ||
+        project === 'today' ||
+        project === 'upcoming'
+      ) {
+        return {
+          ...state,
+          todos: {
+            ...state.todos,
+            projects: {
+              [`${project}`]: reorder(todos, startIndex, endIndex),
+            },
+          },
+        };
+      }
+
+      return {
+        ...state,
+        todos: {
+          ...state.todos,
+          [`${project}`]: reorder(todos, startIndex, endIndex),
+        },
+      };
+    });
   },
-  setTodos: (todos: ITodo[]) =>
+  addTodo: (todo: ITodo) => {
+    const project = todo.project.toLowerCase();
+
+    return set((state) => {
+      console.log(project);
+      if (
+        project !== 'inbox' &&
+        project !== 'today' &&
+        project !== 'upcoming'
+      ) {
+        return {
+          ...state,
+          todos: {
+            ...state.todos,
+            projects: {
+              [`${project}`]: [...state.todos.projects[`${project}`], todo],
+            },
+          },
+        };
+      }
+
+      return {
+        ...state,
+        todos: {
+          ...state.todos,
+          [`${project}`]: [...state.todos[`${project}`], todo],
+        },
+      };
+    });
+  },
+
+  completeTodo: (todo: ITodo) =>
+    set((state) => {
+      const project = todo.project.toLowerCase();
+
+      if (
+        project !== 'inbox' &&
+        project !== 'today' &&
+        project !== 'upcoming'
+      ) {
+        return {
+          ...state,
+          todos: {
+            ...state.todos,
+            completed: [...state.todos.completed, todo],
+            projects: {
+              ...state.todos.projects,
+              [`${project}`]: state.todos.projects[`${project}`].filter(
+                (t) => t.id !== todo.id
+              ),
+            },
+          },
+        };
+      }
+
+      return {
+        ...state,
+        todos: {
+          ...state.todos,
+          [`${project}`]: state.todos[`${project}`].filter(
+            (t) => t.id !== todo.id
+          ),
+        },
+      };
+    }),
+
+  createProject: (name: string) =>
     set((state) => ({
       ...state,
       todos: {
-        completed: state.todos.completed,
-        notCompleted: todos,
+        ...state.todos,
+        projects: {
+          ...state.todos.projects,
+          [`${name.toLowerCase()}`]: [],
+        },
       },
     })),
 }));

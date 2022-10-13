@@ -46,7 +46,7 @@ export const AddTodoItem = (props: IAddTodoItemProps) => {
     inputs ? inputs.description : ''
   );
   const [selectedProject, setSelectedProject] = useState(
-    inputs ? inputs.selectedProject : 'Inbox'
+    inputs ? inputs.selectedProject : 'inbox'
   );
   const [selectedPriority, setSelectedPriority] = useState(
     inputs ? inputs.selectedPriority : 4
