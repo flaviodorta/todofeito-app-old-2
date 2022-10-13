@@ -39,15 +39,18 @@ export const Navbar = (props: INavbarProps) => {
     <nav className='navbar'>
       <div className='navbar-buttons-wrapper'>
         {/* sidebar icon */}
-        <button onClick={toggleSidebar} className='navbar-button group'>
+        <button onClick={toggleSidebar} className='group navbar-button group'>
           <SidebarIcon className='navbar-icon' />
-          <Label content={isSidebarOpen ? 'Close menu' : 'Open menu'} />
+          <Label
+            content={isSidebarOpen ? 'Close menu' : 'Open menu'}
+            className='hidden group-hover:block'
+          />
         </button>
 
         {/* home icon */}
-        <button className='navbar-button group'>
+        <button className='group navbar-button group'>
           <HomeIcon className='navbar-icon w-[20px] h-[20px]' />
-          <Label content='Go to home' />
+          <Label content='Go to home' className='hidden group-hover:block' />
         </button>
 
         {/* search bar */}
@@ -56,9 +59,12 @@ export const Navbar = (props: INavbarProps) => {
 
       {/* add todo icon */}
       <div className='navbar-buttons-wrapper'>
-        <button onClick={toggleAddTodoModal} className='navbar-button group'>
+        <button
+          onClick={toggleAddTodoModal}
+          className='group navbar-button group'
+        >
           <AddTodoIcon className='navbar-icon' />
-          <Label content='Add todo' />
+          <Label content='Add todo' className='hidden group-hover:block' />
         </button>
 
         {/* user icon */}
@@ -71,7 +77,7 @@ export const Navbar = (props: INavbarProps) => {
           {buttonClicked !== 'user-icon' && (
             <Label
               content='Open profile menu'
-              className='hidden group-hover:visible -left-1'
+              className='hidden group-hover:block -left-1'
             />
           )}
           {/* dropdow user icon */}
