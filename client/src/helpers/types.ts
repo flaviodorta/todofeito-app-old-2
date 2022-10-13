@@ -36,6 +36,7 @@ export interface IUserStore {
   };
   reorderTodos: (todos: ITodo[], startIndex: number, endIndex: number) => void;
   addTodo: (todo: ITodo) => void;
+  editTodo: (todo: ITodo) => void;
   completeTodo: (todo: ITodo) => void;
   createProject: (title: string) => void;
 }

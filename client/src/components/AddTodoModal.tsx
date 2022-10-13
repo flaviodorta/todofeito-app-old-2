@@ -10,7 +10,7 @@ import {
   getMonthName,
   sortAlphabetic,
 } from '../helpers/functions';
-import { Fragment, useRef, useState } from 'react';
+import { Fragment, useEffect, useRef, useState } from 'react';
 import { LabelAddTodoModal } from './LabelAddTodoModal';
 import { DatePicker } from './DatePicker';
 import { SelectProject } from './Selects/SelectProject';
@@ -22,7 +22,7 @@ import { Backdrop } from './Backdrop';
 import { motion } from 'framer-motion';
 import { addTodoModal } from '../helpers/variants';
 import { nanoid } from 'nanoid';
-import { useUserStore } from '../zustand';
+import { useUIStore, useUserStore } from '../zustand';
 
 interface IAddTodoModalProps {
   isAddTodoModalOpen: boolean;
@@ -31,69 +31,86 @@ interface IAddTodoModalProps {
 
 export const AddTodoModal = (props: IAddTodoModalProps) => {
   const { closeAddTodoModal } = props;
-  const { addTodo } = useUserStore();
 
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [selectedProject, setSelectedProject] = useState('');
-  const [selectedPriority, setSelectedPriority] = useState(4);
-  const [labels, setLabels] = useState<string[]>([
-    'label 1 as dsa asdasasd as <dsasda></dsasda>',
-    'label 2 asd dsa dsa das ads asas asd ',
-    'label 3d asdsa as sd asd asd as das as das sa',
-    'label 4 das dsa asd asd asd sdsad as sad asd ',
-    'label  dasd sadsa da sd asdsa dsa as da sdsa5',
-  ]);
-  const [checkedLabels, setCheckedLabels] = useState<string[]>([]);
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const { addTodo, editTodo } = useUserStore();
+  const { closeIsAddTodoItemOpen, editingTodoId, setEditingTodoId } =
+    useUIStore();
+
+  const [inputs, setInputs] = useState({
+    title: '',
+    description: '',
+    selectedProject: 'inbox',
+    selectedPriority: 4,
+    selectedDate: new Date(),
+    labels: [
+      'label 1 as dsa asdasasd as sjdi 129 mksm 1982 edkmsakmdask',
+      'label 2 asd dsa dsa das ads asas asd',
+      'label 3 dasdsa as sd asd asd as das as das sa',
+      'label 4 das dsa asd asd asd sdsad as sad asd ',
+      'label 5 dasd sadsa da sd asdsa dsa as da sdsa5',
+    ],
+    checkedLabels: [] as string[],
+  });
+
   const [renderedSelect, setRenderedSelect] =
     useState<IRenderableElements>(null);
 
+  // centerlize select
   const dueDateRef = useRef<HTMLDivElement>(null);
-  // const projetLabelRef = useRef<HTMLDivElement>(null);
-  // const labelLabelRef = useRef<HTMLDivElement>(null);
-  // const priorityLabelRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const addLabel = (label: string) =>
-    setLabels((state) => sortAlphabetic([...state, label]));
+    setInputs((state) => ({
+      ...state,
+      labels: sortAlphabetic([...state.labels, label]),
+    }));
 
   const removeLabel = (label: string) =>
-    setLabels((state) =>
-      state.filter((removedLabel) => label !== removedLabel)
-    );
+    setInputs((state) => ({
+      ...state,
+      labels: state.labels.filter((removedLabel) => label !== removedLabel),
+    }));
+
   const addCheckedLabel = (label: string) =>
-    setCheckedLabels((state) => sortAlphabetic([...state, label]));
+    setInputs((state) => ({
+      ...state,
+      checkedLabels: sortAlphabetic([...state.checkedLabels, label]),
+    }));
 
   const removeCheckedLabel = (label: string) =>
-    setCheckedLabels((state) =>
-      state.filter((removedLabel) => label !== removedLabel)
-    );
-
-  const closeSelect = () => {
-    setRenderedSelect(null);
-  };
+    setInputs((state) => ({
+      ...state,
+      checkedLabels: state.checkedLabels.filter(
+        (removedLabel) => label !== removedLabel
+      ),
+    }));
 
   const resetInputs = () => {
-    setTitle('');
-    setDescription('');
-    setSelectedProject('Inbox');
-    setSelectedPriority(4);
-    setSelectedDate(null);
-    setCheckedLabels([]);
+    setInputs((state) => ({
+      title: '',
+      description: '',
+      selectedProject: state.selectedProject,
+      selectedPriority: 4,
+      selectedDate: new Date(),
+      checkedLabels: [],
+      labels: state.labels,
+    }));
+  };
+
+  const todo: ITodo = {
+    id: nanoid(),
+    title: inputs.title,
+    description: inputs.description,
+    date: inputs.selectedDate,
+    labels: inputs.checkedLabels,
+    priority: inputs.selectedPriority,
+    project: inputs.selectedProject,
+    checkedLabels: inputs.checkedLabels,
+    completed: false,
   };
 
   const sendTodo = () => {
-    const todo: ITodo = {
-      id: nanoid(),
-      title,
-      description,
-      date: selectedDate,
-      labels: checkedLabels,
-      priority: selectedPriority,
-      project: selectedProject,
-      checkedLabels,
-      completed: false,
-    };
+    if (!inputs.title) return;
 
     addTodo(todo);
 
@@ -101,6 +118,8 @@ export const AddTodoModal = (props: IAddTodoModalProps) => {
 
     closeAddTodoModal();
   };
+
+  const closeSelect = () => setRenderedSelect(null);
 
   const openDatePicker = () => {
     if (!renderedSelect) setRenderedSelect('date-picker');
@@ -118,9 +137,42 @@ export const AddTodoModal = (props: IAddTodoModalProps) => {
     if (!renderedSelect) setRenderedSelect('priority-select');
   };
 
-  const monthNameShort = getMonthName(selectedDate, language).substring(0, 3);
+  const setTitle = (title: string) =>
+    setInputs((state) => ({ ...state, title }));
+  const setDescription = (description: string) =>
+    setInputs((state) => ({ ...state, description }));
+  const setSelectedProject = (selectedProject: string) =>
+    setInputs((state) => ({ ...state, selectedProject }));
+  const setSelectedPriority = (selectedPriority: number) =>
+    setInputs((state) => ({ ...state, selectedPriority }));
+  const setSelectedDate = (selectedDate: Date) =>
+    setInputs((state) => ({ ...state, selectedDate }));
+
+  const monthNameShort = getMonthName(inputs.selectedDate, language).substring(
+    0,
+    3
+  );
+
+  const sendTodoOnKeyUpEnter = (
+    event: React.KeyboardEvent<HTMLInputElement>
+  ) => {
+    if (
+      event.key === 'Enter' &&
+      document.activeElement !== textareaRef.current
+    ) {
+      sendTodo();
+    }
+  };
+
+  const titleInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    titleInputRef?.current?.focus();
+  }, []);
 
   const projects = [
+    'inbox',
+    'today',
     'projeto 1',
     'projeto 2',
     'projeto 3',
@@ -141,9 +193,9 @@ export const AddTodoModal = (props: IAddTodoModalProps) => {
         className='z-60 shadow-4xl border-gray-300 bg-white border-[1px] p-5 flex flex-col gap-4 fixed left-1/2 top-1/3 h-fit w-[36rem] rounded-sm'
       >
         {/* labels checkeds */}
-        {checkedLabels.length > 0 && (
+        {inputs.checkedLabels.length > 0 && (
           <div className='w-full flex-wrap h-fit gap-1 flex justify-start'>
-            {checkedLabels.map((label, i) => (
+            {inputs.checkedLabels.map((label, i) => (
               <Fragment key={i}>
                 <LabelAddTodoModal label={label} />
               </Fragment>
@@ -152,16 +204,19 @@ export const AddTodoModal = (props: IAddTodoModalProps) => {
         )}
 
         <input
+          ref={titleInputRef}
           type='text'
           placeholder='Todo name'
-          value={title}
+          value={inputs.title}
           onChange={(e) => setTitle(e.target.value)}
+          onKeyUp={sendTodoOnKeyUpEnter}
           className='break-words w-full outline-none font-medium placeholder:font-medium placeholder:text-gray-400'
         />
         <Textarea
+          ref={textareaRef}
           placeholder='Description'
           rows={2}
-          value={description}
+          value={inputs.description}
           onChange={(e) => setDescription(e.target.value)}
           className='w-full text-sm outline-none resize-none placeholder:text-400 placeholder:text-sm'
         />
@@ -185,8 +240,10 @@ export const AddTodoModal = (props: IAddTodoModalProps) => {
               />
 
               <span className='text-xs capitalize'>
-                {selectedDate
-                  ? `${monthNameShort} ${getDayNumberInMonth(selectedDate)}`
+                {inputs.selectedDate
+                  ? `${monthNameShort} ${getDayNumberInMonth(
+                      inputs.selectedDate
+                    )}`
                   : 'Due data'}
               </span>
 
@@ -194,7 +251,7 @@ export const AddTodoModal = (props: IAddTodoModalProps) => {
                 <DatePicker
                   className='left-8'
                   closeSelect={closeSelect}
-                  selectedDate={selectedDate}
+                  selectedDate={inputs.selectedDate}
                   setSelectedDate={setSelectedDate}
                   parentRef={dueDateRef}
                 />
@@ -216,13 +273,13 @@ export const AddTodoModal = (props: IAddTodoModalProps) => {
                 className='fill-sky-600 -translate-y-[1px]'
               />
               <span className='text-xs capitalize'>
-                {selectedProject ? selectedProject : 'Inbox'}
+                {inputs.selectedProject ? inputs.selectedProject : 'Inbox'}
               </span>
 
               {renderedSelect === 'project-select' && (
                 <SelectProject
                   projects={projects}
-                  selectedProject={selectedProject}
+                  selectedProject={inputs.selectedProject}
                   setSelectedProject={setSelectedProject}
                   closeSelect={closeSelect}
                 />
@@ -249,8 +306,8 @@ export const AddTodoModal = (props: IAddTodoModalProps) => {
 
               {renderedSelect === 'label-select' && (
                 <SelectLabel
-                  labels={labels}
-                  checkedLabels={checkedLabels}
+                  labels={inputs.labels}
+                  checkedLabels={inputs.checkedLabels}
                   addCheckedLabel={addCheckedLabel}
                   removeCheckedLabel={removeCheckedLabel}
                   closeSelect={closeSelect}
@@ -272,12 +329,14 @@ export const AddTodoModal = (props: IAddTodoModalProps) => {
               <FlagSolidIcon
                 height='15px'
                 width='15px'
-                className={`${labelColors[selectedPriority]} ${labelHoverColors[selectedPriority]} duration-100`}
+                className={`${labelColors[inputs.selectedPriority]} ${
+                  labelHoverColors[inputs.selectedPriority]
+                } duration-100`}
               />
 
               {renderedSelect === 'priority-select' && (
                 <SelectPriority
-                  selectedPriority={selectedPriority}
+                  selectedPriority={inputs.selectedPriority}
                   setSelectedPriority={setSelectedPriority}
                   closeSelect={closeSelect}
                 />
@@ -298,7 +357,7 @@ export const AddTodoModal = (props: IAddTodoModalProps) => {
           <button
             onClick={sendTodo}
             className={`${
-              !title
+              !inputs.title
                 ? 'cursor-not-allowed bg-blue-400'
                 : 'bg-blue-600 hover:bg-blue-700'
             } text-center select-none p-2 outline-none rounded-sm font-medium text-sm h-fit w-fit text-white hover:text-gray-200`}

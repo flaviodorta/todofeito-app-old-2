@@ -10,7 +10,7 @@ import {
   getMonthName,
   sortAlphabetic,
 } from '../helpers/functions';
-import { Fragment, useRef, useState } from 'react';
+import { Fragment, useEffect, useRef, useState } from 'react';
 import { LabelAddTodoModal } from './LabelAddTodoModal';
 import { DatePicker } from './DatePicker';
 import { SelectProject } from './Selects/SelectProject';
@@ -18,12 +18,11 @@ import { SelectLabel } from './Selects/SelectLabel';
 import { SelectPriority } from './Selects/SelectPriority';
 import { labelColors, labelHoverColors, language } from '../helpers/constants';
 import { IRenderableElements, ITodo } from '../helpers/types';
-import { useUserStore } from '../zustand';
+import { useUIStore, useUserStore } from '../zustand';
 import { nanoid } from 'nanoid';
-import { useCallback } from 'react';
 
 interface IAddTodoItemProps {
-  close: () => void;
+  id?: string;
   title?: string;
   description?: string;
   project: string;
@@ -35,7 +34,7 @@ interface IAddTodoItemProps {
 
 export const AddTodoItem = (props: IAddTodoItemProps) => {
   const {
-    close,
+    id,
     title,
     description,
     project,
@@ -44,7 +43,9 @@ export const AddTodoItem = (props: IAddTodoItemProps) => {
     checkedLabels,
     labels,
   } = props;
-  const { addTodo } = useUserStore();
+  const { addTodo, editTodo } = useUserStore();
+  const { closeIsAddTodoItemOpen, editingTodoId, setEditingTodoId } =
+    useUIStore();
 
   const [inputs, setInputs] = useState({
     title: title ? title : '',
@@ -109,33 +110,35 @@ export const AddTodoItem = (props: IAddTodoItemProps) => {
     }));
   };
 
-  const sendTodo = useCallback(() => {
+  const todo: ITodo = {
+    id: id ? id : nanoid(),
+    title: inputs.title,
+    description: inputs.description,
+    date: inputs.selectedDate,
+    labels: inputs.checkedLabels,
+    priority: inputs.selectedPriority,
+    project: inputs.selectedProject,
+    checkedLabels: inputs.checkedLabels,
+    completed: false,
+  };
+
+  const sendEditedTodo = () => {
     if (!inputs.title) return;
 
-    const todo: ITodo = {
-      id: nanoid(),
-      title: inputs.title,
-      description: inputs.description,
-      date: inputs.selectedDate,
-      labels: inputs.checkedLabels,
-      priority: inputs.selectedPriority,
-      project: inputs.selectedProject,
-      checkedLabels: inputs.checkedLabels,
-      completed: false,
-    };
+    editTodo(todo);
+
+    setEditingTodoId(null);
+  };
+
+  const sendNewTodo = () => {
+    if (!inputs.title) return;
 
     addTodo(todo);
 
     resetInputs();
-  }, [
-    addTodo,
-    inputs.title,
-    inputs.description,
-    inputs.selectedDate,
-    inputs.checkedLabels,
-    inputs.selectedPriority,
-    inputs.selectedProject,
-  ]);
+  };
+
+  const sendTodo = () => (editingTodoId ? sendEditedTodo() : sendNewTodo());
 
   const closeSelect = () => setRenderedSelect(null);
 
@@ -166,8 +169,6 @@ export const AddTodoItem = (props: IAddTodoItemProps) => {
   const setSelectedDate = (selectedDate: Date) =>
     setInputs((state) => ({ ...state, selectedDate }));
 
-  console.log(inputs);
-
   const monthNameShort = getMonthName(inputs.selectedDate, language).substring(
     0,
     3
@@ -184,6 +185,12 @@ export const AddTodoItem = (props: IAddTodoItemProps) => {
     }
   };
 
+  const titleInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    titleInputRef?.current?.focus();
+  }, []);
+
   const projects = [
     `${project}`,
     'projeto 1',
@@ -194,11 +201,10 @@ export const AddTodoItem = (props: IAddTodoItemProps) => {
     'projeto 6',
   ];
 
-  console.log(inputs.selectedProject);
   return (
     <>
       <div className='h-fit w-full'>
-        <div className='border-gray-200 bg-white border-[1px] p-4 flex flex-col gap-4 h-fit w-full rounded-sm'>
+        <div className='border-gray-300 bg-white border-[1px] p-4 flex flex-col gap-4 h-fit w-full rounded-sm'>
           {/* checkeds labels */}
           {inputs.checkedLabels.length > 0 && (
             <div className='w-full flex-wrap h-fit gap-1 flex justify-start'>
@@ -211,6 +217,7 @@ export const AddTodoItem = (props: IAddTodoItemProps) => {
           )}
 
           <input
+            ref={titleInputRef}
             type='text'
             placeholder='Todo name'
             value={inputs.title}
@@ -356,7 +363,9 @@ export const AddTodoItem = (props: IAddTodoItemProps) => {
         </div>
         <div className='mt-2 flex w-full justify-end gap-2'>
           <button
-            onClick={close}
+            onClick={() =>
+              editingTodoId ? setEditingTodoId(null) : closeIsAddTodoItemOpen()
+            }
             className='text-center select-none p-2 outline-none rounded-sm font-medium text-sm h-fit w-fit bg-gray-200 hover:bg-gray-300 hover:text-700 text-gray-600'
           >
             Cancel
@@ -367,9 +376,11 @@ export const AddTodoItem = (props: IAddTodoItemProps) => {
               !inputs.title
                 ? 'cursor-not-allowed bg-blue-400'
                 : 'bg-blue-600 hover:bg-blue-700'
-            } text-center select-none p-2 outline-none rounded-sm font-medium text-sm h-fit w-fit text-white hover:text-gray-200`}
+            } text-center select-none p-2 outline-none rounded-sm font-medium text-sm h-fit ${
+              editingTodoId ? 'w-16' : 'w-fit'
+            } text-white hover:text-gray-200`}
           >
-            Add todo
+            {editingTodoId ? 'Save' : 'Add todo'}
           </button>
         </div>
       </div>

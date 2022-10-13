@@ -8,7 +8,8 @@ import {
   DropResult,
 } from 'react-beautiful-dnd';
 import { ITodo } from '../helpers/types';
-import { useUserStore } from '../zustand';
+import { useUIStore, useUserStore } from '../zustand';
+import { AddTodoItem } from './AddTodoItem';
 import { TodoItem } from './TodoItem';
 
 interface ITodosListProps {
@@ -17,6 +18,7 @@ interface ITodosListProps {
 
 export const TodosList = ({ todos }: ITodosListProps) => {
   const { reorderTodos } = useUserStore();
+  const { editingTodoId } = useUIStore();
   const [placeholderProps, setPlaceholderProps] = useState({
     clientHeight: 0,
     clientWidth: 0,
@@ -141,7 +143,7 @@ export const TodosList = ({ todos }: ITodosListProps) => {
             <div
               ref={droppableProvided.innerRef}
               {...droppableProvided.droppableProps}
-              className='h-fit relative'
+              className='h-fit relative flex flex-col'
             >
               {todos.map((todo, i) => (
                 <Draggable key={todo.id} draggableId={todo.id} index={i}>
@@ -154,8 +156,11 @@ export const TodosList = ({ todos }: ITodosListProps) => {
                           .style as React.CSSProperties
                       }
                       className={`${
-                        todo.description.length > 0 ? 'h-20' : 'h-16'
+                        todo.description.length > 0 && editingTodoId !== todo.id
+                          ? 'h-20'
+                          : 'h-16'
                       } 
+                      ${editingTodoId === todo.id ? 'h-64' : ''}
                   ${
                     draggableSnapshot.isDragging
                       ? 'shadow-xl border-none'
@@ -168,10 +173,29 @@ export const TodosList = ({ todos }: ITodosListProps) => {
                   duration-75
                   `}
                     >
-                      <TodoItem
-                        todo={todo}
-                        draggableProvided={draggableProvided}
-                      />
+                      {editingTodoId === todo.id ? (
+                        <div
+                          {...draggableProvided.dragHandleProps}
+                          className='w-full h-60'
+                        >
+                          <AddTodoItem
+                            key={todo.id}
+                            id={todo.id}
+                            title={todo.title}
+                            description={todo.description}
+                            date={todo.date as Date}
+                            project={todo.project}
+                            checkedLabels={todo.checkedLabels}
+                            priority={todo.priority}
+                            labels={todo.labels}
+                          />
+                        </div>
+                      ) : (
+                        <TodoItem
+                          todo={todo}
+                          draggableProvided={draggableProvided}
+                        />
+                      )}
                     </div>
                   )}
                 </Draggable>

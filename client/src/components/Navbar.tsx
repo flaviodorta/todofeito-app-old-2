@@ -67,9 +67,12 @@ export const Navbar = (props: INavbarProps) => {
           onClick={() => onClickNavbarButton('user-icon')}
           onBlur={() => onClickNavbarButton('')}
         >
-          <UserIcon className='navbar-icon' />
+          <UserIcon className='group navbar-icon' />
           {buttonClicked !== 'user-icon' && (
-            <Label content='Open profile menu' className='-left-1' />
+            <Label
+              content='Open profile menu'
+              className='hidden group-hover:visible -left-1'
+            />
           )}
           {/* dropdow user icon */}
           {buttonClicked === 'user-icon' && (

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { IRenderableElements, ITodo } from '../helpers/types';
-import { useUserStore } from '../zustand';
+import { useUIStore, useUserStore } from '../zustand';
 import {
   CalendarRegularIcon,
   GripVerticalSolidIcon,
@@ -17,9 +17,19 @@ type ITodoItem = {
 };
 
 export const TodoItem = ({ todo, draggableProvided }: ITodoItem) => {
-  const { title, description, date, project, priority, labels, checkedLabels } =
-    todo;
+  const {
+    id,
+    title,
+    description,
+    date,
+    project,
+    priority,
+    labels,
+    checkedLabels,
+  } = todo;
   const { completeTodo } = useUserStore();
+  const { setEditingTodoId } = useUIStore();
+
   const [checked, setChecked] = useState(todo.completed);
   const [isHover, setIsHover] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
@@ -106,7 +116,10 @@ export const TodoItem = ({ todo, draggableProvided }: ITodoItem) => {
         </span>
         {isHover && (
           <div className='absolute flex items-center gap-2 top-1 right-0'>
-            <span className='group mini-button-option cursor-pointer'>
+            <span
+              onClick={() => setEditingTodoId(todo)}
+              className='group mini-button-option cursor-pointer'
+            >
               <PenSolidIcon className='fill-gray-400 group-hover:fill-gray-500' />
             </span>
             <span

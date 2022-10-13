@@ -12,8 +12,41 @@ export const userStore = create<IUserStore>((set, get) => ({
     upcoming: [],
     projects: {},
   },
+  editTodo: (todo: ITodo) => {
+    const project = todo.project;
+
+    return set((state) => {
+      if (
+        project !== 'inbox' &&
+        project !== 'today' &&
+        project !== 'upcoming'
+      ) {
+        return {
+          ...state,
+          todos: {
+            ...state.todos,
+            projects: {
+              [`${project}`]: state.todos.projects[`${project}`].map((t) => {
+                return t.id === todo.id ? todo : t;
+              }),
+            },
+          },
+        };
+      }
+
+      return {
+        ...state,
+        todos: {
+          ...state.todos,
+          [`${project}`]: state.todos[`${project}`].map((t) => {
+            return t.id === todo.id ? todo : t;
+          }),
+        },
+      };
+    });
+  },
+
   reorderTodos: (todos: ITodo[], startIndex: number, endIndex: number) => {
-    console.log(todos);
     const project = todos[0].project;
 
     return set((state) => {
@@ -42,11 +75,11 @@ export const userStore = create<IUserStore>((set, get) => ({
       };
     });
   },
+
   addTodo: (todo: ITodo) => {
     const project = todo.project.toLowerCase();
 
     return set((state) => {
-      console.log(project);
       if (
         project !== 'inbox' &&
         project !== 'today' &&

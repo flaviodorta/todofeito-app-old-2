@@ -1,22 +1,18 @@
-import React, { useState } from 'react';
 import { useToggle } from '../../hooks/useToggle';
 import { useUIStore, useUserStore } from '../../zustand';
 import { AddTodoItem } from '../AddTodoItem';
 import { PlusSolidIcon } from '../Icons';
-import { TodoItem } from '../TodoItem';
-import {
-  DragDropContext,
-  DropResult,
-  Droppable,
-  Draggable,
-  DragStart,
-} from 'react-beautiful-dnd';
-import { isEmpty } from 'lodash';
 import { motion } from 'framer-motion';
 import { TodosList } from '../TodosList';
 
 export const Today = () => {
-  const { isEditingTodo, isSidebarOpen } = useUIStore();
+  const {
+    editingTodoId,
+    isSidebarOpen,
+    isAddTodoItemOpen,
+    setEditingTodoId,
+    openIsAddTodoItemOpen,
+  } = useUIStore();
   const { todos } = useUserStore();
 
   const date = new Date();
@@ -26,7 +22,10 @@ export const Today = () => {
   });
   const dayOfMonth = date.getDate();
 
-  const [isAddTodoItemOpen, toggleAddTodoItem] = useToggle(false);
+  const openAddTodoItem = () => {
+    setEditingTodoId(null);
+    openIsAddTodoItemOpen();
+  };
 
   return (
     <div className='h-full flex justify-center bg-white'>
@@ -46,15 +45,11 @@ export const Today = () => {
         <TodosList todos={todos.today} />
 
         {/* <div onClick={openAddTodoItem} className='flex-center'> */}
-        {isAddTodoItemOpen && !isEditingTodo ? (
-          <AddTodoItem
-            close={toggleAddTodoItem}
-            project={'today'}
-            date={new Date()}
-          />
+        {isAddTodoItemOpen && !editingTodoId ? (
+          <AddTodoItem project={'today'} date={new Date()} />
         ) : (
           <div
-            onClick={toggleAddTodoItem}
+            onClick={openAddTodoItem}
             className='group w-full flex items-center gap-2.5 h-fit'
           >
             <span className='group p-0.5 rounded-full bg-white group-hover:bg-blue-600 flex-center'>
