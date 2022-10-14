@@ -43,14 +43,14 @@ export const Navbar = (props: INavbarProps) => {
           <SidebarIcon className='navbar-icon' />
           <Label
             content={isSidebarOpen ? 'Close menu' : 'Open menu'}
-            className='hidden group-hover:block'
+            className='hidden group-hover:block '
           />
         </button>
 
         {/* home icon */}
         <button className='group navbar-button group'>
           <HomeIcon className='navbar-icon w-[20px] h-[20px]' />
-          <Label content='Go to home' className='hidden group-hover:block' />
+          <Label content='Go to home' className='hidden group-hover:block ' />
         </button>
 
         {/* search bar */}
@@ -77,7 +77,7 @@ export const Navbar = (props: INavbarProps) => {
           {buttonClicked !== 'user-icon' && (
             <Label
               content='Open profile menu'
-              className='hidden group-hover:block -left-1'
+              className='hidden group-hover:block  -left-1'
             />
           )}
           {/* dropdow user icon */}

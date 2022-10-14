@@ -1,5 +1,5 @@
 import { getDaysInMonth, getYear } from 'date-fns';
-import React, { forwardRef, useEffect, useState } from 'react';
+import React, { forwardRef, useState } from 'react';
 import { language } from '../../helpers/constants';
 import {
   getDayNameInWeek,
@@ -24,7 +24,7 @@ interface IDatePickerProps {
 
 export const DatePicker = forwardRef<HTMLDivElement, IDatePickerProps>(
   (props, ref): JSX.Element => {
-    const { closeSelect, selectedDate, setSelectedDate, parentRef } = props;
+    const { closeSelect, selectedDate, setSelectedDate } = props;
 
     const lang = window.navigator.language || 'default';
     const today = new Date();
@@ -179,14 +179,14 @@ export const DatePicker = forwardRef<HTMLDivElement, IDatePickerProps>(
       });
 
     // to centerlize date picker
-    const [parentWidth, setParentWidth] = useState(0);
+    // const [parentWidth, setParentWidth] = useState(0);
 
-    useEffect(() => {
-      if (parentRef.current)
-        setParentWidth(parentRef.current.getBoundingClientRect().width);
-    }, [parentRef.current]);
+    // useEffect(() => {
+    //   if (parentRef.current)
+    //     setParentWidth(parentRef.current.getBoundingClientRect().width);
+    // }, [parentRef.current]);
 
-    const translateParentWidth = `translate-x-${parentWidth}`;
+    // const translateParentWidth = `translate-x-${parentWidth}`;
     // -----------------------------
 
     return (

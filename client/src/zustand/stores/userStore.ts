@@ -10,6 +10,7 @@ export const userStore = create<IUserStore>((set, get) => ({
     inbox: [],
     today: [],
     upcoming: [],
+    labels: [],
     projects: {},
   },
   editTodo: (todo: ITodo) => {
@@ -19,7 +20,8 @@ export const userStore = create<IUserStore>((set, get) => ({
       if (
         project !== 'inbox' &&
         project !== 'today' &&
-        project !== 'upcoming'
+        project !== 'upcoming' &&
+        project !== 'labels'
       ) {
         return {
           ...state,
@@ -53,7 +55,8 @@ export const userStore = create<IUserStore>((set, get) => ({
       if (
         project !== 'inbox' &&
         project !== 'today' &&
-        project !== 'upcoming'
+        project !== 'upcoming' &&
+        project !== 'labels'
       ) {
         return {
           ...state,
@@ -83,7 +86,8 @@ export const userStore = create<IUserStore>((set, get) => ({
       if (
         project !== 'inbox' &&
         project !== 'today' &&
-        project !== 'upcoming'
+        project !== 'upcoming' &&
+        project !== 'labels'
       ) {
         return {
           ...state,
@@ -113,7 +117,8 @@ export const userStore = create<IUserStore>((set, get) => ({
       if (
         project !== 'inbox' &&
         project !== 'today' &&
-        project !== 'upcoming'
+        project !== 'upcoming' &&
+        project !== 'labels'
       ) {
         return {
           ...state,

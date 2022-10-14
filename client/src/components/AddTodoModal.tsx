@@ -22,7 +22,7 @@ import { Backdrop } from './Backdrop';
 import { motion } from 'framer-motion';
 import { addTodoModal } from '../helpers/variants';
 import { nanoid } from 'nanoid';
-import { useUIStore, useUserStore } from '../zustand';
+import { useUserStore } from '../zustand';
 
 interface IAddTodoModalProps {
   isAddTodoModalOpen: boolean;
@@ -32,9 +32,7 @@ interface IAddTodoModalProps {
 export const AddTodoModal = (props: IAddTodoModalProps) => {
   const { closeAddTodoModal } = props;
 
-  const { addTodo, editTodo } = useUserStore();
-  const { closeIsAddTodoItemOpen, editingTodoId, setEditingTodoId } =
-    useUIStore();
+  const { addTodo } = useUserStore();
 
   const [inputs, setInputs] = useState({
     title: '',

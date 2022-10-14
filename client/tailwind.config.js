@@ -10,6 +10,7 @@ module.exports = {
         '3xl':
           'rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px',
         '4xl': 'rgba(0, 0, 0, 0.56) 0px 22px 70px 4px;',
+        'dragging-item': 'rgba(0, 0, 0, 0.56) 0px 22px 70px 4px',
       },
       zIndex: {
         60: '60',

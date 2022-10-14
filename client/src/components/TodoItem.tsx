@@ -17,16 +17,6 @@ type ITodoItem = {
 };
 
 export const TodoItem = ({ todo, draggableProvided }: ITodoItem) => {
-  const {
-    id,
-    title,
-    description,
-    date,
-    project,
-    priority,
-    labels,
-    checkedLabels,
-  } = todo;
   const { completeTodo } = useUserStore();
   const { setEditingTodoId } = useUIStore();
 
@@ -50,7 +40,7 @@ export const TodoItem = ({ todo, draggableProvided }: ITodoItem) => {
     setIsHover(false);
   };
 
-  const containerRef = useRef<HTMLDivElement>(null);
+  // const containerRef = useRef<HTMLDivElement>(null);
 
   const closeSelect = () => {
     setRenderedSelect(null);

@@ -59,3 +59,36 @@ export const addTodoModal: Variants = {
     },
   },
 };
+
+export const projectsWrapper: Variants = {
+  initial: {
+    transition: {
+      staggerChildren: 0.2,
+      staggerDirection: -1,
+    },
+  },
+  animate: {
+    transition: {
+      staggerChildren: 0.2,
+    },
+  },
+};
+
+export const project: Variants = {
+  initial: {
+    opacity: 0,
+    y: -20,
+    transition: {
+      bounce: 0,
+      ease: [0.6, 0.05, -0.01, 0.9],
+    },
+  },
+  animate: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      bounce: 0,
+      ease: [0.6, 0.05, -0.01, 0.9],
+    },
+  },
+};

@@ -163,7 +163,7 @@ export const TodosList = ({ todos }: ITodosListProps) => {
                       ${editingTodoId === todo.id ? 'h-64' : ''}
                   ${
                     draggableSnapshot.isDragging
-                      ? 'shadow-xl border-none'
+                      ? 'shadow-dragging-item border-none'
                       : 'border-b-gray-200 border-b-[1px]'
                   }
                   ${draggableSnapshot.isDropAnimating ? 'shadow-lg' : ''}

@@ -1,8 +1,7 @@
 import { getMonth, getYear, isToday } from 'date-fns';
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import { getDayNumberInMonth } from '../../helpers/functions';
 import { motion } from 'framer-motion';
-import { ISelectedDate } from '../../helpers/types';
 
 interface IDayProps {
   className?: string;

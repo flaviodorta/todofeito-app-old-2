@@ -30,6 +30,7 @@ export interface IUserStore {
     inbox: ITodo[];
     today: ITodo[];
     upcoming: ITodo[];
+    labels: ITodo[];
     projects: {
       [key: string]: ITodo[];
     };

@@ -144,7 +144,7 @@ export const AddTodoItem = (props: IAddTodoItemProps) => {
   };
 
   const sendTodo = () => {
-    close();
+    if (editingTodoId) close();
     editingTodoId ? sendEditedTodo() : sendNewTodo();
   };
 
