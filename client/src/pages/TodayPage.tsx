@@ -1,4 +1,4 @@
-import { Today } from '../components/Content/Today';
+import { TodayContent } from '../components/Content/TodayContent';
 import { BasePage } from './BasePage';
 
-export const TodayPage = () => <BasePage content={<Today />} />;
+export const TodayPage = () => <BasePage content={<TodayContent />} />;

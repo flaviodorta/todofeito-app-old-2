@@ -8,6 +8,8 @@ export const DropdownButtons = ({
   className?: string;
 }) => {
   return (
-    <div className={`dropdown-buttons-container ${className}`}>{children}</div>
+    <div className={`dropdown-buttons-container z-100 ${className}`}>
+      {children}
+    </div>
   );
 };

@@ -12,30 +12,54 @@ import {
 import { useLocation, useNavigate } from 'react-router-dom';
 import { project, projectsWrapper } from '../helpers/variants';
 import { MoreThreeDotsIcon } from './Icons/Icons/MoreThreeDotsIcon';
+import { isMobile } from 'react-device-detect';
+import { Backdrop } from './Backdrop';
 
-export const Sidebar = () => {
-  const { isSidebarOpen, isSidebarProjectsOpen, toggleSidebarProjects } =
-    useUIStore();
+interface ISidebarProps {
+  toggleCreateProjectModalOpen: () => void;
+}
+
+export const Sidebar = (props: ISidebarProps) => {
+  const {
+    isSidebarOpen,
+    isSidebarProjectsOpen,
+    toggleSidebarProjects,
+    toggleSidebar,
+  } = useUIStore();
+  const { toggleCreateProjectModalOpen } = props;
   const { todos } = useUserStore();
   const location = useLocation();
   const navigate = useNavigate();
 
-  const projects = Object.keys(todos.projects);
+  const goToPage = (path: string) => {
+    if (isMobile) toggleSidebar();
+    navigate(path);
+  };
+
+  const projects = Object.entries(todos.projects);
 
   return (
-    <Resizable height={100} width={306}>
+    // <Resizable height={100} width={326}>
+    <>
+      {isSidebarOpen && (
+        <Backdrop
+          close={toggleSidebar}
+          className='lg:hidden bg-black/50 duration-150 transition-colors'
+        />
+      )}
+
       <motion.div
-        initial={{ width: 306 }}
         animate={isSidebarOpen ? { translateX: 0 } : { translateX: '-100%' }}
         transition={{
           bounce: 0,
-          duration: 2,
+          duration: 0.35,
+          ease: 'easeInOut',
         }}
-        className='pt-6 w-[326px] pl-12 pr-1 h-full fixed bg-gray-100'
+        className='fixed pt-6 pl-12 pr-1 w-[306px] z-50 h-screen bg-gray-100'
       >
         <div className='w-full flex flex-col mb-6'>
           <div
-            onClick={() => navigate('/inbox')}
+            onClick={() => goToPage('/inbox')}
             className={`${
               location.pathname === '/inbox' ? 'bg-gray-200' : ''
             } w-full cursor-pointer hover:bg-gray-200 p-2 flex gap-3 items-center rounded-sm`}
@@ -48,39 +72,39 @@ export const Sidebar = () => {
           </div>
 
           <div
-            onClick={() => navigate('/today')}
+            onClick={() => goToPage('/today')}
             className={`${
               location.pathname === '/today' ? 'bg-gray-200' : ''
             } w-full cursor-pointer hover:bg-gray-200 p-2 flex gap-3 items-center rounded-sm`}
           >
             <CalendarRegularIcon className='fill-emerald-500' />
-            <span className='text-gray-80 text-sm '>Today</span>
+            <span className='text-gray-800 text-sm '>Today</span>
             <span className='ml-auto text-gray-600 text-sm'>
               {todos.today.length}
             </span>
           </div>
 
           <div
-            onClick={() => navigate('/upcoming')}
+            onClick={() => goToPage('/upcoming')}
             className={`${
               location.pathname === '/upcoming' ? 'bg-gray-200' : ''
             } w-full cursor-pointer hover:bg-gray-200 p-2 flex gap-3 items-center rounded-sm`}
           >
             <CalendarDaysSolidIcon className='fill-orange-600' />
-            <span className='text-gray-80 text-sm '>Upcoming</span>
+            <span className='text-gray-800 text-sm '>Upcoming</span>
             <span className='ml-auto text-gray-600 text-sm'>
               {todos.upcoming.length}
             </span>
           </div>
 
           <div
-            onClick={() => navigate('/labels')}
+            onClick={() => goToPage('/labels')}
             className={`${
               location.pathname === '/labels' ? 'bg-gray-200' : ''
             } w-full cursor-pointer hover:bg-gray-200 p-2 flex gap-3 items-center rounded-sm`}
           >
             <LabelIcon className='fill-violet-700' />
-            <span className='text-gray-80 text-sm '>Labels</span>
+            <span className='text-gray-800 text-sm '>Labels</span>
             <span className='ml-auto text-gray-600 text-sm'>
               {todos.labels.length}
             </span>
@@ -90,9 +114,12 @@ export const Sidebar = () => {
         <div>
           <div className='w-full flex items-center gap-1 p-2'>
             <span className='font-medium text-gray-500 text-md'>Projects</span>
-            <span className='group cursor-pointer w-6 h-6 ml-auto rounded-sm hover:bg-gray-200 flex items-center justify-center'>
+            <span
+              onClick={toggleCreateProjectModalOpen}
+              className='group cursor-pointer w-6 h-6 ml-auto rounded-sm hover:bg-gray-200 flex items-center justify-center'
+            >
               <PlusSolidIcon className='fill-gray-500 group-hover:fill-gray-600' />
-              {/* create project */}
+              {/* create project modal */}
             </span>
             <span
               onClick={toggleSidebarProjects}
@@ -112,25 +139,26 @@ export const Sidebar = () => {
             variants={projectsWrapper}
             className='w-full flex flex-col py-2 pl-4'
           >
-            {projects.map((projectName) => (
-              <div
+            {projects.map(([projectName, { color }]) => (
+              <motion.div
                 onClick={() => navigate(`/${projectName}`)}
-                className='group h-fit rounded-md p-1.5 hover:bg-gray-200 w-full overflow-hidden'
+                className='hover:bg-gray-200 group h-fit rounded-md p-1.5 w-full overflow-hidden'
               >
                 <motion.div
                   variants={project}
                   className='flex cursor-pointer items-center gap-4'
                 >
-                  <span className='w-2.5 h-2.5 rounded-full bg-gray-400' />
+                  <span className={`w-2.5 h-2.5 rounded-full ${color.class}`} />
                   <span className='text-sm'>{projectName}</span>
                   <MoreThreeDotsIcon className='group-hover:opacity-100 hover:fill-gray-600 opacity-0 duration-100 transition-all fill-gray-400 ml-auto' />
                   {/* edit project dropdown */}
                 </motion.div>
-              </div>
+              </motion.div>
             ))}
           </motion.div>
         </div>
       </motion.div>
-    </Resizable>
+    </>
+    // </Resizable>
   );
 };

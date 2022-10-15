@@ -10,7 +10,6 @@ export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <Layout>
-        {/* <Navbar /> */}
         <BrowserRouter>
           <Routes>
             <Route path='/inbox' element={<InboxPage />} />

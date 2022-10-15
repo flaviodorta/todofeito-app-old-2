@@ -1,3 +1,4 @@
+import { isDesktop } from 'react-device-detect';
 import create from 'zustand';
 import { ITodo } from '../../helpers/types';
 
@@ -6,6 +7,8 @@ interface IUIStore {
   isSidebarProjectsOpen: boolean;
   editingTodoId: string | null;
   isAddTodoItemOpen: boolean;
+  isMinorThanLargeScreen: boolean;
+  setIsMinorThanLargeScreen: (value: boolean) => void;
   closeIsAddTodoItemOpen: () => void;
   openIsAddTodoItemOpen: () => void;
   toggleSidebar: () => void;
@@ -14,10 +17,13 @@ interface IUIStore {
 }
 
 export const UIStore = create<IUIStore>((set, get) => ({
-  isSidebarOpen: true,
+  isSidebarOpen: isDesktop ? true : false,
   isSidebarProjectsOpen: false,
   editingTodoId: null,
   isAddTodoItemOpen: false,
+  isMinorThanLargeScreen: false,
+  setIsMinorThanLargeScreen: (value: boolean) =>
+    set((state) => ({ ...state, isMinorThanLargeScreen: value })),
   closeIsAddTodoItemOpen: () =>
     set((state) => ({ ...state, isAddTodoItemOpen: false })),
   openIsAddTodoItemOpen: () =>

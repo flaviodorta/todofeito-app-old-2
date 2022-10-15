@@ -126,7 +126,7 @@ export const TodoItem = ({ todo, draggableProvided }: ITodoItem) => {
                   selectedDate={selectedDate}
                   setSelectedDate={setSelectedDate}
                   parentRef={dueDateRef}
-                  className='left-2'
+                  className='-left-24'
                 />
               )}
             </span>

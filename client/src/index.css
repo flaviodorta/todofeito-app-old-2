@@ -4,14 +4,14 @@
 
 @layer base {
   #root {
-    @apply h-screen w-screen relative bg-gray-100 font-roboto overflow-hidden;
+    @apply h-screen w-screen relative bg-white font-roboto overflow-hidden;
     -webkit-font-smoothing: antialiased;
   }
 
   *,
   *::before,
   *::after {
-    @apply select-none;
+    @apply select-none box-border;
   }
 }
 
@@ -24,7 +24,7 @@
 
   /* navbar */
   .navbar {
-    @apply w-full h-12 bg-blue-600 flex justify-between items-center px-2 md:px-10;
+    @apply w-screen sticky h-12 bg-blue-600 flex justify-between items-center px-2 md:px-10;
   }
 
   .navbar-buttons-wrapper {

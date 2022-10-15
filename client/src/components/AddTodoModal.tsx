@@ -25,14 +25,13 @@ import { nanoid } from 'nanoid';
 import { useUserStore } from '../zustand';
 
 interface IAddTodoModalProps {
-  isAddTodoModalOpen: boolean;
   closeAddTodoModal: () => void;
 }
 
 export const AddTodoModal = (props: IAddTodoModalProps) => {
   const { closeAddTodoModal } = props;
 
-  const { addTodo } = useUserStore();
+  const { addTodo, todos } = useUserStore();
 
   const [inputs, setInputs] = useState({
     title: '',
@@ -171,12 +170,9 @@ export const AddTodoModal = (props: IAddTodoModalProps) => {
   const projects = [
     'inbox',
     'today',
-    'projeto 1',
-    'projeto 2',
-    'projeto 3',
-    'projeto 4',
-    'projeto 5',
-    'projeto 6',
+    'upcoming',
+    'labels',
+    ...Object.keys(todos.projects),
   ];
 
   return (
@@ -188,7 +184,7 @@ export const AddTodoModal = (props: IAddTodoModalProps) => {
         initial='initial'
         animate='animate'
         exit='exit'
-        className='z-60 shadow-4xl border-gray-300 bg-white border-[1px] p-5 flex flex-col gap-4 fixed left-1/2 top-1/3 h-fit w-[36rem] rounded-sm'
+        className='z-60 shadow-4xl border-gray-300 bg-white border-[1px] p-5 flex flex-col gap-4 fixed left-1/2 top-1/3 h-fit w-[90%] sm:w-[36rem] rounded-sm'
       >
         {/* labels checkeds */}
         {inputs.checkedLabels.length > 0 && (
@@ -247,7 +243,7 @@ export const AddTodoModal = (props: IAddTodoModalProps) => {
 
               {renderedSelect === 'date-picker' && (
                 <DatePicker
-                  className='left-8'
+                  className='left-28 sm:left-8'
                   closeSelect={closeSelect}
                   selectedDate={inputs.selectedDate}
                   setSelectedDate={setSelectedDate}

@@ -8,6 +8,7 @@ import {
 import {
   getDayNumberInMonth,
   getMonthName,
+  onKeyUpEnter,
   sortAlphabetic,
 } from '../helpers/functions';
 import { Fragment, useEffect, useRef, useState } from 'react';
@@ -43,7 +44,7 @@ export const AddTodoItem = (props: IAddTodoItemProps) => {
     checkedLabels,
     labels,
   } = props;
-  const { addTodo, editTodo } = useUserStore();
+  const { addTodo, editTodo, todos } = useUserStore();
   const { closeIsAddTodoItemOpen, editingTodoId, setEditingTodoId } =
     useUIStore();
 
@@ -70,7 +71,6 @@ export const AddTodoItem = (props: IAddTodoItemProps) => {
 
   // centerlize select
   const dueDateRef = useRef<HTMLDivElement>(null);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const addLabel = (label: string) =>
     setInputs((state) => ({
@@ -182,31 +182,20 @@ export const AddTodoItem = (props: IAddTodoItemProps) => {
     3
   );
 
-  const sendTodoOnKeyUpEnter = (
-    event: React.KeyboardEvent<HTMLInputElement>
-  ) => {
-    if (
-      event.key === 'Enter' &&
-      document.activeElement !== textareaRef.current
-    ) {
-      sendTodo();
-    }
-  };
-
   const titleInputRef = useRef<HTMLInputElement>(null);
+
+  const sendTodoOnKeyUpEnter = onKeyUpEnter(sendTodo, titleInputRef);
 
   useEffect(() => {
     titleInputRef?.current?.focus();
   }, []);
 
   const projects = [
-    `${project}`,
-    'projeto 1',
-    'projeto 2',
-    'projeto 3',
-    'projeto 4',
-    'projeto 5',
-    'projeto 6',
+    'inbox',
+    'today',
+    'upcoming',
+    'labels',
+    ...Object.keys(todos.projects),
   ];
 
   return (
@@ -235,7 +224,6 @@ export const AddTodoItem = (props: IAddTodoItemProps) => {
           />
 
           <Textarea
-            ref={textareaRef}
             placeholder='Description'
             rows={2}
             value={inputs.description}
@@ -276,7 +264,7 @@ export const AddTodoItem = (props: IAddTodoItemProps) => {
                     selectedDate={inputs.selectedDate}
                     setSelectedDate={setSelectedDate}
                     parentRef={dueDateRef}
-                    className='left-8'
+                    className='left-24 sm:left-8'
                   />
                 )}
               </div>

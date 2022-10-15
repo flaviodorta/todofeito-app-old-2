@@ -32,14 +32,20 @@ export interface IUserStore {
     upcoming: ITodo[];
     labels: ITodo[];
     projects: {
-      [key: string]: ITodo[];
+      [key: string]: {
+        color: {
+          name: string;
+          class: string;
+        };
+        todos: ITodo[];
+      };
     };
   };
   reorderTodos: (todos: ITodo[], startIndex: number, endIndex: number) => void;
   addTodo: (todo: ITodo) => void;
   editTodo: (todo: ITodo) => void;
   completeTodo: (todo: ITodo) => void;
-  createProject: (title: string) => void;
+  createProject: (name: string, color: { name: string; class: string }) => void;
 }
 
 export interface IDay {

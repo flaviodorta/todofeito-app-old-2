@@ -4,10 +4,15 @@
 - refactor add todo modal options styles
 - create projects content
 - add todos items in content with draglabe list
+- create project modal
+- add edit todo mode
 
 # to do
 
-- add edit todo mode
+- edit project dropdown
+- search todo
+- add labels modal
+- user settings modal
+- add persist to zustand
 - add sidebar resizable (react-resizable)
-- create edit modal, add project modal, user settings modal
-- need to fix todo list placeholder
+- fix todo list placeholder

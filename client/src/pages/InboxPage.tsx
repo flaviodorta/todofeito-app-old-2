@@ -1,4 +1,4 @@
-import { Inbox } from '../components/Content/Inbox';
+import { InboxContent } from '../components/Content/InboxContent';
 import { BasePage } from './BasePage';
 
-export const InboxPage = () => <BasePage content={<Inbox />} />;
+export const InboxPage = () => <BasePage content={<InboxContent />} />;

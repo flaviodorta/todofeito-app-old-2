@@ -1,4 +1,5 @@
 import { Variants } from 'framer-motion';
+import { isDesktop } from 'react-device-detect';
 
 export const layout: Variants = {
   inital: {
@@ -17,7 +18,7 @@ export const searchBar: Variants = {
     },
   },
   animate: {
-    width: 300,
+    width: isDesktop ? 360 : 250,
     transition: {
       duration: 0.1,
     },

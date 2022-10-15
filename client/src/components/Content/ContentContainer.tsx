@@ -1,19 +1,25 @@
-import { useUIStore, useUserStore } from '../../zustand';
+import { ITodo } from '../../helpers/types';
+import { useUIStore } from '../../zustand';
 import { AddTodoItem } from '../AddTodoItem';
 import { PlusSolidIcon } from '../Icons';
-import { motion } from 'framer-motion';
 import { TodosList } from '../TodosList';
 
-export const Inbox = () => {
+interface IContentContainerProps {
+  children: React.ReactNode;
+  todos: ITodo[];
+}
+
+export const ContentContainer = ({
+  children,
+  todos,
+}: IContentContainerProps) => {
   const {
     editingTodoId,
-    isSidebarOpen,
     isAddTodoItemOpen,
-    openIsAddTodoItemOpen,
     setEditingTodoId,
+    openIsAddTodoItemOpen,
+    isSidebarOpen,
   } = useUIStore();
-
-  const { todos } = useUserStore();
 
   const openAddTodoItem = () => {
     setEditingTodoId(null);
@@ -21,22 +27,19 @@ export const Inbox = () => {
   };
 
   return (
-    <div className='h-full flex justify-center bg-white'>
-      <motion.div
-        initial={false}
-        animate={isSidebarOpen ? { x: 0 } : { x: -48 }}
-        transition={{ duration: 0.2, bounce: 0 }}
-        className='max-w-[44rem] w-[44rem] align-bottom px-4 py-6 flex flex-col bg-white'
+    <div className='h-screen mx-auto w-full md:w-[672px] md:max-w-[672px] md:min-w-[672px] flex justify-center'>
+      <div
+        className={`${
+          isSidebarOpen ? '' : 'md:-translate-x-12'
+        } w-full py-6 px-4 flex flex-col bg-white duration-150 ease-in-out transition-transform`}
+        // style={{ transition: 'position 3s ease' }}
       >
-        <div className='mb-6 flex items-center gap-2'>
-          <h2 className='font-bold text-xl'>Inbox</h2>
-        </div>
+        {children}
 
-        <TodosList todos={todos.inbox} />
+        <TodosList todos={todos} />
 
-        {/* <div onClick={openAddTodoItem} className='flex-center'> */}
         {isAddTodoItemOpen && !editingTodoId ? (
-          <AddTodoItem project={'inbox'} />
+          <AddTodoItem project={'today'} date={new Date()} />
         ) : (
           <div
             onClick={openAddTodoItem}
@@ -50,8 +53,7 @@ export const Inbox = () => {
             </span>
           </div>
         )}
-        {/* </div> */}
-      </motion.div>
+      </div>
     </div>
   );
 };

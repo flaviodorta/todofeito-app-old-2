@@ -8,6 +8,7 @@ import {
   isSaturday,
   lastDayOfMonth,
 } from 'date-fns';
+import React from 'react';
 
 export const getWeekNumber = (day: Date) => {
   const firstDayOfTheYear = new Date(day.getFullYear(), 0, 1);
@@ -63,3 +64,14 @@ export const reorder = <T>(list: T[], startIndex: number, endIndex: number) => {
 
   return result;
 };
+
+export const onKeyUpEnter =
+  <T extends () => void, E extends HTMLElement = HTMLElement>(
+    cb: T,
+    ref: React.RefObject<E>
+  ) =>
+  (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter' && document.activeElement === ref.current) {
+      cb();
+    }
+  };

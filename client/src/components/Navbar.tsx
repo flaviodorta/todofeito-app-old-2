@@ -11,6 +11,7 @@ import {
 } from './Icons';
 import { useState } from 'react';
 import { DropdownButtons } from './DropdownButtons';
+import { useNavigate } from 'react-router-dom';
 
 export type INavbarButtonClicked = '' | 'user-icon';
 
@@ -24,6 +25,7 @@ export const Navbar = (props: INavbarProps) => {
   const { fullName, email } = useUserStore();
   const [buttonClicked, setButtonClicked] = useState<INavbarButtonClicked>('');
   const { isSidebarOpen, toggleSidebar, toggleAddTodoModal } = props;
+  const navigate = useNavigate();
 
   const fullNameSplitted = fullName.split(' ');
   const firstName = fullNameSplitted[0];
@@ -36,21 +38,27 @@ export const Navbar = (props: INavbarProps) => {
     setButtonClicked(buttonClicked);
 
   return (
-    <nav className='navbar'>
+    <nav className='navbar z-60'>
       <div className='navbar-buttons-wrapper'>
         {/* sidebar icon */}
         <button onClick={toggleSidebar} className='group navbar-button group'>
           <SidebarIcon className='navbar-icon' />
           <Label
             content={isSidebarOpen ? 'Close menu' : 'Open menu'}
-            className='hidden group-hover:block '
+            className='hidden sm:group-hover:block '
           />
         </button>
 
         {/* home icon */}
-        <button className='group navbar-button group'>
+        <button
+          onClick={() => navigate('/inbox')}
+          className='group navbar-button group'
+        >
           <HomeIcon className='navbar-icon w-[20px] h-[20px]' />
-          <Label content='Go to home' className='hidden group-hover:block ' />
+          <Label
+            content='Go to home'
+            className='hidden sm:group-hover:block '
+          />
         </button>
 
         {/* search bar */}
@@ -64,7 +72,7 @@ export const Navbar = (props: INavbarProps) => {
           className='group navbar-button group'
         >
           <AddTodoIcon className='navbar-icon' />
-          <Label content='Add todo' className='hidden group-hover:block' />
+          <Label content='Add todo' className='hidden sm:group-hover:block' />
         </button>
 
         {/* user icon */}
@@ -77,7 +85,7 @@ export const Navbar = (props: INavbarProps) => {
           {buttonClicked !== 'user-icon' && (
             <Label
               content='Open profile menu'
-              className='hidden group-hover:block  -left-1'
+              className='hidden sm:group-hover:block  -left-1'
             />
           )}
           {/* dropdow user icon */}
