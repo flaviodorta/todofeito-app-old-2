@@ -79,6 +79,7 @@ export const userStore = create<IUserStore>((set, get) => ({
           : project
       ),
     })),
+
   reorderTodos: (todos: ITodo[], startIndex: number, endIndex: number) =>
     set((state) => ({
       ...state,
@@ -94,16 +95,6 @@ export const userStore = create<IUserStore>((set, get) => ({
           : project
       ),
     })),
-  // set((state) => ({
-  //   ...state,
-  //   todos: {
-  //     ...state.todos,
-  //     [`${todos[0].project}`]: {
-  //       ...state.todos[`${todos[0].project}`],
-  //       todos: reorder(todos, startIndex, endIndex),
-  //     },
-  //   },
-  // })),
 
   addTodo: (todo: ITodo) =>
     set((state) => ({
@@ -120,18 +111,7 @@ export const userStore = create<IUserStore>((set, get) => ({
           : project
       ),
     })),
-  // set((state) => ({
-  //   ...state,
-  //   todos: {
-  //     ...state.todos,
-  //     [`${todo.project}`]: {
-  //       ...state.todos[`${todo.project}`],
-  //       todos: state.todos[`${todo.project}`].todos.map((t) => {
-  //         return t.id === todo.id ? todo : t;
-  //       }),
-  //     },
-  //   },
-  // }))
+
   completeTodo: (todo: ITodo) => {
     const completedTodo = get()
       .projects.filter((project) => project.id === todo.project.id)[0]
@@ -157,19 +137,6 @@ export const userStore = create<IUserStore>((set, get) => ({
     }));
   },
 
-  // set((state) => ({
-  //   ...state,
-  //   todos: {
-  //     ...state.todos,
-  //     // completed: [...state.todos.completed, todo],
-  //     [`${todo.project}`]: {
-  //       ...state.todos[`${todo.project}`],
-  //       todos: state.todos[`${todo.project}`].todos.filter(
-  //         (t) => t.id !== todo.id
-  //       ),
-  //     },
-  //   },
-  // }))
   createLabel: (name: string, color: { name: string; class: string }) =>
     set((state) => ({
       ...state,

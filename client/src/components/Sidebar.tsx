@@ -144,7 +144,7 @@ export const Sidebar = (props: ISidebarProps) => {
             variants={projectsWrapper}
             className='w-full flex flex-col py-2 pl-4'
           >
-            {projects.map((p) => (
+            {projects.slice(4).map((p) => (
               <motion.div
                 onClick={() => navigate(`/${p.name}`)}
                 className='hover:bg-gray-200 group h-fit rounded-md p-1.5 w-full overflow-hidden'

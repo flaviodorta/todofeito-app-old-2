@@ -37,113 +37,110 @@ export const TodosList = ({ todos }: ITodosListProps) => {
     )
       return;
 
-    setPlaceholderProps({
-      clientHeight: 0,
-      clientWidth: 0,
-      clientY: 0,
-      clientX: 0,
-    });
+    // setPlaceholderProps({
+    //   clientHeight: 0,
+    //   clientWidth: 0,
+    //   clientY: 0,
+    //   clientX: 0,
+    // });
 
     reorderTodos(todos, source.index, destination.index);
   };
 
-  const queryAttr = 'data-rbd-drag-handle-draggable-id';
+  // const queryAttr = 'data-rbd-drag-handle-draggable-id';
 
-  const getDraggedDom = (draggableId: string) => {
-    const domQuery = `[${queryAttr}='${draggableId}']`;
-    const draggedDOM = document.querySelector(domQuery);
+  // const getDraggedDom = (draggableId: string) => {
+  //   const domQuery = `[${queryAttr}='${draggableId}']`;
+  //   const draggedDOM = document.querySelector(domQuery);
 
-    return draggedDOM;
-  };
+  //   return draggedDOM;
+  // };
 
-  const handleDragStart = (event: DragStart) => {
-    const draggedDOM = getDraggedDom(event.draggableId);
+  // const handleDragStart = (event: DragStart) => {
+  // const draggedDOM = getDraggedDom(event.draggableId);
+  // if (!draggedDOM) return;
+  // const { clientHeight, clientWidth } = draggedDOM;
+  // const sourceIndex = event.source.index;
+  // var clientY =
+  //   parseFloat(
+  //     window.getComputedStyle(draggedDOM.parentNode as HTMLElement).paddingTop
+  //   ) +
+  //   [...(draggedDOM.parentNode as HTMLElement).children]
+  //     .slice(0, sourceIndex)
+  //     .reduce((total, curr) => {
+  //       const style = window.getComputedStyle(curr);
+  //       const marginBottom = parseFloat(style.marginBottom);
+  //       return total + curr.clientHeight + marginBottom;
+  //     }, 0);
+  // setPlaceholderProps({
+  //   clientHeight,
+  //   clientWidth,
+  //   clientY,
+  //   clientX: parseFloat(
+  //     window.getComputedStyle(draggedDOM.parentNode as HTMLElement)
+  //       .paddingLeft
+  //   ),
+  // });
+  // };
 
-    if (!draggedDOM) return;
+  // const handleDragUpdate = (event: DropResult) => {
+  //   if (!event.destination) {
+  //     return;
+  //   }
 
-    const { clientHeight, clientWidth } = draggedDOM;
-    const sourceIndex = event.source.index;
-    var clientY =
-      parseFloat(
-        window.getComputedStyle(draggedDOM.parentNode as HTMLElement).paddingTop
-      ) +
-      [...(draggedDOM.parentNode as HTMLElement).children]
-        .slice(0, sourceIndex)
-        .reduce((total, curr) => {
-          const style = window.getComputedStyle(curr);
-          const marginBottom = parseFloat(style.marginBottom);
-          return total + curr.clientHeight + marginBottom;
-        }, 0);
+  //   const draggedDOM = getDraggedDom(event.draggableId);
 
-    setPlaceholderProps({
-      clientHeight,
-      clientWidth,
-      clientY,
-      clientX: parseFloat(
-        window.getComputedStyle(draggedDOM.parentNode as HTMLElement)
-          .paddingLeft
-      ),
-    });
-  };
+  //   if (!draggedDOM) {
+  //     return;
+  //   }
 
-  const handleDragUpdate = (event: DropResult) => {
-    if (!event.destination) {
-      return;
-    }
+  //   const { clientHeight, clientWidth } = draggedDOM;
+  //   const destinationIndex = event.destination.index;
+  //   const sourceIndex = event.source.index;
 
-    const draggedDOM = getDraggedDom(event.draggableId);
+  //   const childrenArray = [...(draggedDOM.parentNode as Element).children];
+  //   const movedItem = childrenArray[sourceIndex];
+  //   childrenArray.splice(sourceIndex, 1);
 
-    if (!draggedDOM) {
-      return;
-    }
+  //   const updatedArray = [
+  //     ...childrenArray.slice(0, destinationIndex),
+  //     movedItem,
+  //     ...childrenArray.slice(destinationIndex + 1),
+  //   ];
 
-    const { clientHeight, clientWidth } = draggedDOM;
-    const destinationIndex = event.destination.index;
-    const sourceIndex = event.source.index;
+  //   var clientY =
+  //     parseFloat(
+  //       window.getComputedStyle(draggedDOM.parentNode as Element).paddingTop
+  //     ) +
+  //     updatedArray.slice(0, destinationIndex).reduce((total, curr) => {
+  //       const style = window.getComputedStyle(curr);
+  //       const marginBottom = parseFloat(style.marginBottom);
+  //       return total + curr.clientHeight + marginBottom;
+  //     }, 0);
 
-    const childrenArray = [...(draggedDOM.parentNode as Element).children];
-    const movedItem = childrenArray[sourceIndex];
-    childrenArray.splice(sourceIndex, 1);
-
-    const updatedArray = [
-      ...childrenArray.slice(0, destinationIndex),
-      movedItem,
-      ...childrenArray.slice(destinationIndex + 1),
-    ];
-
-    var clientY =
-      parseFloat(
-        window.getComputedStyle(draggedDOM.parentNode as Element).paddingTop
-      ) +
-      updatedArray.slice(0, destinationIndex).reduce((total, curr) => {
-        const style = window.getComputedStyle(curr);
-        const marginBottom = parseFloat(style.marginBottom);
-        return total + curr.clientHeight + marginBottom;
-      }, 0);
-
-    setPlaceholderProps({
-      clientHeight,
-      clientWidth,
-      clientY,
-      clientX: parseFloat(
-        window.getComputedStyle(draggedDOM.parentNode as Element).paddingLeft
-      ),
-    });
-  };
+  //   setPlaceholderProps({
+  //     clientHeight,
+  //     clientWidth,
+  //     clientY,
+  //     clientX: parseFloat(
+  //       window.getComputedStyle(draggedDOM.parentNode as Element).paddingLeft
+  //     ),
+  //   });
+  // };
 
   return (
     <div className='mb-4'>
       <DragDropContext
-        onDragStart={handleDragStart}
+        // onDragStart={handleDragStart}
         onDragEnd={onDragEnd}
-        onDragUpdate={handleDragUpdate}
+        // onDragUpdate={handleDragUpdate}
       >
         <Droppable droppableId='tasks'>
           {(droppableProvided, droppableSnapshot) => (
             <div
               ref={droppableProvided.innerRef}
               {...droppableProvided.droppableProps}
-              className='h-fit relative flex flex-col'
+              className='relative flex flex-col'
             >
               {todos.map((todo, i) => (
                 <Draggable key={todo.id} draggableId={todo.id} index={i}>
@@ -155,25 +152,27 @@ export const TodosList = ({ todos }: ITodosListProps) => {
                         draggableProvided.draggableProps
                           .style as React.CSSProperties
                       }
-                      className={`${
-                        todo.description.length > 0 && editingTodoId !== todo.id
-                          ? 'h-20'
-                          : 'h-16'
-                      } 
-                      ${editingTodoId === todo.id ? 'h-64' : ''}
-                  ${
-                    draggableSnapshot.isDragging
-                      ? 'shadow-dragging-item border-none'
-                      : 'border-b-gray-200 border-b-[1px]'
-                  }
-                  ${draggableSnapshot.isDropAnimating ? 'shadow-lg' : ''}
-                  outline-none
-                  flex-center
-                  transition-shadow
-                  duration-75
-                  rounded-lg
-                  bg-white
-                  `}
+                      className={`
+                        ${
+                          todo.description.length > 0 &&
+                          editingTodoId !== todo.id
+                            ? 'h-20'
+                            : 'h-16'
+                        } 
+                        ${editingTodoId === todo.id ? 'h-64' : ''}
+                        ${
+                          draggableSnapshot.isDragging
+                            ? 'shadow-dragging-item border-none'
+                            : 'border-b-gray-200 border-b-[1px]'
+                        }
+                        ${draggableSnapshot.isDropAnimating ? 'shadow-lg' : ''}
+                        outline-none
+                        flex-center
+                        transition-shadow
+                        duration-75
+                        rounded-lg
+                        bg-white
+                      `}
                     >
                       {editingTodoId === todo.id ? (
                         <div
@@ -204,9 +203,9 @@ export const TodosList = ({ todos }: ITodosListProps) => {
               ))}
 
               {droppableProvided.placeholder}
-              {!isEmpty(placeholderProps) && droppableSnapshot.isDraggingOver && (
+              {/* {!isEmpty(placeholderProps) && droppableSnapshot.isDraggingOver && (
                 <div
-                  className='bg-transparent absolute'
+                  className='bg-black absolute'
                   style={{
                     top: placeholderProps.clientY,
                     left: placeholderProps.clientX,
@@ -214,7 +213,7 @@ export const TodosList = ({ todos }: ITodosListProps) => {
                     width: placeholderProps.clientWidth,
                   }}
                 />
-              )}
+              )} */}
             </div>
           )}
         </Droppable>
