@@ -10,6 +10,7 @@ import { motion } from 'framer-motion';
 import { PenSolidIcon } from './Icons/Icons/PenSolidIcon';
 import { DatePicker } from './DatePicker';
 import { DraggableProvided } from 'react-beautiful-dnd';
+import { useEventListener } from '../hooks/useEventListener';
 
 type ITodoItem = {
   todo: ITodo;
@@ -54,6 +55,8 @@ export const TodoItem = ({ todo, draggableProvided }: ITodoItem) => {
   useEffect(() => {
     toggleHoverOff();
   }, [selectedDate]);
+
+  useEventListener('blur', () => setRenderedSelect(null));
 
   const checkTodo = () => {
     setChecked(true);
