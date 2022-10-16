@@ -26,7 +26,7 @@ interface IAddTodoItemProps {
   id?: string;
   title?: string;
   description?: string;
-  project: string;
+  project: { id: string; name: string };
   priority?: number;
   labels?: string[];
   checkedLabels?: string[];
@@ -44,7 +44,7 @@ export const AddTodoItem = (props: IAddTodoItemProps) => {
     checkedLabels,
     labels,
   } = props;
-  const { addTodo, editTodo, todos } = useUserStore();
+  const { addTodo, editTodo, projects } = useUserStore();
   const { closeIsAddTodoItemOpen, editingTodoId, setEditingTodoId } =
     useUIStore();
 
@@ -170,8 +170,11 @@ export const AddTodoItem = (props: IAddTodoItemProps) => {
     setInputs((state) => ({ ...state, title }));
   const setDescription = (description: string) =>
     setInputs((state) => ({ ...state, description }));
-  const setSelectedProject = (selectedProject: string) =>
-    setInputs((state) => ({ ...state, selectedProject }));
+  const setSelectedProject = (selectedProjectName: string) =>
+    setInputs((state) => ({
+      ...state,
+      selectedProject: { ...state.selectedProject, name: selectedProjectName },
+    }));
   const setSelectedPriority = (selectedPriority: number) =>
     setInputs((state) => ({ ...state, selectedPriority }));
   const setSelectedDate = (selectedDate: Date) =>
@@ -190,13 +193,7 @@ export const AddTodoItem = (props: IAddTodoItemProps) => {
     titleInputRef?.current?.focus();
   }, []);
 
-  const projects = [
-    'inbox',
-    'today',
-    'upcoming',
-    'labels',
-    ...Object.keys(todos.projects),
-  ];
+  const projectsNames = projects.map((project) => project.name);
 
   return (
     <>
@@ -285,13 +282,13 @@ export const AddTodoItem = (props: IAddTodoItemProps) => {
                 />
 
                 <span className='text-xs capitalize'>
-                  {inputs.selectedProject}
+                  {inputs.selectedProject.name}
                 </span>
 
                 {renderedSelect === 'project-select' && (
                   <SelectProject
-                    projects={projects}
-                    selectedProject={inputs.selectedProject}
+                    projects={projectsNames}
+                    selectedProject={inputs.selectedProject.name}
                     setSelectedProject={setSelectedProject}
                     closeSelect={closeSelect}
                   />

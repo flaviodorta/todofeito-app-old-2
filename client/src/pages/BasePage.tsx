@@ -55,40 +55,38 @@ export const BasePage = ({ content }: { content: React.ReactNode }) => {
         )}
       </AnimatePresence>
 
-      <Sidebar toggleCreateProjectModalOpen={toggleCreateProjectModalOpen} />
+      <div className='h-full w-full pt-12'>
+        <Sidebar toggleCreateProjectModalOpen={toggleCreateProjectModalOpen} />
 
-      <div className='w-full h-full flex'>
-        <motion.div
-          initial={false}
-          animate={
-            isSidebarOpen && !isMinorThanLargeScreen
-              ? { width: '100%', minWidth: '306px' }
-              : { width: 0, minWidth: 0 }
-          }
-          transition={{ duration: 0.35, bounce: 0 }}
-          // style={{ minWidth: '306px' }}
-          className='bg-transparent'
-        />
-        {/* <div className='min-w-[306px] w-full bg-red-600' /> */}
-        {content}
-        {/* <div
-          style={{ transition: 'width 350ms ease' }}
-          className='w-full bg-red-600 duration-[350ms] transition-width'
-        /> */}
-        <motion.div
-          initial={false}
-          animate={
-            isSidebarOpen && !isMinorThanLargeScreen
-              ? {
-                  width: '100%',
-                }
-              : {
-                  width: 0,
-                }
-          }
-          transition={{ duration: 0.35, bounce: 0 }}
-          className='w-full bg-transparent'
-        />
+        <div className='w-full h-full flex'>
+          <motion.div
+            initial={false}
+            animate={
+              isSidebarOpen && !isMinorThanLargeScreen
+                ? { width: '100%', minWidth: '306px' }
+                : { width: 0, minWidth: 0 }
+            }
+            transition={{ duration: 0.35, bounce: 0 }}
+            className='bg-transparent'
+          />
+
+          {content}
+
+          <motion.div
+            initial={false}
+            animate={
+              isSidebarOpen && !isMinorThanLargeScreen
+                ? {
+                    width: '100%',
+                  }
+                : {
+                    width: 0,
+                  }
+            }
+            transition={{ duration: 0.35, bounce: 0 }}
+            className='w-full bg-transparent'
+          />
+        </div>
       </div>
     </>
   );

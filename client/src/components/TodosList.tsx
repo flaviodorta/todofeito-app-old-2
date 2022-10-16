@@ -132,7 +132,7 @@ export const TodosList = ({ todos }: ITodosListProps) => {
   };
 
   return (
-    <div className='h-fit mb-4'>
+    <div className='mb-4'>
       <DragDropContext
         onDragStart={handleDragStart}
         onDragEnd={onDragEnd}
@@ -171,6 +171,8 @@ export const TodosList = ({ todos }: ITodosListProps) => {
                   flex-center
                   transition-shadow
                   duration-75
+                  rounded-lg
+                  bg-white
                   `}
                     >
                       {editingTodoId === todo.id ? (

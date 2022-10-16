@@ -22,30 +22,32 @@ export interface Country {
   };
 }
 
+type IProjectType = 'inbox' | 'today' | 'upcoming' | 'labels' | 'projects';
+
+export interface IProject {
+  id: string;
+  type: IProjectType;
+  name: string;
+  color: {
+    name: string;
+    class: string;
+  };
+  todos: {
+    completed: ITodo[];
+    toComplete: ITodo[];
+  };
+}
+
 export interface IUserStore {
   fullName: string;
   email: string;
-  todos: {
-    completed: ITodo[];
-    inbox: ITodo[];
-    today: ITodo[];
-    upcoming: ITodo[];
-    labels: ITodo[];
-    projects: {
-      [key: string]: {
-        color: {
-          name: string;
-          class: string;
-        };
-        todos: ITodo[];
-      };
-    };
-  };
+  projects: IProject[];
   reorderTodos: (todos: ITodo[], startIndex: number, endIndex: number) => void;
   addTodo: (todo: ITodo) => void;
   editTodo: (todo: ITodo) => void;
   completeTodo: (todo: ITodo) => void;
   createProject: (name: string, color: { name: string; class: string }) => void;
+  createLabel: (name: string, color: { name: string; class: string }) => void;
 }
 
 export interface IDay {
@@ -148,7 +150,7 @@ export interface ITodo {
   title: string;
   description: string;
   date: Date | null;
-  project: string;
+  project: { id: string; name: string };
   labels: string[];
   priority: number;
   checkedLabels: string[];

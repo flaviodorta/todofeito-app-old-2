@@ -14,7 +14,7 @@ interface ICreateProjectModalProps {
 export const CreateProjectModal = ({
   closeCreateProjectModalOpen,
 }: ICreateProjectModalProps) => {
-  const { todos, createProject } = useUserStore();
+  const { createProject } = useUserStore();
   const [isSelectColorOpen, toggleSelectColor] = useToggle(false);
   const [isSelectColorInputFocused, setIsSelectColorInputFocus] =
     useState(false);

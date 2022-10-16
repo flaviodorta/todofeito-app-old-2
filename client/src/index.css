@@ -4,7 +4,7 @@
 
 @layer base {
   #root {
-    @apply h-screen w-screen relative bg-white font-roboto overflow-hidden;
+    @apply h-screen w-screen relative bg-white font-roboto overflow-x-hidden overflow-y-scroll;
     -webkit-font-smoothing: antialiased;
   }
 
@@ -24,7 +24,7 @@
 
   /* navbar */
   .navbar {
-    @apply w-screen sticky h-12 bg-blue-600 flex justify-between items-center px-2 md:px-10;
+    @apply w-screen fixed h-12 bg-blue-600 flex justify-between items-center px-2 md:px-10;
   }
 
   .navbar-buttons-wrapper {

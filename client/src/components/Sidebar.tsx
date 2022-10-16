@@ -27,7 +27,7 @@ export const Sidebar = (props: ISidebarProps) => {
     toggleSidebar,
   } = useUIStore();
   const { toggleCreateProjectModalOpen } = props;
-  const { todos } = useUserStore();
+  const { projects } = useUserStore();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -36,7 +36,16 @@ export const Sidebar = (props: ISidebarProps) => {
     navigate(path);
   };
 
-  const projects = Object.entries(todos.projects);
+  // const projects = Object.entries(todos);
+
+  const inboxLength = projects.filter((p) => p.type === 'inbox')[0].todos
+    .toComplete.length;
+  const todayLength = projects.filter((p) => p.type === 'today')[0].todos
+    .toComplete.length;
+  const upcomingLength = projects.filter((p) => p.type === 'upcoming')[0].todos
+    .toComplete.length;
+  const labelsLength = projects.filter((p) => p.type === 'labels')[0].todos
+    .toComplete.length;
 
   return (
     // <Resizable height={100} width={326}>
@@ -66,9 +75,7 @@ export const Sidebar = (props: ISidebarProps) => {
           >
             <InboxSolidIcon className='fill-blue-600' />
             <span className='text-gray-800 text-sm'>Inbox</span>
-            <span className='ml-auto text-gray-600 text-sm'>
-              {todos.inbox.length}
-            </span>
+            <span className='ml-auto text-gray-600 text-sm'>{inboxLength}</span>
           </div>
 
           <div
@@ -79,9 +86,7 @@ export const Sidebar = (props: ISidebarProps) => {
           >
             <CalendarRegularIcon className='fill-emerald-500' />
             <span className='text-gray-800 text-sm '>Today</span>
-            <span className='ml-auto text-gray-600 text-sm'>
-              {todos.today.length}
-            </span>
+            <span className='ml-auto text-gray-600 text-sm'>{todayLength}</span>
           </div>
 
           <div
@@ -93,7 +98,7 @@ export const Sidebar = (props: ISidebarProps) => {
             <CalendarDaysSolidIcon className='fill-orange-600' />
             <span className='text-gray-800 text-sm '>Upcoming</span>
             <span className='ml-auto text-gray-600 text-sm'>
-              {todos.upcoming.length}
+              {upcomingLength}
             </span>
           </div>
 
@@ -106,7 +111,7 @@ export const Sidebar = (props: ISidebarProps) => {
             <LabelIcon className='fill-violet-700' />
             <span className='text-gray-800 text-sm '>Labels</span>
             <span className='ml-auto text-gray-600 text-sm'>
-              {todos.labels.length}
+              {labelsLength}
             </span>
           </div>
         </div>
@@ -139,17 +144,19 @@ export const Sidebar = (props: ISidebarProps) => {
             variants={projectsWrapper}
             className='w-full flex flex-col py-2 pl-4'
           >
-            {projects.map(([projectName, { color }]) => (
+            {projects.map((p) => (
               <motion.div
-                onClick={() => navigate(`/${projectName}`)}
+                onClick={() => navigate(`/${p.name}`)}
                 className='hover:bg-gray-200 group h-fit rounded-md p-1.5 w-full overflow-hidden'
               >
                 <motion.div
                   variants={project}
                   className='flex cursor-pointer items-center gap-4'
                 >
-                  <span className={`w-2.5 h-2.5 rounded-full ${color.class}`} />
-                  <span className='text-sm'>{projectName}</span>
+                  <span
+                    className={`w-2.5 h-2.5 rounded-full ${p.color.class}`}
+                  />
+                  <span className='text-sm'>{p.name}</span>
                   <MoreThreeDotsIcon className='group-hover:opacity-100 hover:fill-gray-600 opacity-0 duration-100 transition-all fill-gray-400 ml-auto' />
                   {/* edit project dropdown */}
                 </motion.div>

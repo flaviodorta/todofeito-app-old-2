@@ -65,7 +65,7 @@ export const TodoItem = ({ todo, draggableProvided }: ITodoItem) => {
   return (
     <>
       <div
-        className='relative w-full h-fit p-2 bg-white rounded-md'
+        className='relative w-full h-fit p-2'
         onMouseEnter={toggleHoverOn}
         onMouseLeave={toggleHoverOff}
       >
@@ -91,7 +91,7 @@ export const TodoItem = ({ todo, draggableProvided }: ITodoItem) => {
           </div>
         </div>
         <div className='w-full gap-1 flex pt-2 justify-end items-center h-fit text-xs color-gray-400'>
-          <span className='capitalize'>{todo.project}</span>
+          <span className='capitalize'>{todo.project.name}</span>
           <InboxSolidIcon className='fill-blue-600 w-3 h-3' />
         </div>
 

@@ -31,12 +31,15 @@ interface IAddTodoModalProps {
 export const AddTodoModal = (props: IAddTodoModalProps) => {
   const { closeAddTodoModal } = props;
 
-  const { addTodo, todos } = useUserStore();
+  const { addTodo, projects } = useUserStore();
 
   const [inputs, setInputs] = useState({
     title: '',
     description: '',
-    selectedProject: 'inbox',
+    selectedProject: {
+      id: 'inbox',
+      name: 'inbox',
+    },
     selectedPriority: 4,
     selectedDate: new Date(),
     labels: [
@@ -138,8 +141,11 @@ export const AddTodoModal = (props: IAddTodoModalProps) => {
     setInputs((state) => ({ ...state, title }));
   const setDescription = (description: string) =>
     setInputs((state) => ({ ...state, description }));
-  const setSelectedProject = (selectedProject: string) =>
-    setInputs((state) => ({ ...state, selectedProject }));
+  const setSelectedProject = (selectedProjectName: string) =>
+    setInputs((state) => ({
+      ...state,
+      selectedProject: { ...state.selectedProject, name: selectedProjectName },
+    }));
   const setSelectedPriority = (selectedPriority: number) =>
     setInputs((state) => ({ ...state, selectedPriority }));
   const setSelectedDate = (selectedDate: Date) =>
@@ -167,13 +173,7 @@ export const AddTodoModal = (props: IAddTodoModalProps) => {
     titleInputRef?.current?.focus();
   }, []);
 
-  const projects = [
-    'inbox',
-    'today',
-    'upcoming',
-    'labels',
-    ...Object.keys(todos.projects),
-  ];
+  const projectsNames = projects.map((project) => project.name);
 
   return (
     <>
@@ -267,13 +267,15 @@ export const AddTodoModal = (props: IAddTodoModalProps) => {
                 className='fill-sky-600 -translate-y-[1px]'
               />
               <span className='text-xs capitalize'>
-                {inputs.selectedProject ? inputs.selectedProject : 'Inbox'}
+                {inputs.selectedProject.name
+                  ? inputs.selectedProject.name
+                  : 'Inbox'}
               </span>
 
               {renderedSelect === 'project-select' && (
                 <SelectProject
-                  projects={projects}
-                  selectedProject={inputs.selectedProject}
+                  projects={projectsNames}
+                  selectedProject={inputs.selectedProject.name}
                   setSelectedProject={setSelectedProject}
                   closeSelect={closeSelect}
                 />

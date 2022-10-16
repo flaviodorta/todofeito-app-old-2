@@ -9,10 +9,13 @@
 
 # to do
 
+- create date picker for upcoming page
+- add upcoming, labels and projects content
 - edit project dropdown
 - search todo
-- add labels modal
+- add labels function
 - user settings modal
 - add persist to zustand
 - add sidebar resizable (react-resizable)
+- fix todo list dragg
 - fix todo list placeholder
