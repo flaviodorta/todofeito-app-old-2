@@ -12,6 +12,7 @@ export const SelectProjectOption = (
   props: ISelectProjectOptionProps
 ): JSX.Element => {
   const { project, selectedProject, setSelectedProject, closeSelect } = props;
+
   return (
     <div
       onClick={() => {
@@ -58,7 +59,7 @@ export const SelectProject = (props: ISelectProjectProps) => {
             className='w-full border-b-[1px] py-2 px-2 outline-none text-[13px] placeholder:text-gray-400'
           />
         </div>
-        <div className='dropdown-select overflow-y-scroll h-32 w-full'>
+        <div className='dropdown-select overflow-y-scroll h-fit w-full'>
           {projects.map((project, i) => (
             <Fragment key={i}>
               <SelectProjectOption

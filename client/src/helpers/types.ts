@@ -26,29 +26,43 @@ type IProjectType = 'inbox' | 'today' | 'upcoming' | 'labels' | 'projects';
 
 export interface IProject {
   id: string;
-  type: IProjectType;
   name: string;
   color: {
     name: string;
     class: string;
   };
-  todos: {
-    completed: ITodo[];
-    toComplete: ITodo[];
-  };
+}
+
+export interface ILabel {
+  id: string;
+  name: string;
 }
 
 export interface IUserStore {
   fullName: string;
   email: string;
+  todos: ITodo[];
   projects: IProject[];
-  reorderTodos: (todos: ITodo[], startIndex: number, endIndex: number) => void;
+  labels: ILabel[];
   addTodo: (todo: ITodo) => void;
+  removeTodo: (todo: ITodo) => void;
   editTodo: (todo: ITodo) => void;
   completeTodo: (todo: ITodo) => void;
-  createProject: (name: string, color: { name: string; class: string }) => void;
-  createLabel: (name: string, color: { name: string; class: string }) => void;
+  createProject: (project: IProject) => void;
+  createLabel: (label: ILabel) => void;
 }
+
+// export interface IUserStore {
+//   fullName: string;
+//   email: string;
+//   projects: IProject[];
+//   reorderTodos: (todos: ITodo[], startIndex: number, endIndex: number) => void;
+//   addTodo: (todo: ITodo) => void;
+//   editTodo: (todo: ITodo) => void;
+//   completeTodo: (todo: ITodo) => void;
+//   createProject: (name: string, color: { name: string; class: string }) => void;
+//   createLabel: (name: string, color: { name: string; class: string }) => void;
+// }
 
 export interface IDay {
   nameInWeek: string;
@@ -150,9 +164,9 @@ export interface ITodo {
   title: string;
   description: string;
   date: Date | null;
-  project: { id: string; name: string };
+  project: Pick<IProject, 'id' | 'name'>;
   labels: string[];
   priority: number;
   checkedLabels: string[];
-  completed: boolean;
+  isCompleted: boolean;
 }

@@ -106,7 +106,7 @@ export const AddTodoModal = (props: IAddTodoModalProps) => {
     priority: inputs.selectedPriority,
     project: inputs.selectedProject,
     checkedLabels: inputs.checkedLabels,
-    completed: false,
+    isCompleted: false,
   };
 
   const sendTodo = () => {

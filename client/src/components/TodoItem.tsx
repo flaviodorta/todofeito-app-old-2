@@ -13,6 +13,7 @@ import { DraggableProvided, DraggableStateSnapshot } from 'react-beautiful-dnd';
 import { useEventListener } from '../hooks/useEventListener';
 import { getDayNumberInMonth, getMonthName } from '../helpers/functions';
 import { language } from '../helpers/constants';
+import { isToday } from 'date-fns';
 
 type ITodoItem = {
   todo: ITodo;
@@ -25,10 +26,10 @@ export const TodoItem = ({
   draggableProvided,
   draggableSnapshot,
 }: ITodoItem) => {
-  const { completeTodo } = useUserStore();
+  const { completeTodo, editTodo } = useUserStore();
   const { setEditingTodoId, editingTodoId } = useUIStore();
 
-  const [checked, setChecked] = useState(todo.completed);
+  const [checked, setChecked] = useState(todo.isCompleted);
   const [isHover, setIsHover] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | null>(
     todo.date ? todo.date : null
@@ -49,6 +50,14 @@ export const TodoItem = ({
   const toggleHoverOff = () => {
     setIsHover(false);
   };
+
+  useEffect(() => {
+    const editDate = () => {
+      editTodo({ ...todo, date: selectedDate });
+    };
+
+    editDate();
+  }, [selectedDate]);
 
   // const containerRef = useRef<HTMLDivElement>(null);
 
@@ -100,10 +109,6 @@ export const TodoItem = ({
       onMouseEnter={toggleHoverOn}
       onMouseLeave={toggleHoverOff}
     >
-      {/* <div className='w-full bg-green-600 sticky top-24 h-max z-30'>
-        {todo.title}
-      </div> */}
-
       <div className='flex relative w-full'>
         <motion.input
           animate={checked ? { scale: [1, 1.3, 1] } : {}}
@@ -126,6 +131,7 @@ export const TodoItem = ({
           </span>
         </div>
       </div>
+
       <div className='w-full gap-1 flex pt-2 justify-between items-center h-fit text-xs color-gray-400'>
         <div
           onClick={openDatePicker}
@@ -142,11 +148,11 @@ export const TodoItem = ({
           />
 
           <span className='text-xs capitalize'>
-            {selectedDate
-              ? `${getMonthName(selectedDate, language)} ${getDayNumberInMonth(
+            {selectedDate && isToday(selectedDate)
+              ? 'Today'
+              : `${getMonthName(selectedDate, language)} ${getDayNumberInMonth(
                   selectedDate
-                )}`
-              : 'Due data'}
+                )}`}
           </span>
 
           {renderedSelect === 'date-picker' && (
@@ -184,24 +190,6 @@ export const TodoItem = ({
           >
             <PenSolidIcon className='fill-gray-400 group-hover:fill-gray-500' />
           </span>
-          {/* <span
-            className={`${
-              renderedSelect ? 'cursor-default' : 'cursor-pointer'
-            } group relative mini-button-option group-hover:opacity-100`}
-            onClick={openDatePicker}
-          >
-            <CalendarRegularIcon className='fill-gray-400 group-hover:fill-gray-500' />
-
-            {renderedSelect === 'date-picker' && (
-              <DatePicker
-                closeSelect={closeSelect}
-                selectedDate={selectedDate}
-                setSelectedDate={setSelectedDate}
-                parentRef={dueDateRef}
-                className='-left-24'
-              />
-            )}
-          </span> */}
         </div>
       )}
     </div>

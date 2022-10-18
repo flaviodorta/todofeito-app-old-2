@@ -67,7 +67,7 @@ export const SelectLabel = (props: ISelectLabelProps) => {
   return (
     <>
       <Backdrop close={closeSelect} />
-      <div className='top-9 absolute shadow-3xl border-[1px] border-gray-200 overflow-hidden z-60 rounded-sm -translate-x-24 w-[340px] sm:w-fit h-fit bg-white'>
+      <div className='top-9 absolute shadow-3xl border-[1px] border-gray-200 overflow-hidden z-60 rounded-sm  min-w-[140px]  bg-white'>
         <div className='h-fit'>
           <input
             placeholder='Type a label'
@@ -75,17 +75,21 @@ export const SelectLabel = (props: ISelectLabelProps) => {
             className='w-full border-b-[1px] py-2 px-2 outline-none text-[13px] placeholder:text-gray-400'
           />
         </div>
-        <div className='dropdown-select overflow-y-scroll h-32 w-full'>
-          {labels.map((label, i) => (
-            <Fragment key={i}>
-              <SelectLabelOption
-                label={label}
-                checkedLabels={checkedLabels}
-                addCheckedLabel={addCheckedLabel}
-                removeCheckedLabel={removeCheckedLabel}
-              />
-            </Fragment>
-          ))}
+        <div className='dropdown-select overflow-y-scroll h-fit w-full'>
+          {labels.length === 0 ? (
+            <span className='text-xs px-2 text-gray-500'>No labels</span>
+          ) : (
+            labels.map((label, i) => (
+              <Fragment key={i}>
+                <SelectLabelOption
+                  label={label}
+                  checkedLabels={checkedLabels}
+                  addCheckedLabel={addCheckedLabel}
+                  removeCheckedLabel={removeCheckedLabel}
+                />
+              </Fragment>
+            ))
+          )}
         </div>
       </div>
     </>

@@ -7,7 +7,7 @@ import { Sidebar } from '../components/Sidebar';
 import { CreateProjectModal } from '../components/CreateProjectModal';
 import useWindowSize from '../hooks/useWindowSize';
 import { useEventListener } from '../hooks/useEventListener';
-import { useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 
 export const BasePage = ({ content }: { content: React.ReactNode }) => {
@@ -35,6 +35,16 @@ export const BasePage = ({ content }: { content: React.ReactNode }) => {
     }
   });
 
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  const scrollWidth = useMemo(() => {
+    if (!contentRef?.current) return;
+
+    const el = contentRef.current;
+
+    return el.offsetWidth - el.clientWidth;
+  }, [contentRef]);
+
   return (
     <>
       <Navbar
@@ -57,7 +67,10 @@ export const BasePage = ({ content }: { content: React.ReactNode }) => {
 
       <Sidebar toggleCreateProjectModalOpen={toggleCreateProjectModalOpen} />
 
-      <div className='fixed top-12 right-0 left-0 h-full overflow-y-auto'>
+      <div
+        ref={contentRef}
+        className={`${scrollWidth} fixed top-12 right-0 left-0 h-full overflow-y-auto`}
+      >
         {content}
       </div>
     </>

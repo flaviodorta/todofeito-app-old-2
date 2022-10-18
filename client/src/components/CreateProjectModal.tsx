@@ -6,6 +6,8 @@ import { useToggle } from '../hooks/useToggle';
 import { useEffect, useRef, useState } from 'react';
 import { useOnClickOutside } from '../hooks/useOnClickOutside';
 import { onKeyUpEnter } from '../helpers/functions';
+import { IProject } from '../helpers/types';
+import { nanoid } from 'nanoid';
 
 interface ICreateProjectModalProps {
   closeCreateProjectModalOpen: () => void;
@@ -29,7 +31,13 @@ export const CreateProjectModal = ({
   const createNewProject = () => {
     if (!projectName) return;
 
-    createProject(projectName, selectedColor);
+    const project: IProject = {
+      id: nanoid(),
+      name: projectName,
+      color: selectedColor,
+    };
+
+    createProject(project);
 
     closeCreateProjectModalOpen();
   };

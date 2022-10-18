@@ -7,10 +7,13 @@
 - create project modal
 - add edit todo mode
 - fix todo list dragg
+- fix todo styles
+- fix todos states organization
 
 # to do
 
 - create date picker for upcoming page
+
 - create section todos
   - use sticky in heading
 - useScrollRatio to take element position

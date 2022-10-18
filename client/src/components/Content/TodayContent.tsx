@@ -1,9 +1,12 @@
-import { IProject } from '../../helpers/types';
-import { useUserStore } from '../../zustand';
+import { isToday } from 'date-fns';
+import { useIsomorphicLayoutEffect } from 'framer-motion';
+import { useMemo } from 'react';
+import { useUIStore, useUserStore } from '../../zustand';
 import { ContentContainer } from './ContentContainer';
 
 export const TodayContent = () => {
-  const { projects } = useUserStore();
+  const { todos } = useUserStore();
+  const { setTodosOnScreen, todosOnScreen } = useUIStore();
 
   const date = new Date();
   const month = date.toLocaleString('en', { month: 'short' });
@@ -12,11 +15,20 @@ export const TodayContent = () => {
   });
   const dayOfMonth = date.getDate();
 
-  const todayTodos = projects.filter((project) => project.id === 'today')[0]
-    .todos.toComplete;
+  const todayTodos = todos.filter(
+    (todo) => isToday(todo.date as Date) && !todo.isCompleted
+  );
+
+  useIsomorphicLayoutEffect(() => {
+    setTodosOnScreen(todayTodos);
+
+    return () => setTodosOnScreen([]);
+  }, [todos]);
+
+  console.log(todosOnScreen);
 
   return (
-    <ContentContainer todos={todayTodos}>
+    <ContentContainer project={{ id: 'inbox', name: 'Inbox' }}>
       <div className='flex w-full items-center gap-2'>
         <h2 className='font-bold text-xl'>Today</h2>
         <p className='text-gray-700 text-xs relative top-[3px] break-words whitespace-nowrap'>

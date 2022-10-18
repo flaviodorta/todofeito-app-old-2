@@ -18,7 +18,7 @@ import { SelectProject } from './Selects/SelectProject';
 import { SelectLabel } from './Selects/SelectLabel';
 import { SelectPriority } from './Selects/SelectPriority';
 import { labelColors, labelHoverColors, language } from '../helpers/constants';
-import { IRenderableElements, ITodo } from '../helpers/types';
+import { IProject, IRenderableElements, ITodo } from '../helpers/types';
 import { useUIStore, useUserStore } from '../zustand';
 import { nanoid } from 'nanoid';
 
@@ -26,7 +26,7 @@ interface IAddTodoItemProps {
   id?: string;
   title?: string;
   description?: string;
-  project: { id: string; name: string };
+  project: Pick<IProject, 'id' | 'name'>;
   priority?: number;
   labels?: string[];
   checkedLabels?: string[];
@@ -119,13 +119,15 @@ export const AddTodoItem = (props: IAddTodoItemProps) => {
     priority: inputs.selectedPriority,
     project: inputs.selectedProject,
     checkedLabels: inputs.checkedLabels,
-    completed: false,
+    isCompleted: false,
   };
 
   const sendEditedTodo = () => {
     if (!inputs.title) return;
 
     editTodo(todo);
+
+    console.log(todo);
 
     setEditingTodoId(null);
   };
@@ -195,9 +197,19 @@ export const AddTodoItem = (props: IAddTodoItemProps) => {
 
   const projectsNames = projects.map((project) => project.name);
 
+  const test = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!test?.current) return;
+
+    test.current.scrollIntoView({ behavior: 'smooth' });
+  }, [renderedSelect]);
+
   return (
     <>
-      <div className='h-fit w-full'>
+      <div
+        ref={test}
+        className={`${renderedSelect ? 'mb-80' : 'mb-48'} h-fit w-full`}
+      >
         <div className='border-gray-300 bg-white border-[1px] p-4 flex flex-col gap-4 h-fit w-full rounded-sm'>
           {/* checkeds labels */}
           {inputs.checkedLabels.length > 0 && (

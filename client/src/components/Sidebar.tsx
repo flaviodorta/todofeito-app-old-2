@@ -14,6 +14,7 @@ import { project, projectsWrapper } from '../helpers/variants';
 import { MoreThreeDotsIcon } from './Icons/Icons/MoreThreeDotsIcon';
 import { isMobile } from 'react-device-detect';
 import { Backdrop } from './Backdrop';
+import { compareDesc, isToday } from 'date-fns';
 
 interface ISidebarProps {
   toggleCreateProjectModalOpen: () => void;
@@ -27,7 +28,7 @@ export const Sidebar = (props: ISidebarProps) => {
     toggleSidebar,
   } = useUIStore();
   const { toggleCreateProjectModalOpen } = props;
-  const { projects } = useUserStore();
+  const { todos, projects } = useUserStore();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -38,14 +39,19 @@ export const Sidebar = (props: ISidebarProps) => {
 
   // const projects = Object.entries(todos);
 
-  const inboxLength = projects.filter((p) => p.type === 'inbox')[0].todos
-    .toComplete.length;
-  const todayLength = projects.filter((p) => p.type === 'today')[0].todos
-    .toComplete.length;
-  const upcomingLength = projects.filter((p) => p.type === 'upcoming')[0].todos
-    .toComplete.length;
-  const labelsLength = projects.filter((p) => p.type === 'labels')[0].todos
-    .toComplete.length;
+  const inboxLength = todos.filter(
+    (todo) => todo.project.name.toLowerCase() === 'inbox' && !todo.isCompleted
+  ).length;
+  const todayLength = todos.filter(
+    (todo) => isToday(todo.date as Date) && !todo.isCompleted
+  ).length;
+  const upcomingLength = todos.filter(
+    (todo) =>
+      compareDesc(todo.date as Date, new Date()) === -1 && !todo.isCompleted
+  ).length;
+  const labelsLength = todos.filter(
+    (todo) => todo.labels.length > 0 && !todo.isCompleted
+  ).length;
 
   return (
     // <Resizable height={100} width={326}>
@@ -126,6 +132,7 @@ export const Sidebar = (props: ISidebarProps) => {
               <PlusSolidIcon className='fill-gray-500 group-hover:fill-gray-600' />
               {/* create project modal */}
             </span>
+
             <span
               onClick={toggleSidebarProjects}
               className='group cursor-pointer w-6 h-6 rounded-sm hover:bg-gray-200 flex items-center justify-center'
@@ -144,7 +151,7 @@ export const Sidebar = (props: ISidebarProps) => {
             variants={projectsWrapper}
             className='w-full flex flex-col py-2 pl-4'
           >
-            {projects.slice(4).map((p) => (
+            {projects.slice(1).map((p) => (
               <motion.div
                 onClick={() => navigate(`/${p.name}`)}
                 className='hover:bg-gray-200 group h-fit rounded-md p-1.5 w-full overflow-hidden'

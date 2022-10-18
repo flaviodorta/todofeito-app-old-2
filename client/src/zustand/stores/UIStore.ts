@@ -1,5 +1,6 @@
 import { isDesktop } from 'react-device-detect';
 import create from 'zustand';
+import { reorder } from '../../helpers/functions';
 import { ITodo } from '../../helpers/types';
 
 interface IUIStore {
@@ -8,6 +9,8 @@ interface IUIStore {
   editingTodoId: string | null;
   isAddTodoItemOpen: boolean;
   isMinorThanLargeScreen: boolean;
+  todosOnScreen: ITodo[];
+  setTodosOnScreen: (todos: ITodo[]) => void;
   setIsMinorThanLargeScreen: (value: boolean) => void;
   closeIsAddTodoItemOpen: () => void;
   openIsAddTodoItemOpen: () => void;
@@ -22,6 +25,12 @@ export const UIStore = create<IUIStore>((set, get) => ({
   editingTodoId: null,
   isAddTodoItemOpen: false,
   isMinorThanLargeScreen: false,
+  todosOnScreen: [],
+  setTodosOnScreen: (todos: ITodo[]) =>
+    set((state) => ({
+      ...state,
+      todosOnScreen: todos,
+    })),
   setIsMinorThanLargeScreen: (value: boolean) =>
     set((state) => ({ ...state, isMinorThanLargeScreen: value })),
   closeIsAddTodoItemOpen: () =>
