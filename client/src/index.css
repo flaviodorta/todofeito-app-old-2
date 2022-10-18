@@ -4,7 +4,7 @@
 
 @layer base {
   #root {
-    @apply h-screen w-screen relative bg-white font-roboto overflow-x-hidden overflow-y-scroll;
+    @apply h-screen w-screen bg-white font-roboto overflow-x-hidden overflow-hidden;
     -webkit-font-smoothing: antialiased;
   }
 

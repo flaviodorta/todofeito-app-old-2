@@ -6,16 +6,19 @@
 - add todos items in content with draglabe list
 - create project modal
 - add edit todo mode
+- fix todo list dragg
 
 # to do
 
 - create date picker for upcoming page
-- add upcoming, labels and projects content
+- create section todos
+  - use sticky in heading
+- useScrollRatio to take element position
+- create labels and projects content
 - edit project dropdown
-- search todo
 - add labels function
 - user settings modal
+- search todo
 - add persist to zustand
 - add sidebar resizable (react-resizable)
-- fix todo list dragg
 - fix todo list placeholder

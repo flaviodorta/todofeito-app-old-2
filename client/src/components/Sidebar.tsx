@@ -64,7 +64,7 @@ export const Sidebar = (props: ISidebarProps) => {
           duration: 0.35,
           ease: 'easeInOut',
         }}
-        className='fixed pt-6 pl-12 pr-1 w-[306px] z-50 h-screen bg-gray-100'
+        className='fixed top-12 pt-6 pl-12 pr-1 w-[306px] z-50 h-screen bg-gray-100'
       >
         <div className='w-full flex flex-col mb-6'>
           <div

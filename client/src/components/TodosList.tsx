@@ -1,4 +1,3 @@
-import { isEmpty } from 'lodash';
 import { useState } from 'react';
 import {
   DragDropContext,
@@ -152,27 +151,28 @@ export const TodosList = ({ todos }: ITodosListProps) => {
                         draggableProvided.draggableProps
                           .style as React.CSSProperties
                       }
-                      className={`
-                        ${
-                          todo.description.length > 0 &&
-                          editingTodoId !== todo.id
-                            ? 'h-20'
-                            : 'h-16'
-                        } 
-                        ${editingTodoId === todo.id ? 'h-64' : ''}
-                        ${
-                          draggableSnapshot.isDragging
-                            ? 'shadow-dragging-item border-none'
-                            : 'border-b-gray-200 border-b-[1px]'
-                        }
-                        ${draggableSnapshot.isDropAnimating ? 'shadow-lg' : ''}
-                        outline-none
-                        flex-center
-                        transition-shadow
-                        duration-75
-                        rounded-lg
-                        bg-white
-                      `}
+                      // className={`
+                      //   ${
+                      //     todo.description.length > 0 &&
+                      //     editingTodoId !== todo.id
+                      //       ? 'h-20'
+                      //       : 'h-16'
+                      //   }
+                      //   ${editingTodoId === todo.id ? 'h-64' : ''}
+                      //   ${
+                      //     draggableSnapshot.isDragging
+                      //       ? 'shadow-dragging-item border-none'
+                      //       : 'border-b-gray-200 border-b-[1px]'
+                      //   }
+                      //   ${draggableSnapshot.isDropAnimating ? 'shadow-lg' : ''}
+                      //   outline-none
+                      //   flex-center
+                      //   transition-shadow
+                      //   duration-75
+                      //   rounded-lg
+                      //   bg-white
+                      // `}
+                      // passar class name para o todo item
                     >
                       {editingTodoId === todo.id ? (
                         <div
@@ -195,6 +195,7 @@ export const TodosList = ({ todos }: ITodosListProps) => {
                         <TodoItem
                           todo={todo}
                           draggableProvided={draggableProvided}
+                          draggableSnapshot={draggableSnapshot}
                         />
                       )}
                     </div>

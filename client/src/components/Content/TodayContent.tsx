@@ -17,9 +17,9 @@ export const TodayContent = () => {
 
   return (
     <ContentContainer todos={todayTodos}>
-      <div className='flex items-center gap-2'>
+      <div className='flex w-full items-center gap-2'>
         <h2 className='font-bold text-xl'>Today</h2>
-        <p className='text-gray-700 text-xs relative top-[3px]'>
+        <p className='text-gray-700 text-xs relative top-[3px] break-words whitespace-nowrap'>
           {dayOfWeek} {month} {dayOfMonth}
         </p>
       </div>

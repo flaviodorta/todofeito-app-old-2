@@ -55,38 +55,10 @@ export const BasePage = ({ content }: { content: React.ReactNode }) => {
         )}
       </AnimatePresence>
 
-      <div className='h-full w-full pt-12'>
-        <Sidebar toggleCreateProjectModalOpen={toggleCreateProjectModalOpen} />
+      <Sidebar toggleCreateProjectModalOpen={toggleCreateProjectModalOpen} />
 
-        <div className='w-full h-full flex'>
-          <motion.div
-            initial={false}
-            animate={
-              isSidebarOpen && !isMinorThanLargeScreen
-                ? { width: '100%', minWidth: '306px' }
-                : { width: 0, minWidth: 0 }
-            }
-            transition={{ duration: 0.35, bounce: 0 }}
-            className='bg-transparent'
-          />
-
-          {content}
-
-          <motion.div
-            initial={false}
-            animate={
-              isSidebarOpen && !isMinorThanLargeScreen
-                ? {
-                    width: '100%',
-                  }
-                : {
-                    width: 0,
-                  }
-            }
-            transition={{ duration: 0.35, bounce: 0 }}
-            className='w-full bg-transparent'
-          />
-        </div>
+      <div className='fixed top-12 right-0 left-0 h-full overflow-y-auto'>
+        {content}
       </div>
     </>
   );

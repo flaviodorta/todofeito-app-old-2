@@ -38,7 +38,7 @@ export const Navbar = (props: INavbarProps) => {
     setButtonClicked(buttonClicked);
 
   return (
-    <nav className='navbar z-60'>
+    <nav className='w-screen fixed h-12 bg-blue-600 flex justify-between items-center px-2 md:px-10 z-60'>
       <div className='navbar-buttons-wrapper'>
         {/* sidebar icon */}
         <button onClick={toggleSidebar} className='group navbar-button group'>
