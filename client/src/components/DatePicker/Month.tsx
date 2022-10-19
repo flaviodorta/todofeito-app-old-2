@@ -1,3 +1,4 @@
+import { nanoid } from 'nanoid';
 import { Fragment, useRef } from 'react';
 import { ICalendar } from '../../helpers/types';
 import { Day } from './Day';
@@ -31,6 +32,7 @@ export const Month = ({
         calendar.currentMonth.totalDays +
         calendar.previousMonth.totalOfLastDays;
 
+      // if first day don't start in sunday
       return Array.from({ length: totalDaysInGrid }).map((_, i) => {
         if (
           i < calendar.previousMonth.totalOfLastDays &&
@@ -46,7 +48,7 @@ export const Month = ({
           );
 
           return (
-            <Fragment key={i}>
+            <Fragment key={nanoid()}>
               <Day
                 date={dateLastMonth}
                 selectedDate={selectedDate}
@@ -56,13 +58,15 @@ export const Month = ({
             </Fragment>
           );
         }
+
         const dateCurrentMonth = new Date(
           calendar.currentYear,
           calendar.currentMonth.number,
           i - calendar.previousMonth.totalOfLastDays + 1
         );
+
         return (
-          <Fragment key={i}>
+          <Fragment key={nanoid()}>
             <Day
               date={dateCurrentMonth}
               selectedDate={selectedDate}
@@ -81,8 +85,9 @@ export const Month = ({
         calendar.currentMonth.number,
         i + 1
       );
+      console.log(`${dateCurrentMonth}`);
       return (
-        <Fragment key={i}>
+        <Fragment key={nanoid()}>
           <Day
             date={dateCurrentMonth}
             selectedDate={selectedDate}

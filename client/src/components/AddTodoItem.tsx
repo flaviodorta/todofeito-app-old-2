@@ -210,7 +210,7 @@ export const AddTodoItem = (props: IAddTodoItemProps) => {
         ref={test}
         className={`${renderedSelect ? 'mb-80' : 'mb-48'} h-fit w-full`}
       >
-        <div className='border-gray-300 bg-white border-[1px] p-4 flex flex-col gap-4 h-fit w-full rounded-sm'>
+        <div className='border-gray-300 p-4 bg-white border-[1px] flex flex-col gap-4 h-fit w-full rounded-sm'>
           {/* checkeds labels */}
           {inputs.checkedLabels.length > 0 && (
             <div className='w-full flex-wrap h-fit gap-1 flex justify-start'>
@@ -272,7 +272,6 @@ export const AddTodoItem = (props: IAddTodoItemProps) => {
                     closeSelect={closeSelect}
                     selectedDate={inputs.selectedDate}
                     setSelectedDate={setSelectedDate}
-                    parentRef={dueDateRef}
                     className='left-24 sm:left-8'
                   />
                 )}

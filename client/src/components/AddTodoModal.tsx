@@ -247,7 +247,6 @@ export const AddTodoModal = (props: IAddTodoModalProps) => {
                   closeSelect={closeSelect}
                   selectedDate={inputs.selectedDate}
                   setSelectedDate={setSelectedDate}
-                  parentRef={dueDateRef}
                 />
               )}
             </div>

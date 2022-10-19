@@ -28,7 +28,7 @@ export const ContentContainer = ({
     openIsAddTodoItemOpen();
   };
 
-  const [todosListWidth, setTodosWidthList] = useState(672);
+  const [todosListWidth, setTodosWidthList] = useState(768);
 
   const todosListRef = useRef<HTMLDivElement>(null);
 
@@ -42,7 +42,7 @@ export const ContentContainer = ({
 
   return (
     <div className='h-fit relative mx-auto w-full flex-center flex-col'>
-      <div className='sticky w-full px-4 md:px-0 top-0 left-0 right-0 z-50 bg-white h-24 flex-center'>
+      <div className='sticky w-full px-4 md:px-0 top-0 left-0 right-0 z-50 bg-white h-fit pt-12 pb-4 flex-center'>
         <div
           style={{ width: todosListWidth }}
           className={`${
@@ -57,7 +57,7 @@ export const ContentContainer = ({
         ref={todosListRef}
         className={`${
           isSidebarOpen ? '' : 'lg:-translate-x-12'
-        } w-full px-4 md:px-0 md:w-[672px] md:max-w-[672px] md:min-w-[672px] duration-150 ease-in-out transition-transform`}
+        } w-full px-4 md:px-0  md:w-[768px] md:max-w-[768px] md:min-w-[768px] duration-150 ease-in-out transition-transform`}
       >
         <TodosList />
 
@@ -68,7 +68,7 @@ export const ContentContainer = ({
             onClick={openAddTodoItem}
             className='group w-full flex items-center gap-2.5 h-fit'
           >
-            <span className='group p-0.5 rounded-full bg-white group-hover:bg-blue-600 flex-center'>
+            <span className='group rounded-full bg-white group-hover:bg-blue-600 flex-center'>
               <PlusSolidIcon className='stroke-[1px] fill-blue-600 group-hover:fill-white' />
             </span>
             <span className='font-light text-md text-gray-400 group-hover:text-blue-600'>

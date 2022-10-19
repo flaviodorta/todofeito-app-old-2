@@ -4,7 +4,7 @@
 
 @layer base {
   #root {
-    @apply h-screen w-screen bg-white font-roboto overflow-x-hidden overflow-hidden;
+    @apply h-screen w-screen text-[#202020] bg-white font-roboto overflow-x-hidden overflow-hidden;
     -webkit-font-smoothing: antialiased;
   }
 
@@ -114,7 +114,7 @@
   }
 
   .date-picker-icons-wrapper {
-    @apply w-6 h-6 flex items-center justify-center hover:bg-gray-100 rounded-[3px];
+    @apply w-6 h-6 flex items-center justify-center hover:bg-gray-100 rounded-[3px] transition-colors duration-150;
   }
 
   /* Hide scrollbar for Chrome, Safari and Opera */

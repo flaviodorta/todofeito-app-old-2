@@ -1,119 +1,116 @@
-import { getMonth } from 'date-fns';
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
 import {
   getDayNameInWeek,
   getDayNumberInMonth,
+  getMonthName,
+  getWeekDays,
   getYearNumber,
-  sortDaysByWeekOrder,
 } from '../../helpers/functions';
-import { IDay } from '../../helpers/types';
-// import { Week } from './Day';
+import { IDay, IRenderableElements } from '../../helpers/types';
+import { Day } from './Day';
+import { addDays } from 'date-fns';
+import { language } from '../../helpers/constants';
+import { ChevronIcon } from '../Icons';
+import { DatePicker } from '../DatePicker';
 
 export const HorizontalCalendar = () => {
   const lang = window.navigator.language || 'default';
   const today = new Date();
 
-  const [selectedDay, setSelectedDay] = useState(today);
-  const [days, setDays] = useState<IDay[]>([]);
+  const [renderedSelect, setRenderedSelect] =
+    useState<IRenderableElements>(null);
+
+  const [selectedDate, setSelectedDate] = useState(today);
+  const [weekDays, setWeekDays] = useState<Date[]>(
+    getWeekDays(selectedDate, lang)
+  );
 
   const currentYear = getYearNumber(today);
   const currentDay: IDay = {
-    numberInMonth: getDayNumberInMonth(selectedDay),
-    nameInWeek: getDayNameInWeek(selectedDay, lang),
+    date: selectedDate,
+    numberInMonth: getDayNumberInMonth(selectedDate),
+    nameInWeek: getDayNameInWeek(selectedDate, lang),
   };
 
-  const weekDays = Array.from({ length: 7 }).map(
-    (_, i) => new Date(currentYear, currentYear, currentDay.numberInMonth + i)
-  );
-  const weekDaysNamesSorted = sortDaysByWeekOrder(weekDays).map((date) =>
-    getDayNameInWeek(date, lang)
-  );
+  const closeSelect = () => setRenderedSelect(null);
+  const openDatePicker = () => setRenderedSelect('date-picker');
 
-  const createWeekDays = (date: Date, lang: string) => {
-    const arr: IDay[] = Array.from({ length: 7 });
-
-    const year = getYearNumber(date);
-    const month = getMonth(date);
-    const day = getDayNumberInMonth(date);
-
-    const numberInWeek = weekDaysNamesSorted.findIndex(
-      (day) => day === getDayNameInWeek(date, lang)
-    );
-
-    console.log('number in week: ', numberInWeek);
-
-    setDays([
-      {
-        numberInMonth: getDayNumberInMonth(date),
-        nameInWeek: getDayNameInWeek(date, lang),
-      },
-    ]);
-
-    Array.from({ length: numberInWeek }).forEach((_, idx) => {
-      console.log('back: ', idx);
-      setDays((days) => [
-        {
-          numberInMonth: getDayNumberInMonth(
-            new Date(year, month, day - idx - 1)
-          ),
-          nameInWeek: getDayNameInWeek(
-            new Date(year, month, day - idx - 1),
-            lang
-          ),
-        },
-        ...days,
-      ]);
-    });
-
-    Array.from({ length: 7 - numberInWeek - 1 }).forEach((_, idx) => {
-      console.log('front: ', idx + numberInWeek + 1);
-      setDays((days) => [
-        ...days,
-        {
-          numberInMonth: getDayNumberInMonth(
-            new Date(year, month, day + idx + numberInWeek + 1)
-          ),
-          nameInWeek: getDayNameInWeek(
-            new Date(year, month, day + idx + numberInWeek + 1),
-            lang
-          ),
-        },
-      ]);
-      console.log(arr);
-    });
-    console.log(days);
+  const goToToday = () => {
+    setSelectedDate(today);
+    setWeekDays(getWeekDays(today, language));
   };
 
-  console.log(createWeekDays(selectedDay, lang));
-  // console.log(currentDay.nameInWeek);
-  // console.log(
-  //   weekDaysNamesSorted.findIndex((day) => day === currentDay.nameInWeek)
-  // );
+  const goToNextWeek = () => {
+    const firstDayOfNextWeek = addDays(weekDays[weekDays.length - 1], 1);
 
-  // const [days, setDays] = useState<Date[]>([]);
+    setWeekDays(getWeekDays(firstDayOfNextWeek, language));
+  };
+
+  const goToPreviousWeek = () => {
+    const lastDayOfPreviousWeek = addDays(weekDays[0], -1);
+
+    setWeekDays(getWeekDays(lastDayOfPreviousWeek, language));
+  };
 
   return (
-    <div className='grid grid-cols-7 w-full auto-cols-max bg-green-600'>
-      <div className='flex-center'>
-        <span className='w-fit h-fit'>Day</span>
+    <div className='w-full h-fit flex flex-col gap-2'>
+      <div className='w-full flex items-center justify-between'>
+        <div
+          onClick={openDatePicker}
+          className='flex gap-2 items-center cursor-pointer'
+        >
+          <span className='font-bold text-lg capitalize'>
+            {getMonthName(selectedDate, language)} {getYearNumber(selectedDate)}
+          </span>
+
+          <ChevronIcon className='stroke-gray-400 h-3.5 w-3.5' />
+
+          {renderedSelect === 'date-picker' && (
+            <DatePicker
+              closeSelect={closeSelect}
+              selectedDate={selectedDate}
+              setSelectedDate={setSelectedDate}
+              className='left-24 sm:left-8'
+            />
+          )}
+        </div>
+
+        <div className='flex justify-between'>
+          {/* previous week */}
+          <span
+            onClick={goToPreviousWeek}
+            className='group date-picker-icons-wrapper cursor-pointer border-[1px] border-r-0 border-gray-300 rounded-[3px_0_0_3px]'
+          >
+            <span className='group-hover:border-gray-700 translate-x-1/4 rotate-45 border-b-[1px] border-l-[1px] w-[6px] h-[6px] border-gray-400' />
+          </span>
+
+          {/* actual day */}
+          <span
+            onClick={goToToday}
+            className='group date-picker-icons-wrapper cursor-pointer rounded-none border-[1px] border-r-gray-200 border-l-gray-200 border-gray-300'
+          >
+            <span className='group-hover:border-gray-700 border-[1px] border-gray-400 rounded-full w-[8px] h-[8px] rotate-90 bg-none' />
+          </span>
+
+          {/* next week */}
+          <span
+            onClick={goToNextWeek}
+            className='group date-picker-icons-wrapper cursor-pointer border-[1px] border-l-0 border-gray-300 rounded-[0_3px_3px_0]'
+          >
+            <span className='group-hover:border-gray-700 -translate-x-1/4 -rotate-45 border-b-[1px] border-r-[1px] w-[6px] h-[6px] border-gray-400' />
+          </span>
+        </div>
       </div>
-      <div className='flex-center h-12'>
-        <span className='w-fit h-fit'>Day</span>
-      </div>
-      <div className='flex-center h-12'>
-        <span className='w-fit h-fit'>Day</span>
-      </div>
-      <div className='flex-center h-12'>
-        <span className='w-fit h-fit'>Day</span>
-      </div>
-      <div className='flex-center h-12'>
-        <span className='w-fit h-fit'>Day</span>
-      </div>
-      <div className='flex-center h-12'>
-        <span className='w-fit h-fit'>Day</span>
-      </div>
-      <div className='flex-center h-12'>
-        <span className='w-fit h-fit'>Day</span>
+      <div className='grid grid-cols-7 w-full  auto-cols-max'>
+        {weekDays.map((date) => (
+          <Fragment key={`${date}`}>
+            <Day
+              date={date}
+              selectedDate={selectedDate}
+              setSelectedDate={setSelectedDate}
+            />
+          </Fragment>
+        ))}
       </div>
     </div>
   );

@@ -6,7 +6,7 @@ import { ContentContainer } from './ContentContainer';
 
 export const TodayContent = () => {
   const { todos } = useUserStore();
-  const { setTodosOnScreen, todosOnScreen } = useUIStore();
+  const { setTodosOnScreen } = useUIStore();
 
   const date = new Date();
   const month = date.toLocaleString('en', { month: 'short' });
@@ -24,8 +24,6 @@ export const TodayContent = () => {
 
     return () => setTodosOnScreen([]);
   }, [todos]);
-
-  console.log(todosOnScreen);
 
   return (
     <ContentContainer project={{ id: 'inbox', name: 'Inbox' }}>

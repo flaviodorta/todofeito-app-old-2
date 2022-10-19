@@ -7,8 +7,10 @@ import {
   isFriday,
   isSaturday,
   lastDayOfMonth,
+  getMonth,
 } from 'date-fns';
 import React from 'react';
+import { IDay } from './types';
 
 export const getWeekNumber = (day: Date) => {
   const firstDayOfTheYear = new Date(day.getFullYear(), 0, 1);
@@ -75,3 +77,37 @@ export const onKeyUpEnter =
       cb();
     }
   };
+
+export const getWeekDays = (date: Date, lang: string) => {
+  const arr: Date[] = [];
+
+  const year = getYearNumber(date);
+  const month = getMonth(date);
+  const day = getDayNumberInMonth(date);
+
+  const weekDays = Array.from({ length: 7 }).map(
+    (_, i) => new Date(year, month, day + i)
+  );
+
+  const weekDaysNamesSorted = sortDaysByWeekOrder(weekDays).map((date) =>
+    getDayNameInWeek(date, lang)
+  );
+
+  const numberInWeek = weekDaysNamesSorted.findIndex(
+    (day) => day === getDayNameInWeek(date, lang)
+  );
+
+  arr.push(date);
+
+  Array.from({ length: numberInWeek }).forEach((_, idx) => {
+    const date = new Date(year, month, day - idx - 1);
+    arr.unshift(date);
+  });
+
+  Array.from({ length: 7 - numberInWeek - 1 }).forEach((_, idx) => {
+    const date = new Date(year, month, day + idx + 1);
+    arr.push(date);
+  });
+
+  return arr;
+};

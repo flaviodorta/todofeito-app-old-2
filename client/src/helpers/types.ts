@@ -65,6 +65,7 @@ export interface IUserStore {
 // }
 
 export interface IDay {
+  date: Date;
   nameInWeek: string;
   numberInMonth: number;
 }

@@ -161,7 +161,6 @@ export const TodoItem = ({
               closeSelect={closeSelect}
               selectedDate={selectedDate}
               setSelectedDate={setSelectedDate}
-              parentRef={dueDateRef}
             />
           )}
         </div>

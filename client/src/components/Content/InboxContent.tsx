@@ -10,8 +10,6 @@ export const InboxContent = () => {
     (todo) => todo.project.id === 'inbox' && !todo.isCompleted
   );
 
-  console.log(inboxTodos);
-
   useIsomorphicLayoutEffect(() => {
     setTodosOnScreen(inboxTodos);
 
