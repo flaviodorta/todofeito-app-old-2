@@ -42,7 +42,7 @@ export const ContentContainer = ({
 
   return (
     <div className='h-fit relative mx-auto w-full flex-center flex-col'>
-      <div className='sticky w-full px-4 md:px-0 top-0 left-0 right-0 z-50 bg-white h-fit pt-12 pb-4 flex-center'>
+      <div className='w-full px-4 md:px-0 top-0 left-0 right-0 bg-white h-fit pt-12 pb-4 flex-center'>
         <div
           style={{ width: todosListWidth }}
           className={`${
@@ -57,7 +57,7 @@ export const ContentContainer = ({
         ref={todosListRef}
         className={`${
           isSidebarOpen ? '' : 'lg:-translate-x-12'
-        } w-full px-4 md:px-0  md:w-[768px] md:max-w-[768px] md:min-w-[768px] duration-150 ease-in-out transition-transform`}
+        } w-full px-4 md:px-0 md:w-[768px] md:max-w-[768px] md:min-w-[768px] duration-150 ease-in-out transition-transform`}
       >
         <TodosList />
 

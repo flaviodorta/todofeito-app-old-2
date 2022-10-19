@@ -51,7 +51,7 @@ export const SelectProject = (props: ISelectProjectProps) => {
   return (
     <>
       <Backdrop close={closeSelect} />
-      <div className='top-9 -translate-x-1/4 absolute shadow-3xl border-[1px] border-gray-200 overflow-hidden z-60 rounded-sm w-fit h-fit bg-white'>
+      <div className='top-9 -translate-x-1/4 absolute shadow-3xl border-[1px] border-gray-200 overflow-hidden z-[110] rounded-sm w-fit h-fit bg-white'>
         <div className='h-fit'>
           <input
             placeholder='Type a project'

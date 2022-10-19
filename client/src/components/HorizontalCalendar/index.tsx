@@ -1,4 +1,4 @@
-import { Fragment, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import {
   getDayNameInWeek,
   getDayNumberInMonth,
@@ -8,7 +8,7 @@ import {
 } from '../../helpers/functions';
 import { IDay, IRenderableElements } from '../../helpers/types';
 import { Day } from './Day';
-import { addDays } from 'date-fns';
+import { addDays, isEqual } from 'date-fns';
 import { language } from '../../helpers/constants';
 import { ChevronIcon } from '../Icons';
 import { DatePicker } from '../DatePicker';
@@ -32,8 +32,13 @@ export const HorizontalCalendar = () => {
     nameInWeek: getDayNameInWeek(selectedDate, lang),
   };
 
-  const closeSelect = () => setRenderedSelect(null);
-  const openDatePicker = () => setRenderedSelect('date-picker');
+  const closeSelect = () => {
+    setRenderedSelect(null);
+  };
+
+  const openDatePicker = () => {
+    if (!renderedSelect) setRenderedSelect('date-picker');
+  };
 
   const goToToday = () => {
     setSelectedDate(today);
@@ -52,12 +57,22 @@ export const HorizontalCalendar = () => {
     setWeekDays(getWeekDays(lastDayOfPreviousWeek, language));
   };
 
+  useEffect(() => {
+    if (!weekDays.some((date) => isEqual(date, selectedDate)))
+      setWeekDays(getWeekDays(selectedDate, language));
+  }, [selectedDate]);
+
   return (
-    <div className='w-full h-fit flex flex-col gap-2'>
+    <div className='w-full h-fit flex flex-col gap-2 z-60'>
+      {/* <button onClick={closeSelect} className='fixed top-0 z-[1000]'> */}
+      {/* close */}
+      {/* </button> */}
       <div className='w-full flex items-center justify-between'>
         <div
           onClick={openDatePicker}
-          className='flex gap-2 items-center cursor-pointer'
+          className={`${
+            renderedSelect ? 'cursor-default' : 'cursor-pointer'
+          } relative flex gap-2 items-center z-60`}
         >
           <span className='font-bold text-lg capitalize'>
             {getMonthName(selectedDate, language)} {getYearNumber(selectedDate)}

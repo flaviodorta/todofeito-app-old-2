@@ -7,12 +7,14 @@ interface IMonthProps {
   calendar: ICalendar;
   selectedDate: Date | null;
   setSelectedDate: (date: Date) => void;
+  closeSelect: () => void;
 }
 
 export const Month = ({
   calendar,
   selectedDate,
   setSelectedDate,
+  closeSelect,
 }: IMonthProps) => {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -50,10 +52,11 @@ export const Month = ({
           return (
             <Fragment key={nanoid()}>
               <Day
+                closeSelect={closeSelect}
                 date={dateLastMonth}
                 selectedDate={selectedDate}
                 setSelectedDate={setSelectedDate}
-                className='text-gray-400'
+                className='opacity-0'
               />
             </Fragment>
           );
@@ -68,6 +71,7 @@ export const Month = ({
         return (
           <Fragment key={nanoid()}>
             <Day
+              closeSelect={closeSelect}
               date={dateCurrentMonth}
               selectedDate={selectedDate}
               setSelectedDate={setSelectedDate}
@@ -89,6 +93,7 @@ export const Month = ({
       return (
         <Fragment key={nanoid()}>
           <Day
+            closeSelect={closeSelect}
             date={dateCurrentMonth}
             selectedDate={selectedDate}
             setSelectedDate={setSelectedDate}

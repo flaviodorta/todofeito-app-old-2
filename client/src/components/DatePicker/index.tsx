@@ -1,5 +1,5 @@
 import { getDaysInMonth, getYear } from 'date-fns';
-import React, { forwardRef, useState } from 'react';
+import React, { forwardRef, useEffect, useState } from 'react';
 import { language } from '../../helpers/constants';
 import {
   getDayNameInWeek,
@@ -175,7 +175,7 @@ export const DatePicker = (props: IDatePickerProps): JSX.Element => {
 
   return (
     <>
-      <Backdrop close={closeSelect} />
+      <Backdrop close={closeSelect} className='bg-black/50' />
 
       <div
         className={`${props.className} absolute w-60 h-fit z-60 date-picker-container shadow-3xl`}
@@ -222,6 +222,7 @@ export const DatePicker = (props: IDatePickerProps): JSX.Element => {
             calendar={calendar}
             selectedDate={selectedDate}
             setSelectedDate={setSelectedDate}
+            closeSelect={closeSelect}
           />
           {/* </div> */}
         </div>

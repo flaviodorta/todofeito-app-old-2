@@ -35,8 +35,6 @@ export const Day = ({
 
   const isUpcoming = compareAsc(date, new Date()) === 1 || isToday(date);
 
-  console.log('isUpcoming: ', isUpcoming);
-
   const selectDay = () => {
     if (isUpcoming) setSelectedDate(date);
   };

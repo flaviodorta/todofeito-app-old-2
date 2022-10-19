@@ -139,7 +139,7 @@ export const TodoItem = ({
             renderedSelect === 'date-picker'
               ? 'bg-gray-200 cursor-default'
               : 'cursor-pointer'
-          } relative flex-center gap-1  text-gray-800 tracking-wide`}
+          } relative flex-center gap-1 text-gray-800 tracking-wide`}
         >
           <CalendarRegularIcon
             width='11px'

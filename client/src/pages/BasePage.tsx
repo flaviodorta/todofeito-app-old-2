@@ -65,12 +65,11 @@ export const BasePage = ({ content }: { content: React.ReactNode }) => {
         )}
       </AnimatePresence>
 
-      <Sidebar toggleCreateProjectModalOpen={toggleCreateProjectModalOpen} />
-
       <div
         ref={contentRef}
-        className={`${scrollWidth} fixed top-12 right-0 left-0 h-full overflow-y-auto`}
+        className={`${scrollWidth} top-12 fixed right-0 left-0 h-full overflow-y-auto`}
       >
+        <Sidebar toggleCreateProjectModalOpen={toggleCreateProjectModalOpen} />
         {content}
       </div>
     </>

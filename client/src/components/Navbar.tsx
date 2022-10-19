@@ -12,6 +12,7 @@ import {
 import { useState } from 'react';
 import { DropdownButtons } from './DropdownButtons';
 import { useNavigate } from 'react-router-dom';
+import { isMobile } from 'react-device-detect';
 
 export type INavbarButtonClicked = '' | 'user-icon';
 
@@ -37,8 +38,14 @@ export const Navbar = (props: INavbarProps) => {
   const onClickNavbarButton = (buttonClicked: INavbarButtonClicked) =>
     setButtonClicked(buttonClicked);
 
+  console.log('is mobile: ', isMobile);
+
   return (
-    <nav className='w-screen fixed h-12 bg-blue-600 flex justify-between items-center px-2 md:px-10 z-60'>
+    <nav
+      className={`${
+        isMobile ? 'z-10' : 'z-0'
+      } w-screen fixed h-12 bg-blue-600 flex justify-between items-center px-2 md:px-10`}
+    >
       <div className='navbar-buttons-wrapper'>
         {/* sidebar icon */}
         <button onClick={toggleSidebar} className='group navbar-button group'>
