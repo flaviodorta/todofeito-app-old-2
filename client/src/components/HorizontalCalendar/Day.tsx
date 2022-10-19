@@ -35,6 +35,8 @@ export const Day = ({
 
   const isUpcoming = compareAsc(date, new Date()) === 1 || isToday(date);
 
+  console.log('isUpcoming: ', isUpcoming);
+
   const selectDay = () => {
     if (isUpcoming) setSelectedDate(date);
   };
@@ -59,7 +61,7 @@ export const Day = ({
         className={`${isSelected && isUpcoming ? 'font-bold' : ''}
         ${isToday(date) ? 'font-bold text-blue-600' : ''}
         ${!isUpcoming ? 'text-gray-300' : ''}
-         relative w-fit h-fit text-black py-2 duration-150 transition-colors`}
+         relative w-fit h-fit py-2 duration-150 transition-colors`}
       >
         {getDayNumberInMonth(date)}
         <span
