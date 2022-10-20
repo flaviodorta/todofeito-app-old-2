@@ -7,9 +7,11 @@ interface IUIStore {
   isSidebarOpen: boolean;
   isSidebarProjectsOpen: boolean;
   editingTodoId: string | null;
+  isAddTodoInSection: string | null;
   isAddTodoItemOpen: boolean;
   isMinorThanLargeScreen: boolean;
   todosOnScreen: ITodo[];
+  setIsAddTodoInSection: (sectionId: string | null) => void;
   setTodosOnScreen: (todos: ITodo[]) => void;
   setIsMinorThanLargeScreen: (value: boolean) => void;
   closeIsAddTodoItemOpen: () => void;
@@ -26,6 +28,12 @@ export const UIStore = create<IUIStore>((set, get) => ({
   isAddTodoItemOpen: false,
   isMinorThanLargeScreen: false,
   todosOnScreen: [],
+  isAddTodoInSection: null,
+  setIsAddTodoInSection: (sectionId: string | null) =>
+    set((state) => ({
+      ...state,
+      isAddTodoInSection: sectionId,
+    })),
   setTodosOnScreen: (todos: ITodo[]) =>
     set((state) => ({
       ...state,

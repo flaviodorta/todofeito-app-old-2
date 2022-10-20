@@ -1,12 +1,10 @@
 import { Fragment, useEffect, useState } from 'react';
 import {
-  getDayNameInWeek,
-  getDayNumberInMonth,
   getMonthName,
   getWeekDays,
   getYearNumber,
 } from '../../helpers/functions';
-import { IDay, IRenderableElements } from '../../helpers/types';
+import { IRenderableElements } from '../../helpers/types';
 import { Day } from './Day';
 import { addDays, isEqual } from 'date-fns';
 import { language } from '../../helpers/constants';
@@ -24,13 +22,6 @@ export const HorizontalCalendar = () => {
   const [weekDays, setWeekDays] = useState<Date[]>(
     getWeekDays(selectedDate, lang)
   );
-
-  const currentYear = getYearNumber(today);
-  const currentDay: IDay = {
-    date: selectedDate,
-    numberInMonth: getDayNumberInMonth(selectedDate),
-    nameInWeek: getDayNameInWeek(selectedDate, lang),
-  };
 
   const closeSelect = () => {
     setRenderedSelect(null);
@@ -64,9 +55,6 @@ export const HorizontalCalendar = () => {
 
   return (
     <div className='w-full h-fit flex flex-col gap-2'>
-      {/* <button onClick={closeSelect} className='fixed top-0 z-[1000]'> */}
-      {/* close */}
-      {/* </button> */}
       <div className='w-full flex items-center justify-between'>
         <div
           onClick={openDatePicker}
@@ -116,6 +104,7 @@ export const HorizontalCalendar = () => {
           </span>
         </div>
       </div>
+
       <div className='grid grid-cols-7 w-full  auto-cols-max'>
         {weekDays.map((date) => (
           <Fragment key={`${date}`}>

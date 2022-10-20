@@ -4,11 +4,11 @@ import {
   Droppable,
   DropResult,
 } from 'react-beautiful-dnd';
-import { reorder } from '../helpers/functions';
-import { ITodo } from '../helpers/types';
-import { useUIStore } from '../zustand';
-import { AddTodoItem } from './AddTodoItem';
-import { TodoItem } from './TodoItem';
+import { reorder } from '../../helpers/functions';
+import { ITodo } from '../../helpers/types';
+import { useUIStore } from '../../zustand';
+import { AddTodoItem } from './../AddTodoItem';
+import { TodoItem } from './../TodoItem';
 
 interface ITodosListProps {
   todos: ITodo[];

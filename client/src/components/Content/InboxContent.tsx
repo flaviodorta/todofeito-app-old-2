@@ -16,11 +16,16 @@ export const InboxContent = () => {
     return () => setTodosOnScreen([]);
   }, [todos]);
 
+  const Heading = () => (
+    <div className='flex items-center gap-2'>
+      <h2 className='font-bold text-xl'>Inbox</h2>
+    </div>
+  );
+
   return (
-    <ContentContainer project={{ id: 'inbox', name: 'Inbox' }}>
-      <div className='flex items-center gap-2'>
-        <h2 className='font-bold text-xl'>Inbox</h2>
-      </div>
-    </ContentContainer>
+    <ContentContainer
+      heading={<Heading />}
+      project={{ id: 'inbox', name: 'Inbox' }}
+    ></ContentContainer>
   );
 };

@@ -51,7 +51,7 @@ export interface IUserStore {
   projects: IProject[];
   labels: ILabel[];
   sections: ISection[];
-  createSection: (section: ISection) => void;
+  createSection: (section: ISection, index: number) => void;
   deleteSection: (id: string) => void;
   addTodo: (todo: ITodo) => void;
   removeTodo: (todo: ITodo) => void;
@@ -176,6 +176,7 @@ export interface ITodo {
   description: string;
   date: Date | null;
   project: Pick<IProject, 'id' | 'name'>;
+  sectionId?: string;
   labels: string[];
   priority: number;
   checkedLabels: string[];

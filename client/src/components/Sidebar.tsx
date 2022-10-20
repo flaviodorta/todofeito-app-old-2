@@ -32,10 +32,10 @@ export const Sidebar = (props: ISidebarProps) => {
   } = useUIStore();
   const { toggleCreateProjectModalOpen } = props;
   const { todos, projects } = useUserStore();
-  const { width } = useWindowSize();
   const location = useLocation();
   const navigate = useNavigate();
 
+  const { width } = useWindowSize();
   const goToPage = (path: string) => {
     if (isMobile || width < 768) toggleSidebar();
     navigate(path);
@@ -59,9 +59,9 @@ export const Sidebar = (props: ISidebarProps) => {
 
   const sidebarRef = useRef<HTMLDivElement>(null);
 
-  useOnClickOutside(sidebarRef, () => {
-    if (isSidebarOpen && width < 768) toggleSidebar();
-  });
+  // useOnClickOutside(sidebarRef, () => {
+  //   if (isSidebarOpen && width < 768) toggleSidebar();
+  // });
 
   return (
     // <Resizable height={100} width={326}>

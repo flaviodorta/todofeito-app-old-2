@@ -67,9 +67,13 @@ export const BasePage = ({ content }: { content: React.ReactNode }) => {
 
       <div
         ref={contentRef}
-        className={`${scrollWidth} top-12 fixed right-0 left-0 h-full overflow-y-auto`}
+        className={`${scrollWidth} top-12 fixed right-0 left-0 h-[calc(100%-48px)] overflow-x-hidden overflow-y-auto`}
       >
-        <Sidebar toggleCreateProjectModalOpen={toggleCreateProjectModalOpen} />
+        {isSidebarOpen && (
+          <Sidebar
+            toggleCreateProjectModalOpen={toggleCreateProjectModalOpen}
+          />
+        )}
         {content}
       </div>
     </>

@@ -6,7 +6,7 @@ import { MagnifyingGlassSolidIcon as SearchIcon } from './Icons';
 import { fetchCountries } from '../api';
 import { useQuery } from '@tanstack/react-query';
 
-export const SearchBar = () => {
+export const SearchBar = ({ onClick }: { onClick: () => void }) => {
   const [isSearchBarOpen, toggleSearchBar] = useToggle(false);
   const [searchInput, setSearchInput] = useState<{
     value: string;
@@ -37,6 +37,7 @@ export const SearchBar = () => {
   return (
     <div className='relative'>
       <div
+        onClick={onClick}
         onFocus={toggleSearchBar}
         onBlur={toggleSearchBar}
         className='relative group flex items-center'

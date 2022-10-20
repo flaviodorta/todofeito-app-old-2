@@ -5,22 +5,26 @@ import { useUserStore } from '../zustand';
 
 interface IAddSectionProps {
   // title: string;
-  index?: number;
+  index: number;
   close: () => void;
 }
 
-export const AddSection = ({ close }: IAddSectionProps) => {
+export const AddSection = ({ close, index }: IAddSectionProps) => {
   const { createSection } = useUserStore();
   const [inputs, setInputs] = useState({
     title: '',
   });
 
   const createNewSection = () => {
-    createSection({
-      id: nanoid(),
-      title: inputs.title,
-      todos: [],
-    });
+    createSection(
+      {
+        id: nanoid(),
+        title: inputs.title,
+        todos: [],
+      },
+      index
+    );
+    close();
   };
 
   const sectionTitleInputRef = useRef<HTMLInputElement>(null);
@@ -36,10 +40,11 @@ export const AddSection = ({ close }: IAddSectionProps) => {
         id='project-name'
         type='text'
         value={inputs.title}
+        placeholder='Name this section'
         maxLength={120}
         onChange={(e) => setInputs({ title: e.target.value })}
         onKeyUp={createNewSectionOnKeyEnterInputSectionTitle}
-        className='outline-none text-sm h-7 rounded-[3px] py-1 px-2 border-gray-300 focus:border-gray-400 border-[1px] duration-150 transition-all'
+        className='placeholder:font-bold placeholder:text-gray-500 outline-none text-sm h-7 rounded-[3px] py-1 px-2 border-gray-300 focus:border-gray-400 border-[1px] duration-150 transition-all'
       />
 
       <div className='flex gap-2'>

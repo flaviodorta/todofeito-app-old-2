@@ -21,6 +21,7 @@ import { labelColors, labelHoverColors, language } from '../helpers/constants';
 import { IProject, IRenderableElements, ITodo } from '../helpers/types';
 import { useUIStore, useUserStore } from '../zustand';
 import { nanoid } from 'nanoid';
+import { stringify } from 'querystring';
 
 interface IAddTodoItemProps {
   id?: string;
@@ -30,6 +31,7 @@ interface IAddTodoItemProps {
   priority?: number;
   labels?: string[];
   checkedLabels?: string[];
+  sectionId?: string;
   date?: Date;
 }
 
@@ -43,10 +45,15 @@ export const AddTodoItem = (props: IAddTodoItemProps) => {
     date,
     checkedLabels,
     labels,
+    sectionId,
   } = props;
   const { addTodo, editTodo, projects } = useUserStore();
-  const { closeIsAddTodoItemOpen, editingTodoId, setEditingTodoId } =
-    useUIStore();
+  const {
+    closeIsAddTodoItemOpen,
+    editingTodoId,
+    setEditingTodoId,
+    setIsAddTodoInSection,
+  } = useUIStore();
 
   const [inputs, setInputs] = useState({
     title: title ? title : '',
@@ -118,6 +125,7 @@ export const AddTodoItem = (props: IAddTodoItemProps) => {
     labels: inputs.checkedLabels,
     priority: inputs.selectedPriority,
     project: inputs.selectedProject,
+    sectionId: sectionId ? sectionId : undefined,
     checkedLabels: inputs.checkedLabels,
     isCompleted: false,
   };
@@ -142,6 +150,7 @@ export const AddTodoItem = (props: IAddTodoItemProps) => {
 
   const close = () => {
     setEditingTodoId(null);
+    setIsAddTodoInSection(null);
     closeIsAddTodoItemOpen();
   };
 
@@ -208,7 +217,7 @@ export const AddTodoItem = (props: IAddTodoItemProps) => {
     <>
       <div
         ref={test}
-        className={`${renderedSelect ? 'mb-80' : 'mb-48'} h-fit w-full`}
+        className={`${renderedSelect ? 'mb-80' : 'mb-0'} h-fit w-full`}
       >
         <div className='border-gray-300 p-4 bg-white border-[1px] flex flex-col gap-4 h-fit w-full rounded-sm'>
           {/* checkeds labels */}

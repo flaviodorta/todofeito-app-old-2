@@ -6,14 +6,7 @@ import { ContentContainer } from './ContentContainer';
 
 export const UpcomingContent = () => {
   const { todos } = useUserStore();
-  const { setTodosOnScreen, todosOnScreen } = useUIStore();
-
-  const date = new Date();
-  const month = date.toLocaleString('en', { month: 'short' });
-  const dayOfWeek = date.toLocaleString('en', {
-    weekday: 'short',
-  });
-  const dayOfMonth = date.getDate();
+  const { setTodosOnScreen } = useUIStore();
 
   const upcomingTodos = todos.filter(
     (todo) =>
@@ -28,11 +21,10 @@ export const UpcomingContent = () => {
     return () => setTodosOnScreen([]);
   }, [todos]);
 
-  console.log(todosOnScreen);
-
   return (
-    <ContentContainer project={{ id: 'inbox', name: 'Inbox' }}>
-      <HorizontalCalendar />
-    </ContentContainer>
+    <ContentContainer
+      heading={<HorizontalCalendar />}
+      project={{ id: 'inbox', name: 'Inbox' }}
+    ></ContentContainer>
   );
 };

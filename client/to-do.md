@@ -10,17 +10,17 @@
 - fix todo styles
 - fix todos states organization
 - create date picker for upcoming page
+- change labels to fixed positon with useDimensions
 
 # to do
-
-- change labels to fixed positon with useDimensions
 
 - create section todos
   - use sticky in heading
 - useScrollRatio to take element position
 - create labels and projects content
-- edit project dropdown
 - add labels function
+- limits chars input
+- edit project dropdown
 - user settings modal
 - search todo
 - add persist to zustand

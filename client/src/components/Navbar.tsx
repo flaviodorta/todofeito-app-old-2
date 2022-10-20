@@ -14,6 +14,7 @@ import { DropdownButtons } from './DropdownButtons';
 import { useNavigate } from 'react-router-dom';
 import { isMobile } from 'react-device-detect';
 import { useDimensions } from '../hooks/useDimensions';
+import useWindowSize from '../hooks/useWindowSize';
 
 export type INavbarButtonClicked = '' | 'user-icon';
 
@@ -39,12 +40,27 @@ export const Navbar = (props: INavbarProps) => {
   const onClickNavbarButton = (buttonClicked: INavbarButtonClicked) =>
     setButtonClicked(buttonClicked);
 
+  const closeSidebar = () => {
+    if (isSidebarOpen) toggleSidebar();
+  };
+
   console.log('is mobile: ', isMobile);
 
   const [sidebarIconSizes, sidebarIconRef] = useDimensions();
   const [homeIconSizes, homeIconRef] = useDimensions();
   const [addTodoIconSizes, addTodoIconRef] = useDimensions();
   const [userIconSizes, userIconRef] = useDimensions();
+
+  const { width } = useWindowSize();
+  const goToPage = (path: string) => {
+    if (isMobile || width < 768) closeSidebar();
+    navigate(path);
+  };
+
+  const openAddTodoModal = () => {
+    toggleAddTodoModal();
+    closeSidebar();
+  };
 
   return (
     <nav
@@ -81,7 +97,7 @@ export const Navbar = (props: INavbarProps) => {
         {/* home icon */}
         <button
           ref={homeIconRef}
-          onClick={() => navigate('/inbox')}
+          onClick={() => goToPage('/inbox')}
           className='group navbar-button group'
         >
           <HomeIcon className='navbar-icon w-[20px] h-[20px]' />
@@ -96,14 +112,14 @@ export const Navbar = (props: INavbarProps) => {
         </button>
 
         {/* search bar */}
-        <SearchBar />
+        <SearchBar onClick={closeSidebar} />
       </div>
 
       {/* add todo icon */}
       <div className='navbar-buttons-wrapper'>
         <button
           ref={addTodoIconRef}
-          onClick={toggleAddTodoModal}
+          onClick={openAddTodoModal}
           className='group navbar-button group'
         >
           <AddTodoIcon className='navbar-icon' />
@@ -121,7 +137,10 @@ export const Navbar = (props: INavbarProps) => {
         <button
           ref={userIconRef}
           className='navbar-button group'
-          onClick={() => onClickNavbarButton('user-icon')}
+          onClick={() => {
+            onClickNavbarButton('user-icon');
+            closeSidebar();
+          }}
           onBlur={() => onClickNavbarButton('')}
         >
           <UserIcon className='group navbar-icon' />

@@ -65,7 +65,7 @@ export const CreateProjectModal = ({
     <>
       <Backdrop
         close={closeCreateProjectModalOpen}
-        className='bg-black/50 z-90 text-'
+        className='bg-black/50 z-90'
       />
 
       <div className='fixed left-1/2 top-40 w-[90%] sm:w-96 h-fit -translate-x-1/2 z-100 bg-white rounded-lg'>

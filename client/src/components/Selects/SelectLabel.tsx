@@ -67,7 +67,8 @@ export const SelectLabel = (props: ISelectLabelProps) => {
   return (
     <>
       <Backdrop close={closeSelect} className='z-[6000]' />
-      <div className='top-9 absolute shadow-3xl border-[1px] border-gray-200 overflow-hidden z-[6004] rounded-sm  min-w-[140px]  bg-white'>
+
+      <div className='top-9 absolute -translate-x-1/4 md:translate-x-0 shadow-3xl border-[1px] border-gray-200 overflow-hidden z-[6001] rounded-sm min-w-[140px] bg-white'>
         <div className='h-fit'>
           <input
             placeholder='Type a label'
@@ -75,6 +76,7 @@ export const SelectLabel = (props: ISelectLabelProps) => {
             className='w-full border-b-[1px] py-2 px-2 outline-none text-[13px] placeholder:text-gray-400'
           />
         </div>
+
         <div className='dropdown-select overflow-y-scroll h-fit w-full'>
           {labels.length === 0 ? (
             <span className='text-xs px-2 text-gray-500'>No labels</span>
