@@ -32,12 +32,6 @@ export const UpcomingContent = () => {
 
   return (
     <ContentContainer project={{ id: 'inbox', name: 'Inbox' }}>
-      {/* <div className='flex w-full items-center gap-2 h-fit mb-4'>
-        <h2 className='font-bold text-xl'>Upcoming</h2>
-        <p className='text-gray-700 text-xs relative top-[3px] break-words whitespace-nowrap'>
-          {dayOfWeek} {month} {dayOfMonth}
-        </p>
-      </div> */}
       <HorizontalCalendar />
     </ContentContainer>
   );

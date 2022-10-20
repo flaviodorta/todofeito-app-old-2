@@ -9,10 +9,11 @@ import {
   GearIcon as SettingsIcon,
   LogoutIcon,
 } from './Icons';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { DropdownButtons } from './DropdownButtons';
 import { useNavigate } from 'react-router-dom';
 import { isMobile } from 'react-device-detect';
+import { useDimensions } from '../hooks/useDimensions';
 
 export type INavbarButtonClicked = '' | 'user-icon';
 
@@ -40,25 +41,38 @@ export const Navbar = (props: INavbarProps) => {
 
   console.log('is mobile: ', isMobile);
 
+  const [sidebarIconSizes, sidebarIconRef] = useDimensions();
+  const [homeIconSizes, homeIconRef] = useDimensions();
+  const [addTodoIconSizes, addTodoIconRef] = useDimensions();
+  const [userIconSizes, userIconRef] = useDimensions();
+
   return (
     <nav
       className={`
       ${
         isSidebarOpen && isMobile
-          ? 'z-[1000]'
+          ? 'fixed z-[1000]'
           : !isSidebarOpen && isMobile
-          ? 'z-0'
+          ? 'fixed z-0'
           : isSidebarOpen && !isMobile
-          ? 'z-[1000] md:z-0'
+          ? 'fixed z-[1000] md:static md:z-0'
           : 'z-0'
       }
-      w-screen fixed h-12 bg-blue-600 flex justify-between items-center px-2 md:px-10`}
+      w-screen h-12 bg-blue-600 flex justify-between items-center px-2 md:px-10`}
     >
       <div className='navbar-buttons-wrapper'>
         {/* sidebar icon */}
-        <button onClick={toggleSidebar} className='group navbar-button group'>
+        <button
+          ref={sidebarIconRef}
+          onClick={toggleSidebar}
+          className='group navbar-button group'
+        >
           <SidebarIcon className='navbar-icon' />
           <Label
+            style={{
+              left: sidebarIconSizes.left + sidebarIconSizes.width / 2,
+              top: sidebarIconSizes.top + 48,
+            }}
             content={isSidebarOpen ? 'Close menu' : 'Open menu'}
             className='hidden sm:group-hover:block '
           />
@@ -66,11 +80,16 @@ export const Navbar = (props: INavbarProps) => {
 
         {/* home icon */}
         <button
+          ref={homeIconRef}
           onClick={() => navigate('/inbox')}
           className='group navbar-button group'
         >
           <HomeIcon className='navbar-icon w-[20px] h-[20px]' />
           <Label
+            style={{
+              left: homeIconSizes.left + homeIconSizes.width / 2,
+              top: homeIconSizes.top + 48,
+            }}
             content='Go to home'
             className='hidden sm:group-hover:block '
           />
@@ -83,15 +102,24 @@ export const Navbar = (props: INavbarProps) => {
       {/* add todo icon */}
       <div className='navbar-buttons-wrapper'>
         <button
+          ref={addTodoIconRef}
           onClick={toggleAddTodoModal}
           className='group navbar-button group'
         >
           <AddTodoIcon className='navbar-icon' />
-          <Label content='Add todo' className='hidden sm:group-hover:block' />
+          <Label
+            style={{
+              left: addTodoIconSizes.left + addTodoIconSizes.width / 2,
+              top: addTodoIconSizes.top + 48,
+            }}
+            content='Add todo'
+            className='hidden sm:group-hover:block'
+          />
         </button>
 
         {/* user icon */}
         <button
+          ref={userIconRef}
           className='navbar-button group'
           onClick={() => onClickNavbarButton('user-icon')}
           onBlur={() => onClickNavbarButton('')}
@@ -99,6 +127,10 @@ export const Navbar = (props: INavbarProps) => {
           <UserIcon className='group navbar-icon' />
           {buttonClicked !== 'user-icon' && (
             <Label
+              style={{
+                left: userIconSizes.left + userIconSizes.width / 2 - 10,
+                top: userIconSizes.top + 48,
+              }}
               content='Open profile menu'
               className='hidden sm:group-hover:block  -left-1'
             />

@@ -70,7 +70,7 @@ export const ContentContainer = ({
             onClick={openAddTodoItem}
             className='group w-full flex items-center gap-2.5 h-fit'
           >
-            <span className='group rounded-full bg-white group-hover:bg-blue-600 flex-center'>
+            <span className='group p-0.5 rounded-full bg-white group-hover:bg-blue-600 flex-center'>
               <PlusSolidIcon className='stroke-[1px] fill-blue-600 group-hover:fill-white' />
             </span>
             <span className='font-light text-md text-gray-400 group-hover:text-blue-600'>
