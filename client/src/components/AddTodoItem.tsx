@@ -26,7 +26,7 @@ interface IAddTodoItemProps {
   id?: string;
   title?: string;
   description?: string;
-  project: Pick<IProject, 'id' | 'name'>;
+  project?: Pick<IProject, 'id' | 'name'>;
   priority?: number;
   labels?: string[];
   checkedLabels?: string[];
@@ -51,7 +51,7 @@ export const AddTodoItem = (props: IAddTodoItemProps) => {
   const [inputs, setInputs] = useState({
     title: title ? title : '',
     description: description ? description : '',
-    selectedProject: project,
+    selectedProject: project ? project : { id: 'inbox', name: 'inbox' },
     selectedPriority: priority ? priority : 4,
     selectedDate: date ? date : new Date(),
     labels: labels
@@ -272,7 +272,7 @@ export const AddTodoItem = (props: IAddTodoItemProps) => {
                     closeSelect={closeSelect}
                     selectedDate={inputs.selectedDate}
                     setSelectedDate={setSelectedDate}
-                    className='left-24 sm:left-8'
+                    className='left-24 sm:left-24'
                   />
                 )}
               </div>

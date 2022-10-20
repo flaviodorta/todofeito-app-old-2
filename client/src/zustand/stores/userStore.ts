@@ -1,5 +1,12 @@
 import create from 'zustand';
-import { ILabel, IProject, ITodo, IUserStore } from '../../helpers/types';
+import {
+  ILabel,
+  IProject,
+  ISection,
+  ITodo,
+  IUserStore,
+} from '../../helpers/types';
+import { project } from '../../helpers/variants';
 
 const mainProjects: IProject[] = [
   {
@@ -18,6 +25,19 @@ export const userStore = create<IUserStore>((set, get) => ({
   todos: [],
   projects: [...mainProjects],
   labels: [],
+  sections: [],
+  createSection: (section: ISection) =>
+    set((state) => ({ ...state, sections: [...state.sections, section] })),
+  deleteSection: (id: string) =>
+    set((state) => ({
+      ...state,
+      sections: state.sections.filter((section) => section.id !== id),
+    })),
+  deleteProject: (id: string) =>
+    set((state) => ({
+      ...state,
+      projects: state.projects.filter((project) => project.id !== id),
+    })),
   editTodo: (todo: ITodo) =>
     set((state) => ({
       ...state,

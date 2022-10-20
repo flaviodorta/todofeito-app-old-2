@@ -10,10 +10,13 @@ import { useUIStore } from '../zustand';
 import { AddTodoItem } from './AddTodoItem';
 import { TodoItem } from './TodoItem';
 
-interface ITodosListProps {}
+interface ITodosListProps {
+  todos: ITodo[];
+  setTodos: (todos: ITodo[]) => void;
+}
 
-export const TodosList = () => {
-  const { editingTodoId, todosOnScreen, setTodosOnScreen } = useUIStore();
+export const TodosList = ({ todos, setTodos }: ITodosListProps) => {
+  const { editingTodoId } = useUIStore();
 
   const onDragEnd = (result: DropResult) => {
     const { destination, source } = result;
@@ -26,7 +29,7 @@ export const TodosList = () => {
     )
       return;
 
-    setTodosOnScreen(reorder(todosOnScreen, source.index, destination.index));
+    setTodos(reorder(todos, source.index, destination.index));
   };
 
   return (
@@ -39,7 +42,7 @@ export const TodosList = () => {
               {...droppableProvided.droppableProps}
               className='relative flex flex-col'
             >
-              {todosOnScreen.map((todo, i) => (
+              {todos.map((todo, i) => (
                 <Draggable key={todo.id} draggableId={todo.id} index={i}>
                   {(draggableProvided, draggableSnapshot) => (
                     <div

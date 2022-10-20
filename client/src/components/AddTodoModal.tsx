@@ -177,14 +177,14 @@ export const AddTodoModal = (props: IAddTodoModalProps) => {
 
   return (
     <>
-      <Backdrop close={closeAddTodoModal} />
+      <Backdrop close={closeAddTodoModal} className='z-[1000]' />
 
       <motion.div
         variants={addTodoModal}
         initial='initial'
         animate='animate'
         exit='exit'
-        className='z-60 shadow-4xl border-gray-300 bg-white border-[1px] p-5 flex flex-col gap-4 fixed left-1/2 top-1/3 h-fit w-[90%] sm:w-[36rem] rounded-sm'
+        className='z-[1001] shadow-4xl border-gray-300 bg-white border-[1px] p-5 flex flex-col gap-4 fixed left-1/2 top-1/3 h-fit w-[90%] sm:w-[36rem] rounded-sm'
       >
         {/* labels checkeds */}
         {inputs.checkedLabels.length > 0 && (

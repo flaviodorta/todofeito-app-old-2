@@ -1,5 +1,6 @@
 import { getDaysInMonth, getYear } from 'date-fns';
 import React, { forwardRef, useEffect, useState } from 'react';
+import { isMobile } from 'react-device-detect';
 import { language } from '../../helpers/constants';
 import {
   getDayNameInWeek,
@@ -175,10 +176,10 @@ export const DatePicker = (props: IDatePickerProps): JSX.Element => {
 
   return (
     <>
-      <Backdrop close={closeSelect} className='bg-black/50' />
+      <Backdrop close={closeSelect} className={`z-[9000]`} />
 
       <div
-        className={`${props.className} absolute w-60 h-fit z-60 date-picker-container shadow-3xl`}
+        className={`${props.className} absolute w-60 h-fit z-[10000] date-picker-container shadow-3xl`}
       >
         <div className='p-3'>
           <div className='flex items-center justify-between'>

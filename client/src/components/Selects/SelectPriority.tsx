@@ -65,9 +65,9 @@ export const SelectPriority = (props: ISelectPriorityProps) => {
 
   return (
     <>
-      <Backdrop close={closeSelect} />
+      <Backdrop close={closeSelect} className='z-[2000]' />
 
-      <div className='-translate-x-8 sm:translate-x-0 top-9 absolute shadow-3xl border-[1px] border-gray-200 overflow-hidden z-60 rounded-sm w-fit h-fit bg-white'>
+      <div className='-translate-x-8 sm:translate-x-0 top-9 absolute shadow-3xl border-[1px] border-gray-200 overflow-hidden z-[2001] rounded-sm w-fit h-fit bg-white'>
         <div className='dropdown-select overflow-y-scroll h-fit w-full'>
           {Array.from({ length: 4 }).map((_, i) => (
             <Fragment key={i}>

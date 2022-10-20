@@ -3,9 +3,11 @@ import { motion } from 'framer-motion';
 export const Backdrop = ({
   close,
   className,
+  children,
 }: {
   close: () => void;
   className?: string;
+  children?: React.ReactNode;
 }) => {
   return (
     <motion.div
@@ -14,7 +16,9 @@ export const Backdrop = ({
       exit={{ opacity: 0 }}
       transition={{ duration: 0.15 }}
       onClick={close}
-      className={`${className} fixed w-screen h-screen -translate-x-0 -translate-y-0 z-50 top-0 left-0 bg-black/0`}
-    />
+      className={`${className} fixed w-screen h-screen top-0 left-0 bg-transparent`}
+    >
+      {children}
+    </motion.div>
   );
 };

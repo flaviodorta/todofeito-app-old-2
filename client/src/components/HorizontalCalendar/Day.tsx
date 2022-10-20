@@ -49,7 +49,9 @@ export const Day = ({
         isUpcoming ? { backgroundColor: 'rgb(209 213 219 / 0.3)' } : {}
       }
       transition={isUpcoming ? { duration: 0.15 } : {}}
-      className='border-b-[1px] h-full w-full cursor-pointer bg-none  border-gray-200 relative flex-center flex-col'
+      className={`${
+        isUpcoming ? 'cursor-pointer' : 'cursor-default'
+      } border-b-[1px] h-full w-full bg-none  border-gray-200 relative flex-center flex-col`}
     >
       <span className='capitalize text-xs text-gray-500 pt-2.5'>
         {getDayNameInWeek(date, language).substring(0, 3)}

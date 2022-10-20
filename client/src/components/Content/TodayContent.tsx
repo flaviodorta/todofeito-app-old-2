@@ -2,6 +2,9 @@ import { isToday } from 'date-fns';
 import { useIsomorphicLayoutEffect } from 'framer-motion';
 import { useMemo } from 'react';
 import { useUIStore, useUserStore } from '../../zustand';
+import { AddSection } from '../AddSection';
+import { TodosSectionInbox } from '../Sections/TodosSectionInbox';
+import { SectionsList } from '../SectionsList';
 import { ContentContainer } from './ContentContainer';
 
 export const TodayContent = () => {
@@ -33,6 +36,13 @@ export const TodayContent = () => {
           {dayOfWeek} {month} {dayOfMonth}
         </p>
       </div>
+
+      <TodosSectionInbox
+        section={{ id: 'sectio', title: 'section', todos: [] }}
+        hasAddSectionOpen={false}
+      >
+        cu
+      </TodosSectionInbox>
     </ContentContainer>
   );
 };

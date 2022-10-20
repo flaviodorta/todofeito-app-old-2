@@ -15,6 +15,9 @@ import { MoreThreeDotsIcon } from './Icons/Icons/MoreThreeDotsIcon';
 import { isMobile } from 'react-device-detect';
 import { Backdrop } from './Backdrop';
 import { compareDesc, isToday } from 'date-fns';
+import { useOnClickOutside } from '../hooks/useOnClickOutside';
+import { useRef } from 'react';
+import useWindowSize from '../hooks/useWindowSize';
 
 interface ISidebarProps {
   toggleCreateProjectModalOpen: () => void;
@@ -29,11 +32,12 @@ export const Sidebar = (props: ISidebarProps) => {
   } = useUIStore();
   const { toggleCreateProjectModalOpen } = props;
   const { todos, projects } = useUserStore();
+  const { width } = useWindowSize();
   const location = useLocation();
   const navigate = useNavigate();
 
   const goToPage = (path: string) => {
-    if (isMobile) toggleSidebar();
+    if (isMobile || width < 768) toggleSidebar();
     navigate(path);
   };
 
@@ -53,24 +57,33 @@ export const Sidebar = (props: ISidebarProps) => {
     (todo) => todo.labels.length > 0 && !todo.isCompleted
   ).length;
 
+  const sidebarRef = useRef<HTMLDivElement>(null);
+
+  useOnClickOutside(sidebarRef, () => {
+    if (isSidebarOpen && width < 768) toggleSidebar();
+  });
+
   return (
     // <Resizable height={100} width={326}>
     <>
       {isSidebarOpen && (
         <Backdrop
           close={toggleSidebar}
-          className='lg:hidden bg-black/50 duration-150 transition-colors'
+          className={`${
+            isMobile ? 'z-40' : 'z-10 bg-black/50 md:hidden'
+          } duration-150 `}
         />
       )}
 
       <motion.div
+        ref={sidebarRef}
         animate={isSidebarOpen ? { translateX: 0 } : { translateX: '-100%' }}
         transition={{
           bounce: 0,
           duration: 0.35,
           ease: 'easeInOut',
         }}
-        className='fixed top-12 pt-6 pl-12 pr-1 w-[306px] z-50 h-screen bg-gray-100'
+        className={`z-50 fixed top-12 pt-6 pl-12 pr-1 w-[306px] h-screen bg-gray-100`}
       >
         <div className='w-full flex flex-col mb-6'>
           <div

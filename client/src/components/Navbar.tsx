@@ -42,9 +42,17 @@ export const Navbar = (props: INavbarProps) => {
 
   return (
     <nav
-      className={`${
-        isMobile ? 'z-10' : 'z-0'
-      } w-screen fixed h-12 bg-blue-600 flex justify-between items-center px-2 md:px-10`}
+      className={`
+      ${
+        isSidebarOpen && isMobile
+          ? 'z-[1000]'
+          : !isSidebarOpen && isMobile
+          ? 'z-0'
+          : isSidebarOpen && !isMobile
+          ? 'z-[1000] md:z-0'
+          : 'z-0'
+      }
+      w-screen fixed h-12 bg-blue-600 flex justify-between items-center px-2 md:px-10`}
     >
       <div className='navbar-buttons-wrapper'>
         {/* sidebar icon */}

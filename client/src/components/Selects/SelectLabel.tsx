@@ -66,8 +66,8 @@ export const SelectLabel = (props: ISelectLabelProps) => {
 
   return (
     <>
-      <Backdrop close={closeSelect} />
-      <div className='top-9 absolute shadow-3xl border-[1px] border-gray-200 overflow-hidden z-60 rounded-sm  min-w-[140px]  bg-white'>
+      <Backdrop close={closeSelect} className='z-[6000]' />
+      <div className='top-9 absolute shadow-3xl border-[1px] border-gray-200 overflow-hidden z-[6004] rounded-sm  min-w-[140px]  bg-white'>
         <div className='h-fit'>
           <input
             placeholder='Type a label'

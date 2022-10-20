@@ -38,17 +38,27 @@ export interface ILabel {
   name: string;
 }
 
+export interface ISection {
+  id: string;
+  title: string;
+  todos: ITodo[];
+}
+
 export interface IUserStore {
   fullName: string;
   email: string;
   todos: ITodo[];
   projects: IProject[];
   labels: ILabel[];
+  sections: ISection[];
+  createSection: (section: ISection) => void;
+  deleteSection: (id: string) => void;
   addTodo: (todo: ITodo) => void;
   removeTodo: (todo: ITodo) => void;
   editTodo: (todo: ITodo) => void;
   completeTodo: (todo: ITodo) => void;
   createProject: (project: IProject) => void;
+  deleteProject: (id: string) => void;
   createLabel: (label: ILabel) => void;
 }
 

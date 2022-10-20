@@ -63,7 +63,7 @@ export const HorizontalCalendar = () => {
   }, [selectedDate]);
 
   return (
-    <div className='w-full h-fit flex flex-col gap-2 z-60'>
+    <div className='w-full h-fit flex flex-col gap-2'>
       {/* <button onClick={closeSelect} className='fixed top-0 z-[1000]'> */}
       {/* close */}
       {/* </button> */}
@@ -72,7 +72,7 @@ export const HorizontalCalendar = () => {
           onClick={openDatePicker}
           className={`${
             renderedSelect ? 'cursor-default' : 'cursor-pointer'
-          } relative flex gap-2 items-center z-60`}
+          } relative flex gap-2 items-center`}
         >
           <span className='font-bold text-lg capitalize'>
             {getMonthName(selectedDate, language)} {getYearNumber(selectedDate)}

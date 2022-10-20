@@ -65,8 +65,9 @@ export const SelectColor = (props: ISelectColorProps) => {
 
   return (
     <>
-      <Backdrop close={closeSelect} />
-      <div className='top-14 absolute shadow-3xl border-[1px] border-gray-200 overflow-hidden z-60 rounded-sm w-full h-fit bg-white'>
+      <Backdrop close={closeSelect} className='z-[2000]' />
+
+      <div className='top-14 absolute shadow-3xl border-[1px] border-gray-200 overflow-hidden z-[2001] rounded-sm w-full h-fit bg-white'>
         <div className='dropdown-select overflow-y-scroll h-48 w-full'>
           {colorsEntries.map((color, i) => (
             <Fragment key={i}>

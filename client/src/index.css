@@ -4,7 +4,7 @@
 
 @layer base {
   #root {
-    @apply h-screen w-screen text-[#202020] bg-white font-roboto overflow-x-hidden overflow-hidden;
+    @apply h-screen w-screen text-[#202020] bg-white font-roboto overflow-hidden;
     -webkit-font-smoothing: antialiased;
   }
 
@@ -28,7 +28,7 @@
   }
 
   .navbar-buttons-wrapper {
-    @apply flex space-x-2 items-center;
+    @apply flex gap-2 items-center;
   }
 
   .navbar-button {
@@ -54,7 +54,7 @@
   /* label */
 
   .label {
-    @apply group-hover:opacity-100 whitespace-nowrap bg-gray-900 text-xs text-white shadow-lg rounded-md px-3 py-2 opacity-0 absolute left-1/2 top-12 -translate-x-1/2;
+    @apply group-hover:opacity-100 whitespace-nowrap bg-gray-900 text-xs text-white shadow-lg rounded-md px-3 py-2 opacity-0 -translate-x-[calc(50%-25px)] translate-y-4;
   }
 
   /* search bar */

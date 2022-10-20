@@ -9,11 +9,11 @@
 - fix todo list dragg
 - fix todo styles
 - fix todos states organization
+- create date picker for upcoming page
 
 # to do
 
-- create date picker for upcoming page
-
+- change labels to fixed positon with useDimensions
 - create section todos
   - use sticky in heading
 - useScrollRatio to take element position
