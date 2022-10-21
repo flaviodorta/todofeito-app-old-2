@@ -34,11 +34,12 @@ export interface IProject {
 export interface ILabel {
   id: string;
   name: string;
+  todos: ITodo[];
 }
 
 export interface ISection {
   id: string;
-  title: string;
+  name: string;
   projectId: string;
   todos: ITodo[];
 }
@@ -50,7 +51,7 @@ export interface ITodo {
   date: Date | null;
   project: Pick<IProject, 'id' | 'name'>;
   sectionId?: string;
-  labels: string[];
+  labelsIds: string[];
   priority: number;
   checkedLabels: string[];
   isCompleted: boolean;
@@ -63,10 +64,11 @@ export interface IUserStore {
   projects: IProject[];
   labels: ILabel[];
   sections: ISection[];
+  editSection: (section: ISection) => void;
   createSection: (section: ISection, index: number) => void;
   deleteSection: (id: string) => void;
   addTodo: (todo: ITodo) => void;
-  removeTodo: (todo: ITodo) => void;
+  deleteTodo: (todo: ITodo) => void;
   editTodo: (todo: ITodo) => void;
   completeTodo: (todo: ITodo) => void;
   createProject: (project: IProject) => void;

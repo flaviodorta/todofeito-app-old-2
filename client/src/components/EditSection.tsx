@@ -1,36 +1,31 @@
-import { nanoid } from 'nanoid';
 import { useRef, useState } from 'react';
 import { onKeyUpEnter } from '../helpers/functions';
+import { ISection } from '../helpers/types';
 import { useUserStore } from '../zustand';
 
-interface IAddSectionProps {
-  index: number;
-  projectId: string;
+interface IEditSectionProps {
+  section: ISection;
   close: () => void;
 }
 
-export const AddSection = ({ index, projectId, close }: IAddSectionProps) => {
-  const { createSection } = useUserStore();
+export const EditSection = ({ section, close }: IEditSectionProps) => {
+  const { editSection } = useUserStore();
   const [inputs, setInputs] = useState({
-    name: '',
+    name: section.name,
   });
 
-  const createNewSection = () => {
-    createSection(
-      {
-        id: nanoid(),
-        name: inputs.name,
-        projectId,
-        todos: [],
-      },
-      index
-    );
+  const sendEditedSection = () => {
+    editSection({
+      ...section,
+      name: inputs.name,
+    });
+
     close();
   };
 
   const sectionNameInputRef = useRef<HTMLInputElement>(null);
   const createNewSectionOnKeyEnterInputSectionName = onKeyUpEnter(
-    createNewSection,
+    sendEditedSection,
     sectionNameInputRef
   );
 
@@ -50,7 +45,7 @@ export const AddSection = ({ index, projectId, close }: IAddSectionProps) => {
 
       <div className='flex gap-2'>
         <button
-          onClick={createNewSection}
+          onClick={sendEditedSection}
           className={`${
             !inputs.name
               ? 'cursor-not-allowed bg-blue-400'

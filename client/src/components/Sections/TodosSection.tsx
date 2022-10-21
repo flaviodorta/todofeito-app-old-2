@@ -1,13 +1,21 @@
-import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { DraggableProvided, DraggableStateSnapshot } from 'react-beautiful-dnd';
-import { IProject, ISection } from '../../helpers/types';
+import { ISection } from '../../helpers/types';
 import { useToggle } from '../../hooks/useToggle';
 import { useUIStore, useUserStore } from '../../zustand';
 import { AddSection } from '../AddSection';
 import { AddTodoItem } from '../AddTodoItem';
-import { ChevronIcon, GripVerticalSolidIcon, PlusSolidIcon } from '../Icons';
-import { MoreThreeDotsIcon } from '../Icons/Icons/MoreThreeDotsIcon';
+import { EditDropdown } from '../Dropdowns/EditDropdown';
+import { EditSection } from '../EditSection';
+import {
+  ChevronIcon,
+  GripVerticalSolidIcon,
+  PlusSolidIcon,
+  TrashSolidIcon,
+  MoreThreeDotsIcon,
+} from '../Icons';
+import {} from '../Icons/Icons/MoreThreeDotsIcon';
+import { PenSolidIcon } from '../Icons/Icons/PenSolidIcon';
 import { TodosList } from '../Lists/TodosList';
 
 interface ITodosSection {
@@ -27,7 +35,7 @@ export const TodosSection = ({
   draggableProvided,
   draggableSnapshot,
 }: ITodosSection) => {
-  const { sections } = useUserStore();
+  const { sections, deleteSection } = useUserStore();
   const {
     editingTodoId,
     isAddTodoInSection,
@@ -41,6 +49,8 @@ export const TodosSection = ({
   const [isAddSectionOpen, toggleIsAddSectionOpen] = useToggle(false);
   const [isTodoListOpen, toggleTodoListOpen] = useToggle(false);
   const [isHover, toggleHover] = useToggle(false);
+  const [isOptionsDropdownOpen, toggleIsOptionsDropdownOpen] = useToggle(false);
+  const [isEditSectionOpen, toggleIsEditSectionOpen] = useToggle(false);
 
   const [todos, setTodos] = useState(
     section.todos.filter((todo) => !todo.isCompleted)
@@ -78,6 +88,10 @@ export const TodosSection = ({
 
   console.log(todos);
 
+  if (isEditSectionOpen) {
+    return <EditSection section={section} close={toggleIsEditSectionOpen} />;
+  }
+
   return (
     <div className='relative flex flex-col h-fit w-full'>
       {/* {draggableProvided && ( */}
@@ -88,7 +102,7 @@ export const TodosSection = ({
           onMouseLeave={toggleHover}
           className='relative flex justify-between items-center w-full text-sm  bg-white font-bold h-fit pb-1 border-b-[1px] border-gray-300'
         >
-          {section.title}
+          {section.name}
 
           <span
             // {...draggableProvided.dragHandleProps}
@@ -112,8 +126,30 @@ export const TodosSection = ({
             />
           </span>
 
-          <span className='group flex-center w-5 h-5 cursor-pointer rounded-sm hover:bg-gray-200'>
+          <span
+            onClick={toggleIsOptionsDropdownOpen}
+            className='group relative flex-center w-6 h-6 cursor-pointer rounded-sm hover:bg-gray-200'
+          >
             <MoreThreeDotsIcon className='hover:bg-gray-200 hover:fill-gray-600 duration-100 transition-all fill-gray-400' />
+
+            {isOptionsDropdownOpen && (
+              <EditDropdown>
+                <span
+                  onClick={toggleIsEditSectionOpen}
+                  className='w-full flex items-center gap-2 px-2 py-1 hover:bg-gray-300/30'
+                >
+                  <PenSolidIcon className='fill-gray-400/70' />
+                  <span>Edit section</span>
+                </span>
+                <span
+                  onClick={() => deleteSection(section.id)}
+                  className='w-full flex items-center gap-2 px-2 py-1 hover:bg-gray-300/30'
+                >
+                  <TrashSolidIcon className='fill-gray-400/70' />
+                  <span>Delete section</span>
+                </span>
+              </EditDropdown>
+            )}
           </span>
         </div>
       </div>

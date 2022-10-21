@@ -123,7 +123,7 @@ export const AddTodoItem = (props: IAddTodoItemProps) => {
     title: inputs.title,
     description: inputs.description,
     date: inputs.selectedDate,
-    labels: inputs.checkedLabels,
+    labelsIds: inputs.checkedLabels,
     priority: inputs.selectedPriority,
     project: inputs.selectedProject,
     sectionId: sectionId ? sectionId : undefined,

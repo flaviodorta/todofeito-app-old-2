@@ -65,7 +65,7 @@ export const TodayContent = () => {
             hasAddSectionOpen={hasAddSectionOpen}
             toggleHasAddSectionOpen={toggleHasAddSectionOpen}
           >
-            {section.title}
+            {section.name}
           </TodosSection>
         ))}
       </div>

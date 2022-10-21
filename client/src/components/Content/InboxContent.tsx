@@ -37,19 +37,21 @@ export const InboxContent = () => {
     </div>
   );
 
+  console.log(isAddTodoItemOpen);
+
   return (
     <ContentContainer
       heading={<Heading />}
       project={{ id: 'inbox', name: 'Inbox' }}
     >
-      <div className='flex flex-col gap-6'>
+      <div className='flex flex-col gap-1'>
         {inboxSections.map((section) => (
           <TodosSection
             section={section}
             hasAddSectionOpen={hasAddSectionOpen}
             toggleHasAddSectionOpen={toggleHasAddSectionOpen}
           >
-            {section.title}
+            {section.name}
           </TodosSection>
         ))}
       </div>
@@ -65,7 +67,7 @@ export const InboxContent = () => {
           ) : (
             <div
               onClick={toggleAddSection}
-              className='group opacity-0 hover:opacity-100 relative w-full flex items-center justify-center gap-2.5 h-fit cursor-pointer duration-300 ease-in transition-opacity'
+              className='group opacity-0 hover:opacity-100 relative w-full flex items-center justify-center gap-2.5 h-fit cursor-pointer duration-200 ease-in transition-opacity'
             >
               <span
                 className={`${

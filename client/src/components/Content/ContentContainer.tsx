@@ -71,11 +71,11 @@ export const ContentContainer = ({
 
       <div
         ref={todosListRef}
-        className='relative top-[92px]  w-full px-4 md:px-0 md:w-[768px] md:max-w-[768px] md:min-w-[768px]'
+        className='relative top-[92px] w-full px-4 md:px-0 md:w-[768px] md:max-w-[768px] md:min-w-[768px]'
       >
         <TodosList todos={todosOnScreen} setTodos={setTodosOnScreen} />
 
-        <div className='mb-16'>
+        <div className='mb-6'>
           {isAddTodoItemOpen && !editingTodoId && !isAddTodoInSection ? (
             <AddTodoItem project={project} date={new Date()} />
           ) : (

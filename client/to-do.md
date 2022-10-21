@@ -14,12 +14,12 @@
 - create section todos
   - use sticky in heading
 - fix heading content sticky
+- refactor todos relations
 
 # to do
 
 - add edit section
 - make sections list draggable
-- refactor todos relations
 - useScrollRatio to take element position
 
 - create labels and projects content

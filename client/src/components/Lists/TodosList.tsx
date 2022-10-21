@@ -67,7 +67,7 @@ export const TodosList = ({ todos, setTodos }: ITodosListProps) => {
                             project={todo.project}
                             checkedLabels={todo.checkedLabels}
                             priority={todo.priority}
-                            labels={todo.labels}
+                            labels={todo.labelsIds}
                           />
                         </div>
                       ) : (

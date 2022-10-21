@@ -26,6 +26,12 @@ export const userStore = create<IUserStore>((set, get) => ({
   projects: [...mainProjects],
   labels: [],
   sections: [],
+  editSection: (section: ISection) =>
+    set((state) => ({
+      ...state,
+      sections: state.sections.map((s) => (s.id === section.id ? section : s)),
+    })),
+
   editTodo: (todo: ITodo) =>
     set((state) => ({
       ...state,
@@ -34,7 +40,7 @@ export const userStore = create<IUserStore>((set, get) => ({
       ),
     })),
 
-  removeTodo: (todo: ITodo) =>
+  deleteTodo: (todo: ITodo) =>
     set((state) => ({
       ...state,
       todos: state.todos.filter((t) => t.id !== todo.id),

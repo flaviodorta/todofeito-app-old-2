@@ -68,7 +68,7 @@ export const Sidebar = (props: ISidebarProps) => {
       compareDesc(todo.date as Date, new Date()) === -1 && !todo.isCompleted
   ).length;
   const labelsLength = todos.filter(
-    (todo) => todo.labels.length > 0 && !todo.isCompleted
+    (todo) => todo.labelsIds.length > 0 && !todo.isCompleted
   ).length;
 
   const sidebarRef = useRef<HTMLDivElement>(null);

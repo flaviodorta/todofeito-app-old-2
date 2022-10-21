@@ -15,3 +15,5 @@ export { FlagSolidIcon } from './Icons/FlagSolidIcon';
 export { GripVerticalSolidIcon } from './Icons/GripVerticalSolidIcon';
 export { CalendarDaysSolidIcon } from './Icons/CalendarDaysSolidIcon';
 export { ChevronIcon } from './Icons/ChevronIcon';
+export { TrashSolidIcon } from './Icons/TrashSolidIcon';
+export { MoreThreeDotsIcon } from './Icons/MoreThreeDotsIcon';

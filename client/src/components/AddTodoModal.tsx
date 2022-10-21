@@ -102,7 +102,7 @@ export const AddTodoModal = (props: IAddTodoModalProps) => {
     title: inputs.title,
     description: inputs.description,
     date: inputs.selectedDate,
-    labels: inputs.checkedLabels,
+    labelsIds: inputs.checkedLabels,
     priority: inputs.selectedPriority,
     project: inputs.selectedProject,
     checkedLabels: inputs.checkedLabels,
