@@ -16,7 +16,7 @@ export const Backdrop = ({
       exit={{ opacity: 0 }}
       transition={{ duration: 0.15 }}
       onClick={close}
-      className={`${className} fixed w-screen h-screen top-0 left-0 bg-transparent`}
+      className={`${className} cursor-default fixed w-screen h-screen top-0 left-0 bg-transparent`}
     >
       {children}
     </motion.div>

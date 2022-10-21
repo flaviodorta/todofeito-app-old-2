@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import { DraggableProvided, DraggableStateSnapshot } from 'react-beautiful-dnd';
+import { isMobile } from 'react-device-detect';
 import { ISection } from '../../helpers/types';
 import { useToggle } from '../../hooks/useToggle';
+import useWindowSize from '../../hooks/useWindowSize';
 import { useUIStore, useUserStore } from '../../zustand';
 import { AddSection } from '../AddSection';
 import { AddTodoItem } from '../AddTodoItem';
@@ -47,7 +49,7 @@ export const TodosSection = ({
   const [isAddSectionOpen, toggleIsAddSectionOpen] = useToggle(false);
   const [isTodoListOpen, toggleTodoListOpen] = useToggle(false);
   const [isHover, toggleHover] = useToggle(false);
-  const [isOptionsDropdownOpen, toggleIsOptionsDropdownOpen] = useToggle(false);
+  const [isOptionsDropdownOpen, setIsOptionsDropdownOpen] = useState(false);
   const [isEditSectionOpen, toggleIsEditSectionOpen] = useToggle(false);
 
   const [todos, setTodos] = useState(
@@ -84,15 +86,26 @@ export const TodosSection = ({
     toggleHasAddSectionOpen();
   }, []);
 
-  console.log(draggableProvided);
+  const toggleIsOptionsDropdownOpen = () =>
+    isOptionsDropdownOpen
+      ? setIsOptionsDropdownOpen(false)
+      : setIsOptionsDropdownOpen(true);
+
+  const { width } = useWindowSize();
+
+  const mobileDraggable =
+    isMobile || width < 768 ? { ...draggableProvided?.dragHandleProps } : {};
+
+  const desktopDraggable =
+    !isMobile && width >= 768 ? { ...draggableProvided?.dragHandleProps } : {};
 
   if (isEditSectionOpen) {
     return <EditSection section={section} close={toggleIsEditSectionOpen} />;
   }
 
   return (
-    <div className='relative flex flex-col h-fit w-full'>
-      <div className='sticky top-[92px] z-[2]'>
+    <div className='flex flex-col h-fit w-full'>
+      <div {...mobileDraggable} className='sticky top-[92px] z-[2]'>
         <div
           onMouseEnter={toggleHover}
           onMouseLeave={toggleHover}
@@ -100,9 +113,9 @@ export const TodosSection = ({
         >
           {section.name}
 
-          {draggableProvided?.dragHandleProps && (
+          {draggableProvided?.dragHandleProps && width >= 768 && !isMobile && (
             <span
-              {...draggableProvided.dragHandleProps}
+              {...desktopDraggable}
               style={{ cursor: 'all-scroll' }}
               className={`${
                 isHover ? 'opacity-100' : 'opacity-0'
@@ -122,34 +135,34 @@ export const TodosSection = ({
               } w-[20px] h-[20px] stroke-gray-500 group-hover:stroke-gray-600 duration-150 transition-all`}
             />
           </span>
-
-          <span
-            onClick={toggleIsOptionsDropdownOpen}
-            className='group  relative flex-center w-6 h-6 cursor-pointer rounded-sm hover:bg-gray-200'
-          >
-            <MoreThreeDotsIcon className='hover:bg-gray-200 hover:fill-gray-600 duration-100 transition-all fill-gray-400' />
-
-            {isOptionsDropdownOpen && (
-              <EditDropdown close={toggleIsOptionsDropdownOpen}>
-                <span
-                  onClick={toggleIsEditSectionOpen}
-                  className='w-full flex items-center gap-2 px-2 py-1 hover:bg-gray-300/30'
-                >
-                  <PenSolidIcon className='fill-gray-400/70' />
-                  <span>Edit section</span>
-                </span>
-                <span
-                  onClick={() => deleteSection(section.id)}
-                  className='w-full flex items-center gap-2 px-2 py-1 hover:bg-gray-300/30'
-                >
-                  <TrashSolidIcon className='fill-gray-400/70' />
-                  <span>Delete section</span>
-                </span>
-              </EditDropdown>
-            )}
-          </span>
         </div>
       </div>
+
+      <span
+        onClick={toggleIsOptionsDropdownOpen}
+        className='group absolute top-0 right-0 z-[51] flex-center w-6 h-6 cursor-pointer rounded-sm hover:bg-gray-200'
+      >
+        <MoreThreeDotsIcon className='hover:bg-gray-200 hover:fill-gray-600 duration-100 transition-all fill-gray-400' />
+
+        {isOptionsDropdownOpen && (
+          <EditDropdown close={toggleIsOptionsDropdownOpen}>
+            <span
+              onClick={toggleIsEditSectionOpen}
+              className='w-full flex items-center gap-2 px-2 py-1 hover:bg-gray-300/30'
+            >
+              <PenSolidIcon className='fill-gray-400/70' />
+              <span>Edit section</span>
+            </span>
+            <span
+              onClick={() => deleteSection(section.id)}
+              className='w-full flex items-center gap-2 px-2 py-1 hover:bg-gray-300/30'
+            >
+              <TrashSolidIcon className='fill-gray-400/70' />
+              <span>Delete section</span>
+            </span>
+          </EditDropdown>
+        )}
+      </span>
 
       <div className='w-full h-fit mb-4'>
         {isTodoListOpen && (

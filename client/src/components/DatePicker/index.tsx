@@ -176,7 +176,7 @@ export const DatePicker = (props: IDatePickerProps): JSX.Element => {
 
   return (
     <>
-      <Backdrop close={closeSelect} className={`z-[9000]`} />
+      <Backdrop close={closeSelect} className={`z-[9000] bg-black/50`} />
 
       <div
         className={`${props.className} absolute w-60 h-fit z-[10000] date-picker-container shadow-3xl`}
