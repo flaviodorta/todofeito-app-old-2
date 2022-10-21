@@ -56,25 +56,17 @@ export const ContentContainer = ({
       initial={false}
       animate={isSidebarOpen && isDesktop ? { left: 40 } : { left: 0 }}
       transition={{ duration: 0.3, bounce: 0 }}
-      className={`h-fit relative px-4 sm:px-0 mx-auto w-full flex-center flex-col`}
+      className={`h-fit md:w-[768px] md:max-w-[768px] md:min-w-[768px] relative px-4 sm:px-0 mx-auto w-full flex-center flex-col`}
     >
-      <motion.div
-        initial={false}
-        animate={isSidebarOpen && isDesktop ? { left: 40 } : { left: 0 }}
-        transition={{ duration: 0.3, bounce: 0 }}
-        className='flex fixed bg-white top-12 justify-center z-[3] w-full items-center gap-2'
-      >
-        <div className='w-full  px-4 md:px-0 top-0  left-0 right-0 bg-white h-fit pt-12 mb-4 flex-center'>
+      <div className='flex sticky z-[100] w-[1000px] bg-white top-0 justify-center items-center gap-2'>
+        <div className='w-full px-4 md:px-0 top-0 left-0 right-0 bg-white h-fit pt-12 mb-4 flex-center'>
           <div style={{ width: todosListWidth }} className='w-full'>
             {heading}
           </div>
         </div>
-      </motion.div>
+      </div>
 
-      <div
-        ref={todosListRef}
-        className='relative top-[92px] w-full px-4 md:px-0 md:w-[768px] md:max-w-[768px] md:min-w-[768px]'
-      >
+      <div ref={todosListRef} className='w-full px-4 md:px-0 '>
         <TodosList todos={todos} setTodos={setTodos} />
 
         <div className='mb-6'>

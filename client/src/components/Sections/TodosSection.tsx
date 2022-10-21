@@ -138,31 +138,33 @@ export const TodosSection = ({
         </div>
       </div>
 
-      <span
-        onClick={toggleIsOptionsDropdownOpen}
-        className='group absolute top-0 right-0 z-[51] flex-center w-6 h-6 cursor-pointer rounded-sm hover:bg-gray-200'
-      >
-        <MoreThreeDotsIcon className='hover:bg-gray-200 hover:fill-gray-600 duration-100 transition-all fill-gray-400' />
+      <div className='sticky -translate-y-6 top-[116px] z-[3]'>
+        <span
+          onClick={toggleIsOptionsDropdownOpen}
+          className='group absolute top-0 right-0 z-[51] flex-center w-6 h-6 cursor-pointer rounded-sm hover:bg-gray-200'
+        >
+          <MoreThreeDotsIcon className='hover:bg-gray-200 hover:fill-gray-600 duration-100 transition-all fill-gray-400' />
 
-        {isOptionsDropdownOpen && (
-          <EditDropdown close={toggleIsOptionsDropdownOpen}>
-            <span
-              onClick={toggleIsEditSectionOpen}
-              className='w-full flex items-center gap-2 px-2 py-1 hover:bg-gray-300/30'
-            >
-              <PenSolidIcon className='fill-gray-400/70' />
-              <span>Edit section</span>
-            </span>
-            <span
-              onClick={() => deleteSection(section.id)}
-              className='w-full flex items-center gap-2 px-2 py-1 hover:bg-gray-300/30'
-            >
-              <TrashSolidIcon className='fill-gray-400/70' />
-              <span>Delete section</span>
-            </span>
-          </EditDropdown>
-        )}
-      </span>
+          {isOptionsDropdownOpen && (
+            <EditDropdown close={toggleIsOptionsDropdownOpen}>
+              <span
+                onClick={toggleIsEditSectionOpen}
+                className='w-full flex items-center gap-2 px-2 py-1 hover:bg-gray-300/30'
+              >
+                <PenSolidIcon className='fill-gray-400/70' />
+                <span>Edit section</span>
+              </span>
+              <span
+                onClick={() => deleteSection(section.id)}
+                className='w-full flex items-center gap-2 px-2 py-1 hover:bg-gray-300/30'
+              >
+                <TrashSolidIcon className='fill-gray-400/70' />
+                <span>Delete section</span>
+              </span>
+            </EditDropdown>
+          )}
+        </span>
+      </div>
 
       <div className='w-full h-fit mb-4'>
         {isTodoListOpen && (
