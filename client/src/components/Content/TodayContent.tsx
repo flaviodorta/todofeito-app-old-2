@@ -22,6 +22,10 @@ export const TodayContent = () => {
     (todo) => isToday(todo.date as Date) && !todo.isCompleted
   );
 
+  const todaySections = sections.filter(
+    (section) => section.projectId === 'today'
+  );
+
   const [hasAddSectionOpen, toggleHasAddSectionOpen] = useToggle(false);
   const [isAddSectionOpen, toggleIsAddSectionOpen] = useToggle(false);
 
@@ -55,7 +59,7 @@ export const TodayContent = () => {
       project={{ id: 'inbox', name: 'Inbox' }}
     >
       <div className='flex flex-col gap-6'>
-        {sections.map((section) => (
+        {todaySections.map((section) => (
           <TodosSection
             section={section}
             hasAddSectionOpen={hasAddSectionOpen}
@@ -68,8 +72,12 @@ export const TodayContent = () => {
 
       {!isAddTodoItemOpen && (
         <div>
-          {sections.length === 0 && isAddSectionOpen ? (
-            <AddSection index={0} close={toggleAddSection} />
+          {todaySections.length === 0 && isAddSectionOpen ? (
+            <AddSection
+              index={0}
+              projectId={'today'}
+              close={toggleAddSection}
+            />
           ) : (
             <div
               onClick={toggleAddSection}

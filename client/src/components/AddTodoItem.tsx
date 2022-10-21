@@ -22,6 +22,7 @@ import { IProject, IRenderableElements, ITodo } from '../helpers/types';
 import { useUIStore, useUserStore } from '../zustand';
 import { nanoid } from 'nanoid';
 import { stringify } from 'querystring';
+import useWindowSize from '../hooks/useWindowSize';
 
 interface IAddTodoItemProps {
   id?: string;
@@ -148,9 +149,13 @@ export const AddTodoItem = (props: IAddTodoItemProps) => {
     resetInputs();
   };
 
+  const { width } = useWindowSize();
+
   const close = () => {
     setEditingTodoId(null);
     setIsAddTodoInSection(null);
+
+    // if (isMobile || width < 768)
     closeIsAddTodoItemOpen();
   };
 

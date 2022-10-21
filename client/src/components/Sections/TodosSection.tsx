@@ -42,7 +42,9 @@ export const TodosSection = ({
   const [isTodoListOpen, toggleTodoListOpen] = useToggle(false);
   const [isHover, toggleHover] = useToggle(false);
 
-  const [todos, setTodos] = useState(section.todos);
+  const [todos, setTodos] = useState(
+    section.todos.filter((todo) => !todo.isCompleted)
+  );
 
   const sectionIndex = sections.findIndex((s) => s.id === section.id);
 
@@ -67,18 +69,20 @@ export const TodosSection = ({
   };
 
   useEffect(() => {
-    setTodos(section.todos);
+    setTodos(section.todos.filter((todo) => !todo.isCompleted));
   }, [section.todos]);
 
   useEffect(() => {
     toggleHasAddSectionOpen();
   }, []);
 
+  console.log(todos);
+
   return (
     <div className='relative flex flex-col h-fit w-full'>
       {/* {draggableProvided && ( */}
 
-      <div className='sticky top-[68px] z-[2]'>
+      <div className='sticky top-[92px] z-[2]'>
         <div
           onMouseEnter={toggleHover}
           onMouseLeave={toggleHover}
@@ -140,7 +144,11 @@ export const TodosSection = ({
 
       <div className='w-full'>
         {isAddSectionOpen ? (
-          <AddSection index={sectionIndex} close={toggleAddSection} />
+          <AddSection
+            index={sectionIndex}
+            projectId={section.projectId}
+            close={toggleAddSection}
+          />
         ) : (
           <div
             onClick={toggleAddSection}

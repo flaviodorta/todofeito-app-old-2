@@ -22,8 +22,6 @@ export interface Country {
   };
 }
 
-type IProjectType = 'inbox' | 'today' | 'upcoming' | 'labels' | 'projects';
-
 export interface IProject {
   id: string;
   name: string;
@@ -41,7 +39,21 @@ export interface ILabel {
 export interface ISection {
   id: string;
   title: string;
+  projectId: string;
   todos: ITodo[];
+}
+
+export interface ITodo {
+  id: string;
+  title: string;
+  description: string;
+  date: Date | null;
+  project: Pick<IProject, 'id' | 'name'>;
+  sectionId?: string;
+  labels: string[];
+  priority: number;
+  checkedLabels: string[];
+  isCompleted: boolean;
 }
 
 export interface IUserStore {
@@ -61,18 +73,6 @@ export interface IUserStore {
   deleteProject: (id: string) => void;
   createLabel: (label: ILabel) => void;
 }
-
-// export interface IUserStore {
-//   fullName: string;
-//   email: string;
-//   projects: IProject[];
-//   reorderTodos: (todos: ITodo[], startIndex: number, endIndex: number) => void;
-//   addTodo: (todo: ITodo) => void;
-//   editTodo: (todo: ITodo) => void;
-//   completeTodo: (todo: ITodo) => void;
-//   createProject: (name: string, color: { name: string; class: string }) => void;
-//   createLabel: (name: string, color: { name: string; class: string }) => void;
-// }
 
 export interface IDay {
   date: Date;
@@ -122,22 +122,6 @@ export type IPriorityLabelColors =
   | 'fill-blue-600'
   | null;
 
-export interface IAddTodoStore {
-  title: string;
-  description: string;
-  project: string;
-  labels: string[];
-  priority: number;
-  priorityLabelColor: IPriorityLabelColors;
-  setTitle: (title: string) => void;
-  setDescription: (description: string) => void;
-  setProject: (project: string) => void;
-  addLabel: (label: string) => void;
-  removeLabel: (label: string) => void;
-  setPriority: (priority: number) => void;
-  setPriorityLabelColor: (priorityLabelColor: IPriorityLabelColors) => void;
-}
-
 export interface IAddTodoInputs {
   title: string;
   description: string;
@@ -168,17 +152,4 @@ export interface IAddTodoInputs {
   labels: string[];
   priority: number | null;
   priorityLabelColor: IPriorityLabelColors;
-}
-
-export interface ITodo {
-  id: string;
-  title: string;
-  description: string;
-  date: Date | null;
-  project: Pick<IProject, 'id' | 'name'>;
-  sectionId?: string;
-  labels: string[];
-  priority: number;
-  checkedLabels: string[];
-  isCompleted: boolean;
 }

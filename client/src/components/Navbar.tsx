@@ -40,20 +40,18 @@ export const Navbar = (props: INavbarProps) => {
   const onClickNavbarButton = (buttonClicked: INavbarButtonClicked) =>
     setButtonClicked(buttonClicked);
 
-  const closeSidebar = () => {
-    if (isSidebarOpen) toggleSidebar();
-  };
-
-  console.log('is mobile: ', isMobile);
-
   const [sidebarIconSizes, sidebarIconRef] = useDimensions();
   const [homeIconSizes, homeIconRef] = useDimensions();
   const [addTodoIconSizes, addTodoIconRef] = useDimensions();
   const [userIconSizes, userIconRef] = useDimensions();
 
   const { width } = useWindowSize();
+
+  const closeSidebar = () => {
+    if (isSidebarOpen && (isMobile || width < 768)) toggleSidebar();
+  };
   const goToPage = (path: string) => {
-    if (isMobile || width < 768) closeSidebar();
+    closeSidebar();
     navigate(path);
   };
 

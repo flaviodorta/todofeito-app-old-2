@@ -7,8 +7,7 @@ import { Sidebar } from '../components/Sidebar';
 import { CreateProjectModal } from '../components/CreateProjectModal';
 import useWindowSize from '../hooks/useWindowSize';
 import { useEventListener } from '../hooks/useEventListener';
-import { useMemo, useRef, useState } from 'react';
-import { motion } from 'framer-motion';
+import { useMemo, useRef } from 'react';
 
 export const BasePage = ({ content }: { content: React.ReactNode }) => {
   const {
@@ -23,7 +22,6 @@ export const BasePage = ({ content }: { content: React.ReactNode }) => {
   const { width } = useWindowSize();
 
   useEventListener('resize', () => {
-    console.log(isMinorThanLargeScreen);
     if (width < 1024 && !isMinorThanLargeScreen) {
       if (isSidebarOpen) toggleSidebar();
       setIsMinorThanLargeScreen(true);

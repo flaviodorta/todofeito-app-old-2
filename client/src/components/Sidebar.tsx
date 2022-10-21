@@ -15,9 +15,9 @@ import { MoreThreeDotsIcon } from './Icons/Icons/MoreThreeDotsIcon';
 import { isMobile } from 'react-device-detect';
 import { Backdrop } from './Backdrop';
 import { compareDesc, isToday } from 'date-fns';
-import { useOnClickOutside } from '../hooks/useOnClickOutside';
 import { useRef } from 'react';
 import useWindowSize from '../hooks/useWindowSize';
+import { ISection } from '../helpers/types';
 
 interface ISidebarProps {
   toggleCreateProjectModalOpen: () => void;
@@ -31,7 +31,7 @@ export const Sidebar = (props: ISidebarProps) => {
     toggleSidebar,
   } = useUIStore();
   const { toggleCreateProjectModalOpen } = props;
-  const { todos, projects } = useUserStore();
+  const { todos, projects, sections } = useUserStore();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -43,12 +43,26 @@ export const Sidebar = (props: ISidebarProps) => {
 
   // const projects = Object.entries(todos);
 
-  const inboxLength = todos.filter(
-    (todo) => todo.project.name.toLowerCase() === 'inbox' && !todo.isCompleted
-  ).length;
-  const todayLength = todos.filter(
-    (todo) => isToday(todo.date as Date) && !todo.isCompleted
-  ).length;
+  const getTotalTodosSectionsInProject = (
+    sections: ISection[],
+    projectId: string
+  ) =>
+    sections
+      .filter((section) => section.projectId === projectId)
+      .reduce((acc, section) => {
+        const length = section.todos.length;
+        return acc + length;
+      }, 0);
+
+  const inboxLength =
+    todos.filter(
+      (todo) => todo.project.name.toLowerCase() === 'inbox' && !todo.isCompleted
+    ).length + getTotalTodosSectionsInProject(sections, 'inbox');
+
+  const todayLength =
+    todos.filter((todo) => isToday(todo.date as Date) && !todo.isCompleted)
+      .length + getTotalTodosSectionsInProject(sections, 'today');
+
   const upcomingLength = todos.filter(
     (todo) =>
       compareDesc(todo.date as Date, new Date()) === -1 && !todo.isCompleted

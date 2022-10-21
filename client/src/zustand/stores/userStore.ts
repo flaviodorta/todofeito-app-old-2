@@ -66,9 +66,23 @@ export const userStore = create<IUserStore>((set, get) => ({
   completeTodo: (todo: ITodo) =>
     set((state) => ({
       ...state,
-      todos: state.todos.map((t) =>
-        t.id === todo.id ? { ...t, isCompleted: true } : t
-      ),
+      todos: todo.sectionId
+        ? state.todos
+        : state.todos.map((t) =>
+            t.id === todo.id ? { ...t, isCompleted: true } : t
+          ),
+      sections: todo.sectionId
+        ? state.sections.map((section) =>
+            section.id === todo.sectionId
+              ? {
+                  ...section,
+                  todos: section.todos.map((t) =>
+                    t.id === todo.id ? { ...t, isCompleted: true } : t
+                  ),
+                }
+              : section
+          )
+        : state.sections,
     })),
 
   createSection: (section: ISection, index: number) => {

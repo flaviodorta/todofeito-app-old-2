@@ -6,10 +6,11 @@ import { useUserStore } from '../zustand';
 interface IAddSectionProps {
   // title: string;
   index: number;
+  projectId: string;
   close: () => void;
 }
 
-export const AddSection = ({ close, index }: IAddSectionProps) => {
+export const AddSection = ({ index, projectId, close }: IAddSectionProps) => {
   const { createSection } = useUserStore();
   const [inputs, setInputs] = useState({
     title: '',
@@ -20,6 +21,7 @@ export const AddSection = ({ close, index }: IAddSectionProps) => {
       {
         id: nanoid(),
         title: inputs.title,
+        projectId,
         todos: [],
       },
       index
