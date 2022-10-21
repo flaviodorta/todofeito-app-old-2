@@ -54,10 +54,7 @@ export const TodosList = ({ todos, setTodos }: ITodosListProps) => {
                       }
                     >
                       {editingTodoId === todo.id ? (
-                        <div
-                          {...draggableProvided.dragHandleProps}
-                          className='w-full h-60'
-                        >
+                        <div className='w-full h-60'>
                           <AddTodoItem
                             key={todo.id}
                             id={todo.id}

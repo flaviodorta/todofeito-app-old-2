@@ -1,15 +1,15 @@
 import { isToday } from 'date-fns';
 import { useIsomorphicLayoutEffect } from 'framer-motion';
-import { useMemo } from 'react';
+import { useState } from 'react';
 import { useToggle } from '../../hooks/useToggle';
 import { useUIStore, useUserStore } from '../../zustand';
 import { AddSection } from '../AddSection';
-import { TodosSection } from '../Sections/TodosSection';
+import { SectionsList } from '../Lists/SectionsList';
 import { ContentContainer } from './ContentContainer';
 
 export const TodayContent = () => {
-  const { todos, sections } = useUserStore();
-  const { setTodosOnScreen, isAddTodoItemOpen } = useUIStore();
+  const { todos: allTodos, sections: allSections } = useUserStore();
+  const { isAddTodoItemOpen } = useUIStore();
 
   const date = new Date();
   const month = date.toLocaleString('en', { month: 'short' });
@@ -18,12 +18,14 @@ export const TodayContent = () => {
   });
   const dayOfMonth = date.getDate();
 
-  const todayTodos = todos.filter(
+  const allTodosNotCompleted = allTodos.filter(
     (todo) => isToday(todo.date as Date) && !todo.isCompleted
   );
 
-  const todaySections = sections.filter(
-    (section) => section.projectId === 'today'
+  const [todos, setTodos] = useState(allTodosNotCompleted);
+
+  const [sections, setSections] = useState(
+    allSections.filter((section) => section.projectId === 'today')
   );
 
   const [hasAddSectionOpen, toggleHasAddSectionOpen] = useToggle(false);
@@ -35,10 +37,8 @@ export const TodayContent = () => {
   };
 
   useIsomorphicLayoutEffect(() => {
-    setTodosOnScreen(todayTodos);
-
-    return () => setTodosOnScreen([]);
-  }, [todos]);
+    setTodos(allTodosNotCompleted);
+  }, [allTodos]);
 
   useIsomorphicLayoutEffect(() => {
     if (!isAddTodoItemOpen && isAddSectionOpen) toggleAddSection();
@@ -56,23 +56,24 @@ export const TodayContent = () => {
   return (
     <ContentContainer
       heading={<Heading />}
+      todos={todos}
+      setTodos={setTodos}
       project={{ id: 'inbox', name: 'Inbox' }}
     >
-      <div className='flex flex-col gap-6'>
-        {todaySections.map((section) => (
-          <TodosSection
-            section={section}
-            hasAddSectionOpen={hasAddSectionOpen}
-            toggleHasAddSectionOpen={toggleHasAddSectionOpen}
-          >
-            {section.name}
-          </TodosSection>
-        ))}
+      <div className='flex flex-col gap-1'>
+        {/* {sections.map((section) => ( */}
+        <SectionsList
+          sections={sections}
+          setSections={setSections}
+          hasAddSectionOpen={hasAddSectionOpen}
+          toggleHasAddSectionOpen={toggleHasAddSectionOpen}
+        />
+        {/* ))} */}
       </div>
 
       {!isAddTodoItemOpen && (
         <div>
-          {todaySections.length === 0 && isAddSectionOpen ? (
+          {sections.length === 0 && isAddSectionOpen ? (
             <AddSection
               index={0}
               projectId={'today'}

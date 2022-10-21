@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { IProject } from '../../helpers/types';
+import { IProject, ITodo } from '../../helpers/types';
 import { useEventListener } from '../../hooks/useEventListener';
 import { useUIStore } from '../../zustand';
 import { AddTodoItem } from '../AddTodoItem';
@@ -11,12 +11,16 @@ import { isDesktop } from 'react-device-detect';
 interface IContentContainerProps {
   children?: React.ReactNode;
   heading: React.ReactNode;
+  todos: ITodo[];
+  setTodos: (todos: ITodo[]) => void;
   project: Pick<IProject, 'id' | 'name'>;
 }
 
 export const ContentContainer = ({
   children,
   project,
+  todos,
+  setTodos,
   heading,
 }: IContentContainerProps) => {
   const {
@@ -25,8 +29,6 @@ export const ContentContainer = ({
     setEditingTodoId,
     openIsAddTodoItemOpen,
     isSidebarOpen,
-    todosOnScreen,
-    setTodosOnScreen,
     isAddTodoInSection,
     setIsAddTodoInSection,
   } = useUIStore();
@@ -73,7 +75,7 @@ export const ContentContainer = ({
         ref={todosListRef}
         className='relative top-[92px] w-full px-4 md:px-0 md:w-[768px] md:max-w-[768px] md:min-w-[768px]'
       >
-        <TodosList todos={todosOnScreen} setTodos={setTodosOnScreen} />
+        <TodosList todos={todos} setTodos={setTodos} />
 
         <div className='mb-6'>
           {isAddTodoItemOpen && !editingTodoId && !isAddTodoInSection ? (

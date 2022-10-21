@@ -19,7 +19,6 @@ import { PenSolidIcon } from '../Icons/Icons/PenSolidIcon';
 import { TodosList } from '../Lists/TodosList';
 
 interface ITodosSection {
-  children: React.ReactNode;
   hasAddSectionOpen: boolean;
   section: ISection;
   toggleHasAddSectionOpen: () => void;
@@ -28,7 +27,6 @@ interface ITodosSection {
 }
 
 export const TodosSection = ({
-  children,
   section,
   hasAddSectionOpen,
   toggleHasAddSectionOpen,
@@ -86,7 +84,7 @@ export const TodosSection = ({
     toggleHasAddSectionOpen();
   }, []);
 
-  console.log(todos);
+  console.log(draggableProvided);
 
   if (isEditSectionOpen) {
     return <EditSection section={section} close={toggleIsEditSectionOpen} />;
@@ -94,8 +92,6 @@ export const TodosSection = ({
 
   return (
     <div className='relative flex flex-col h-fit w-full'>
-      {/* {draggableProvided && ( */}
-
       <div className='sticky top-[92px] z-[2]'>
         <div
           onMouseEnter={toggleHover}
@@ -104,16 +100,17 @@ export const TodosSection = ({
         >
           {section.name}
 
-          <span
-            // {...draggableProvided.dragHandleProps}
-            style={{ cursor: 'all-scroll' }}
-            className={`${
-              isHover ? 'opacity-100' : 'opacity-0'
-            } absolute -left-14 -top-0.5 hover:opacity-100 group cursor-crosshair w-6 h-7 rounded-sm flex-center bg-white hover:bg-gray-200 duration-100`}
-          >
-            <GripVerticalSolidIcon className='fill-gray-400 group-hover:fill-gray-600 w-3 h-3.5' />
-          </span>
-          {/* )} */}
+          {draggableProvided?.dragHandleProps && (
+            <span
+              {...draggableProvided.dragHandleProps}
+              style={{ cursor: 'all-scroll' }}
+              className={`${
+                isHover ? 'opacity-100' : 'opacity-0'
+              } absolute -left-14 -top-0.5 hover:opacity-100 group cursor-crosshair w-6 h-7 rounded-sm flex-center bg-white hover:bg-gray-200 duration-100`}
+            >
+              <GripVerticalSolidIcon className='fill-gray-400 group-hover:fill-gray-600 w-3 h-3.5' />
+            </span>
+          )}
 
           <span
             onClick={toggleTodoList}
@@ -128,12 +125,12 @@ export const TodosSection = ({
 
           <span
             onClick={toggleIsOptionsDropdownOpen}
-            className='group relative flex-center w-6 h-6 cursor-pointer rounded-sm hover:bg-gray-200'
+            className='group  relative flex-center w-6 h-6 cursor-pointer rounded-sm hover:bg-gray-200'
           >
             <MoreThreeDotsIcon className='hover:bg-gray-200 hover:fill-gray-600 duration-100 transition-all fill-gray-400' />
 
             {isOptionsDropdownOpen && (
-              <EditDropdown>
+              <EditDropdown close={toggleIsOptionsDropdownOpen}>
                 <span
                   onClick={toggleIsEditSectionOpen}
                   className='w-full flex items-center gap-2 px-2 py-1 hover:bg-gray-300/30'

@@ -15,12 +15,13 @@
   - use sticky in heading
 - fix heading content sticky
 - refactor todos relations
+- add edit section
 
 # to do
 
-- add edit section
 - make sections list draggable
 - useScrollRatio to take element position
+- refactor edit todos
 
 - create labels and projects content
 - add labels function

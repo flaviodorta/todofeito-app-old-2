@@ -1,21 +1,27 @@
+import { useState } from 'react';
 import { useIsomorphicLayoutEffect } from '../../hooks/useIsomorphicLayoutEffect';
 import { useToggle } from '../../hooks/useToggle';
 import { useUIStore, useUserStore } from '../../zustand';
 import { AddSection } from '../AddSection';
+import { SectionsList } from '../Lists/SectionsList';
 import { TodosSection } from '../Sections/TodosSection';
 import { ContentContainer } from './ContentContainer';
 
 export const InboxContent = () => {
-  const { todos, sections } = useUserStore();
-  const { setTodosOnScreen, isAddTodoItemOpen } = useUIStore();
+  const { todos: allTodos, sections: allSections } = useUserStore();
+  const { isAddTodoItemOpen } = useUIStore();
 
-  const inboxTodos = todos.filter(
+  const allTodosNotCompleted = allTodos.filter(
     (todo) => todo.project.id === 'inbox' && !todo.isCompleted
   );
 
-  const inboxSections = sections.filter(
-    (section) => section.projectId === 'inbox'
+  const [todos, setTodos] = useState(allTodosNotCompleted);
+
+  const [sections, setSections] = useState(
+    allSections.filter((section) => section.projectId === 'inbox')
   );
+
+  console.log(allSections);
 
   const [hasAddSectionOpen, toggleHasAddSectionOpen] = useToggle(false);
   const [isAddSectionOpen, toggleIsAddSectionOpen] = useToggle(false);
@@ -26,10 +32,14 @@ export const InboxContent = () => {
   };
 
   useIsomorphicLayoutEffect(() => {
-    setTodosOnScreen(inboxTodos);
+    setTodos(allTodosNotCompleted);
+  }, [allTodos]);
 
-    return () => setTodosOnScreen([]);
-  }, [todos]);
+  useIsomorphicLayoutEffect(() => {
+    setSections(allSections);
+  }, [allSections]);
+
+  useIsomorphicLayoutEffect(() => {}, [sections]);
 
   const Heading = () => (
     <div className='flex items-center gap-2'>
@@ -37,28 +47,27 @@ export const InboxContent = () => {
     </div>
   );
 
-  console.log(isAddTodoItemOpen);
-
   return (
     <ContentContainer
       heading={<Heading />}
+      todos={todos}
+      setTodos={setTodos}
       project={{ id: 'inbox', name: 'Inbox' }}
     >
       <div className='flex flex-col gap-1'>
-        {inboxSections.map((section) => (
-          <TodosSection
-            section={section}
-            hasAddSectionOpen={hasAddSectionOpen}
-            toggleHasAddSectionOpen={toggleHasAddSectionOpen}
-          >
-            {section.name}
-          </TodosSection>
-        ))}
+        {/* {sections.map((section) => ( */}
+        <SectionsList
+          sections={sections}
+          setSections={setSections}
+          hasAddSectionOpen={hasAddSectionOpen}
+          toggleHasAddSectionOpen={toggleHasAddSectionOpen}
+        />
+        {/* ))} */}
       </div>
 
       {!isAddTodoItemOpen && (
         <div>
-          {inboxSections.length === 0 && isAddSectionOpen ? (
+          {sections.length === 0 && isAddSectionOpen ? (
             <AddSection
               index={0}
               projectId={'inbox'}

@@ -1,29 +1,31 @@
 import { compareDesc, isEqual } from 'date-fns';
+import { useState } from 'react';
 import { useIsomorphicLayoutEffect } from '../../hooks/useIsomorphicLayoutEffect';
-import { useUIStore, useUserStore } from '../../zustand';
+import { useUserStore } from '../../zustand';
 import { HorizontalCalendar } from '../HorizontalCalendar';
 import { ContentContainer } from './ContentContainer';
 
 export const UpcomingContent = () => {
-  const { todos } = useUserStore();
-  const { setTodosOnScreen } = useUIStore();
+  const { todos: allTodos } = useUserStore();
 
-  const upcomingTodos = todos.filter(
+  const allTodosNotCompleted = allTodos.filter(
     (todo) =>
       (compareDesc(todo.date as Date, new Date()) === -1 ||
         isEqual(todo.date as Date, new Date())) &&
       !todo.isCompleted
   );
 
-  useIsomorphicLayoutEffect(() => {
-    setTodosOnScreen(upcomingTodos);
+  const [todos, setTodos] = useState(allTodosNotCompleted);
 
-    return () => setTodosOnScreen([]);
-  }, [todos]);
+  useIsomorphicLayoutEffect(() => {
+    setTodos(allTodosNotCompleted);
+  }, [allTodos]);
 
   return (
     <ContentContainer
       heading={<HorizontalCalendar />}
+      todos={todos}
+      setTodos={setTodos}
       project={{ id: 'inbox', name: 'Inbox' }}
     ></ContentContainer>
   );
