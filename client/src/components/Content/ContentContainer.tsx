@@ -54,17 +54,24 @@ export const ContentContainer = ({
       initial={false}
       animate={isSidebarOpen && isDesktop ? { left: 40 } : { left: 0 }}
       transition={{ duration: 0.3, bounce: 0 }}
-      className={` h-fit relative px-4 sm:px-0 mx-auto w-full flex-center flex-col`}
+      className={`h-fit relative px-4 sm:px-0 mx-auto w-full flex-center flex-col`}
     >
-      <div className='w-full  px-4 md:px-0 top-0  left-0 right-0 bg-white h-fit pt-12 mb-4 flex-center'>
-        <div style={{ width: todosListWidth }} className='w-full'>
-          {heading}
+      <motion.div
+        initial={false}
+        animate={isSidebarOpen && isDesktop ? { left: 40 } : { left: 0 }}
+        transition={{ duration: 0.3, bounce: 0 }}
+        className='flex fixed bg-white pb-4 top-12  justify-center z-[3] w-full items-center gap-2'
+      >
+        <div className='w-full  px-4 md:px-0 top-0  left-0 right-0 bg-white h-fit pt-12 mb-4 flex-center'>
+          <div style={{ width: todosListWidth }} className='w-full'>
+            {heading}
+          </div>
         </div>
-      </div>
+      </motion.div>
 
       <div
         ref={todosListRef}
-        className='w-full px-4 md:px-0 md:w-[768px] md:max-w-[768px] md:min-w-[768px]'
+        className='relative top-[124px] w-full px-4 md:px-0 md:w-[768px] md:max-w-[768px] md:min-w-[768px]'
       >
         <TodosList todos={todosOnScreen} setTodos={setTodosOnScreen} />
 

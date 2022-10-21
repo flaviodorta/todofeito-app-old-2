@@ -11,18 +11,25 @@
 - fix todos states organization
 - create date picker for upcoming page
 - change labels to fixed positon with useDimensions
+- create section todos
+  - use sticky in heading
+- fix heading content sticky
 
 # to do
 
-- create section todos
-  - use sticky in heading
+- add edit section
+- make sections list draggable
+- refactor todos relations
 - useScrollRatio to take element position
+
 - create labels and projects content
 - add labels function
 - limits chars input
+
 - edit project dropdown
 - user settings modal
 - search todo
+
 - add persist to zustand
 - add sidebar resizable (react-resizable)
 - fix todo list placeholder

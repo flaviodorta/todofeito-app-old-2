@@ -50,7 +50,7 @@ export const userStore = create<IUserStore>((set, get) => ({
   addTodo: (todo: ITodo) =>
     set((state) => ({
       ...state,
-      todos: [...state.todos, todo],
+      todos: todo.sectionId ? state.todos : [...state.todos, todo],
       sections: todo.sectionId
         ? state.sections.map((section) =>
             section.id === todo.sectionId

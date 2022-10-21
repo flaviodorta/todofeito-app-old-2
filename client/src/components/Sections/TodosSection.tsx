@@ -7,6 +7,7 @@ import { useUIStore, useUserStore } from '../../zustand';
 import { AddSection } from '../AddSection';
 import { AddTodoItem } from '../AddTodoItem';
 import { ChevronIcon, GripVerticalSolidIcon, PlusSolidIcon } from '../Icons';
+import { MoreThreeDotsIcon } from '../Icons/Icons/MoreThreeDotsIcon';
 import { TodosList } from '../Lists/TodosList';
 
 interface ITodosSection {
@@ -81,7 +82,7 @@ export const TodosSection = ({
         <div
           onMouseEnter={toggleHover}
           onMouseLeave={toggleHover}
-          className='relative w-full text-sm  bg-white font-bold h-fit pb-1 border-b-[1px] border-gray-300'
+          className='relative flex justify-between items-center w-full text-sm  bg-white font-bold h-fit pb-1 border-b-[1px] border-gray-300'
         >
           {section.title}
 
@@ -105,6 +106,10 @@ export const TodosSection = ({
                 isTodoListOpen ? '' : '-rotate-90'
               } w-[20px] h-[20px] stroke-gray-500 group-hover:stroke-gray-600 duration-150 transition-all`}
             />
+          </span>
+
+          <span className='group flex-center w-5 h-5 cursor-pointer rounded-sm hover:bg-gray-200'>
+            <MoreThreeDotsIcon className='hover:bg-gray-200 hover:fill-gray-600 duration-100 transition-all fill-gray-400' />
           </span>
         </div>
       </div>
