@@ -7,21 +7,23 @@ import {
 import { IRenderableElements } from '../../helpers/types';
 import { Day } from './Day';
 import { addDays, isEqual } from 'date-fns';
-import { language } from '../../helpers/constants';
 import { ChevronIcon } from '../Icons';
 import { DatePicker } from '../DatePicker';
 
-export const HorizontalCalendar = () => {
-  const lang = window.navigator.language || 'default';
+export const HorizontalCalendar = ({
+  selectedDate,
+  setSelectedDate,
+}: {
+  selectedDate: Date;
+  setSelectedDate: (date: Date) => void;
+}) => {
   const today = new Date();
 
   const [renderedSelect, setRenderedSelect] =
     useState<IRenderableElements>(null);
 
-  const [selectedDate, setSelectedDate] = useState(today);
-  const [weekDays, setWeekDays] = useState<Date[]>(
-    getWeekDays(selectedDate, lang)
-  );
+  // const [selectedDate, setSelectedDate] = useState(today);
+  const [weekDays, setWeekDays] = useState<Date[]>(getWeekDays(selectedDate));
 
   const closeSelect = () => {
     setRenderedSelect(null);
@@ -33,24 +35,24 @@ export const HorizontalCalendar = () => {
 
   const goToToday = () => {
     setSelectedDate(today);
-    setWeekDays(getWeekDays(today, language));
+    setWeekDays(getWeekDays(today));
   };
 
   const goToNextWeek = () => {
     const firstDayOfNextWeek = addDays(weekDays[weekDays.length - 1], 1);
 
-    setWeekDays(getWeekDays(firstDayOfNextWeek, language));
+    setWeekDays(getWeekDays(firstDayOfNextWeek));
   };
 
   const goToPreviousWeek = () => {
     const lastDayOfPreviousWeek = addDays(weekDays[0], -1);
 
-    setWeekDays(getWeekDays(lastDayOfPreviousWeek, language));
+    setWeekDays(getWeekDays(lastDayOfPreviousWeek));
   };
 
   useEffect(() => {
     if (!weekDays.some((date) => isEqual(date, selectedDate)))
-      setWeekDays(getWeekDays(selectedDate, language));
+      setWeekDays(getWeekDays(selectedDate));
   }, [selectedDate]);
 
   return (
@@ -63,7 +65,7 @@ export const HorizontalCalendar = () => {
           } relative flex gap-2 items-center`}
         >
           <span className='font-bold text-lg capitalize'>
-            {getMonthName(selectedDate, language)} {getYearNumber(selectedDate)}
+            {getMonthName(selectedDate)} {getYearNumber(selectedDate)}
           </span>
 
           <ChevronIcon className='stroke-gray-400 h-3.5 w-3.5' />

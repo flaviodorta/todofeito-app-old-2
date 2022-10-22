@@ -8,6 +8,7 @@ import { CreateProjectModal } from '../components/CreateProjectModal';
 import useWindowSize from '../hooks/useWindowSize';
 import { useEventListener } from '../hooks/useEventListener';
 import { useMemo, useRef } from 'react';
+import { EditProjectModal } from '../components/EditProjectModal';
 
 export const BasePage = ({ content }: { content: React.ReactNode }) => {
   const {
@@ -19,6 +20,8 @@ export const BasePage = ({ content }: { content: React.ReactNode }) => {
   const [isAddTodoModalOpen, toggleAddTodoModal] = useToggle(false);
   const [isCreateProjectModalOpen, toggleCreateProjectModalOpen] =
     useToggle(false);
+  const [isEditProjectModalOpen, toggleEditProjectModalOpen] = useToggle(false);
+
   const { width } = useWindowSize();
 
   useEventListener('resize', () => {
@@ -67,7 +70,11 @@ export const BasePage = ({ content }: { content: React.ReactNode }) => {
         ref={contentRef}
         className={`${scrollWidth} top-12 fixed right-0 left-0 h-[calc(100%-48px)] overflow-x-hidden overflow-y-auto`}
       >
-        <Sidebar toggleCreateProjectModalOpen={toggleCreateProjectModalOpen} />
+        <Sidebar
+          toggleEditProjectModalOpen={toggleEditProjectModalOpen}
+          isEditProjectModalOpen={isEditProjectModalOpen}
+          toggleCreateProjectModalOpen={toggleCreateProjectModalOpen}
+        />
         {content}
       </div>
     </>

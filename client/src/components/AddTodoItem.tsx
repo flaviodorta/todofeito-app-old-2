@@ -17,7 +17,7 @@ import { DatePicker } from './DatePicker';
 import { SelectProject } from './Selects/SelectProject';
 import { SelectLabel } from './Selects/SelectLabel';
 import { SelectPriority } from './Selects/SelectPriority';
-import { labelColors, labelHoverColors, language } from '../helpers/constants';
+import { labelColors, labelHoverColors } from '../helpers/constants';
 import { IProject, IRenderableElements, ITodo } from '../helpers/types';
 import { useUIStore, useUserStore } from '../zustand';
 import { nanoid } from 'nanoid';
@@ -196,10 +196,7 @@ export const AddTodoItem = (props: IAddTodoItemProps) => {
   const setSelectedDate = (selectedDate: Date) =>
     setInputs((state) => ({ ...state, selectedDate }));
 
-  const monthNameShort = getMonthName(inputs.selectedDate, language).substring(
-    0,
-    3
-  );
+  const monthNameShort = getMonthName(inputs.selectedDate).substring(0, 3);
 
   const titleInputRef = useRef<HTMLInputElement>(null);
 

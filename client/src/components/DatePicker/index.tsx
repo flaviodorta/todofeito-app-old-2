@@ -33,11 +33,11 @@ export const DatePicker = (props: IDatePickerProps): JSX.Element => {
   const currentDay: IDay = {
     date: today,
     numberInMonth: getDayNumberInMonth(today),
-    nameInWeek: getDayNameInWeek(today, lang),
+    nameInWeek: getDayNameInWeek(today),
   };
 
   const currentMonth: IMonth = {
-    name: getMonthName(today, lang),
+    name: getMonthName(today),
     number: getMonthNumber(today),
     totalDays: getDaysInMonth(today),
     totalOfLastDays: getTotalLastDaysInMonth(
@@ -52,7 +52,7 @@ export const DatePicker = (props: IDatePickerProps): JSX.Element => {
   const lastDateOfPreviousMonth = new Date(currentYear, currentMonth.number, 0);
 
   const previousMonth: IMonth = {
-    name: getMonthName(lastDateOfPreviousMonth, lang),
+    name: getMonthName(lastDateOfPreviousMonth),
     number: getMonthNumber(lastDateOfPreviousMonth),
     totalDays: getDaysInMonth(lastDateOfPreviousMonth),
     totalOfLastDays: getTotalLastDaysInMonth(lastDateOfPreviousMonth),
@@ -63,7 +63,7 @@ export const DatePicker = (props: IDatePickerProps): JSX.Element => {
   );
 
   const weekDaysNamesSorted = sortDaysByWeekOrder(weekDays).map((date) =>
-    getDayNameInWeek(date, lang)
+    getDayNameInWeek(date)
   );
 
   const weekDaysFirstLetterSorted = weekDaysNamesSorted.map((dayName) => (
@@ -99,7 +99,7 @@ export const DatePicker = (props: IDatePickerProps): JSX.Element => {
           currentYear: getYear(newCurrentDate),
           currentMonth: {
             number: getMonthNumber(newCurrentDate),
-            name: getMonthName(newCurrentDate, language),
+            name: getMonthName(newCurrentDate),
             totalDays: getDaysInMonth(newCurrentDate),
             totalOfLastDays: getTotalLastDaysInMonth(newCurrentDate),
           },
@@ -116,7 +116,7 @@ export const DatePicker = (props: IDatePickerProps): JSX.Element => {
         ...state,
         currentMonth: {
           number: getMonthNumber(newCurrentDate),
-          name: getMonthName(newCurrentDate, language),
+          name: getMonthName(newCurrentDate),
           totalDays: getDaysInMonth(newCurrentDate),
           totalOfLastDays: getTotalLastDaysInMonth(newCurrentDate),
         },
@@ -134,13 +134,13 @@ export const DatePicker = (props: IDatePickerProps): JSX.Element => {
           currentYear: getYear(newCurrentDate),
           currentMonth: {
             number: getMonthNumber(newCurrentDate),
-            name: getMonthName(newCurrentDate, language),
+            name: getMonthName(newCurrentDate),
             totalDays: getDaysInMonth(newCurrentDate),
             totalOfLastDays: getTotalLastDaysInMonth(newCurrentDate),
           },
           previousMonth: {
             number: getMonthNumber(newPreviousDate),
-            name: getMonthName(newPreviousDate, language),
+            name: getMonthName(newPreviousDate),
             totalDays: getDaysInMonth(newPreviousDate),
             totalOfLastDays: getTotalLastDaysInMonth(newPreviousDate),
           },
@@ -161,13 +161,13 @@ export const DatePicker = (props: IDatePickerProps): JSX.Element => {
         ...state,
         currentMonth: {
           number: getMonthNumber(newCurrentDate),
-          name: getMonthName(newCurrentDate, language),
+          name: getMonthName(newCurrentDate),
           totalDays: getDaysInMonth(newCurrentDate),
           totalOfLastDays: getTotalLastDaysInMonth(newCurrentDate),
         },
         previousMonth: {
           number: getMonthNumber(newPreviousDate),
-          name: getMonthName(newPreviousDate, language),
+          name: getMonthName(newPreviousDate),
           totalDays: getDaysInMonth(newPreviousDate),
           totalOfLastDays: getTotalLastDaysInMonth(newPreviousDate),
         },

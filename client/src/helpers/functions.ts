@@ -10,7 +10,10 @@ import {
   getMonth,
 } from 'date-fns';
 import React from 'react';
+import { language } from './constants';
 import { IDay } from './types';
+
+const lang = language;
 
 export const getWeekNumber = (day: Date) => {
   const firstDayOfTheYear = new Date(day.getFullYear(), 0, 1);
@@ -43,13 +46,13 @@ export const getDayNumberInMonth = (date: Date | null) =>
   (date ? date : new Date()).getDate();
 export const getDayNumberInWeek = (date: Date | null) =>
   (date ? date : new Date()).getDay();
-export const getDayNameInWeek = (date: Date | null, lang: string) =>
+export const getDayNameInWeek = (date: Date | null) =>
   (date ? date : new Date()).toLocaleString(lang, { weekday: 'long' });
 export const getMonthNumber = (date: Date | null) =>
   (date ? date : new Date()).getMonth();
 export const getYearNumber = (date: Date | null) =>
   (date ? date : new Date()).getFullYear();
-export const getMonthName = (date: Date | null, lang: string) =>
+export const getMonthName = (date: Date | null) =>
   (date ? date : new Date()).toLocaleString(lang, { month: 'long' });
 export const getTotalLastDaysInMonth = (date: Date) => {
   const lastDate = lastDayOfMonth(date);
@@ -78,7 +81,7 @@ export const onKeyUpEnter =
     }
   };
 
-export const getWeekDays = (date: Date, lang: string) => {
+export const getWeekDays = (date: Date) => {
   const arr: Date[] = [];
 
   const year = getYearNumber(date);
@@ -90,11 +93,11 @@ export const getWeekDays = (date: Date, lang: string) => {
   );
 
   const weekDaysNamesSorted = sortDaysByWeekOrder(weekDays).map((date) =>
-    getDayNameInWeek(date, lang)
+    getDayNameInWeek(date)
   );
 
   const numberInWeek = weekDaysNamesSorted.findIndex(
-    (day) => day === getDayNameInWeek(date, lang)
+    (day) => day === getDayNameInWeek(date)
   );
 
   arr.push(date);
@@ -110,4 +113,8 @@ export const getWeekDays = (date: Date, lang: string) => {
   });
 
   return arr;
+};
+
+export const capitalizeFirstLetter = (string: string) => {
+  return string.charAt(0).toUpperCase() + string.slice(1);
 };

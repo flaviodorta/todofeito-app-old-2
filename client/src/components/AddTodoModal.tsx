@@ -16,7 +16,7 @@ import { DatePicker } from './DatePicker';
 import { SelectProject } from './Selects/SelectProject';
 import { SelectLabel } from './Selects/SelectLabel';
 import { SelectPriority } from './Selects/SelectPriority';
-import { labelColors, labelHoverColors, language } from '../helpers/constants';
+import { labelColors, labelHoverColors } from '../helpers/constants';
 import { IRenderableElements, ITodo } from '../helpers/types';
 import { Backdrop } from './Backdrop';
 import { motion } from 'framer-motion';
@@ -151,10 +151,7 @@ export const AddTodoModal = (props: IAddTodoModalProps) => {
   const setSelectedDate = (selectedDate: Date) =>
     setInputs((state) => ({ ...state, selectedDate }));
 
-  const monthNameShort = getMonthName(inputs.selectedDate, language).substring(
-    0,
-    3
-  );
+  const monthNameShort = getMonthName(inputs.selectedDate).substring(0, 3);
 
   const sendTodoOnKeyUpEnter = (
     event: React.KeyboardEvent<HTMLInputElement>

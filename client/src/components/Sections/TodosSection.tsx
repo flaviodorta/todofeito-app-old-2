@@ -16,7 +16,6 @@ import {
   TrashSolidIcon,
   MoreThreeDotsIcon,
 } from '../Icons';
-import {} from '../Icons/Icons/MoreThreeDotsIcon';
 import { PenSolidIcon } from '../Icons/Icons/PenSolidIcon';
 import { TodosList } from '../Lists/TodosList';
 
@@ -25,7 +24,6 @@ interface ITodosSection {
   section: ISection;
   toggleHasAddSectionOpen: () => void;
   draggableProvided?: DraggableProvided;
-  draggableSnapshot?: DraggableStateSnapshot;
 }
 
 export const TodosSection = ({
@@ -33,7 +31,6 @@ export const TodosSection = ({
   hasAddSectionOpen,
   toggleHasAddSectionOpen,
   draggableProvided,
-  draggableSnapshot,
 }: ITodosSection) => {
   const { sections, deleteSection } = useUserStore();
   const {
@@ -169,6 +166,7 @@ export const TodosSection = ({
       <div className='w-full h-fit mb-4'>
         {isTodoListOpen && (
           <div className='w-full'>
+            {/* Todo l */}
             <TodosList todos={todos} setTodos={setTodos} />
 
             {isAddTodoItemOpen && !editingTodoId && isAddTodoInSection ? (

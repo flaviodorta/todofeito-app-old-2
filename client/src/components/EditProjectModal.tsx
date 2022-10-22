@@ -7,45 +7,45 @@ import { useEffect, useRef, useState } from 'react';
 import { useOnClickOutside } from '../hooks/useOnClickOutside';
 import { onKeyUpEnter } from '../helpers/functions';
 import { IProject } from '../helpers/types';
-import { nanoid } from 'nanoid';
 import { motion } from 'framer-motion';
 
-interface ICreateProjectModalProps {
-  closeCreateProjectModalOpen: () => void;
+interface IEditProjectModalProps {
+  project: IProject;
+  closeEditProjectModalOpen: () => void;
+  isEditProjectModalOpen: boolean;
 }
 
-export const CreateProjectModal = ({
-  closeCreateProjectModalOpen,
-}: ICreateProjectModalProps) => {
-  const { createProject } = useUserStore();
+export const EditProjectModal = ({
+  closeEditProjectModalOpen,
+  project,
+  isEditProjectModalOpen,
+}: IEditProjectModalProps) => {
+  const { editProject } = useUserStore();
   const [isSelectColorOpen, toggleSelectColor] = useToggle(false);
   const [isSelectColorInputFocused, setIsSelectColorInputFocus] =
     useState(false);
-  const [selectedColor, setSelectedColor] = useState({
-    name: 'Stone',
-    class: 'bg-stone-600',
-  });
-  const [projectName, setProjectName] = useState('');
+  const [selectedColor, setSelectedColor] = useState(project.color);
+  const [projectName, setProjectName] = useState(project.name);
 
   const selectColorRef = useRef<HTMLDivElement>(null);
 
-  const createNewProject = () => {
+  const sendEditedProject = () => {
     if (!projectName) return;
 
-    const project: IProject = {
-      id: nanoid(),
+    const editedProject: IProject = {
+      ...project,
       name: projectName,
       color: selectedColor,
     };
 
-    createProject(project);
+    editProject(editedProject);
 
-    closeCreateProjectModalOpen();
+    closeEditProjectModalOpen();
   };
 
   const projectNameInputRef = useRef<HTMLInputElement>(null);
-  const createNewProjectOnKeyEnterInputProjectName = onKeyUpEnter(
-    createNewProject,
+  const editProjectOnKeyEnterInputProjectName = onKeyUpEnter(
+    sendEditedProject,
     projectNameInputRef
   );
 
@@ -65,7 +65,7 @@ export const CreateProjectModal = ({
   return (
     <>
       <Backdrop
-        close={closeCreateProjectModalOpen}
+        close={closeEditProjectModalOpen}
         className='bg-black/50 z-90'
       />
 
@@ -74,7 +74,7 @@ export const CreateProjectModal = ({
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.15 }}
-        className='fixed left-1/2 top-40 w-[90%] sm:w-96 h-fit -translate-x-1/2 z-100 bg-white rounded-lg'
+        className='fixed left-1/2 top-40 w-[90%] sm:w-96 h-fit -translate-x-1/2 z-[1000] bg-white rounded-lg'
       >
         <div className='py-3 px-6 text-center'>
           <span className='text-lg font-medium'>Add project</span>
@@ -101,7 +101,7 @@ export const CreateProjectModal = ({
               value={projectName}
               maxLength={120}
               onChange={(e) => setProjectName(e.target.value)}
-              onKeyUp={createNewProjectOnKeyEnterInputProjectName}
+              onKeyUp={editProjectOnKeyEnterInputProjectName}
               className='outline-none text-sm h-7 rounded-[3px] py-1 px-2 border-gray-300 focus:border-gray-400 border-[1px] duration-150 transition-all'
             />
           </form>
@@ -146,17 +146,17 @@ export const CreateProjectModal = ({
 
           <div className='flex justify-end gap-2'>
             <button
-              onClick={closeCreateProjectModalOpen}
+              onClick={closeEditProjectModalOpen}
               className='text-center select-none p-2 outline-none rounded-sm font-medium text-sm h-fit w-fit bg-gray-200 hover:bg-gray-300 hover:text-700 text-gray-600'
             >
               Cancel
             </button>
 
             <button
-              onClick={createNewProject}
+              onClick={sendEditedProject}
               onSubmit={(e) => {
                 // e.preventDefault();
-                createNewProject();
+                sendEditedProject();
               }}
               className={`${
                 !projectName

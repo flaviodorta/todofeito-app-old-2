@@ -31,8 +31,8 @@ export const TodoItem = ({
 
   const [checked, setChecked] = useState(todo.isCompleted);
   const [isHover, setIsHover] = useState(false);
-  const [selectedDate, setSelectedDate] = useState<Date | null>(
-    todo.date ? todo.date : null
+  const [selectedDate, setSelectedDate] = useState<Date>(
+    todo.date ? todo.date : new Date()
   );
   const [renderedSelect, setRenderedSelect] =
     useState<IRenderableElements>(null);
@@ -150,7 +150,7 @@ export const TodoItem = ({
           <span className='text-xs capitalize'>
             {selectedDate && isToday(selectedDate)
               ? 'Today'
-              : `${getMonthName(selectedDate, language)} ${getDayNumberInMonth(
+              : `${getMonthName(selectedDate)} ${getDayNumberInMonth(
                   selectedDate
                 )}`}
           </span>

@@ -6,7 +6,6 @@ import {
   ITodo,
   IUserStore,
 } from '../../helpers/types';
-import { project } from '../../helpers/variants';
 
 const mainProjects: IProject[] = [
   {
@@ -26,6 +25,12 @@ export const userStore = create<IUserStore>((set, get) => ({
   projects: [...mainProjects],
   labels: [],
   sections: [],
+  editProject: (project: IProject) =>
+    set((state) => ({
+      ...state,
+      projects: state.projects.map((p) => (p.id === project.id ? project : p)),
+    })),
+
   editSection: (section: ISection) =>
     set((state) => ({
       ...state,

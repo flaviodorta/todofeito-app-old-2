@@ -54,7 +54,7 @@ export const Day = ({
       } border-b-[1px] h-full w-full bg-none  border-gray-200 relative flex-center flex-col`}
     >
       <span className='capitalize text-xs text-gray-500 pt-2.5'>
-        {getDayNameInWeek(date, language).substring(0, 3)}
+        {getDayNameInWeek(date).substring(0, 3)}
       </span>
 
       <span

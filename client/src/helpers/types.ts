@@ -44,11 +44,13 @@ export interface ISection {
   todos: ITodo[];
 }
 
+export interface ISectionUpcoming {}
+
 export interface ITodo {
   id: string;
   title: string;
   description: string;
-  date: Date | null;
+  date: Date;
   project: Pick<IProject, 'id' | 'name'>;
   sectionId?: string;
   labelsIds: string[];
@@ -64,6 +66,7 @@ export interface IUserStore {
   projects: IProject[];
   labels: ILabel[];
   sections: ISection[];
+  editProject: (project: IProject) => void;
   editSection: (section: ISection) => void;
   createSection: (section: ISection, index: number) => void;
   deleteSection: (id: string) => void;

@@ -1,6 +1,6 @@
 import { Resizable } from 'react-resizable';
 import { useUIStore, useUserStore } from '../zustand';
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import {
   CalendarDaysSolidIcon,
   CalendarRegularIcon,
@@ -8,6 +8,7 @@ import {
   InboxSolidIcon,
   LabelIcon,
   PlusSolidIcon,
+  TrashSolidIcon,
 } from './Icons';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { project, projectsWrapper } from '../helpers/variants';
@@ -15,11 +16,16 @@ import { MoreThreeDotsIcon } from './Icons/Icons/MoreThreeDotsIcon';
 import { isMobile } from 'react-device-detect';
 import { Backdrop } from './Backdrop';
 import { compareDesc, isToday } from 'date-fns';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import useWindowSize from '../hooks/useWindowSize';
-import { ISection } from '../helpers/types';
+import { IProject, ISection } from '../helpers/types';
+import { EditDropdown } from './Dropdowns/EditDropdown';
+import { PenSolidIcon } from './Icons/Icons/PenSolidIcon';
+import { EditProjectModal } from './EditProjectModal';
 
 interface ISidebarProps {
+  isEditProjectModalOpen: boolean;
+  toggleEditProjectModalOpen: () => void;
   toggleCreateProjectModalOpen: () => void;
 }
 
@@ -30,8 +36,14 @@ export const Sidebar = (props: ISidebarProps) => {
     toggleSidebarProjects,
     toggleSidebar,
   } = useUIStore();
-  const { toggleCreateProjectModalOpen } = props;
-  const { todos, projects, sections } = useUserStore();
+
+  const {
+    toggleCreateProjectModalOpen,
+    toggleEditProjectModalOpen,
+    isEditProjectModalOpen,
+  } = props;
+
+  const { todos, projects, sections, deleteProject } = useUserStore();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -40,8 +52,6 @@ export const Sidebar = (props: ISidebarProps) => {
     if (isMobile || width < 768) toggleSidebar();
     navigate(path);
   };
-
-  // const projects = Object.entries(todos);
 
   const getTotalTodosSectionsInProject = (
     sections: ISection[],
@@ -73,12 +83,23 @@ export const Sidebar = (props: ISidebarProps) => {
 
   const sidebarRef = useRef<HTMLDivElement>(null);
 
-  // useOnClickOutside(sidebarRef, () => {
-  //   if (isSidebarOpen && width < 768) toggleSidebar();
-  // });
+  const [editingProject, setEditingProject] = useState<IProject>({
+    id: '',
+    name: '',
+    color: {
+      name: '',
+      class: '',
+    },
+  });
+
+  const [isOptionsDropdownOpen, setIsOptionsDropdownOpen] = useState(false);
+
+  const toggleIsOptionsDropdownOpen = () =>
+    isOptionsDropdownOpen
+      ? setIsOptionsDropdownOpen(false)
+      : setIsOptionsDropdownOpen(true);
 
   return (
-    // <Resizable height={100} width={326}>
     <>
       {isSidebarOpen && (
         <Backdrop
@@ -88,6 +109,16 @@ export const Sidebar = (props: ISidebarProps) => {
           } duration-150 `}
         />
       )}
+
+      <AnimatePresence>
+        {isEditProjectModalOpen && (
+          <EditProjectModal
+            project={editingProject}
+            isEditProjectModalOpen={isEditProjectModalOpen}
+            closeEditProjectModalOpen={toggleEditProjectModalOpen}
+          />
+        )}
+      </AnimatePresence>
 
       <motion.div
         ref={sidebarRef}
@@ -181,7 +212,9 @@ export const Sidebar = (props: ISidebarProps) => {
             {projects.slice(1).map((p) => (
               <motion.div
                 onClick={() => navigate(`/${p.name}`)}
-                className='hover:bg-gray-200 group h-fit rounded-md p-1.5 w-full overflow-hidden'
+                className={`${
+                  isSidebarProjectsOpen ? 'block' : ''
+                } relative hover:bg-gray-200 group h-fit rounded-md p-1.5 w-full`}
               >
                 <motion.div
                   variants={project}
@@ -191,8 +224,34 @@ export const Sidebar = (props: ISidebarProps) => {
                     className={`w-2.5 h-2.5 rounded-full ${p.color.class}`}
                   />
                   <span className='text-sm'>{p.name}</span>
-                  <MoreThreeDotsIcon className='group-hover:opacity-100 hover:fill-gray-600 opacity-0 duration-100 transition-all fill-gray-400 ml-auto' />
-                  {/* edit project dropdown */}
+
+                  <div className='relative ml-auto'>
+                    <MoreThreeDotsIcon
+                      onClick={toggleIsOptionsDropdownOpen}
+                      className='relative group-hover:opacity-100 hover:fill-gray-600 opacity-0 duration-100 transition-all fill-gray-400 ml-auto'
+                    />
+                    {isOptionsDropdownOpen && (
+                      <EditDropdown close={toggleIsOptionsDropdownOpen}>
+                        <span
+                          onClick={() => {
+                            setEditingProject(p);
+                            toggleEditProjectModalOpen();
+                          }}
+                          className='w-full flex items-center gap-2 px-2 py-1 hover:bg-gray-300/30'
+                        >
+                          <PenSolidIcon className='fill-gray-400/70' />
+                          <span>Edit project</span>
+                        </span>
+                        <span
+                          onClick={() => deleteProject(p.id)}
+                          className='w-full flex items-center gap-2 px-2 py-1 hover:bg-gray-300/30'
+                        >
+                          <TrashSolidIcon className='fill-gray-400/70' />
+                          <span>Delete section</span>
+                        </span>
+                      </EditDropdown>
+                    )}
+                  </div>
                 </motion.div>
               </motion.div>
             ))}
@@ -200,6 +259,5 @@ export const Sidebar = (props: ISidebarProps) => {
         </div>
       </motion.div>
     </>
-    // </Resizable>
   );
 };
