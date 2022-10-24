@@ -5,28 +5,29 @@ import { motion } from 'framer-motion';
 
 interface IDayProps {
   className?: string;
-  date: Date;
-  selectedDate: Date | null;
-  setSelectedDate: (date: Date) => void;
+  thisDate: Date;
+  inputedDate: Date;
+  setDate: (date: Date) => void;
   closeSelect: () => void;
 }
 
 export const Day = (props: IDayProps) => {
-  const { className, date, selectedDate, setSelectedDate, closeSelect } = props;
+  const { className, thisDate, inputedDate, setDate, closeSelect } = props;
 
   const ref = useRef<HTMLSpanElement>(null);
 
   let isSelected =
-    selectedDate &&
-    getDayNumberInMonth(selectedDate) === getDayNumberInMonth(date) &&
-    getMonth(selectedDate) === getMonth(date) &&
-    getYear(selectedDate) === getYear(date);
+    inputedDate &&
+    getDayNumberInMonth(inputedDate) === getDayNumberInMonth(thisDate) &&
+    getMonth(inputedDate) === getMonth(thisDate) &&
+    getYear(inputedDate) === getYear(thisDate);
 
-  const isUpcoming = compareAsc(date, new Date()) === 1 || isToday(date);
+  const isUpcoming =
+    compareAsc(thisDate, new Date()) === 1 || isToday(thisDate);
 
   const selectDay = () => {
     if (isUpcoming) {
-      setSelectedDate(date);
+      setDate(thisDate);
       closeSelect();
     }
   };
@@ -41,8 +42,8 @@ export const Day = (props: IDayProps) => {
       ${isUpcoming ? 'cursor-pointer' : 'cursor-default text-gray-400'}
       h-7 w-7 select-none text-center rounded-full relative flex-center transition-[background] duration-150`}
     >
-      {getDayNumberInMonth(date)}
-      {isToday(date) && (
+      {getDayNumberInMonth(thisDate)}
+      {isToday(thisDate) && (
         <motion.span
           className={` ${
             isSelected ? 'bg-white' : 'bg-blue-600/90'

@@ -1,33 +1,21 @@
 import { nanoid } from 'nanoid';
-import { Fragment, useRef } from 'react';
-import { ICalendar } from '../../helpers/types';
+import { Fragment } from 'react';
+import { ICalendarState } from '../../helpers/types';
 import { Day } from './Day';
 
 interface IMonthProps {
-  calendar: ICalendar;
-  selectedDate: Date | null;
-  setSelectedDate: (date: Date) => void;
+  calendar: ICalendarState;
+  inputedDate: Date;
+  setDate: (date: Date) => void;
   closeSelect: () => void;
 }
 
 export const Month = ({
   calendar,
-  selectedDate,
-  setSelectedDate,
+  inputedDate,
+  setDate,
   closeSelect,
 }: IMonthProps) => {
-  const ref = useRef<HTMLDivElement>(null);
-
-  // prevent select all days in grid
-  // useEffect(
-  //   () =>
-  //     // setSelectedDate({
-  //     //   ref: ref,
-  //     //   date: null,
-  //     // }),
-  //   []
-  // );
-
   const daysGrid = () => {
     if (calendar.previousMonth.totalOfLastDays < 7) {
       const totalDaysInGrid =
@@ -53,9 +41,9 @@ export const Month = ({
             <Fragment key={nanoid()}>
               <Day
                 closeSelect={closeSelect}
-                date={dateLastMonth}
-                selectedDate={selectedDate}
-                setSelectedDate={setSelectedDate}
+                thisDate={dateLastMonth}
+                inputedDate={inputedDate}
+                setDate={setDate}
                 className='opacity-0'
               />
             </Fragment>
@@ -72,9 +60,9 @@ export const Month = ({
           <Fragment key={nanoid()}>
             <Day
               closeSelect={closeSelect}
-              date={dateCurrentMonth}
-              selectedDate={selectedDate}
-              setSelectedDate={setSelectedDate}
+              thisDate={dateCurrentMonth}
+              inputedDate={inputedDate}
+              setDate={setDate}
             />
           </Fragment>
         );
@@ -94,9 +82,9 @@ export const Month = ({
         <Fragment key={nanoid()}>
           <Day
             closeSelect={closeSelect}
-            date={dateCurrentMonth}
-            selectedDate={selectedDate}
-            setSelectedDate={setSelectedDate}
+            thisDate={dateCurrentMonth}
+            inputedDate={inputedDate}
+            setDate={setDate}
           />
         </Fragment>
       );
@@ -104,8 +92,6 @@ export const Month = ({
   };
 
   return (
-    <div ref={ref} className='w-full px-4 my-2 grid grid-cols-7 gap-1'>
-      {daysGrid()}
-    </div>
+    <div className='w-full px-4 my-2 grid grid-cols-7 gap-1'>{daysGrid()}</div>
   );
 };

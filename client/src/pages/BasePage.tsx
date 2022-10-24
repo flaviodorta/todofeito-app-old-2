@@ -11,28 +11,21 @@ import { useMemo, useRef } from 'react';
 import { EditProjectModal } from '../components/EditProjectModal';
 
 export const BasePage = ({ content }: { content: React.ReactNode }) => {
-  const {
-    isSidebarOpen,
-    toggleSidebar,
-    isMinorThanLargeScreen,
-    setIsMinorThanLargeScreen,
-  } = useUIStore();
-  const [isAddTodoModalOpen, toggleAddTodoModal] = useToggle(false);
-  const [isCreateProjectModalOpen, toggleCreateProjectModalOpen] =
-    useToggle(false);
-  const [isEditProjectModalOpen, toggleEditProjectModalOpen] = useToggle(false);
+  const { isSidebarOpen, toggleSidebar } = useUIStore();
+  // const [isAddTodoModalOpen, toggleAddTodoModal] = useToggle(false);
+  // const [isCreateProjectModalOpen, toggleCreateProjectModalOpen] =
+  //   useToggle(false);
+  // const [isEditProjectModalOpen, toggleEditProjectModalOpen] = useToggle(false);
 
   const { width } = useWindowSize();
 
   useEventListener('resize', () => {
-    if (width < 1024 && !isMinorThanLargeScreen) {
+    if (width < 1024) {
       if (isSidebarOpen) toggleSidebar();
-      setIsMinorThanLargeScreen(true);
     }
 
-    if (width >= 1024 && isMinorThanLargeScreen) {
+    if (width >= 1024) {
       if (!isSidebarOpen) toggleSidebar();
-      setIsMinorThanLargeScreen(false);
     }
   });
 
@@ -49,12 +42,12 @@ export const BasePage = ({ content }: { content: React.ReactNode }) => {
   return (
     <>
       <Navbar
-        isSidebarOpen={isSidebarOpen}
-        toggleSidebar={toggleSidebar}
-        toggleAddTodoModal={toggleAddTodoModal}
+      // isSidebarOpen={isSidebarOpen}
+      // toggleSidebar={toggleSidebar}
+      // toggleAddTodoModal={toggleAddTodoModal}
       />
 
-      <AnimatePresence>
+      {/* <AnimatePresence>
         {isAddTodoModalOpen && (
           <AddTodoModal closeAddTodoModal={toggleAddTodoModal} />
         )}
@@ -64,17 +57,17 @@ export const BasePage = ({ content }: { content: React.ReactNode }) => {
             closeCreateProjectModalOpen={toggleCreateProjectModalOpen}
           />
         )}
-      </AnimatePresence>
+      </AnimatePresence> */}
 
+      <Sidebar
+      // toggleEditProjectModalOpen={toggleEditProjectModalOpen}
+      // isEditProjectModalOpen={isEditProjectModalOpen}
+      // toggleCreateProjectModalOpen={toggleCreateProjectModalOpen}
+      />
       <div
         ref={contentRef}
         className={`${scrollWidth} top-12 fixed right-0 left-0 h-[calc(100%-48px)] overflow-x-hidden overflow-y-auto`}
       >
-        <Sidebar
-          toggleEditProjectModalOpen={toggleEditProjectModalOpen}
-          isEditProjectModalOpen={isEditProjectModalOpen}
-          toggleCreateProjectModalOpen={toggleCreateProjectModalOpen}
-        />
         {content}
       </div>
     </>

@@ -1,5 +1,4 @@
-import { Resizable } from 'react-resizable';
-import { useUIStore, useUserStore } from '../zustand';
+import { useTodosStore, useUIStore } from '../zustand';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
   CalendarDaysSolidIcon,
@@ -18,32 +17,22 @@ import { Backdrop } from './Backdrop';
 import { compareDesc, isToday } from 'date-fns';
 import { useRef, useState } from 'react';
 import useWindowSize from '../hooks/useWindowSize';
-import { IProject, ISection } from '../helpers/types';
+import { IProject } from '../helpers/types';
 import { EditDropdown } from './Dropdowns/EditDropdown';
 import { PenSolidIcon } from './Icons/Icons/PenSolidIcon';
 import { EditProjectModal } from './EditProjectModal';
+import { useToggle } from '../hooks/useToggle';
+import { CreateProjectModal } from './CreateProjectModal';
 
-interface ISidebarProps {
-  isEditProjectModalOpen: boolean;
-  toggleEditProjectModalOpen: () => void;
-  toggleCreateProjectModalOpen: () => void;
-}
+interface ISidebarProps {}
 
 export const Sidebar = (props: ISidebarProps) => {
-  const {
-    isSidebarOpen,
-    isSidebarProjectsOpen,
-    toggleSidebarProjects,
-    toggleSidebar,
-  } = useUIStore();
+  const { isSidebarOpen, toggleSidebar } = useUIStore();
 
-  const {
-    toggleCreateProjectModalOpen,
-    toggleEditProjectModalOpen,
-    isEditProjectModalOpen,
-  } = props;
+  const [isEditProjectModalOpen, toggleEditProjectModalOpen] = useToggle(false);
 
-  const { todos, projects, sections, deleteProject } = useUserStore();
+  const { deleteProject, getProjects, projects, dates, labels } =
+    useTodosStore();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -53,35 +42,27 @@ export const Sidebar = (props: ISidebarProps) => {
     navigate(path);
   };
 
-  const getTotalTodosSectionsInProject = (
-    sections: ISection[],
-    projectId: string
-  ) =>
-    sections
-      .filter((section) => section.projectId === projectId)
-      .reduce((acc, section) => {
-        const length = section.todos.length;
-        return acc + length;
-      }, 0);
+  const inboxLength = projects
+    .filter((project) => project.id === 'inbox')[0]
+    .todos.filter((todo) => !todo.isCompleted).length;
 
-  const inboxLength =
-    todos.filter(
-      (todo) => todo.project.name.toLowerCase() === 'inbox' && !todo.isCompleted
-    ).length + getTotalTodosSectionsInProject(sections, 'inbox');
+  const todayLength = dates
+    .filter((date) => isToday(date.date))[0]
+    .todos.filter((todo) => !todo.isCompleted).length;
 
-  const todayLength =
-    todos.filter((todo) => isToday(todo.date as Date) && !todo.isCompleted)
-      .length + getTotalTodosSectionsInProject(sections, 'today');
+  const upcomingLength = dates
+    .filter((date) => compareDesc(date.date, new Date()) === -1)[0]
+    .todos.filter((todo) => !todo.isCompleted).length;
 
-  const upcomingLength = todos.filter(
-    (todo) =>
-      compareDesc(todo.date as Date, new Date()) === -1 && !todo.isCompleted
-  ).length;
-  const labelsLength = todos.filter(
-    (todo) => todo.labelsIds.length > 0 && !todo.isCompleted
-  ).length;
+  const labelsLength = labels.reduce(
+    (acc, label) =>
+      acc + label.todos.filter((todo) => !todo.isCompleted).length,
+    0
+  );
 
   const sidebarRef = useRef<HTMLDivElement>(null);
+
+  const [isSidebarProjectsOpen, toggleSidebarProjects] = useToggle(false);
 
   const [editingProject, setEditingProject] = useState<IProject>({
     id: '',
@@ -92,12 +73,12 @@ export const Sidebar = (props: ISidebarProps) => {
     },
   });
 
-  const [isOptionsDropdownOpen, setIsOptionsDropdownOpen] = useState(false);
+  const [optionsOpenByProjectId, setOptionsOpenByProjectId] = useState<
+    string | null
+  >(null);
 
-  const toggleIsOptionsDropdownOpen = () =>
-    isOptionsDropdownOpen
-      ? setIsOptionsDropdownOpen(false)
-      : setIsOptionsDropdownOpen(true);
+  const [isCreateProjectModalOpen, toggleCreateProjectModalOpen] =
+    useToggle(false);
 
   return (
     <>
@@ -111,10 +92,17 @@ export const Sidebar = (props: ISidebarProps) => {
       )}
 
       <AnimatePresence>
+        {isCreateProjectModalOpen && (
+          <CreateProjectModal
+            closeCreateProjectModalOpen={toggleCreateProjectModalOpen}
+          />
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
         {isEditProjectModalOpen && (
           <EditProjectModal
             project={editingProject}
-            isEditProjectModalOpen={isEditProjectModalOpen}
             closeEditProjectModalOpen={toggleEditProjectModalOpen}
           />
         )}
@@ -122,6 +110,7 @@ export const Sidebar = (props: ISidebarProps) => {
 
       <motion.div
         ref={sidebarRef}
+        initial={false}
         animate={isSidebarOpen ? { translateX: 0 } : { translateX: '-100%' }}
         transition={{
           bounce: 0,
@@ -180,6 +169,7 @@ export const Sidebar = (props: ISidebarProps) => {
           </div>
         </div>
 
+        {/* projects */}
         <div>
           <div className='w-full flex items-center gap-1 p-2'>
             <span className='font-medium text-gray-500 text-md'>Projects</span>
@@ -209,52 +199,57 @@ export const Sidebar = (props: ISidebarProps) => {
             variants={projectsWrapper}
             className='w-full flex flex-col py-2 pl-4'
           >
-            {projects.slice(1).map((p) => (
-              <motion.div
-                onClick={() => navigate(`/${p.name}`)}
-                className={`${
-                  isSidebarProjectsOpen ? 'block' : ''
-                } relative hover:bg-gray-200 group h-fit rounded-md p-1.5 w-full`}
-              >
+            {getProjects()
+              .slice(1)
+              .map((p) => (
                 <motion.div
-                  variants={project}
-                  className='flex cursor-pointer items-center gap-4'
+                  onClick={() => navigate(`/${p.name}`)}
+                  className={`${
+                    isSidebarProjectsOpen ? 'hover:bg-gray-200' : ''
+                  } relative  group h-fit rounded-md p-1.5 w-full`}
                 >
-                  <span
-                    className={`w-2.5 h-2.5 rounded-full ${p.color.class}`}
-                  />
-                  <span className='text-sm'>{p.name}</span>
-
-                  <div className='relative ml-auto'>
-                    <MoreThreeDotsIcon
-                      onClick={toggleIsOptionsDropdownOpen}
-                      className='relative group-hover:opacity-100 hover:fill-gray-600 opacity-0 duration-100 transition-all fill-gray-400 ml-auto'
+                  <motion.div
+                    variants={project}
+                    className='flex cursor-pointer items-center gap-4'
+                  >
+                    <span
+                      className={`w-2.5 h-2.5 rounded-full ${p.color.class}`}
                     />
-                    {isOptionsDropdownOpen && (
-                      <EditDropdown close={toggleIsOptionsDropdownOpen}>
-                        <span
-                          onClick={() => {
-                            setEditingProject(p);
-                            toggleEditProjectModalOpen();
-                          }}
-                          className='w-full flex items-center gap-2 px-2 py-1 hover:bg-gray-300/30'
+                    <span className='text-sm'>{p.name}</span>
+
+                    <div className='relative ml-auto'>
+                      <MoreThreeDotsIcon
+                        onClick={() => setOptionsOpenByProjectId(p.id)}
+                        className='relative group-hover:opacity-100 hover:fill-gray-600 opacity-0 duration-100 transition-all fill-gray-400 ml-auto'
+                      />
+                      {optionsOpenByProjectId === p.id && (
+                        <EditDropdown
+                          close={() => setOptionsOpenByProjectId(null)}
                         >
-                          <PenSolidIcon className='fill-gray-400/70' />
-                          <span>Edit project</span>
-                        </span>
-                        <span
-                          onClick={() => deleteProject(p.id)}
-                          className='w-full flex items-center gap-2 px-2 py-1 hover:bg-gray-300/30'
-                        >
-                          <TrashSolidIcon className='fill-gray-400/70' />
-                          <span>Delete section</span>
-                        </span>
-                      </EditDropdown>
-                    )}
-                  </div>
+                          <span
+                            onClick={() => {
+                              setEditingProject(p);
+                              setOptionsOpenByProjectId(null);
+                              toggleEditProjectModalOpen();
+                            }}
+                            className='w-full flex items-center gap-2 px-2 py-1 hover:bg-gray-300/30'
+                          >
+                            <PenSolidIcon className='fill-gray-400/70' />
+                            <span>Edit project</span>
+                          </span>
+                          <span
+                            onClick={() => deleteProject(p.id)}
+                            className='w-full flex items-center gap-2 px-2 py-1 hover:bg-gray-300/30'
+                          >
+                            <TrashSolidIcon className='fill-gray-400/70' />
+                            <span>Delete section</span>
+                          </span>
+                        </EditDropdown>
+                      )}
+                    </div>
+                  </motion.div>
                 </motion.div>
-              </motion.div>
-            ))}
+              ))}
           </motion.div>
         </div>
       </motion.div>

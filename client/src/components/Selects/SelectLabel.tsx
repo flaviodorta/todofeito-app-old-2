@@ -1,26 +1,30 @@
+// OK!
+
 import { Fragment, useState } from 'react';
+import { useTodosStore } from '../../zustand';
+import { ILabel } from '../../helpers/types';
 import { Backdrop } from '../Backdrop';
 import { LabelIcon } from '../Icons';
 
 interface ISelectLabelOptionProps {
-  label: string;
-  checkedLabels: string[];
-  addCheckedLabel: (label: string) => void;
-  removeCheckedLabel: (label: string) => void;
+  thisLabel: ILabel;
+  inputedLabels: ILabel[];
+  addLabel: (label: ILabel) => void;
+  deleteLabel: (label: ILabel) => void;
 }
 
 export const SelectLabelOption = (
   props: ISelectLabelOptionProps
 ): JSX.Element => {
-  const { label, checkedLabels, addCheckedLabel, removeCheckedLabel } = props;
+  const { thisLabel, inputedLabels, addLabel, deleteLabel } = props;
 
-  const isChecked = checkedLabels.includes(label);
+  const isChecked = inputedLabels.some((label) => label.id === thisLabel.id);
 
   const [checked, toggleChecked] = useState(isChecked);
 
   const onClickLabel = () => {
-    if (!isChecked) addCheckedLabel(label);
-    else removeCheckedLabel(label);
+    if (!isChecked) addLabel(thisLabel);
+    else deleteLabel(thisLabel);
     toggleChecked((checked) => !checked);
   };
 
@@ -32,7 +36,9 @@ export const SelectLabelOption = (
       <span className='px-4'>
         <LabelIcon width='16px' height='16px' className='fill-gray-500' />
       </span>
-      <span className='text-sm py-2 whitespace-nowrap text-clip'>{label}</span>
+      <span className='text-sm py-2 whitespace-nowrap text-clip'>
+        {thisLabel.name}
+      </span>
       <div className='ml-auto px-4 py-2 flex items-center justify-center'>
         <input
           checked={checked}
@@ -46,23 +52,16 @@ export const SelectLabelOption = (
 };
 
 interface ISelectLabelProps {
-  labels: string[];
-  checkedLabels: string[];
+  inputedLabels: ILabel[];
+  addLabel: (label: ILabel) => void;
+  deleteLabel: (label: ILabel) => void;
   closeSelect: () => void;
-  addLabel: (label: string) => void;
-  removeLabel: (label: string) => void;
-  addCheckedLabel: (label: string) => void;
-  removeCheckedLabel: (label: string) => void;
 }
 
 export const SelectLabel = (props: ISelectLabelProps) => {
-  const {
-    labels,
-    closeSelect,
-    checkedLabels,
-    addCheckedLabel,
-    removeCheckedLabel,
-  } = props;
+  const { inputedLabels, addLabel, deleteLabel, closeSelect } = props;
+
+  const { getLabels } = useTodosStore();
 
   return (
     <>
@@ -78,19 +77,21 @@ export const SelectLabel = (props: ISelectLabelProps) => {
         </div>
 
         <div className='dropdown-select overflow-y-scroll h-fit w-full'>
-          {labels.length === 0 ? (
+          {getLabels().length === 0 ? (
             <span className='text-xs px-2 text-gray-500'>No labels</span>
           ) : (
-            labels.map((label, i) => (
-              <Fragment key={i}>
-                <SelectLabelOption
-                  label={label}
-                  checkedLabels={checkedLabels}
-                  addCheckedLabel={addCheckedLabel}
-                  removeCheckedLabel={removeCheckedLabel}
-                />
-              </Fragment>
-            ))
+            getLabels()
+              .sort((a, b) => a.name.localeCompare(b.name))
+              .map((label, i) => (
+                <Fragment key={i}>
+                  <SelectLabelOption
+                    thisLabel={label}
+                    inputedLabels={inputedLabels}
+                    addLabel={addLabel}
+                    deleteLabel={deleteLabel}
+                  />
+                </Fragment>
+              ))
           )}
         </div>
       </div>

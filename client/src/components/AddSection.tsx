@@ -1,30 +1,36 @@
 import { nanoid } from 'nanoid';
 import { useRef, useState } from 'react';
 import { onKeyUpEnter } from '../helpers/functions';
-import { useUserStore } from '../zustand';
+import { IProject } from '../helpers/types';
+import { useTodosStore, useUIStore } from '../zustand';
 
 interface IAddSectionProps {
-  index: number;
-  projectId: string;
-  close: () => void;
+  previousSectionIndex: number;
+  project: IProject;
 }
 
-export const AddSection = ({ index, projectId, close }: IAddSectionProps) => {
-  const { createSection } = useUserStore();
+export const AddSection = ({
+  previousSectionIndex,
+  project,
+}: IAddSectionProps) => {
+  const { setSectionInputOpenById } = useUIStore();
+  const { createSection } = useTodosStore();
   const [inputs, setInputs] = useState({
     name: '',
   });
 
+  const setName = (e: React.ChangeEvent<HTMLInputElement>) =>
+    setInputs({ name: e.target.value });
+
+  const close = () => setSectionInputOpenById(null);
+
   const createNewSection = () => {
-    createSection(
-      {
-        id: nanoid(),
-        name: inputs.name,
-        projectId,
-        todos: [],
-      },
-      index
-    );
+    createSection({
+      id: nanoid(),
+      name: inputs.name,
+      project,
+      index: previousSectionIndex + 1,
+    });
     close();
   };
 
@@ -43,7 +49,7 @@ export const AddSection = ({ index, projectId, close }: IAddSectionProps) => {
         value={inputs.name}
         placeholder='Name this section'
         maxLength={120}
-        onChange={(e) => setInputs({ name: e.target.value })}
+        onChange={setName}
         onKeyUp={createNewSectionOnKeyEnterInputSectionName}
         className='placeholder:font-bold placeholder:text-gray-500 outline-none text-sm h-7 rounded-[3px] py-1 px-2 border-gray-300 focus:border-gray-400 border-[1px] duration-150 transition-all'
       />

@@ -1,45 +1,30 @@
-import { useState } from 'react';
-import { useIsomorphicLayoutEffect } from '../../hooks/useIsomorphicLayoutEffect';
-import { useToggle } from '../../hooks/useToggle';
-import { useUIStore, useUserStore } from '../../zustand';
+import { nanoid } from 'nanoid';
+import { useMemo, useRef } from 'react';
+import { IProject } from '../../helpers/types';
+import { useUpdateState } from '../../hooks/useUpdateState';
+import { useTodosStore, useUIStore } from '../../zustand';
 import { AddSection } from '../AddSection';
 import { SectionsList } from '../Lists/SectionsList';
-import { TodosSection } from '../Sections/TodosSection';
 import { ContentContainer } from './ContentContainer';
 
 export const InboxContent = () => {
-  const { todos: allTodos, sections: allSections } = useUserStore();
-  const { isAddTodoItemOpen } = useUIStore();
+  const { projects, sections } = useTodosStore();
+  const { sectionInputOpenById, setSectionInputOpenById } = useUIStore();
 
-  const allTodosNotCompleted = allTodos.filter(
-    (todo) => todo.project.id === 'inbox' && !todo.isCompleted
+  const [inboxTodos, setTodos] = useUpdateState(
+    projects
+      .filter((project) => project.id === 'inbox')[0]
+      .todos.filter((todo) => !todo.isCompleted && !todo.section),
+    [projects]
+  );
+  const [inboxSections, setSections] = useUpdateState(
+    sections.filter((section) => section.project.id === 'inbox'),
+    [sections]
   );
 
-  const [todos, setTodos] = useState(allTodosNotCompleted);
+  const addSectionId = useRef(nanoid());
 
-  const [sections, setSections] = useState(
-    allSections.filter((section) => section.projectId === 'inbox')
-  );
-
-  console.log(allSections);
-
-  const [hasAddSectionOpen, toggleHasAddSectionOpen] = useToggle(false);
-  const [isAddSectionOpen, toggleIsAddSectionOpen] = useToggle(false);
-
-  const toggleAddSection = () => {
-    toggleIsAddSectionOpen();
-    toggleHasAddSectionOpen();
-  };
-
-  useIsomorphicLayoutEffect(() => {
-    setTodos(allTodosNotCompleted);
-  }, [allTodos]);
-
-  useIsomorphicLayoutEffect(() => {
-    setSections(allSections);
-  }, [allSections]);
-
-  useIsomorphicLayoutEffect(() => {}, [sections]);
+  const openAddSection = () => setSectionInputOpenById(addSectionId.current);
 
   const Heading = () => (
     <div className='flex items-center gap-2'>
@@ -47,47 +32,46 @@ export const InboxContent = () => {
     </div>
   );
 
+  const inboxProject: IProject = {
+    id: 'inbox',
+    name: 'Inbox',
+    color: {
+      name: 'Blue',
+      class: 'fill-blue-600',
+    },
+  };
+
+  console.log(sections);
+
   return (
     <ContentContainer
       heading={<Heading />}
-      todos={todos}
+      todos={inboxTodos}
       setTodos={setTodos}
-      project={{ id: 'inbox', name: 'Inbox' }}
+      project={inboxProject}
     >
       <div className='flex flex-col gap-1'>
         {/* {sections.map((section) => ( */}
-        <SectionsList
-          sections={sections}
-          setSections={setSections}
-          hasAddSectionOpen={hasAddSectionOpen}
-          toggleHasAddSectionOpen={toggleHasAddSectionOpen}
-        />
+        <SectionsList sections={inboxSections} setSections={setSections} />
         {/* ))} */}
       </div>
 
-      {!isAddTodoItemOpen && (
-        <div>
-          {sections.length === 0 && isAddSectionOpen ? (
-            <AddSection
-              index={0}
-              projectId={'inbox'}
-              close={toggleAddSection}
-            />
-          ) : (
-            <div
-              onClick={toggleAddSection}
-              className='group opacity-0 hover:opacity-100 relative w-full flex items-center justify-center gap-2.5 h-fit cursor-pointer duration-200 ease-in transition-opacity'
-            >
-              <span
-                className={`${
-                  hasAddSectionOpen ? 'hidden' : 'block'
-                } font-medium text-md text-blue-600 z-10 px-2 bg-white`}
-              >
-                Add section
-              </span>
-              <span className='group absolute h-[1px] w-full top-1/2 left-0 rounded-full bg-blue-600' />
-            </div>
-          )}
+      {sections.length === 0 &&
+      sectionInputOpenById === addSectionId.current ? (
+        <AddSection previousSectionIndex={-1} project={inboxProject} />
+      ) : (
+        <div
+          onClick={openAddSection}
+          className='group opacity-0 hover:opacity-100 relative w-full flex items-center justify-center gap-2.5 h-fit cursor-pointer duration-200 ease-in transition-opacity'
+        >
+          <span
+            className={`${
+              sectionInputOpenById ? 'hidden' : 'block'
+            } font-medium text-md text-blue-600 z-10 px-2 bg-white`}
+          >
+            Add section
+          </span>
+          <span className='group absolute h-[1px] w-full top-1/2 left-0 rounded-full bg-blue-600' />
         </div>
       )}
     </ContentContainer>

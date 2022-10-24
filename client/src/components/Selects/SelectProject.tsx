@@ -1,23 +1,24 @@
 import { Fragment } from 'react';
+import { IProject } from '../../helpers/types';
+import { useTodosStore } from '../../zustand';
 import { Backdrop } from '../Backdrop';
 
 interface ISelectProjectOptionProps {
-  project: string;
-  selectedProject: string;
-  setSelectedProject: (project: string) => void;
+  thisProject: IProject;
+  inputedProject: IProject;
+  setProject: (project: IProject) => void;
   closeSelect: () => void;
 }
 
 export const SelectProjectOption = (
   props: ISelectProjectOptionProps
 ): JSX.Element => {
-  const { project, selectedProject, setSelectedProject, closeSelect } = props;
+  const { thisProject, inputedProject, setProject, closeSelect } = props;
 
   return (
     <div
       onClick={() => {
-        setSelectedProject(project);
-        console.log(project);
+        setProject(thisProject);
         closeSelect();
       }}
       className='hover:bg-gray-200 flex justify-start'
@@ -26,11 +27,11 @@ export const SelectProjectOption = (
         <span className='w-2 h-2 bg-gray-400 rounded-full' />
       </span>
       <span className='flex cursor-pointer w-full capitalize whitespace-nowrap justify-between items-center pl-1 pr-2 py-1.5 justify-self-start text-sm'>
-        <span className='mr-2'>{project}</span>
+        <span className='mr-2'>{thisProject.name}</span>
 
         <span
           className={`${
-            selectedProject === project ? 'opacity-100' : 'opacity-0'
+            inputedProject.id === thisProject.id ? 'opacity-100' : 'opacity-0'
           } -translate-y-[1px] mx-1 h-2 w-3 scale-75 -rotate-45 border-l-[2px] border-b-[2px] border-gray-700 duration-100 transition-opacity`}
         />
       </span>
@@ -39,14 +40,14 @@ export const SelectProjectOption = (
 };
 
 interface ISelectProjectProps {
-  projects: string[];
-  selectedProject: string;
+  inputedProject: IProject;
+  setProject: (project: IProject) => void;
   closeSelect: () => void;
-  setSelectedProject: (project: string) => void;
 }
 
 export const SelectProject = (props: ISelectProjectProps) => {
-  const { projects, selectedProject, closeSelect, setSelectedProject } = props;
+  const { inputedProject, setProject, closeSelect } = props;
+  const { getProjects } = useTodosStore();
 
   return (
     <>
@@ -60,12 +61,12 @@ export const SelectProject = (props: ISelectProjectProps) => {
           />
         </div>
         <div className='dropdown-select overflow-y-scroll h-fit w-full'>
-          {projects.map((project, i) => (
+          {getProjects().map((project, i) => (
             <Fragment key={i}>
               <SelectProjectOption
-                project={project}
-                selectedProject={selectedProject}
-                setSelectedProject={setSelectedProject}
+                thisProject={project}
+                inputedProject={inputedProject}
+                setProject={setProject}
                 closeSelect={closeSelect}
               />
             </Fragment>

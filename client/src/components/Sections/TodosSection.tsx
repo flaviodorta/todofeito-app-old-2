@@ -1,12 +1,14 @@
-import { useEffect, useState } from 'react';
-import { DraggableProvided, DraggableStateSnapshot } from 'react-beautiful-dnd';
+import { nanoid } from 'nanoid';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { DraggableProvided } from 'react-beautiful-dnd';
 import { isMobile } from 'react-device-detect';
-import { ISection } from '../../helpers/types';
+import { ISection, ITodosBySection } from '../../helpers/types';
 import { useToggle } from '../../hooks/useToggle';
+import { useUpdateState } from '../../hooks/useUpdateState';
 import useWindowSize from '../../hooks/useWindowSize';
-import { useUIStore, useUserStore } from '../../zustand';
+import { useTodosStore, useUIStore } from '../../zustand';
 import { AddSection } from '../AddSection';
-import { AddTodoItem } from '../AddTodoItem';
+import { AddTodo } from '../AddTodo';
 import { EditDropdown } from '../Dropdowns/EditDropdown';
 import { EditSection } from '../EditSection';
 import {
@@ -20,73 +22,33 @@ import { PenSolidIcon } from '../Icons/Icons/PenSolidIcon';
 import { TodosList } from '../Lists/TodosList';
 
 interface ITodosSection {
-  hasAddSectionOpen: boolean;
-  section: ISection;
-  toggleHasAddSectionOpen: () => void;
+  section: ITodosBySection;
   draggableProvided?: DraggableProvided;
 }
 
-export const TodosSection = ({
-  section,
-  hasAddSectionOpen,
-  toggleHasAddSectionOpen,
-  draggableProvided,
-}: ITodosSection) => {
-  const { sections, deleteSection } = useUserStore();
+export const TodosSection = ({ section, draggableProvided }: ITodosSection) => {
+  const { sections, deleteSection } = useTodosStore();
   const {
-    editingTodoId,
-    isAddTodoInSection,
-    isAddTodoItemOpen,
-    setEditingTodoId,
-    openIsAddTodoItemOpen,
-    setIsAddTodoInSection,
-    closeIsAddTodoItemOpen,
+    todoInputOpenById,
+    setTodoInputOpenById,
+    sectionInputOpenById,
+    setSectionInputOpenById,
   } = useUIStore();
 
-  const [isAddSectionOpen, toggleIsAddSectionOpen] = useToggle(false);
-  const [isTodoListOpen, toggleTodoListOpen] = useToggle(false);
+  const [isTodoListOpen, toggleTodoListOpen] = useToggle(true);
   const [isHover, toggleHover] = useToggle(false);
-  const [isOptionsDropdownOpen, setIsOptionsDropdownOpen] = useState(false);
-  const [isEditSectionOpen, toggleIsEditSectionOpen] = useToggle(false);
 
-  const [todos, setTodos] = useState(
-    section.todos.filter((todo) => !todo.isCompleted)
+  const [todos, setTodos] = useUpdateState(
+    section.todos.filter((todo) => !todo.isCompleted),
+    [section]
   );
 
-  const sectionIndex = sections.findIndex((s) => s.id === section.id);
-
-  const toggleAddSection = () => {
-    toggleIsAddSectionOpen();
-    toggleHasAddSectionOpen();
-  };
-
-  const openAddTodoItem = () => {
-    setEditingTodoId(null);
-    openIsAddTodoItemOpen();
-    setIsAddTodoInSection(section.id);
-  };
-
   const toggleTodoList = () => {
-    if (isTodoListOpen) {
-      closeIsAddTodoItemOpen();
-      setIsAddTodoInSection(null);
-    }
-
+    if (isTodoListOpen) setTodoInputOpenById(null);
     toggleTodoListOpen();
   };
 
-  useEffect(() => {
-    setTodos(section.todos.filter((todo) => !todo.isCompleted));
-  }, [section.todos]);
-
-  useEffect(() => {
-    toggleHasAddSectionOpen();
-  }, []);
-
-  const toggleIsOptionsDropdownOpen = () =>
-    isOptionsDropdownOpen
-      ? setIsOptionsDropdownOpen(false)
-      : setIsOptionsDropdownOpen(true);
+  const [isOptionsDropdownOpen, toggleOptionsDropdown] = useToggle(false);
 
   const { width } = useWindowSize();
 
@@ -96,13 +58,22 @@ export const TodosSection = ({
   const desktopDraggable =
     !isMobile && width >= 768 ? { ...draggableProvided?.dragHandleProps } : {};
 
-  if (isEditSectionOpen) {
-    return <EditSection section={section} close={toggleIsEditSectionOpen} />;
+  const editSectionIdRef = useRef(nanoid());
+  const addSectionIdRef = useRef(nanoid());
+  const addTodoIdRef = useRef(nanoid());
+
+  const openAddSection = () => setSectionInputOpenById(addSectionIdRef.current);
+  const openEditSection = () =>
+    setSectionInputOpenById(editSectionIdRef.current);
+  const openAddTodo = () => setTodoInputOpenById(addTodoIdRef.current);
+
+  if (sectionInputOpenById === editSectionIdRef.current) {
+    return <EditSection section={section} />;
   }
 
   return (
     <div className='flex flex-col h-fit w-full'>
-      <div {...mobileDraggable} className='sticky top-[92px] z-[2]'>
+      <div {...mobileDraggable} className='sticky top-[76px] z-[2]'>
         <div
           onMouseEnter={toggleHover}
           onMouseLeave={toggleHover}
@@ -122,6 +93,7 @@ export const TodosSection = ({
             </span>
           )}
 
+          {/* open/close todos list */}
           <span
             onClick={toggleTodoList}
             className='group absolute -left-8 top-0 cursor-pointer w-6 h-6 rounded-sm z-[2] bg-white hover:bg-gray-200 flex items-center justify-center'
@@ -132,25 +104,28 @@ export const TodosSection = ({
               } w-[20px] h-[20px] stroke-gray-500 group-hover:stroke-gray-600 duration-150 transition-all`}
             />
           </span>
+          {/* open/close todos list */}
         </div>
       </div>
 
+      {/* options dropdown */}
       <div className='sticky -translate-y-6 top-[116px] z-[3]'>
         <span
-          onClick={toggleIsOptionsDropdownOpen}
+          onClick={toggleOptionsDropdown}
           className='group absolute top-0 right-0 z-[51] flex-center w-6 h-6 cursor-pointer rounded-sm hover:bg-gray-200'
         >
           <MoreThreeDotsIcon className='hover:bg-gray-200 hover:fill-gray-600 duration-100 transition-all fill-gray-400' />
 
           {isOptionsDropdownOpen && (
-            <EditDropdown close={toggleIsOptionsDropdownOpen}>
+            <EditDropdown close={toggleOptionsDropdown}>
               <span
-                onClick={toggleIsEditSectionOpen}
+                onClick={openEditSection}
                 className='w-full flex items-center gap-2 px-2 py-1 hover:bg-gray-300/30'
               >
                 <PenSolidIcon className='fill-gray-400/70' />
                 <span>Edit section</span>
               </span>
+
               <span
                 onClick={() => deleteSection(section.id)}
                 className='w-full flex items-center gap-2 px-2 py-1 hover:bg-gray-300/30'
@@ -162,18 +137,19 @@ export const TodosSection = ({
           )}
         </span>
       </div>
+      {/* options dropdown */}
 
       <div className='w-full h-fit mb-4'>
         {isTodoListOpen && (
           <div className='w-full'>
-            {/* Todo l */}
+            {/* Todo list */}
             <TodosList todos={todos} setTodos={setTodos} />
 
-            {isAddTodoItemOpen && !editingTodoId && isAddTodoInSection ? (
-              <AddTodoItem sectionId={section.id} />
+            {todoInputOpenById === addTodoIdRef.current ? (
+              <AddTodo section={section} project={section.project} />
             ) : (
               <div
-                onClick={openAddTodoItem}
+                onClick={openAddTodo}
                 className='group w-full flex items-center gap-2.5 h-fit'
               >
                 <span className='group p-0.5 rounded-full bg-white group-hover:bg-blue-600 flex-center'>
@@ -188,21 +164,21 @@ export const TodosSection = ({
         )}
       </div>
 
+      {/* add new section */}
       <div className='w-full'>
-        {isAddSectionOpen ? (
+        {sectionInputOpenById === addSectionIdRef.current ? (
           <AddSection
-            index={sectionIndex}
-            projectId={section.projectId}
-            close={toggleAddSection}
+            previousSectionIndex={section.index}
+            project={section.project}
           />
         ) : (
           <div
-            onClick={toggleAddSection}
+            onClick={openAddSection}
             className='group opacity-0 hover:opacity-100 relative w-full flex items-center justify-center gap-2.5 h-fit cursor-pointer duration-300 ease-in transition-opacity'
           >
             <span
               className={`${
-                hasAddSectionOpen ? '' : 'block'
+                sectionInputOpenById === addSectionIdRef.current ? '' : 'block'
               } font-medium text-md text-blue-600 z-10 px-2 bg-white`}
             >
               Add section
@@ -211,6 +187,7 @@ export const TodosSection = ({
           </div>
         )}
       </div>
+      {/* add new section */}
     </div>
   );
 };

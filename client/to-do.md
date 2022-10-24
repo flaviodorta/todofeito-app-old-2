@@ -16,21 +16,25 @@
 - fix heading content sticky
 - refactor todos relations
 - add edit section
+- make sections list draggable
+- fix z-index bug in section heading
+- edit project dropdown
+- fix create project exit modal
 
 # to do
 
-- make sections list draggable
-- useScrollRatio to take element position
-- refactor edit todos
-
+- fix add todo in upcomign sections
 - create labels and projects content
 - add labels function
 - limits chars input
-
-- edit project dropdown
+- make todos dragglable between sections
 - user settings modal
+- add i18n
+
 - search todo
 
 - add persist to zustand
 - add sidebar resizable (react-resizable)
 - fix todo list placeholder
+
+- useScrollRatio to take element position

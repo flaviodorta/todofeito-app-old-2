@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { IRenderableElements, ITodo } from '../helpers/types';
-import { useUIStore, useUserStore } from '../zustand';
+import { useUIStore, useTodosStore } from '../zustand';
 import {
   CalendarRegularIcon,
   GripVerticalSolidIcon,
@@ -12,7 +12,6 @@ import { DatePicker } from './DatePicker';
 import { DraggableProvided, DraggableStateSnapshot } from 'react-beautiful-dnd';
 import { useEventListener } from '../hooks/useEventListener';
 import { getDayNumberInMonth, getMonthName } from '../helpers/functions';
-import { language } from '../helpers/constants';
 import { isToday } from 'date-fns';
 
 type ITodoItem = {
@@ -26,18 +25,15 @@ export const TodoItem = ({
   draggableProvided,
   draggableSnapshot,
 }: ITodoItem) => {
-  const { completeTodo, editTodo } = useUserStore();
-  const { setEditingTodoId, editingTodoId } = useUIStore();
+  const { completeTodo, editTodo } = useTodosStore();
+  const { setTodoInputOpenById } = useUIStore();
 
   const [checked, setChecked] = useState(todo.isCompleted);
   const [isHover, setIsHover] = useState(false);
-  const [selectedDate, setSelectedDate] = useState<Date>(
-    todo.date ? todo.date : new Date()
-  );
+  const [date, setDate] = useState(todo.date);
+
   const [renderedSelect, setRenderedSelect] =
     useState<IRenderableElements>(null);
-
-  const dueDateRef = useRef<HTMLSpanElement>(null);
 
   const openDatePicker = () => {
     if (!renderedSelect) setRenderedSelect('date-picker');
@@ -53,13 +49,11 @@ export const TodoItem = ({
 
   useEffect(() => {
     const editDate = () => {
-      editTodo({ ...todo, date: selectedDate });
+      editTodo({ ...todo, date });
     };
 
     editDate();
-  }, [selectedDate]);
-
-  // const containerRef = useRef<HTMLDivElement>(null);
+  }, [date]);
 
   const closeSelect = () => {
     setRenderedSelect(null);
@@ -68,11 +62,11 @@ export const TodoItem = ({
 
   useEffect(() => {
     closeSelect();
-  }, [selectedDate]);
+  }, [date]);
 
   useEffect(() => {
     toggleHoverOff();
-  }, [selectedDate]);
+  }, [date]);
 
   useEventListener('blur', () => setRenderedSelect(null));
 
@@ -85,12 +79,7 @@ export const TodoItem = ({
 
   return (
     <div
-      className={`relative w-full h-fit mb-5 ${
-        todo.description.length > 0 && editingTodoId !== todo.id
-          ? 'h-fit'
-          : 'h-fit'
-      } 
-      ${editingTodoId === todo.id ? 'h-64' : ''}
+      className={`relative w-full h-fit mb-5
       ${
         draggableSnapshot.isDragging
           ? 'shadow-dragging-item border-none'
@@ -148,19 +137,17 @@ export const TodoItem = ({
           />
 
           <span className='text-xs capitalize'>
-            {selectedDate && isToday(selectedDate)
+            {date && isToday(date)
               ? 'Today'
-              : `${getMonthName(selectedDate)} ${getDayNumberInMonth(
-                  selectedDate
-                )}`}
+              : `${getMonthName(date)} ${getDayNumberInMonth(date)}`}
           </span>
 
           {renderedSelect === 'date-picker' && (
             <DatePicker
               className='left-28 sm:left-8'
               closeSelect={closeSelect}
-              selectedDate={selectedDate}
-              setSelectedDate={setSelectedDate}
+              inputedDate={date}
+              setDate={setDate}
             />
           )}
         </div>
@@ -184,7 +171,7 @@ export const TodoItem = ({
       {isHover && (
         <div className='absolute  flex items-center gap-2 top-1 right-0'>
           <span
-            onClick={() => setEditingTodoId(todo)}
+            onClick={() => setTodoInputOpenById(todo.id)}
             className='group mini-button-option cursor-pointer'
           >
             <PenSolidIcon className='fill-gray-400 group-hover:fill-gray-500' />

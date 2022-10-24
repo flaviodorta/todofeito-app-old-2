@@ -1,7 +1,5 @@
 import { getDaysInMonth, getYear } from 'date-fns';
-import React, { forwardRef, useEffect, useState } from 'react';
-import { isMobile } from 'react-device-detect';
-import { language } from '../../helpers/constants';
+import { useState } from 'react';
 import {
   getDayNameInWeek,
   getDayNumberInMonth,
@@ -11,31 +9,27 @@ import {
   getYearNumber,
   sortDaysByWeekOrder,
 } from '../../helpers/functions';
-import { ICalendar, IDay, IMonth } from '../../helpers/types';
+import { ICalendarState, IDay, IMonth } from '../../helpers/types';
 import { Backdrop } from '../Backdrop';
 import { Month } from './Month';
 
 interface IDatePickerProps {
   className?: string;
-  selectedDate: Date | null;
-  setSelectedDate: (date: Date) => void;
+  inputedDate: Date;
+  setDate: (date: Date) => void;
   closeSelect: () => void;
 }
 
 export const DatePicker = (props: IDatePickerProps): JSX.Element => {
-  const { closeSelect, selectedDate, setSelectedDate } = props;
+  const { closeSelect, inputedDate, setDate } = props;
 
-  const lang = window.navigator.language || 'default';
   const today = new Date();
-
   const currentYear = getYearNumber(today);
-
   const currentDay: IDay = {
     date: today,
     numberInMonth: getDayNumberInMonth(today),
     nameInWeek: getDayNameInWeek(today),
   };
-
   const currentMonth: IMonth = {
     name: getMonthName(today),
     number: getMonthNumber(today),
@@ -48,24 +42,19 @@ export const DatePicker = (props: IDatePickerProps): JSX.Element => {
       )
     ),
   };
-
   const lastDateOfPreviousMonth = new Date(currentYear, currentMonth.number, 0);
-
   const previousMonth: IMonth = {
     name: getMonthName(lastDateOfPreviousMonth),
     number: getMonthNumber(lastDateOfPreviousMonth),
     totalDays: getDaysInMonth(lastDateOfPreviousMonth),
     totalOfLastDays: getTotalLastDaysInMonth(lastDateOfPreviousMonth),
   };
-
   const weekDays = Array.from({ length: 7 }).map(
     (_, i) => new Date(currentYear, currentYear, currentDay.numberInMonth + i)
   );
-
   const weekDaysNamesSorted = sortDaysByWeekOrder(weekDays).map((date) =>
     getDayNameInWeek(date)
   );
-
   const weekDaysFirstLetterSorted = weekDaysNamesSorted.map((dayName) => (
     <span className='flex-center w-7 h-7 uppercase text-gray-400'>
       {dayName.substring(0, 1)}
@@ -73,7 +62,7 @@ export const DatePicker = (props: IDatePickerProps): JSX.Element => {
   ));
 
   // terminar
-  const [calendar, setCalendar] = useState<ICalendar>({
+  const [calendar, setCalendar] = useState<ICalendarState>({
     currentDay,
     currentMonth,
     currentYear,
@@ -218,14 +207,12 @@ export const DatePicker = (props: IDatePickerProps): JSX.Element => {
           </div>
           <hr />
 
-          {/* <div className='overflow-hidden'> */}
           <Month
             calendar={calendar}
-            selectedDate={selectedDate}
-            setSelectedDate={setSelectedDate}
+            inputedDate={inputedDate}
+            setDate={setDate}
             closeSelect={closeSelect}
           />
-          {/* </div> */}
         </div>
       </div>
     </>

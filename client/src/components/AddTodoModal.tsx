@@ -5,11 +5,7 @@ import {
   InboxSolidIcon,
   LabelIcon,
 } from './Icons';
-import {
-  getDayNumberInMonth,
-  getMonthName,
-  sortAlphabetic,
-} from '../helpers/functions';
+import { getDayNumberInMonth, getMonthName } from '../helpers/functions';
 import { Fragment, useEffect, useRef, useState } from 'react';
 import { LabelAddTodoModal } from './LabelAddTodoModal';
 import { DatePicker } from './DatePicker';
@@ -17,12 +13,12 @@ import { SelectProject } from './Selects/SelectProject';
 import { SelectLabel } from './Selects/SelectLabel';
 import { SelectPriority } from './Selects/SelectPriority';
 import { labelColors, labelHoverColors } from '../helpers/constants';
-import { IRenderableElements, ITodo } from '../helpers/types';
+import { ILabel, IProject, IRenderableElements, ITodo } from '../helpers/types';
 import { Backdrop } from './Backdrop';
 import { motion } from 'framer-motion';
 import { addTodoModal } from '../helpers/variants';
 import { nanoid } from 'nanoid';
-import { useUserStore } from '../zustand';
+import { useTodosStore } from '../zustand';
 
 interface IAddTodoModalProps {
   closeAddTodoModal: () => void;
@@ -31,81 +27,55 @@ interface IAddTodoModalProps {
 export const AddTodoModal = (props: IAddTodoModalProps) => {
   const { closeAddTodoModal } = props;
 
-  const { addTodo, projects } = useUserStore();
+  const { addTodo } = useTodosStore();
 
   const [inputs, setInputs] = useState({
     title: '',
     description: '',
-    selectedProject: {
+    project: {
       id: 'inbox',
-      name: 'inbox',
+      name: 'Inbox',
+      color: {
+        name: 'Blue',
+        class: 'fill-blue-600',
+      },
     },
-    selectedPriority: 4,
-    selectedDate: new Date(),
-    labels: [
-      'label 1 as dsa asdasasd as sjdi 129 mksm 1982 edkmsakmdask',
-      'label 2 asd dsa dsa das ads asas asd',
-      'label 3 dasdsa as sd asd asd as das as das sa',
-      'label 4 das dsa asd asd asd sdsad as sad asd ',
-      'label 5 dasd sadsa da sd asdsa dsa as da sdsa5',
-    ],
-    checkedLabels: [] as string[],
+    priority: 4,
+    date: new Date(),
+    labels: [] as ILabel[],
   });
 
   const [renderedSelect, setRenderedSelect] =
     useState<IRenderableElements>(null);
 
   // centerlize select
-  const dueDateRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  const addLabel = (label: string) =>
+  const addLabel = (label: ILabel) =>
     setInputs((state) => ({
       ...state,
-      labels: sortAlphabetic([...state.labels, label]),
+      labels: [...state.labels, label],
     }));
 
-  const removeLabel = (label: string) =>
+  const deleteLabel = (label: ILabel) =>
     setInputs((state) => ({
       ...state,
-      labels: state.labels.filter((removedLabel) => label !== removedLabel),
-    }));
-
-  const addCheckedLabel = (label: string) =>
-    setInputs((state) => ({
-      ...state,
-      checkedLabels: sortAlphabetic([...state.checkedLabels, label]),
-    }));
-
-  const removeCheckedLabel = (label: string) =>
-    setInputs((state) => ({
-      ...state,
-      checkedLabels: state.checkedLabels.filter(
-        (removedLabel) => label !== removedLabel
+      labels: state.labels.filter(
+        (deletedLabel) => label.id !== deletedLabel.id
       ),
     }));
-
-  const resetInputs = () => {
-    setInputs((state) => ({
-      title: '',
-      description: '',
-      selectedProject: state.selectedProject,
-      selectedPriority: 4,
-      selectedDate: new Date(),
-      checkedLabels: [],
-      labels: state.labels,
-    }));
-  };
 
   const todo: ITodo = {
     id: nanoid(),
     title: inputs.title,
     description: inputs.description,
-    date: inputs.selectedDate,
-    labelsIds: inputs.checkedLabels,
-    priority: inputs.selectedPriority,
-    project: inputs.selectedProject,
-    checkedLabels: inputs.checkedLabels,
+
+    date: inputs.date,
+    labels: inputs.labels,
+    priority: inputs.priority,
+    project: inputs.project,
+    section: null,
+
     isCompleted: false,
   };
 
@@ -114,7 +84,7 @@ export const AddTodoModal = (props: IAddTodoModalProps) => {
 
     addTodo(todo);
 
-    resetInputs();
+    // resetInputs();
 
     closeAddTodoModal();
   };
@@ -139,19 +109,22 @@ export const AddTodoModal = (props: IAddTodoModalProps) => {
 
   const setTitle = (title: string) =>
     setInputs((state) => ({ ...state, title }));
+
   const setDescription = (description: string) =>
     setInputs((state) => ({ ...state, description }));
-  const setSelectedProject = (selectedProjectName: string) =>
+
+  const setProject = (project: IProject) =>
     setInputs((state) => ({
       ...state,
-      selectedProject: { ...state.selectedProject, name: selectedProjectName },
+      project,
     }));
-  const setSelectedPriority = (selectedPriority: number) =>
-    setInputs((state) => ({ ...state, selectedPriority }));
-  const setSelectedDate = (selectedDate: Date) =>
-    setInputs((state) => ({ ...state, selectedDate }));
 
-  const monthNameShort = getMonthName(inputs.selectedDate).substring(0, 3);
+  const setPriority = (priority: number) =>
+    setInputs((state) => ({ ...state, priority }));
+
+  const setDate = (date: Date) => setInputs((state) => ({ ...state, date }));
+
+  const monthNameShort = getMonthName(inputs.date).substring(0, 3);
 
   const sendTodoOnKeyUpEnter = (
     event: React.KeyboardEvent<HTMLInputElement>
@@ -170,8 +143,6 @@ export const AddTodoModal = (props: IAddTodoModalProps) => {
     titleInputRef?.current?.focus();
   }, []);
 
-  const projectsNames = projects.map((project) => project.name);
-
   return (
     <>
       <Backdrop close={closeAddTodoModal} className='z-[1000]' />
@@ -184,9 +155,9 @@ export const AddTodoModal = (props: IAddTodoModalProps) => {
         className='z-[1001] shadow-4xl border-gray-300 bg-white border-[1px] p-5 flex flex-col gap-4 fixed left-1/2 top-1/3 h-fit w-[90%] sm:w-[36rem] rounded-sm'
       >
         {/* labels checkeds */}
-        {inputs.checkedLabels.length > 0 && (
+        {inputs.labels.length > 0 && (
           <div className='w-full flex-wrap h-fit gap-1 flex justify-start'>
-            {inputs.checkedLabels.map((label, i) => (
+            {inputs.labels.map((label, i) => (
               <Fragment key={i}>
                 <LabelAddTodoModal label={label} />
               </Fragment>
@@ -231,19 +202,17 @@ export const AddTodoModal = (props: IAddTodoModalProps) => {
               />
 
               <span className='text-xs capitalize'>
-                {inputs.selectedDate
-                  ? `${monthNameShort} ${getDayNumberInMonth(
-                      inputs.selectedDate
-                    )}`
+                {inputs.date
+                  ? `${monthNameShort} ${getDayNumberInMonth(inputs.date)}`
                   : 'Due data'}
               </span>
 
               {renderedSelect === 'date-picker' && (
                 <DatePicker
-                  className='left-28 sm:left-8'
+                  inputedDate={inputs.date}
+                  setDate={setDate}
                   closeSelect={closeSelect}
-                  selectedDate={inputs.selectedDate}
-                  setSelectedDate={setSelectedDate}
+                  className='left-28 sm:left-8'
                 />
               )}
             </div>
@@ -263,16 +232,13 @@ export const AddTodoModal = (props: IAddTodoModalProps) => {
                 className='fill-sky-600 -translate-y-[1px]'
               />
               <span className='text-xs capitalize'>
-                {inputs.selectedProject.name
-                  ? inputs.selectedProject.name
-                  : 'Inbox'}
+                {inputs.project.name ? inputs.project.name : 'Inbox'}
               </span>
 
               {renderedSelect === 'project-select' && (
                 <SelectProject
-                  projects={projectsNames}
-                  selectedProject={inputs.selectedProject.name}
-                  setSelectedProject={setSelectedProject}
+                  inputedProject={inputs.project}
+                  setProject={setProject}
                   closeSelect={closeSelect}
                 />
               )}
@@ -298,13 +264,10 @@ export const AddTodoModal = (props: IAddTodoModalProps) => {
 
               {renderedSelect === 'label-select' && (
                 <SelectLabel
-                  labels={inputs.labels}
-                  checkedLabels={inputs.checkedLabels}
-                  addCheckedLabel={addCheckedLabel}
-                  removeCheckedLabel={removeCheckedLabel}
-                  closeSelect={closeSelect}
+                  inputedLabels={inputs.labels}
                   addLabel={addLabel}
-                  removeLabel={removeLabel}
+                  deleteLabel={deleteLabel}
+                  closeSelect={closeSelect}
                 />
               )}
             </div>
@@ -321,15 +284,15 @@ export const AddTodoModal = (props: IAddTodoModalProps) => {
               <FlagSolidIcon
                 height='15px'
                 width='15px'
-                className={`${labelColors[inputs.selectedPriority]} ${
-                  labelHoverColors[inputs.selectedPriority]
+                className={`${labelColors[inputs.priority]} ${
+                  labelHoverColors[inputs.priority]
                 } duration-100`}
               />
 
               {renderedSelect === 'priority-select' && (
                 <SelectPriority
-                  selectedPriority={inputs.selectedPriority}
-                  setSelectedPriority={setSelectedPriority}
+                  inputedPriority={inputs.priority}
+                  setPriority={setPriority}
                   closeSelect={closeSelect}
                 />
               )}

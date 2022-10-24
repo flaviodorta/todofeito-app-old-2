@@ -11,30 +11,26 @@ import { ChevronIcon } from '../Icons';
 import { DatePicker } from '../DatePicker';
 
 export const HorizontalCalendar = ({
-  selectedDate,
-  setSelectedDate,
+  inputedDate,
+  setDate,
 }: {
-  selectedDate: Date;
-  setSelectedDate: (date: Date) => void;
+  inputedDate: Date;
+  setDate: (date: Date) => void;
 }) => {
   const today = new Date();
 
   const [renderedSelect, setRenderedSelect] =
     useState<IRenderableElements>(null);
 
-  // const [selectedDate, setSelectedDate] = useState(today);
-  const [weekDays, setWeekDays] = useState<Date[]>(getWeekDays(selectedDate));
+  const [weekDays, setWeekDays] = useState<Date[]>(getWeekDays(inputedDate));
 
-  const closeSelect = () => {
-    setRenderedSelect(null);
-  };
+  const closeSelect = () => setRenderedSelect(null);
 
-  const openDatePicker = () => {
-    if (!renderedSelect) setRenderedSelect('date-picker');
-  };
+  const openDatePicker = () =>
+    !renderedSelect ? setRenderedSelect('date-picker') : undefined;
 
   const goToToday = () => {
-    setSelectedDate(today);
+    setDate(today);
     setWeekDays(getWeekDays(today));
   };
 
@@ -51,9 +47,9 @@ export const HorizontalCalendar = ({
   };
 
   useEffect(() => {
-    if (!weekDays.some((date) => isEqual(date, selectedDate)))
-      setWeekDays(getWeekDays(selectedDate));
-  }, [selectedDate]);
+    if (!weekDays.some((date) => isEqual(date, inputedDate)))
+      setWeekDays(getWeekDays(inputedDate));
+  }, [inputedDate]);
 
   return (
     <div className='w-full h-fit flex flex-col gap-2'>
@@ -65,16 +61,16 @@ export const HorizontalCalendar = ({
           } relative flex gap-2 items-center`}
         >
           <span className='font-bold text-lg capitalize'>
-            {getMonthName(selectedDate)} {getYearNumber(selectedDate)}
+            {getMonthName(inputedDate)} {getYearNumber(inputedDate)}
           </span>
 
           <ChevronIcon className='stroke-gray-400 h-3.5 w-3.5' />
 
           {renderedSelect === 'date-picker' && (
             <DatePicker
+              inputedDate={inputedDate}
+              setDate={setDate}
               closeSelect={closeSelect}
-              selectedDate={selectedDate}
-              setSelectedDate={setSelectedDate}
               className='left-24 sm:left-8'
             />
           )}
@@ -110,11 +106,7 @@ export const HorizontalCalendar = ({
       <div className='grid grid-cols-7 w-full  auto-cols-max'>
         {weekDays.map((date) => (
           <Fragment key={`${date}`}>
-            <Day
-              date={date}
-              selectedDate={selectedDate}
-              setSelectedDate={setSelectedDate}
-            />
+            <Day thisDate={date} inputedDate={inputedDate} setDate={setDate} />
           </Fragment>
         ))}
       </div>

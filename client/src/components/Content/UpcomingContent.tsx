@@ -1,135 +1,53 @@
-import { compareDesc, isEqual, isToday, isTomorrow } from 'date-fns';
-import { nanoid } from 'nanoid';
+import { isEqual } from 'date-fns';
 import { useMemo, useState } from 'react';
-import {
-  capitalizeFirstLetter,
-  getDayNameInWeek,
-  getMonthName,
-} from '../../helpers/functions';
-import { ISection } from '../../helpers/types';
-import { useIsomorphicLayoutEffect } from '../../hooks/useIsomorphicLayoutEffect';
-import { useToggle } from '../../hooks/useToggle';
-import { useUserStore } from '../../zustand';
+import { IProject } from '../../helpers/types';
+import { useTodosStore } from '../../zustand';
 import { HorizontalCalendar } from '../HorizontalCalendar';
-import { TodosSection } from '../Sections/TodosSection';
 import { UpcomingTodosSection } from '../Sections/UpcomingTodosSection';
 import { ContentContainer } from './ContentContainer';
 
-console.time('cu');
 export const UpcomingContent = () => {
-  const { todos: allTodos } = useUserStore();
-
-  const allTodosNotCompleted = allTodos.filter(
-    (todo) =>
-      (compareDesc(todo.date as Date, new Date()) === -1 ||
-        isEqual(todo.date as Date, new Date())) &&
-      !todo.isCompleted
-  );
+  const { dates } = useTodosStore();
 
   const today = new Date();
-  const [selectedDate, setSelecteDate] = useState(today);
+  const [date, setDate] = useState(today);
 
-  const getDay = (year: number, month: number, day: number) =>
-    new Date(year, month, day);
+  const dateIndex = useMemo(() => {
+    const index = dates.findIndex((d) => isEqual(d.date, date));
+    return index === -1 ? 0 : index;
+  }, [date]);
 
-  console.time('time 1:');
-  const sections = useMemo(
-    () =>
-      Array.from({ length: 365 * 2 }).map((_, i) => {
-        const date = new Date(
-          selectedDate.getFullYear(),
-          selectedDate.getMonth(),
-          selectedDate.getDate() + i
-        );
-        return {
-          id: nanoid(),
-          name: `${capitalizeFirstLetter(
-            getMonthName(date).substring(0, 3)
-          )}  ${date.getDate()} ${
-            isToday(date) ? '‧ Today' : isTomorrow(date) ? '‧ Tomorrow' : ''
-          } ‧ ${capitalizeFirstLetter(getDayNameInWeek(date))} `,
-          todos: allTodosNotCompleted.filter((t) => t.date === date),
-        } as ISection;
-      }),
-    [selectedDate]
+  const [upcomingTodos, setTodos] = useState(
+    dates
+      .map((date) => date.todos)
+      .slice(dateIndex)
+      .reduce(
+        (acc, todos) => [...acc, ...todos.filter((todo) => !todo.isCompleted)],
+        []
+      )
   );
-  console.timeEnd('time 1:');
 
-  console.time('time 2:');
-  const arr = useMemo(() => {
-    const arr = [];
-
-    for (let i = 0; i < 365 * 2; i++) {
-      const date = new Date(
-        selectedDate.getFullYear(),
-        selectedDate.getMonth(),
-        selectedDate.getDate() + i
-      );
-
-      arr.push({
-        id: nanoid(),
-        name: `${capitalizeFirstLetter(
-          getMonthName(date).substring(0, 3)
-        )}  ${date.getDate()} ${
-          isToday(date) ? '‧ Today' : isTomorrow(date) ? '‧ Tomorrow' : ''
-        } ‧ ${capitalizeFirstLetter(getDayNameInWeek(date))} `,
-        todos: allTodosNotCompleted.filter((t) => t.date === date),
-      } as ISection);
-    }
-
-    return arr;
-  }, [selectedDate]);
-  console.timeEnd('time 2:');
-
-  // const sections = useMemo(
-  //   () =>
-  //     allTodosNotCompleted.map((todo) => {
-  //       const date = todo.date;
-  //       return {
-  //         id: nanoid(),
-  //         name: `${capitalizeFirstLetter(
-  //           getMonthName(date).substring(0, 3)
-  //         )} ${date.getDate()} ${
-  //           isToday(date) ? '‧ Today' : isTomorrow(date) ? '‧ Tomorrow' : ''
-  //         } ‧ ${capitalizeFirstLetter(getDayNameInWeek(date))} `,
-  //         todos: allTodosNotCompleted.filter((t) => t.date === date),
-  //       } as ISection;
-  //     }),
-  //   [allTodos]
-  // );
-
-  const [todos, setTodos] = useState(allTodosNotCompleted);
-
-  const [hasAddSectionOpen, toggleHasAddSectionOpen] = useToggle(false);
-
-  console.log(sections, allTodosNotCompleted);
-
-  useIsomorphicLayoutEffect(() => {
-    setTodos(allTodosNotCompleted);
-  }, [allTodos]);
+  const upcomingProject: IProject = {
+    id: 'upcoming',
+    name: 'Upcoming',
+    color: {
+      name: 'Blue',
+      class: 'fill-blue-600',
+    },
+  };
 
   return (
     <ContentContainer
-      heading={
-        <HorizontalCalendar
-          selectedDate={selectedDate}
-          setSelectedDate={setSelecteDate}
-        />
-      }
-      todos={todos}
+      heading={<HorizontalCalendar inputedDate={date} setDate={setDate} />}
+      todos={upcomingTodos}
       setTodos={setTodos}
-      project={{ id: 'upcoming', name: 'upcoming' }}
+      project={upcomingProject}
     >
       <div className='flex flex-col gap-8'>
-        {arr.map((section) => (
-          <UpcomingTodosSection
-            section={section}
-            hasAddSectionOpen={hasAddSectionOpen}
-            toggleHasAddSectionOpen={toggleHasAddSectionOpen}
-          />
+        {dates.slice(dateIndex).map(({ id, name, date, todos }) => (
+          <UpcomingTodosSection section={{ id, name, date, todos }} />
         ))}
       </div>
     </ContentContainer>
   );
 };
-console.timeEnd('cu');

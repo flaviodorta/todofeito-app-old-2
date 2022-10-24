@@ -13,7 +13,7 @@ export const Backdrop = ({
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
+      exit={{ opacity: 0, zIndex: 100 }}
       transition={{ duration: 0.15 }}
       onClick={close}
       className={`${className} cursor-default fixed w-screen h-screen top-0 left-0 bg-transparent`}

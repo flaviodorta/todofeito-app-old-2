@@ -7,7 +7,7 @@ import {
 import { reorder } from '../../helpers/functions';
 import { ITodo } from '../../helpers/types';
 import { useUIStore } from '../../zustand';
-import { AddTodoItem } from './../AddTodoItem';
+import { EditTodo } from '../EditTodo';
 import { TodoItem } from './../TodoItem';
 
 interface ITodosListProps {
@@ -16,7 +16,7 @@ interface ITodosListProps {
 }
 
 export const TodosList = ({ todos, setTodos }: ITodosListProps) => {
-  const { editingTodoId } = useUIStore();
+  const { todoInputOpenById: inputOpenById } = useUIStore();
 
   const onDragEnd = (result: DropResult) => {
     const { destination, source } = result;
@@ -53,19 +53,9 @@ export const TodosList = ({ todos, setTodos }: ITodosListProps) => {
                           .style as React.CSSProperties
                       }
                     >
-                      {editingTodoId === todo.id ? (
+                      {inputOpenById === todo.id ? (
                         <div className='w-full h-60'>
-                          <AddTodoItem
-                            key={todo.id}
-                            id={todo.id}
-                            title={todo.title}
-                            description={todo.description}
-                            date={todo.date as Date}
-                            project={todo.project}
-                            checkedLabels={todo.checkedLabels}
-                            priority={todo.priority}
-                            labels={todo.labelsIds}
-                          />
+                          <EditTodo todo={todo} />
                         </div>
                       ) : (
                         <TodoItem

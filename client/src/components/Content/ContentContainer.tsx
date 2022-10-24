@@ -2,42 +2,37 @@ import { useRef, useState } from 'react';
 import { IProject, ITodo } from '../../helpers/types';
 import { useEventListener } from '../../hooks/useEventListener';
 import { useUIStore } from '../../zustand';
-import { AddTodoItem } from '../AddTodoItem';
+import { AddTodo } from '../AddTodo';
 import { PlusSolidIcon } from '../Icons';
 import { TodosList } from '../Lists/TodosList';
 import { motion } from 'framer-motion';
 import { isDesktop } from 'react-device-detect';
+import { nanoid } from 'nanoid';
 
 interface IContentContainerProps {
   children?: React.ReactNode;
   heading: React.ReactNode;
   todos: ITodo[];
+  project: IProject;
   setTodos: (todos: ITodo[]) => void;
-  project: Pick<IProject, 'id' | 'name'>;
 }
+
+const addTodoId = nanoid();
 
 export const ContentContainer = ({
   children,
-  project,
   todos,
-  setTodos,
+  project,
   heading,
+  setTodos,
 }: IContentContainerProps) => {
   const {
-    editingTodoId,
-    isAddTodoItemOpen,
-    setEditingTodoId,
-    openIsAddTodoItemOpen,
     isSidebarOpen,
-    isAddTodoInSection,
-    setIsAddTodoInSection,
+    todoInputOpenById,
+    sectionInputOpenById,
+    setTodoInputOpenById,
+    setSectionInputOpenById,
   } = useUIStore();
-
-  const openAddTodoItem = () => {
-    setEditingTodoId(null);
-    setIsAddTodoInSection(null);
-    openIsAddTodoItemOpen();
-  };
 
   const [todosListWidth, setTodosWidthList] = useState(768);
 
@@ -51,6 +46,11 @@ export const ContentContainer = ({
 
   useEventListener('resize', getTodosListWidth);
 
+  const openAddTodo = () => {
+    setTodoInputOpenById(addTodoId);
+    console.log(todoInputOpenById);
+  };
+
   return (
     <motion.div
       initial={false}
@@ -58,7 +58,7 @@ export const ContentContainer = ({
       transition={{ duration: 0.3, bounce: 0 }}
       className={`h-fit md:w-[768px] md:max-w-[768px] md:min-w-[768px] relative px-4 sm:px-0 mx-auto w-full flex-center flex-col`}
     >
-      <div className='flex sticky z-[10] w-[1000px] bg-white top-0 justify-center items-center gap-2'>
+      <div className='flex sticky z-[3] w-full lg:w-[1000px] bg-white top-0 justify-center items-center gap-2'>
         <div className='w-full px-4 md:px-0 top-0 left-0 right-0 bg-white h-fit pt-12 flex-center'>
           <div style={{ width: todosListWidth }} className='w-full'>
             {heading}
@@ -71,11 +71,11 @@ export const ContentContainer = ({
           <TodosList todos={todos} setTodos={setTodos} />
 
           <div className='mb-6'>
-            {isAddTodoItemOpen && !editingTodoId && !isAddTodoInSection ? (
-              <AddTodoItem project={project} date={new Date()} />
+            {todoInputOpenById === addTodoId ? (
+              <AddTodo project={project} section={null} />
             ) : (
               <div
-                onClick={openAddTodoItem}
+                onClick={openAddTodo}
                 className='group w-full flex items-center gap-2.5 h-fit'
               >
                 <span className='group p-0.5 rounded-full bg-white group-hover:bg-blue-600 flex-center'>

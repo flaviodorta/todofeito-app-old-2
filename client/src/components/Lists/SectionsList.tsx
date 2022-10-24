@@ -5,22 +5,15 @@ import {
   DropResult,
 } from 'react-beautiful-dnd';
 import { reorder } from '../../helpers/functions';
-import { ISection } from '../../helpers/types';
+import { ITodosBySection } from '../../helpers/types';
 import { TodosSection } from '../Sections/TodosSection';
 
 interface ISectionsListProps {
-  sections: ISection[];
-  hasAddSectionOpen: boolean;
-  toggleHasAddSectionOpen: () => void;
-  setSections: (sections: ISection[]) => void;
+  sections: ITodosBySection[];
+  setSections: React.Dispatch<React.SetStateAction<ITodosBySection[]>>;
 }
 
-export const SectionsList = ({
-  sections,
-  setSections,
-  hasAddSectionOpen,
-  toggleHasAddSectionOpen,
-}: ISectionsListProps) => {
+export const SectionsList = ({ sections, setSections }: ISectionsListProps) => {
   const onDragEnd = (result: DropResult) => {
     const { destination, source } = result;
 
@@ -58,8 +51,6 @@ export const SectionsList = ({
                     >
                       <TodosSection
                         section={section}
-                        hasAddSectionOpen={hasAddSectionOpen}
-                        toggleHasAddSectionOpen={toggleHasAddSectionOpen}
                         draggableProvided={draggableProvided}
                       />
                     </div>

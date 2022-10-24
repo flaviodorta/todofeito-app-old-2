@@ -4,17 +4,16 @@ import { Backdrop } from '../Backdrop';
 import { FlagSolidIcon } from '../Icons';
 
 interface ISelectPriorityOptionProps {
-  priority: number;
-  selectedPriority: number;
-  setSelectedPriority: (priority: number) => void;
+  thisPriority: number;
+  inputedPriority: number;
+  setPriority: (priority: number) => void;
   closeSelect: () => void;
 }
 
 export const SelectPriorityOption = (
   props: ISelectPriorityOptionProps
 ): JSX.Element => {
-  const { priority, selectedPriority, setSelectedPriority, closeSelect } =
-    props;
+  const { thisPriority, inputedPriority, setPriority, closeSelect } = props;
 
   const colors: IPriorityLabelColors[] = [
     'fill-red-600',
@@ -25,7 +24,7 @@ export const SelectPriorityOption = (
   ];
 
   const onClickPriority = () => {
-    setSelectedPriority(priority);
+    setPriority(thisPriority);
     // setPriorityLabelColor(colors[props.priority - 1] as IPriorityLabelColors);
     closeSelect();
   };
@@ -38,16 +37,16 @@ export const SelectPriorityOption = (
       <span className='flex items-center justify-center px-4 py-2'>
         <FlagSolidIcon
           stroke={'black'}
-          className={`${colors[priority]} w-3 h-3`}
+          className={`${colors[thisPriority]} w-3 h-3`}
         />
       </span>
       <span className='text-sm whitespace-nowrap pr-4 py-2'>
-        Priority {priority + 1}
+        Priority {thisPriority + 1}
       </span>
 
       <span
         className={`${
-          selectedPriority === priority ? 'opacity-100' : 'opacity-0'
+          inputedPriority === thisPriority ? 'opacity-100' : 'opacity-0'
         } -translate-y-[1px] mx-1 mr-3 h-2 w-3 scale-75 -rotate-45 border-l-[2px] border-b-[2px] border-gray-700 duration-100 transition-opacity`}
       />
     </div>
@@ -55,13 +54,13 @@ export const SelectPriorityOption = (
 };
 
 interface ISelectPriorityProps {
-  selectedPriority: number;
-  setSelectedPriority: (priority: number) => void;
+  inputedPriority: number;
+  setPriority: (priority: number) => void;
   closeSelect: () => void;
 }
 
 export const SelectPriority = (props: ISelectPriorityProps) => {
-  const { selectedPriority, closeSelect, setSelectedPriority } = props;
+  const { inputedPriority, closeSelect, setPriority } = props;
 
   return (
     <>
@@ -72,9 +71,9 @@ export const SelectPriority = (props: ISelectPriorityProps) => {
           {Array.from({ length: 4 }).map((_, i) => (
             <Fragment key={i}>
               <SelectPriorityOption
-                priority={i}
-                selectedPriority={selectedPriority}
-                setSelectedPriority={setSelectedPriority}
+                thisPriority={i}
+                inputedPriority={inputedPriority}
+                setPriority={setPriority}
                 closeSelect={closeSelect}
               />
             </Fragment>

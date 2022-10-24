@@ -1,49 +1,32 @@
-import {
-  getMonth,
-  getYear,
-  isToday,
-  isEqual as isDateEqual,
-  compareAsc,
-} from 'date-fns';
-import { useRef } from 'react';
+import { getMonth, getYear, isToday, compareAsc } from 'date-fns';
 import { getDayNameInWeek, getDayNumberInMonth } from '../../helpers/functions';
 import { motion } from 'framer-motion';
-import { useUserStore } from '../../zustand';
-import { language } from '../../helpers/constants';
 
 interface IDayProps {
   className?: string;
-  date: Date;
-  selectedDate: Date;
-  setSelectedDate: (date: Date) => void;
+  thisDate: Date;
+  inputedDate: Date;
+  setDate: (date: Date) => void;
 }
 
-export const Day = ({
-  className,
-  date,
-  selectedDate,
-  setSelectedDate,
-}: IDayProps) => {
-  const ref = useRef<HTMLDivElement>(null);
-  const { todos } = useUserStore();
-
+export const Day = ({ thisDate, inputedDate, setDate }: IDayProps) => {
   let isSelected =
-    selectedDate &&
-    getDayNumberInMonth(selectedDate) === getDayNumberInMonth(date) &&
-    getMonth(selectedDate) === getMonth(date) &&
-    getYear(selectedDate) === getYear(date);
+    inputedDate &&
+    getDayNumberInMonth(inputedDate) === getDayNumberInMonth(thisDate) &&
+    getMonth(inputedDate) === getMonth(thisDate) &&
+    getYear(inputedDate) === getYear(thisDate);
 
-  const isUpcoming = compareAsc(date, new Date()) === 1 || isToday(date);
+  const isUpcoming =
+    compareAsc(thisDate, new Date()) === 1 || isToday(thisDate);
 
   const selectDay = () => {
-    if (isUpcoming) setSelectedDate(date);
+    if (isUpcoming) setDate(thisDate);
   };
 
-  const existsTodo = todos.some((todo) => isDateEqual(todo.date as Date, date));
+  const existsTodo = false;
 
   return (
     <motion.div
-      ref={ref}
       onClick={selectDay}
       whileHover={
         isUpcoming ? { backgroundColor: 'rgb(209 213 219 / 0.3)' } : {}
@@ -54,16 +37,16 @@ export const Day = ({
       } border-b-[1px] h-full w-full bg-none  border-gray-200 relative flex-center flex-col`}
     >
       <span className='capitalize text-xs text-gray-500 pt-2.5'>
-        {getDayNameInWeek(date).substring(0, 3)}
+        {getDayNameInWeek(thisDate).substring(0, 3)}
       </span>
 
       <span
         className={`${isSelected && isUpcoming ? 'font-bold' : ''}
-        ${isToday(date) ? 'font-bold text-blue-600' : ''}
+        ${isToday(thisDate) ? 'font-bold text-blue-600' : ''}
         ${!isUpcoming ? 'text-gray-300' : ''}
          relative w-fit h-fit py-2 duration-150 transition-colors`}
       >
-        {getDayNumberInMonth(date)}
+        {getDayNumberInMonth(thisDate)}
         <span
           className={`${
             isSelected && isUpcoming ? 'bg-blue-600' : 'bg-gray-400'

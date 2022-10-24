@@ -1,7 +1,6 @@
 import { Backdrop } from './Backdrop';
 import { SelectColor } from './Selects/SelectColors';
-import { selectColors } from '../helpers/constants';
-import { useUserStore } from '../zustand';
+import { useTodosStore } from '../zustand';
 import { useToggle } from '../hooks/useToggle';
 import { useEffect, useRef, useState } from 'react';
 import { useOnClickOutside } from '../hooks/useOnClickOutside';
@@ -12,30 +11,37 @@ import { motion } from 'framer-motion';
 interface IEditProjectModalProps {
   project: IProject;
   closeEditProjectModalOpen: () => void;
-  isEditProjectModalOpen: boolean;
 }
 
 export const EditProjectModal = ({
   closeEditProjectModalOpen,
   project,
-  isEditProjectModalOpen,
 }: IEditProjectModalProps) => {
-  const { editProject } = useUserStore();
+  const { editProject } = useTodosStore();
+
   const [isSelectColorOpen, toggleSelectColor] = useToggle(false);
   const [isSelectColorInputFocused, setIsSelectColorInputFocus] =
     useState(false);
-  const [selectedColor, setSelectedColor] = useState(project.color);
-  const [projectName, setProjectName] = useState(project.name);
+
+  const [inputs, setInputs] = useState({
+    name: project.name,
+    color: project.color,
+  });
+
+  const setColor = (color: { name: string; class: string }) =>
+    setInputs((state) => ({ ...state, color }));
+
+  const setName = (name: string) => setInputs((state) => ({ ...state, name }));
 
   const selectColorRef = useRef<HTMLDivElement>(null);
 
   const sendEditedProject = () => {
-    if (!projectName) return;
+    if (!project.name) return;
 
     const editedProject: IProject = {
-      ...project,
-      name: projectName,
-      color: selectedColor,
+      id: project.id,
+      name: inputs.name,
+      color: inputs.color,
     };
 
     editProject(editedProject);
@@ -44,6 +50,7 @@ export const EditProjectModal = ({
   };
 
   const projectNameInputRef = useRef<HTMLInputElement>(null);
+
   const editProjectOnKeyEnterInputProjectName = onKeyUpEnter(
     sendEditedProject,
     projectNameInputRef
@@ -88,9 +95,9 @@ export const EditProjectModal = ({
               <label htmlFor='project-name' className='text-sm font-medium'>
                 Name
               </label>
-              {projectName.length >= 100 && (
+              {project.name.length >= 100 && (
                 <span className='text-xs text-red-600 font-light'>
-                  Character limit: {projectName.length}/120
+                  Character limit: {project.name.length}/120
                 </span>
               )}
             </div>
@@ -98,9 +105,9 @@ export const EditProjectModal = ({
               ref={projectNameInputRef}
               id='project-name'
               type='text'
-              value={projectName}
+              value={project.name}
               maxLength={120}
-              onChange={(e) => setProjectName(e.target.value)}
+              onChange={(e) => setName(e.target.value)}
               onKeyUp={editProjectOnKeyEnterInputProjectName}
               className='outline-none text-sm h-7 rounded-[3px] py-1 px-2 border-gray-300 focus:border-gray-400 border-[1px] duration-150 transition-all'
             />
@@ -119,26 +126,23 @@ export const EditProjectModal = ({
                 isSelectColorInputFocused ? 'border-gray-400' : ''
               } border-[1px] duration-150 transition-all`}
             >
-              {selectedColor && (
+              {inputs && (
                 <>
                   <span className='flex items-center justify-center px-2'>
                     <span
-                      className={`w-3 h-3 ${selectedColor.class} rounded-full`}
+                      className={`w-3 h-3 ${inputs.color.class} rounded-full`}
                     />
                   </span>
                   <span className='flex cursor-pointer w-full capitalize whitespace-nowrap justify-between items-center pl-1 pr-2 py-1.5 justify-self-start text-sm'>
-                    <span className='mr-2 capitalize'>
-                      {selectedColor.name}
-                    </span>
+                    <span className='mr-2 capitalize'>{inputs.color.name}</span>
                   </span>
                 </>
               )}
             </div>
             {isSelectColorOpen && (
               <SelectColor
-                colors={selectColors}
-                selectedColor={selectedColor}
-                setSelectedColor={setSelectedColor}
+                inputedColor={inputs.color}
+                setColor={setColor}
                 closeSelect={toggleSelectColor}
               />
             )}
@@ -159,7 +163,7 @@ export const EditProjectModal = ({
                 sendEditedProject();
               }}
               className={`${
-                !projectName
+                !project.name
                   ? 'cursor-not-allowed bg-blue-400'
                   : 'bg-blue-600 hover:bg-blue-700'
               } text-center select-none py-2 px-4 outline-none rounded-sm font-medium text-sm h-fit w-fit text-white hover:text-gray-200`}
