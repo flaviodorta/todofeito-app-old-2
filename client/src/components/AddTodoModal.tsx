@@ -49,10 +49,25 @@ export const AddTodoModal = (props: IAddTodoModalProps) => {
   // centerlize select
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  const [dueDateSizes, dueDateRef] = useDimensions();
-  const [projectsSizes, projectsRef] = useDimensions();
-  const [labelsSizes, labelsRef] = useDimensions();
-  const [prioritySizes, priorityRef] = useDimensions();
+  const [dueDateSizes, dueDateRef, shouldMeasureDueDate] = useDimensions({
+    withInitialAnimation: true,
+  });
+  const [projectsSizes, projectsRef, shouldMeasureProject] = useDimensions({
+    withInitialAnimation: true,
+  });
+  const [labelsSizes, labelsRef, shouldMeasureLabel] = useDimensions({
+    withInitialAnimation: true,
+  });
+  const [prioritySizes, priorityRef, shouldMeasurePriority] = useDimensions({
+    withInitialAnimation: true,
+  });
+
+  const shouldMeasureDimensions = () => {
+    shouldMeasureDueDate();
+    shouldMeasureProject();
+    shouldMeasureLabel();
+    shouldMeasurePriority();
+  };
 
   const addLabel = (label: ILabel) =>
     setInputs((state) => ({
@@ -146,6 +161,7 @@ export const AddTodoModal = (props: IAddTodoModalProps) => {
         initial='initial'
         animate='animate'
         exit='exit'
+        onAnimationComplete={shouldMeasureDimensions}
         className='z-[1001] shadow-4xl border-gray-300 bg-white border-[1px] p-5 flex flex-col gap-4 fixed left-1/2 top-1/3 h-fit w-[90%] sm:w-[36rem] rounded-sm'
       >
         {/* labels checkeds */}

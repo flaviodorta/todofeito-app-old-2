@@ -13,15 +13,13 @@ import { sidebarProjectsWrapper } from '../helpers/variants';
 import { isMobile } from 'react-device-detect';
 import { Backdrop } from './Backdrop';
 import { compareDesc, isToday } from 'date-fns';
-import { forwardRef, Fragment, useRef } from 'react';
+import { Fragment } from 'react';
 import useWindowSize from '../hooks/useWindowSize';
 import { useToggle } from '../hooks/useToggle';
 import { CreateProjectModal } from './CreateProjectModal';
 import { SidebarProject } from './SidebarProject';
 
-interface ISidebarProps {}
-
-export const Sidebar = forwardRef((props: ISidebarProps, ref) => {
+export const Sidebar = () => {
   const { isSidebarOpen, toggleSidebar } = useUIStore();
 
   const { getProjects, projects, dates, labels } = useTodosStore();
@@ -64,6 +62,7 @@ export const Sidebar = forwardRef((props: ISidebarProps, ref) => {
       {isSidebarOpen && (isMobile || isScreenMinorThanMedium) && (
         <Backdrop
           elementId='layout'
+          isShow={isSidebarOpen && (isMobile || isScreenMinorThanMedium)}
           close={toggleSidebar}
           className='bg-black/50 md:hidden z-[20]'
         />
@@ -183,4 +182,4 @@ export const Sidebar = forwardRef((props: ISidebarProps, ref) => {
       </motion.div>
     </>
   );
-});
+};
