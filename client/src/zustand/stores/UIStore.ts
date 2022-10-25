@@ -6,10 +6,12 @@ interface IUIStore {
   todoInputOpenById: string | null;
   sectionInputOpenById: string | null;
   labelShowById: string | null;
+  withBackdropOpenById: string | null;
   toggleSidebar: () => void;
   setTodoInputOpenById: (id: string | null) => void;
   setSectionInputOpenById: (id: string | null) => void;
   setLabelShowById: (id: string | null) => void;
+  setWithBackdropOpenById: (id: string | null) => void;
 }
 
 const isMinorThanLargeScreen = window.innerWidth <= 1024;
@@ -19,6 +21,7 @@ export const UIStore = create<IUIStore>((set, get) => ({
   todoInputOpenById: null,
   sectionInputOpenById: null,
   labelShowById: null,
+  withBackdropOpenById: null,
   toggleSidebar: () =>
     set((state) => ({
       isSidebarOpen: !state.isSidebarOpen,
@@ -31,5 +34,10 @@ export const UIStore = create<IUIStore>((set, get) => ({
     set((state) => ({
       ...state,
       labelShowById: id,
+    })),
+  setWithBackdropOpenById: (id: string | null) =>
+    set((state) => ({
+      ...state,
+      withBackdropOpenById: id,
     })),
 }));

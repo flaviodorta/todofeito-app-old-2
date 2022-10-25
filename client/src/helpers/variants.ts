@@ -61,7 +61,7 @@ export const addTodoModal: Variants = {
   },
 };
 
-export const projectsWrapper: Variants = {
+export const sidebarProjectsWrapper: Variants = {
   initial: {
     transition: {
       staggerChildren: 0.2,
@@ -75,7 +75,7 @@ export const projectsWrapper: Variants = {
   },
 };
 
-export const project: Variants = {
+export const sidebarProjectWrapper: Variants = {
   initial: {
     opacity: 0,
     y: -20,

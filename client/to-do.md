@@ -20,11 +20,12 @@
 - fix z-index bug in section heading
 - edit project dropdown
 - fix create project exit modal
+- change modal and selects to Portal to fix z-index issues
 
 # to do
 
-- change modal and selects to Portal to fix z-index issues
 - fix add todo in upcoming sections
+
 - create labels and projects content
 - add labels function
 - limits chars input
@@ -35,5 +36,9 @@
 - add persist to zustand
 - add sidebar resizable (react-resizable)
 - fix todo list placeholder
+
+- refactor server
+- connect server with front end
+- create login page
 
 - useScrollRatio to take element position

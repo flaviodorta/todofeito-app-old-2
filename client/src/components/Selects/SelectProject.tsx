@@ -1,3 +1,4 @@
+import { size } from 'lodash';
 import { Fragment } from 'react';
 import { IDimensions, IProject } from '../../helpers/types';
 import { useTodosStore } from '../../zustand';
@@ -59,7 +60,7 @@ export const SelectProject = ({
       <div
         style={{
           left: sizes.left + sizes.width / 2,
-          top: sizes.top + 48,
+          top: sizes.top + sizes.height,
         }}
         className='fixed -translate-x-1/2 z-[2001] shadow-3xl border-[1px] border-gray-200 overflow-hidden rounded-sm w-fit h-fit bg-white'
       >

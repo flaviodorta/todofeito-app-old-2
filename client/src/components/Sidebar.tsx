@@ -7,32 +7,24 @@ import {
   InboxSolidIcon,
   LabelIcon,
   PlusSolidIcon,
-  TrashSolidIcon,
 } from './Icons';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { project, projectsWrapper } from '../helpers/variants';
-import { MoreThreeDotsIcon } from './Icons/Icons/MoreThreeDotsIcon';
+import { sidebarProjectsWrapper } from '../helpers/variants';
 import { isMobile } from 'react-device-detect';
 import { Backdrop } from './Backdrop';
 import { compareDesc, isToday } from 'date-fns';
-import { useRef, useState } from 'react';
+import { forwardRef, Fragment, useRef } from 'react';
 import useWindowSize from '../hooks/useWindowSize';
-import { IProject } from '../helpers/types';
-import { EditDropdown } from './Dropdowns/EditDropdown';
-import { PenSolidIcon } from './Icons/Icons/PenSolidIcon';
-import { EditProjectModal } from './EditProjectModal';
 import { useToggle } from '../hooks/useToggle';
 import { CreateProjectModal } from './CreateProjectModal';
+import { SidebarProject } from './SidebarProject';
 
 interface ISidebarProps {}
 
-export const Sidebar = (props: ISidebarProps) => {
+export const Sidebar = forwardRef((props: ISidebarProps, ref) => {
   const { isSidebarOpen, toggleSidebar } = useUIStore();
 
-  const [isEditProjectModalOpen, toggleEditProjectModalOpen] = useToggle(false);
-
-  const { deleteProject, getProjects, projects, dates, labels } =
-    useTodosStore();
+  const { getProjects, projects, dates, labels } = useTodosStore();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -60,22 +52,7 @@ export const Sidebar = (props: ISidebarProps) => {
     0
   );
 
-  const sidebarRef = useRef<HTMLDivElement>(null);
-
   const [isSidebarProjectsOpen, toggleSidebarProjects] = useToggle(false);
-
-  const [editingProject, setEditingProject] = useState<IProject>({
-    id: '',
-    name: '',
-    color: {
-      name: '',
-      class: '',
-    },
-  });
-
-  const [optionsOpenByProjectId, setOptionsOpenByProjectId] = useState<
-    string | null
-  >(null);
 
   const [isCreateProjectModalOpen, toggleCreateProjectModalOpen] =
     useToggle(false);
@@ -98,17 +75,7 @@ export const Sidebar = (props: ISidebarProps) => {
         )}
       </AnimatePresence>
 
-      <AnimatePresence>
-        {isEditProjectModalOpen && (
-          <EditProjectModal
-            project={editingProject}
-            closeEditProjectModalOpen={toggleEditProjectModalOpen}
-          />
-        )}
-      </AnimatePresence>
-
       <motion.div
-        ref={sidebarRef}
         initial={false}
         animate={isSidebarOpen ? { translateX: 0 } : { translateX: '-100%' }}
         transition={{
@@ -195,63 +162,23 @@ export const Sidebar = (props: ISidebarProps) => {
           <motion.div
             initial={false}
             animate={isSidebarProjectsOpen ? 'animate' : 'initial'}
-            variants={projectsWrapper}
+            variants={sidebarProjectsWrapper}
             className='w-full flex flex-col py-2 pl-4'
           >
             {getProjects()
               .slice(1)
-              .map((p) => (
-                <motion.div
-                  onClick={() => navigate(`/${p.name}`)}
-                  className={`${
-                    isSidebarProjectsOpen ? 'hover:bg-gray-200' : ''
-                  } relative group h-fit rounded-md p-1.5 w-full`}
-                >
-                  <motion.div
-                    variants={project}
-                    className='flex cursor-pointer items-center gap-4'
-                  >
-                    <span
-                      className={`w-2.5 h-2.5 rounded-full ${p.color.class}`}
-                    />
-                    <span className='text-sm'>{p.name}</span>
-
-                    <div className='relative ml-auto'>
-                      <MoreThreeDotsIcon
-                        onClick={() => setOptionsOpenByProjectId(p.id)}
-                        className='relative group-hover:opacity-100 hover:fill-gray-600 opacity-0 duration-100 transition-all fill-gray-400 ml-auto'
-                      />
-                      {optionsOpenByProjectId === p.id && (
-                        <EditDropdown
-                          close={() => setOptionsOpenByProjectId(null)}
-                        >
-                          <span
-                            onClick={() => {
-                              setEditingProject(p);
-                              setOptionsOpenByProjectId(null);
-                              toggleEditProjectModalOpen();
-                            }}
-                            className='w-full flex items-center gap-2 px-2 py-1 hover:bg-gray-300/30'
-                          >
-                            <PenSolidIcon className='fill-gray-400/70' />
-                            <span>Edit project</span>
-                          </span>
-                          <span
-                            onClick={() => deleteProject(p.id)}
-                            className='w-full flex items-center gap-2 px-2 py-1 hover:bg-gray-300/30'
-                          >
-                            <TrashSolidIcon className='fill-gray-400/70' />
-                            <span>Delete section</span>
-                          </span>
-                        </EditDropdown>
-                      )}
-                    </div>
-                  </motion.div>
-                </motion.div>
+              .map((project) => (
+                <Fragment key={project.id}>
+                  <SidebarProject
+                    project={project}
+                    isSidebarProjectsOpen={isSidebarProjectsOpen}
+                    onClick={() => navigate(`/${project.name}`)}
+                  />
+                </Fragment>
               ))}
           </motion.div>
         </div>
       </motion.div>
     </>
   );
-};
+});

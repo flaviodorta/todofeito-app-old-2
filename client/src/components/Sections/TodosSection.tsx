@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { DraggableProvided } from 'react-beautiful-dnd';
 import { isMobile } from 'react-device-detect';
 import { ISection, ITodosBySection } from '../../helpers/types';
+import { useDimensions } from '../../hooks/useDimensions';
 import { useToggle } from '../../hooks/useToggle';
 import { useUpdateState } from '../../hooks/useUpdateState';
 import useWindowSize from '../../hooks/useWindowSize';
@@ -48,7 +49,12 @@ export const TodosSection = ({ section, draggableProvided }: ITodosSection) => {
     toggleTodoListOpen();
   };
 
-  const [isOptionsDropdownOpen, toggleOptionsDropdown] = useToggle(false);
+  const [isOptionsDropdownOpen, setIsOptionsDropdown] = useState(false);
+
+  const toggleOptionsDropdown = () =>
+    isOptionsDropdownOpen
+      ? setIsOptionsDropdown(false)
+      : setIsOptionsDropdown(true);
 
   const { width } = useWindowSize();
 
@@ -66,6 +72,8 @@ export const TodosSection = ({ section, draggableProvided }: ITodosSection) => {
   const openEditSection = () =>
     setSectionInputOpenById(editSectionIdRef.current);
   const openAddTodo = () => setTodoInputOpenById(addTodoIdRef.current);
+
+  const [optionsIconSizes, optionsIconRef] = useDimensions();
 
   if (sectionInputOpenById === editSectionIdRef.current) {
     return <EditSection section={section} />;
@@ -106,18 +114,19 @@ export const TodosSection = ({ section, draggableProvided }: ITodosSection) => {
           </span>
           {/* open/close todos list */}
         </div>
-      </div>
 
-      {/* options dropdown */}
-      <div className='sticky top-[116px] z-[1000]'>
         <span
+          ref={optionsIconRef}
           onClick={toggleOptionsDropdown}
-          className='group absolute top-0 right-0 z-[1000] flex-center w-6 h-6 cursor-pointer rounded-sm hover:bg-gray-200'
+          className='group z-[1000] absolute right-0 top-0 flex-center w-6 h-6 cursor-pointer rounded-sm hover:bg-gray-200'
         >
           <MoreThreeDotsIcon className='hover:bg-gray-200 hover:fill-gray-600 duration-100 transition-all fill-gray-400' />
 
           {isOptionsDropdownOpen && (
-            <EditDropdown close={toggleOptionsDropdown}>
+            <EditDropdown
+              sizes={optionsIconSizes}
+              close={toggleOptionsDropdown}
+            >
               <span
                 onClick={openEditSection}
                 className='w-full flex items-center gap-2 px-2 py-1 hover:bg-gray-300/30'
@@ -137,11 +146,10 @@ export const TodosSection = ({ section, draggableProvided }: ITodosSection) => {
           )}
         </span>
       </div>
-      {/* options dropdown */}
 
       <div className='w-full h-fit mb-4'>
         {isTodoListOpen && (
-          <div className='w-full'>
+          <div className='w-full flex flex-col gap-2'>
             {/* Todo list */}
             <TodosList todos={todos} setTodos={setTodos} />
 
