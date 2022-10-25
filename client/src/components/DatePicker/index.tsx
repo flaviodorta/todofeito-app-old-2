@@ -1,5 +1,5 @@
 import { getDaysInMonth, getYear } from 'date-fns';
-import { useState } from 'react';
+import { useDebugValue, useState } from 'react';
 import {
   getDayNameInWeek,
   getDayNumberInMonth,
@@ -10,6 +10,8 @@ import {
   sortDaysByWeekOrder,
 } from '../../helpers/functions';
 import { ICalendarState, IDay, IDimensions, IMonth } from '../../helpers/types';
+import { useDimensions } from '../../hooks/useDimensions';
+import useWindowSize from '../../hooks/useWindowSize';
 import { Backdrop } from '../Backdrop';
 import { Month } from './Month';
 
@@ -60,7 +62,7 @@ export const DatePicker = ({
     getDayNameInWeek(date)
   );
   const weekDaysFirstLetterSorted = weekDaysNamesSorted.map((dayName) => (
-    <span className='flex-center w-7 h-7 uppercase text-gray-400'>
+    <span key={dayName} className='flex-center w-7 h-7 uppercase text-gray-400'>
       {dayName.substring(0, 1)}
     </span>
   ));
@@ -167,11 +169,25 @@ export const DatePicker = ({
       };
     });
 
+  const [containerSizes, containerRef] = useDimensions();
+
+  const { width } = useWindowSize();
+
+  const resizeRight = containerSizes.width / 2 - (width - sizes.left);
+
+  const resizeLeft = containerSizes.left;
+
+  const resize =
+    resizeRight > 0 ? resizeRight + 10 : resizeLeft < 0 ? -resizeLeft + 10 : 0;
+
+  console.log(resize);
+
   return (
     <Backdrop close={closeSelect} className='z-[2000] bg-black/50'>
       <div
+        ref={containerRef}
         style={{
-          left: sizes.left + sizes.width / 2,
+          left: sizes.left + sizes.width / 2 + resize,
           top: sizes.top + sizes.height,
         }}
         className='fixed z-[2001] -translate-x-1/2 w-60 h-fit text-xs bg-white border-[1px] border-gray-100 shadow-3xl'

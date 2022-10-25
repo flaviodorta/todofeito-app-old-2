@@ -1,7 +1,9 @@
-import { Fragment } from 'react';
+import { Fragment, useRef } from 'react';
 import { Backdrop } from '../Backdrop';
 import { selectColors } from '../../helpers/constants';
 import { IDimensions } from '../../helpers/types';
+import { useDimensions } from '../../hooks/useDimensions';
+import useWindowSize from '../../hooks/useWindowSize';
 
 interface ISelectColorOptionProps {
   thisColor: {
@@ -66,11 +68,23 @@ export const SelectColor = ({
     class: color[1],
   }));
 
+  const [containerSizes, containerRef] = useDimensions();
+
+  const { width } = useWindowSize();
+
+  const resizeRight = containerSizes.width / 2 - (width - sizes.left);
+
+  const resizeLeft = containerSizes.left;
+
+  const resize =
+    resizeRight > 0 ? resizeRight + 10 : resizeLeft < 0 ? -resizeLeft + 10 : 0;
+
   return (
     <Backdrop close={closeSelect} className='z-[2000]'>
       <div
+        ref={containerRef}
         style={{
-          left: sizes.left + sizes.width / 2,
+          left: sizes.left + sizes.width / 2 + resize,
           top: sizes.top + sizes.height,
           width: sizes.width,
         }}

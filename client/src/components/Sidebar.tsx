@@ -57,9 +57,11 @@ export const Sidebar = forwardRef((props: ISidebarProps, ref) => {
   const [isCreateProjectModalOpen, toggleCreateProjectModalOpen] =
     useToggle(false);
 
+  const isScreenMinorThanMedium = width < 768;
+
   return (
     <>
-      {isSidebarOpen && isMobile && (
+      {isSidebarOpen && (isMobile || isScreenMinorThanMedium) && (
         <Backdrop
           elementId='layout'
           close={toggleSidebar}

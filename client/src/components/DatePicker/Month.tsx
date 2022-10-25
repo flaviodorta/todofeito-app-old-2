@@ -38,7 +38,7 @@ export const Month = ({
           );
 
           return (
-            <Fragment key={nanoid()}>
+            <Fragment key={`${dateLastMonth}`}>
               <Day
                 closeSelect={closeSelect}
                 thisDate={dateLastMonth}
@@ -57,7 +57,7 @@ export const Month = ({
         );
 
         return (
-          <Fragment key={nanoid()}>
+          <Fragment key={`${dateCurrentMonth}`}>
             <Day
               closeSelect={closeSelect}
               thisDate={dateCurrentMonth}
@@ -77,9 +77,9 @@ export const Month = ({
         calendar.currentMonth.number,
         i + 1
       );
-      console.log(`${dateCurrentMonth}`);
+
       return (
-        <Fragment key={nanoid()}>
+        <Fragment key={`${dateCurrentMonth}`}>
           <Day
             closeSelect={closeSelect}
             thisDate={dateCurrentMonth}

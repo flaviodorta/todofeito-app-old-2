@@ -5,6 +5,8 @@ import { useTodosStore } from '../../zustand';
 import { IDimensions, ILabel } from '../../helpers/types';
 import { Backdrop } from '../Backdrop';
 import { LabelIcon } from '../Icons';
+import useWindowSize from '../../hooks/useWindowSize';
+import { useDimensions } from '../../hooks/useDimensions';
 
 interface ISelectLabelOptionProps {
   thisLabel: ILabel;
@@ -68,11 +70,23 @@ export const SelectLabel = ({
 }: ISelectLabelProps) => {
   const { getLabels } = useTodosStore();
 
+  const [containerSizes, containerRef] = useDimensions();
+
+  const { width } = useWindowSize();
+
+  const resizeRight = containerSizes.width / 2 - (width - sizes.left);
+
+  const resizeLeft = containerSizes.left;
+
+  const resize =
+    resizeRight > 0 ? resizeRight + 10 : resizeLeft < 0 ? -resizeLeft + 10 : 0;
+
   return (
     <Backdrop close={closeSelect} className='z-[2000]'>
       <div
+        ref={containerRef}
         style={{
-          left: sizes.left + sizes.width / 2,
+          left: sizes.left + sizes.width / 2 + resize,
           top: sizes.top + sizes.height,
         }}
         className='fixed -translate-x-1/2 z-[2001] shadow-3xl border-[1px] border-gray-200 overflow-hidden rounded-sm min-w-[140px] bg-white'
