@@ -1,21 +1,12 @@
-import { AnimatePresence } from 'framer-motion';
-import { AddTodoModal } from '../components/AddTodoModal';
 import { Navbar } from '../components/Navbar';
-import { useToggle } from '../hooks/useToggle';
 import { useUIStore } from '../zustand';
 import { Sidebar } from '../components/Sidebar';
-import { CreateProjectModal } from '../components/CreateProjectModal';
 import useWindowSize from '../hooks/useWindowSize';
 import { useEventListener } from '../hooks/useEventListener';
 import { useMemo, useRef } from 'react';
-import { EditProjectModal } from '../components/EditProjectModal';
 
 export const BasePage = ({ content }: { content: React.ReactNode }) => {
   const { isSidebarOpen, toggleSidebar } = useUIStore();
-  // const [isAddTodoModalOpen, toggleAddTodoModal] = useToggle(false);
-  // const [isCreateProjectModalOpen, toggleCreateProjectModalOpen] =
-  //   useToggle(false);
-  // const [isEditProjectModalOpen, toggleEditProjectModalOpen] = useToggle(false);
 
   const { width } = useWindowSize();
 
@@ -41,32 +32,13 @@ export const BasePage = ({ content }: { content: React.ReactNode }) => {
 
   return (
     <>
-      <Navbar
-      // isSidebarOpen={isSidebarOpen}
-      // toggleSidebar={toggleSidebar}
-      // toggleAddTodoModal={toggleAddTodoModal}
-      />
+      <Navbar />
 
-      {/* <AnimatePresence>
-        {isAddTodoModalOpen && (
-          <AddTodoModal closeAddTodoModal={toggleAddTodoModal} />
-        )}
+      <Sidebar />
 
-        {isCreateProjectModalOpen && (
-          <CreateProjectModal
-            closeCreateProjectModalOpen={toggleCreateProjectModalOpen}
-          />
-        )}
-      </AnimatePresence> */}
-
-      <Sidebar
-      // toggleEditProjectModalOpen={toggleEditProjectModalOpen}
-      // isEditProjectModalOpen={isEditProjectModalOpen}
-      // toggleCreateProjectModalOpen={toggleCreateProjectModalOpen}
-      />
       <div
         ref={contentRef}
-        className={`${scrollWidth} top-12 fixed right-0 left-0 h-[calc(100%-48px)] overflow-x-hidden overflow-y-auto`}
+        className={`${scrollWidth} z-[10] top-12 fixed right-0 left-0 h-[calc(100%-48px)] overflow-x-hidden overflow-y-auto`}
       >
         {content}
       </div>

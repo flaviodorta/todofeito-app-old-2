@@ -1,17 +1,7 @@
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect';
 import { useToggle } from './useToggle';
-
-interface IDimensions {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  top: number;
-  right: number;
-  bottom: number;
-  left: number;
-}
+import { IDimensions } from '../helpers/types';
 
 interface IUseDimensionsProps {
   liveMeasure?: boolean;

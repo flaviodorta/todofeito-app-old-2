@@ -1,12 +1,10 @@
-import { useIsomorphicLayoutEffect } from 'framer-motion';
-import { useState } from 'react';
 import { IProject } from '../../helpers/types';
-import { useToggle } from '../../hooks/useToggle';
-import { useTodosStore, useUIStore } from '../../zustand';
+import { useUpdateState } from '../../hooks/useUpdateState';
+import { useTodosStore } from '../../zustand';
 import { ContentContainer } from './ContentContainer';
 
 export const TodayContent = () => {
-  const { dates } = useTodosStore();
+  const { dates, projects } = useTodosStore();
 
   const today = new Date();
   const month = today.toLocaleString('en', { month: 'short' });
@@ -15,13 +13,12 @@ export const TodayContent = () => {
   });
   const dayOfMonth = today.getDate();
 
-  const todosNotCompleted = dates[0].todos.filter((todo) => !todo.isCompleted);
+  const [todayTodos, setTodos] = useUpdateState(
+    dates[0].todos.filter((todo) => !todo.isCompleted),
+    [dates]
+  );
 
-  const [todayTodos, setTodos] = useState(todosNotCompleted);
-
-  useIsomorphicLayoutEffect(() => {
-    setTodos(todosNotCompleted);
-  }, [dates]);
+  console.log(projects);
 
   const Heading = () => (
     <div className='flex items-center gap-2  md:w-[768px] md:max-w-[768px] md:min-w-[768px]'>

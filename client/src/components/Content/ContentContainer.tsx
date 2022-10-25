@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 import { IProject, ITodo } from '../../helpers/types';
 import { useEventListener } from '../../hooks/useEventListener';
-import { useUIStore } from '../../zustand';
+import { useTodosStore, useUIStore } from '../../zustand';
 import { AddTodo } from '../AddTodo';
 import { PlusSolidIcon } from '../Icons';
 import { TodosList } from '../Lists/TodosList';
@@ -17,8 +17,6 @@ interface IContentContainerProps {
   setTodos: (todos: ITodo[]) => void;
 }
 
-const addTodoId = nanoid();
-
 export const ContentContainer = ({
   children,
   todos,
@@ -26,13 +24,8 @@ export const ContentContainer = ({
   heading,
   setTodos,
 }: IContentContainerProps) => {
-  const {
-    isSidebarOpen,
-    todoInputOpenById,
-    sectionInputOpenById,
-    setTodoInputOpenById,
-    setSectionInputOpenById,
-  } = useUIStore();
+  const { isSidebarOpen, todoInputOpenById, setTodoInputOpenById } =
+    useUIStore();
 
   const [todosListWidth, setTodosWidthList] = useState(768);
 
@@ -46,17 +39,19 @@ export const ContentContainer = ({
 
   useEventListener('resize', getTodosListWidth);
 
-  const openAddTodo = () => {
-    setTodoInputOpenById(addTodoId);
-    console.log(todoInputOpenById);
-  };
+  const id = nanoid();
+  const addTodoId = useRef(id);
+
+  const openAddTodo = () => setTodoInputOpenById(addTodoId.current);
+
+  console.log(addTodoId.current);
 
   return (
     <motion.div
       initial={false}
       animate={isSidebarOpen && isDesktop ? { left: 40 } : { left: 0 }}
       transition={{ duration: 0.3, bounce: 0 }}
-      className={`h-fit md:w-[768px] md:max-w-[768px] md:min-w-[768px] relative px-4 sm:px-0 mx-auto w-full flex-center flex-col`}
+      className={`h-fit md:w-[768px] md:max-w-[768px] md:min-w-[768px] relative px-4 sm:px-0 mx-auto w-full flex-center flex-col gap-4`}
     >
       <div className='flex sticky z-[3] w-full lg:w-[1000px] bg-white top-0 justify-center items-center gap-2'>
         <div className='w-full px-4 md:px-0 top-0 left-0 right-0 bg-white h-fit pt-12 flex-center'>
@@ -71,8 +66,8 @@ export const ContentContainer = ({
           <TodosList todos={todos} setTodos={setTodos} />
 
           <div className='mb-6'>
-            {todoInputOpenById === addTodoId ? (
-              <AddTodo project={project} section={null} />
+            {todoInputOpenById === addTodoId.current ? (
+              <AddTodo project={project} />
             ) : (
               <div
                 onClick={openAddTodo}
@@ -90,7 +85,7 @@ export const ContentContainer = ({
         </div>
       )}
 
-      <div className='w-full pb-16'>{children}</div>
+      <div className='w-full px-4 pb-16'>{children}</div>
     </motion.div>
   );
 };

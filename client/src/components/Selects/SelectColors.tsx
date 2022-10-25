@@ -1,6 +1,7 @@
 import { Fragment } from 'react';
 import { Backdrop } from '../Backdrop';
 import { selectColors } from '../../helpers/constants';
+import { IDimensions } from '../../helpers/types';
 
 interface ISelectColorOptionProps {
   thisColor: {
@@ -51,20 +52,30 @@ interface ISelectColorProps {
   };
   setColor: (color: { class: string; name: string }) => void;
   closeSelect: () => void;
+  sizes: IDimensions;
 }
 
-export const SelectColor = (props: ISelectColorProps) => {
-  const { inputedColor, closeSelect, setColor } = props;
+export const SelectColor = ({
+  inputedColor,
+  closeSelect,
+  setColor,
+  sizes,
+}: ISelectColorProps) => {
   const colorsEntries = Object.entries(selectColors).map((color) => ({
     name: color[0],
     class: color[1],
   }));
 
   return (
-    <>
-      <Backdrop close={closeSelect} className='z-[2000]' />
-
-      <div className='top-14 absolute shadow-3xl border-[1px] border-gray-200 overflow-hidden z-[2001] rounded-sm w-full h-fit bg-white'>
+    <Backdrop close={closeSelect} className='z-[2000]'>
+      <div
+        style={{
+          left: sizes.left + sizes.width / 2,
+          top: sizes.top + sizes.height,
+          width: sizes.width,
+        }}
+        className='fixed -translate-x-1/2 z-[2001] shadow-3xl border-[1px] border-gray-200 overflow-hidden rounded-sm w-full h-fit bg-white'
+      >
         <div className='dropdown-select overflow-y-scroll h-48 w-full'>
           {colorsEntries.map((color, i) => (
             <Fragment key={i}>
@@ -78,6 +89,6 @@ export const SelectColor = (props: ISelectColorProps) => {
           ))}
         </div>
       </div>
-    </>
+    </Backdrop>
   );
 };

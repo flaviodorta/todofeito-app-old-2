@@ -8,6 +8,7 @@ import { onKeyUpEnter } from '../helpers/functions';
 import { IProject } from '../helpers/types';
 import { nanoid } from 'nanoid';
 import { motion } from 'framer-motion';
+import { useDimensions } from '../hooks/useDimensions';
 
 interface ICreateProjectModalProps {
   closeCreateProjectModalOpen: () => void;
@@ -25,8 +26,8 @@ export const CreateProjectModal = ({
   const [inputs, setInputs] = useState({
     name: '',
     color: {
-      name: '',
-      class: '',
+      name: 'Stone',
+      class: 'bg-stone-600',
     },
   });
 
@@ -66,17 +67,17 @@ export const CreateProjectModal = ({
 
   useOnClickOutside(selectColorRef, unfocusSelectColorInput);
 
+  const [selectColorSizes, selectColorRef2] = useDimensions();
+
   useEffect(() => {
     projectNameInputRef?.current?.focus();
   }, []);
 
   return (
-    <>
-      <Backdrop
-        close={closeCreateProjectModalOpen}
-        className='bg-black/50 z-90'
-      />
-
+    <Backdrop
+      close={closeCreateProjectModalOpen}
+      className='bg-black/50 z-[1000]'
+    >
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -118,33 +119,40 @@ export const CreateProjectModal = ({
             <label htmlFor='project-color' className='text-sm font-medium'>
               Color
             </label>
-            <div
-              ref={selectColorRef}
-              onClick={toggleSelectColor}
-              className={`outline-none flex h-7 rounded-[3px] py-1  ${
-                isSelectColorOpen ? 'border-gray-400' : 'border-gray-300'
-              } ${
-                isSelectColorInputFocused ? 'border-gray-400' : ''
-              } border-[1px] duration-150 transition-all`}
-            >
-              {inputs.color && (
-                <>
-                  <span className='flex items-center justify-center px-2'>
-                    <span
-                      className={`w-3 h-3 ${inputs.color.class} rounded-full`}
-                    />
-                  </span>
-                  <span className='flex cursor-pointer w-full capitalize whitespace-nowrap justify-between items-center pl-1 pr-2 py-1.5 justify-self-start text-sm'>
-                    <span className='mr-2 capitalize'>{inputs.color.name}</span>
-                  </span>
-                </>
-              )}
+
+            <div ref={selectColorRef2}>
+              <div
+                ref={selectColorRef}
+                onClick={toggleSelectColor}
+                className={`outline-none flex h-7 rounded-[3px] py-1  ${
+                  isSelectColorOpen ? 'border-gray-400' : 'border-gray-300'
+                } ${
+                  isSelectColorInputFocused ? 'border-gray-400' : ''
+                } border-[1px] duration-150 transition-all`}
+              >
+                {inputs.color && (
+                  <>
+                    <span className='flex items-center justify-center px-2'>
+                      <span
+                        className={`w-3 h-3 ${inputs.color.class} rounded-full`}
+                      />
+                    </span>
+                    <span className='flex cursor-pointer w-full capitalize whitespace-nowrap justify-between items-center pl-1 pr-2 py-1.5 justify-self-start text-sm'>
+                      <span className='mr-2 capitalize'>
+                        {inputs.color.name}
+                      </span>
+                    </span>
+                  </>
+                )}
+              </div>
             </div>
+
             {isSelectColorOpen && (
               <SelectColor
                 inputedColor={inputs.color}
                 setColor={setColor}
                 closeSelect={toggleSelectColor}
+                sizes={selectColorSizes}
               />
             )}
           </form>
@@ -160,7 +168,6 @@ export const CreateProjectModal = ({
             <button
               onClick={createNewProject}
               onSubmit={(e) => {
-                // e.preventDefault();
                 createNewProject();
               }}
               className={`${
@@ -174,6 +181,6 @@ export const CreateProjectModal = ({
           </div>
         </div>
       </motion.div>
-    </>
+    </Backdrop>
   );
 };

@@ -1,5 +1,5 @@
 import { Fragment } from 'react';
-import { IPriorityLabelColors } from '../../helpers/types';
+import { IDimensions, IPriorityLabelColors } from '../../helpers/types';
 import { Backdrop } from '../Backdrop';
 import { FlagSolidIcon } from '../Icons';
 
@@ -57,16 +57,24 @@ interface ISelectPriorityProps {
   inputedPriority: number;
   setPriority: (priority: number) => void;
   closeSelect: () => void;
+  sizes: IDimensions;
 }
 
-export const SelectPriority = (props: ISelectPriorityProps) => {
-  const { inputedPriority, closeSelect, setPriority } = props;
-
+export const SelectPriority = ({
+  inputedPriority,
+  closeSelect,
+  setPriority,
+  sizes,
+}: ISelectPriorityProps) => {
   return (
-    <>
-      <Backdrop close={closeSelect} className='z-[2000]' />
-
-      <div className='-translate-x-8 sm:translate-x-0 top-9 absolute shadow-3xl border-[1px] border-gray-200 overflow-hidden z-[2001] rounded-sm w-fit h-fit bg-white'>
+    <Backdrop close={closeSelect} className='z-[2000]'>
+      <div
+        style={{
+          left: sizes.left + sizes.width / 2,
+          top: sizes.top + sizes.height,
+        }}
+        className='fixed -translate-x-1/2 z-[2001] shadow-3xl border-[1px] border-gray-200 overflow-hidden rounded-sm w-fit h-fit bg-white'
+      >
         <div className='dropdown-select overflow-y-scroll h-fit w-full'>
           {Array.from({ length: 4 }).map((_, i) => (
             <Fragment key={i}>
@@ -80,6 +88,6 @@ export const SelectPriority = (props: ISelectPriorityProps) => {
           ))}
         </div>
       </div>
-    </>
+    </Backdrop>
   );
 };

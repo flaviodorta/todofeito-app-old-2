@@ -41,12 +41,12 @@ export const UpcomingTodosSection = ({ section }: IUpcomingTodosSection) => {
   return (
     <div className='flex flex-col h-fit w-full'>
       <div className='sticky top-[151px] z-[2]'>
-        <div className='relative flex justify-between items-center w-full text-sm  bg-white font-bold h-fit pb-1 border-b-[1px] border-gray-300'>
+        <div className='relative flex justify-between items-center w-full text-sm  bg-white font-bold h-fit py-1 border-b-[1px] border-gray-300'>
           <span className='text-gray-500'>{section.name}</span>
 
           <span
             onClick={toggleTodoList}
-            className='group absolute -left-8 top-0 cursor-pointer w-6 h-6 rounded-sm z-[2] bg-white hover:bg-gray-200 flex items-center justify-center'
+            className='group absolute -left-7 top-[1.5px] cursor-pointer w-6 h-6 rounded-sm z-[2] bg-white hover:bg-gray-200 flex items-center justify-center'
           >
             <ChevronIcon
               className={`${
@@ -58,10 +58,8 @@ export const UpcomingTodosSection = ({ section }: IUpcomingTodosSection) => {
       </div>
 
       {isTodoListOpen && (
-        <div className='w-full'>
-          <div className='w-full'>
-            <TodosList todos={todos} setTodos={setTodos} />
-          </div>
+        <div className='w-full h-fit'>
+          <TodosList todos={todos} setTodos={setTodos} />
         </div>
       )}
 

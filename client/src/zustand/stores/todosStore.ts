@@ -1,5 +1,4 @@
 import { isEqual, isToday, isTomorrow } from 'date-fns';
-import { findIndex } from 'lodash';
 import { nanoid } from 'nanoid';
 import create from 'zustand';
 import {
@@ -108,11 +107,10 @@ export const todosStore = create<ITodosStore>((set, get) => {
     addTodo: (todo: ITodo) =>
       set((state) => ({
         ...state,
-        dates: state.dates.map((date) =>
-          isEqual(date.date, todo.date)
-            ? { ...date, todos: [...date.todos, todo] }
-            : date
-        ),
+        dates: state.dates.map((date) => ({
+          ...date,
+          todos: [...date.todos, todo],
+        })),
         priorities: state.priorities.map((priority) =>
           priority.priority === todo.priority
             ? { ...priority, todos: [...priority.todos, todo] }

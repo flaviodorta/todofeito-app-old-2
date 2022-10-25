@@ -26,6 +26,7 @@ export const EditSection = ({ section }: IEditSectionProps) => {
   };
 
   const sectionNameInputRef = useRef<HTMLInputElement>(null);
+
   const createNewSectionOnKeyEnterInputSectionName = onKeyUpEnter(
     sendEditedSection,
     sectionNameInputRef

@@ -67,7 +67,7 @@ export interface ITodo {
   date: Date;
   priority: number;
   project: IProject;
-  section: ISection | null;
+  section?: ISection;
   labels: ILabel[];
 
   isCompleted: boolean;
@@ -154,4 +154,15 @@ export interface ITodosStore {
   createLabel: (label: ILabel) => void;
   editLabel: (label: ILabel) => void;
   deleteLabel: (plabelsd: string) => void;
+}
+
+export interface IDimensions {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  top: number;
+  right: number;
+  bottom: number;
+  left: number;
 }

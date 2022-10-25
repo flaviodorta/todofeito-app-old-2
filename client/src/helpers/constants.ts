@@ -1,3 +1,5 @@
+import { IProject } from './types';
+
 export const labelColors = [
   'fill-red-500',
   'fill-orange-500',
@@ -36,4 +38,13 @@ export const selectColors = {
   fuchsia: 'bg-fuchsia-600',
   pink: 'bg-pink-600',
   rose: 'bg-rose-600',
+};
+
+export const inboxProject: IProject = {
+  id: 'inbox',
+  name: 'Inbox',
+  color: {
+    name: 'Blue',
+    class: 'fill-blue-600',
+  },
 };

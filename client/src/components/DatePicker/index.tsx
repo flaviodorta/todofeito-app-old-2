@@ -9,7 +9,7 @@ import {
   getYearNumber,
   sortDaysByWeekOrder,
 } from '../../helpers/functions';
-import { ICalendarState, IDay, IMonth } from '../../helpers/types';
+import { ICalendarState, IDay, IDimensions, IMonth } from '../../helpers/types';
 import { Backdrop } from '../Backdrop';
 import { Month } from './Month';
 
@@ -18,11 +18,15 @@ interface IDatePickerProps {
   inputedDate: Date;
   setDate: (date: Date) => void;
   closeSelect: () => void;
+  sizes: IDimensions;
 }
 
-export const DatePicker = (props: IDatePickerProps): JSX.Element => {
-  const { closeSelect, inputedDate, setDate } = props;
-
+export const DatePicker = ({
+  closeSelect,
+  inputedDate,
+  setDate,
+  sizes,
+}: IDatePickerProps): JSX.Element => {
   const today = new Date();
   const currentYear = getYearNumber(today);
   const currentDay: IDay = {
@@ -164,11 +168,13 @@ export const DatePicker = (props: IDatePickerProps): JSX.Element => {
     });
 
   return (
-    <>
-      <Backdrop close={closeSelect} className={`z-[9000] bg-black/50`} />
-
+    <Backdrop close={closeSelect} className='z-[2000] bg-black/50'>
       <div
-        className={`${props.className} absolute w-60 h-fit z-[10000] date-picker-container shadow-3xl`}
+        style={{
+          left: sizes.left + sizes.width / 2,
+          top: sizes.top + sizes.height,
+        }}
+        className='fixed z-[2001] -translate-x-1/2 w-60 h-fit text-xs bg-white border-[1px] border-gray-100 shadow-3xl'
       >
         <div className='p-3'>
           <div className='flex items-center justify-between'>
@@ -215,6 +221,6 @@ export const DatePicker = (props: IDatePickerProps): JSX.Element => {
           />
         </div>
       </div>
-    </>
+    </Backdrop>
   );
 };

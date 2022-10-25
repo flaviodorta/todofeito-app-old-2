@@ -2,7 +2,7 @@
 
 import { Fragment, useState } from 'react';
 import { useTodosStore } from '../../zustand';
-import { ILabel } from '../../helpers/types';
+import { IDimensions, ILabel } from '../../helpers/types';
 import { Backdrop } from '../Backdrop';
 import { LabelIcon } from '../Icons';
 
@@ -56,18 +56,27 @@ interface ISelectLabelProps {
   addLabel: (label: ILabel) => void;
   deleteLabel: (label: ILabel) => void;
   closeSelect: () => void;
+  sizes: IDimensions;
 }
 
-export const SelectLabel = (props: ISelectLabelProps) => {
-  const { inputedLabels, addLabel, deleteLabel, closeSelect } = props;
-
+export const SelectLabel = ({
+  inputedLabels,
+  addLabel,
+  deleteLabel,
+  closeSelect,
+  sizes,
+}: ISelectLabelProps) => {
   const { getLabels } = useTodosStore();
 
   return (
-    <>
-      <Backdrop close={closeSelect} className='z-[6000]' />
-
-      <div className='top-9 absolute -translate-x-1/4 md:translate-x-0 shadow-3xl border-[1px] border-gray-200 overflow-hidden z-[6001] rounded-sm min-w-[140px] bg-white'>
+    <Backdrop close={closeSelect} className='z-[2000]'>
+      <div
+        style={{
+          left: sizes.left + sizes.width / 2,
+          top: sizes.top + sizes.height,
+        }}
+        className='fixed -translate-x-1/2 z-[2001] shadow-3xl border-[1px] border-gray-200 overflow-hidden rounded-sm min-w-[140px] bg-white'
+      >
         <div className='h-fit'>
           <input
             placeholder='Type a label'
@@ -95,6 +104,6 @@ export const SelectLabel = (props: ISelectLabelProps) => {
           )}
         </div>
       </div>
-    </>
+    </Backdrop>
   );
 };

@@ -16,27 +16,32 @@ import { DatePicker } from './DatePicker';
 import { SelectProject } from './Selects/SelectProject';
 import { SelectLabel } from './Selects/SelectLabel';
 import { SelectPriority } from './Selects/SelectPriority';
-import { labelColors, labelHoverColors } from '../helpers/constants';
+import {
+  inboxProject,
+  labelColors,
+  labelHoverColors,
+} from '../helpers/constants';
 import { IRenderableElements } from '../helpers/types';
 import { useUIStore, useTodosStore } from '../zustand';
 import { nanoid } from 'nanoid';
 import { ILabel, IProject, ISection, ITodo } from '../helpers/types';
+import { useDimensions } from '../hooks/useDimensions';
 
 interface IAddTodoItemProps {
-  project: IProject;
-  section: ISection | null;
+  project?: IProject;
+  section?: ISection;
 }
 
 export const AddTodo = (props: IAddTodoItemProps) => {
   const { project, section } = props;
   const { addTodo } = useTodosStore();
 
-  const { setTodoInputOpenById: setInputOpenById } = useUIStore();
+  const { setTodoInputOpenById } = useUIStore();
 
   const [inputs, setInputs] = useState({
     title: '',
     description: '',
-    project: project,
+    project: project ? project : inboxProject,
     priority: 4,
     date: new Date(),
     labels: [] as ILabel[],
@@ -46,7 +51,10 @@ export const AddTodo = (props: IAddTodoItemProps) => {
     useState<IRenderableElements>(null);
 
   // centerlize select
-  const dueDateRef = useRef<HTMLDivElement>(null);
+  const [dueDateSizes, dueDateRef] = useDimensions();
+  const [projectsSizes, projectsRef] = useDimensions();
+  const [labelsSizes, labelsRef] = useDimensions();
+  const [prioritySizes, priorityRef] = useDimensions();
 
   const addLabel = (label: ILabel) =>
     setInputs((state) => ({
@@ -66,7 +74,7 @@ export const AddTodo = (props: IAddTodoItemProps) => {
     setInputs((state) => ({
       title: '',
       description: '',
-      project: project,
+      project: inboxProject,
       priority: 4,
       date: new Date(),
       labels: [] as ILabel[],
@@ -87,35 +95,30 @@ export const AddTodo = (props: IAddTodoItemProps) => {
     isCompleted: false,
   };
 
+  const close = () => setTodoInputOpenById(null);
+
   const sendNewTodo = () => {
     if (!inputs.title) return;
 
     addTodo(todo);
 
     resetInputs();
-
-    setInputOpenById(null);
+    //close();
   };
-
-  const close = () => setInputOpenById(null);
 
   const closeSelect = () => setRenderedSelect(null);
 
-  const openDatePicker = () => {
-    if (!renderedSelect) setRenderedSelect('date-picker');
-  };
+  const openDatePicker = () =>
+    !renderedSelect ? setRenderedSelect('date-picker') : undefined;
 
-  const openProjectSelect = () => {
-    if (!renderedSelect) setRenderedSelect('project-select');
-  };
+  const openProjectSelect = () =>
+    !renderedSelect ? setRenderedSelect('project-select') : undefined;
 
-  const openLabelsSelect = () => {
-    if (!renderedSelect) setRenderedSelect('label-select');
-  };
+  const openLabelsSelect = () =>
+    !renderedSelect ? setRenderedSelect('label-select') : undefined;
 
-  const openPrioritySelect = () => {
-    if (!renderedSelect) setRenderedSelect('priority-select');
-  };
+  const openPrioritySelect = () =>
+    !renderedSelect ? setRenderedSelect('priority-select') : undefined;
 
   const setTitle = (title: string) =>
     setInputs((state) => ({ ...state, title }));
@@ -193,8 +196,8 @@ export const AddTodo = (props: IAddTodoItemProps) => {
             {/* select date */}
             <div className='flex gap-2 flex-wrap'>
               <div
-                onClick={openDatePicker}
                 ref={dueDateRef}
+                onClick={openDatePicker}
                 className={`${
                   renderedSelect === 'date-picker'
                     ? 'bg-gray-200 cursor-default'
@@ -219,12 +222,14 @@ export const AddTodo = (props: IAddTodoItemProps) => {
                     setDate={setDate}
                     closeSelect={closeSelect}
                     className='left-24 sm:left-24'
+                    sizes={dueDateSizes}
                   />
                 )}
               </div>
 
               {/* project select */}
               <div
+                ref={projectsRef}
                 onClick={openProjectSelect}
                 className={`${
                   renderedSelect === 'project-select'
@@ -247,6 +252,7 @@ export const AddTodo = (props: IAddTodoItemProps) => {
                     inputedProject={inputs.project}
                     setProject={setProject}
                     closeSelect={closeSelect}
+                    sizes={projectsSizes}
                   />
                 )}
               </div>
@@ -256,6 +262,7 @@ export const AddTodo = (props: IAddTodoItemProps) => {
             <div className='flex gap-2'>
               {/* label select */}
               <div
+                ref={labelsRef}
                 onClick={openLabelsSelect}
                 className={`${
                   renderedSelect === 'label-select'
@@ -275,12 +282,14 @@ export const AddTodo = (props: IAddTodoItemProps) => {
                     addLabel={addLabel}
                     deleteLabel={deleteLabel}
                     closeSelect={closeSelect}
+                    sizes={labelsSizes}
                   />
                 )}
               </div>
 
               {/* priority select */}
               <div
+                ref={priorityRef}
                 onClick={openPrioritySelect}
                 className={`${
                   renderedSelect === 'priority-select'
@@ -301,6 +310,7 @@ export const AddTodo = (props: IAddTodoItemProps) => {
                     inputedPriority={inputs.priority}
                     setPriority={setPriority}
                     closeSelect={closeSelect}
+                    sizes={prioritySizes}
                   />
                 )}
               </div>

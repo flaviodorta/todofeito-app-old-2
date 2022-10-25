@@ -82,12 +82,11 @@ export const Sidebar = (props: ISidebarProps) => {
 
   return (
     <>
-      {isSidebarOpen && (
+      {isSidebarOpen && isMobile && (
         <Backdrop
+          elementId='layout'
           close={toggleSidebar}
-          className={`${
-            isMobile ? 'z-40' : 'z-10 bg-black/50 md:hidden'
-          } duration-150 `}
+          className='bg-black/50 md:hidden z-[20]'
         />
       )}
 
@@ -117,7 +116,7 @@ export const Sidebar = (props: ISidebarProps) => {
           duration: 0.35,
           ease: 'easeInOut',
         }}
-        className={`z-[50] fixed top-12 pt-6 pl-12 pr-1 w-[306px] h-screen bg-gray-100`}
+        className={`z-[40] fixed top-12 pt-6 pl-12 pr-1 w-[306px] h-screen bg-gray-100`}
       >
         <div className='w-full flex flex-col mb-6'>
           <div
@@ -206,7 +205,7 @@ export const Sidebar = (props: ISidebarProps) => {
                   onClick={() => navigate(`/${p.name}`)}
                   className={`${
                     isSidebarProjectsOpen ? 'hover:bg-gray-200' : ''
-                  } relative  group h-fit rounded-md p-1.5 w-full`}
+                  } relative group h-fit rounded-md p-1.5 w-full`}
                 >
                   <motion.div
                     variants={project}

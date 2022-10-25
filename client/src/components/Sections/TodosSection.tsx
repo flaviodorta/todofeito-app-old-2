@@ -109,10 +109,10 @@ export const TodosSection = ({ section, draggableProvided }: ITodosSection) => {
       </div>
 
       {/* options dropdown */}
-      <div className='sticky -translate-y-6 top-[116px] z-[3]'>
+      <div className='sticky top-[116px] z-[1000]'>
         <span
           onClick={toggleOptionsDropdown}
-          className='group absolute top-0 right-0 z-[51] flex-center w-6 h-6 cursor-pointer rounded-sm hover:bg-gray-200'
+          className='group absolute top-0 right-0 z-[1000] flex-center w-6 h-6 cursor-pointer rounded-sm hover:bg-gray-200'
         >
           <MoreThreeDotsIcon className='hover:bg-gray-200 hover:fill-gray-600 duration-100 transition-all fill-gray-400' />
 

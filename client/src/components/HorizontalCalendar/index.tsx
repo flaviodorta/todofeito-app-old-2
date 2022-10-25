@@ -9,6 +9,7 @@ import { Day } from './Day';
 import { addDays, isEqual } from 'date-fns';
 import { ChevronIcon } from '../Icons';
 import { DatePicker } from '../DatePicker';
+import { useDimensions } from '../../hooks/useDimensions';
 
 export const HorizontalCalendar = ({
   inputedDate,
@@ -21,6 +22,8 @@ export const HorizontalCalendar = ({
 
   const [renderedSelect, setRenderedSelect] =
     useState<IRenderableElements>(null);
+
+  const [dueDateSizes, dueDateRef] = useDimensions();
 
   const [weekDays, setWeekDays] = useState<Date[]>(getWeekDays(inputedDate));
 
@@ -55,6 +58,7 @@ export const HorizontalCalendar = ({
     <div className='w-full h-fit flex flex-col gap-2'>
       <div className='w-full flex items-center justify-between'>
         <div
+          ref={dueDateRef}
           onClick={openDatePicker}
           className={`${
             renderedSelect ? 'cursor-default' : 'cursor-pointer'
@@ -71,7 +75,7 @@ export const HorizontalCalendar = ({
               inputedDate={inputedDate}
               setDate={setDate}
               closeSelect={closeSelect}
-              className='left-24 sm:left-8'
+              sizes={dueDateSizes}
             />
           )}
         </div>

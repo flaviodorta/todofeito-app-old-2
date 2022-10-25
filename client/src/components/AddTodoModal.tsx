@@ -12,13 +12,18 @@ import { DatePicker } from './DatePicker';
 import { SelectProject } from './Selects/SelectProject';
 import { SelectLabel } from './Selects/SelectLabel';
 import { SelectPriority } from './Selects/SelectPriority';
-import { labelColors, labelHoverColors } from '../helpers/constants';
+import {
+  inboxProject,
+  labelColors,
+  labelHoverColors,
+} from '../helpers/constants';
 import { ILabel, IProject, IRenderableElements, ITodo } from '../helpers/types';
 import { Backdrop } from './Backdrop';
 import { motion } from 'framer-motion';
 import { addTodoModal } from '../helpers/variants';
 import { nanoid } from 'nanoid';
 import { useTodosStore } from '../zustand';
+import { useDimensions } from '../hooks/useDimensions';
 
 interface IAddTodoModalProps {
   closeAddTodoModal: () => void;
@@ -32,14 +37,7 @@ export const AddTodoModal = (props: IAddTodoModalProps) => {
   const [inputs, setInputs] = useState({
     title: '',
     description: '',
-    project: {
-      id: 'inbox',
-      name: 'Inbox',
-      color: {
-        name: 'Blue',
-        class: 'fill-blue-600',
-      },
-    },
+    project: inboxProject,
     priority: 4,
     date: new Date(),
     labels: [] as ILabel[],
@@ -50,6 +48,11 @@ export const AddTodoModal = (props: IAddTodoModalProps) => {
 
   // centerlize select
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  const [dueDateSizes, dueDateRef] = useDimensions();
+  const [projectsSizes, projectsRef] = useDimensions();
+  const [labelsSizes, labelsRef] = useDimensions();
+  const [prioritySizes, priorityRef] = useDimensions();
 
   const addLabel = (label: ILabel) =>
     setInputs((state) => ({
@@ -74,7 +77,6 @@ export const AddTodoModal = (props: IAddTodoModalProps) => {
     labels: inputs.labels,
     priority: inputs.priority,
     project: inputs.project,
-    section: null,
 
     isCompleted: false,
   };
@@ -84,28 +86,22 @@ export const AddTodoModal = (props: IAddTodoModalProps) => {
 
     addTodo(todo);
 
-    // resetInputs();
-
     closeAddTodoModal();
   };
 
   const closeSelect = () => setRenderedSelect(null);
 
-  const openDatePicker = () => {
-    if (!renderedSelect) setRenderedSelect('date-picker');
-  };
+  const openDatePicker = () =>
+    !renderedSelect ? setRenderedSelect('date-picker') : undefined;
 
-  const openProjectSelect = () => {
-    if (!renderedSelect) setRenderedSelect('project-select');
-  };
+  const openProjectSelect = () =>
+    !renderedSelect ? setRenderedSelect('project-select') : undefined;
 
-  const openLabelsSelect = () => {
-    if (!renderedSelect) setRenderedSelect('label-select');
-  };
+  const openLabelsSelect = () =>
+    !renderedSelect ? setRenderedSelect('label-select') : undefined;
 
-  const openPrioritySelect = () => {
-    if (!renderedSelect) setRenderedSelect('priority-select');
-  };
+  const openPrioritySelect = () =>
+    !renderedSelect ? setRenderedSelect('priority-select') : undefined;
 
   const setTitle = (title: string) =>
     setInputs((state) => ({ ...state, title }));
@@ -144,9 +140,7 @@ export const AddTodoModal = (props: IAddTodoModalProps) => {
   }, []);
 
   return (
-    <>
-      <Backdrop close={closeAddTodoModal} className='z-[1000]' />
-
+    <Backdrop close={closeAddTodoModal} className='z-[1000]'>
       <motion.div
         variants={addTodoModal}
         initial='initial'
@@ -188,6 +182,7 @@ export const AddTodoModal = (props: IAddTodoModalProps) => {
           <div className='flex gap-2 flex-wrap'>
             {/* select date */}
             <div
+              ref={dueDateRef}
               onClick={openDatePicker}
               className={`${
                 renderedSelect === 'date-picker'
@@ -213,12 +208,14 @@ export const AddTodoModal = (props: IAddTodoModalProps) => {
                   setDate={setDate}
                   closeSelect={closeSelect}
                   className='left-28 sm:left-8'
+                  sizes={dueDateSizes}
                 />
               )}
             </div>
 
             {/* select project */}
             <div
+              ref={projectsRef}
               onClick={openProjectSelect}
               className={`${
                 renderedSelect === 'project-select'
@@ -240,6 +237,7 @@ export const AddTodoModal = (props: IAddTodoModalProps) => {
                   inputedProject={inputs.project}
                   setProject={setProject}
                   closeSelect={closeSelect}
+                  sizes={projectsSizes}
                 />
               )}
             </div>
@@ -249,6 +247,7 @@ export const AddTodoModal = (props: IAddTodoModalProps) => {
           <div className='flex gap-2'>
             {/* label select */}
             <div
+              ref={labelsRef}
               onClick={openLabelsSelect}
               className={`${
                 renderedSelect === 'label-select'
@@ -268,12 +267,14 @@ export const AddTodoModal = (props: IAddTodoModalProps) => {
                   addLabel={addLabel}
                   deleteLabel={deleteLabel}
                   closeSelect={closeSelect}
+                  sizes={labelsSizes}
                 />
               )}
             </div>
 
             {/* priority select */}
             <div
+              ref={priorityRef}
               onClick={openPrioritySelect}
               className={`${
                 renderedSelect === 'priority-select'
@@ -294,6 +295,7 @@ export const AddTodoModal = (props: IAddTodoModalProps) => {
                   inputedPriority={inputs.priority}
                   setPriority={setPriority}
                   closeSelect={closeSelect}
+                  sizes={prioritySizes}
                 />
               )}
             </div>
@@ -321,6 +323,6 @@ export const AddTodoModal = (props: IAddTodoModalProps) => {
           </button>
         </div>
       </motion.div>
-    </>
+    </Backdrop>
   );
 };

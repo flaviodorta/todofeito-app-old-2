@@ -33,47 +33,45 @@ export const TodosList = ({ todos, setTodos }: ITodosListProps) => {
   };
 
   return (
-    <div className='mb-4'>
-      <DragDropContext onDragEnd={onDragEnd}>
-        <Droppable droppableId='tasks'>
-          {(droppableProvided, droppableSnapshot) => (
-            <div
-              ref={droppableProvided.innerRef}
-              {...droppableProvided.droppableProps}
-              className='relative flex flex-col'
-            >
-              {todos.map((todo, i) => (
-                <Draggable key={todo.id} draggableId={todo.id} index={i}>
-                  {(draggableProvided, draggableSnapshot) => (
-                    <div
-                      ref={draggableProvided.innerRef}
-                      {...draggableProvided.draggableProps}
-                      style={
-                        draggableProvided.draggableProps
-                          .style as React.CSSProperties
-                      }
-                    >
-                      {inputOpenById === todo.id ? (
-                        <div className='w-full h-60'>
-                          <EditTodo todo={todo} />
-                        </div>
-                      ) : (
-                        <TodoItem
-                          todo={todo}
-                          draggableProvided={draggableProvided}
-                          draggableSnapshot={draggableSnapshot}
-                        />
-                      )}
-                    </div>
-                  )}
-                </Draggable>
-              ))}
+    <DragDropContext onDragEnd={onDragEnd}>
+      <Droppable droppableId='tasks'>
+        {(droppableProvided, droppableSnapshot) => (
+          <div
+            ref={droppableProvided.innerRef}
+            {...droppableProvided.droppableProps}
+            className='relative flex flex-col'
+          >
+            {todos.map((todo, i) => (
+              <Draggable key={todo.id} draggableId={todo.id} index={i}>
+                {(draggableProvided, draggableSnapshot) => (
+                  <div
+                    ref={draggableProvided.innerRef}
+                    {...draggableProvided.draggableProps}
+                    style={
+                      draggableProvided.draggableProps
+                        .style as React.CSSProperties
+                    }
+                  >
+                    {inputOpenById === todo.id ? (
+                      <div className='w-full h-60'>
+                        <EditTodo todo={todo} />
+                      </div>
+                    ) : (
+                      <TodoItem
+                        todo={todo}
+                        draggableProvided={draggableProvided}
+                        draggableSnapshot={draggableSnapshot}
+                      />
+                    )}
+                  </div>
+                )}
+              </Draggable>
+            ))}
 
-              {droppableProvided.placeholder}
-            </div>
-          )}
-        </Droppable>
-      </DragDropContext>
-    </div>
+            {droppableProvided.placeholder}
+          </div>
+        )}
+      </Droppable>
+    </DragDropContext>
   );
 };

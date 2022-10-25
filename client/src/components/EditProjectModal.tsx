@@ -7,6 +7,7 @@ import { useOnClickOutside } from '../hooks/useOnClickOutside';
 import { onKeyUpEnter } from '../helpers/functions';
 import { IProject } from '../helpers/types';
 import { motion } from 'framer-motion';
+import { useDimensions } from '../hooks/useDimensions';
 
 interface IEditProjectModalProps {
   project: IProject;
@@ -65,17 +66,14 @@ export const EditProjectModal = ({
 
   useOnClickOutside(selectColorRef, unfocusSelectColorInput);
 
+  const [selectColorSizes, selectColorRef2] = useDimensions();
+
   useEffect(() => {
     projectNameInputRef?.current?.focus();
   }, []);
 
   return (
-    <>
-      <Backdrop
-        close={closeEditProjectModalOpen}
-        className='bg-black/50 z-90'
-      />
-
+    <Backdrop close={closeEditProjectModalOpen} className='bg-black/50 z-90'>
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -117,35 +115,42 @@ export const EditProjectModal = ({
             <label htmlFor='project-color' className='text-sm font-medium'>
               Color
             </label>
-            <div
-              ref={selectColorRef}
-              onClick={toggleSelectColor}
-              className={`outline-none flex h-7 rounded-[3px] py-1  ${
-                isSelectColorOpen ? 'border-gray-400' : 'border-gray-300'
-              } ${
-                isSelectColorInputFocused ? 'border-gray-400' : ''
-              } border-[1px] duration-150 transition-all`}
-            >
-              {inputs && (
-                <>
-                  <span className='flex items-center justify-center px-2'>
-                    <span
-                      className={`w-3 h-3 ${inputs.color.class} rounded-full`}
-                    />
-                  </span>
-                  <span className='flex cursor-pointer w-full capitalize whitespace-nowrap justify-between items-center pl-1 pr-2 py-1.5 justify-self-start text-sm'>
-                    <span className='mr-2 capitalize'>{inputs.color.name}</span>
-                  </span>
-                </>
+
+            <div ref={selectColorRef2}>
+              <div
+                ref={selectColorRef}
+                onClick={toggleSelectColor}
+                className={`outline-none flex h-7 rounded-[3px] py-1  ${
+                  isSelectColorOpen ? 'border-gray-400' : 'border-gray-300'
+                } ${
+                  isSelectColorInputFocused ? 'border-gray-400' : ''
+                } border-[1px] duration-150 transition-all`}
+              >
+                {inputs && (
+                  <>
+                    <span className='flex items-center justify-center px-2'>
+                      <span
+                        className={`w-3 h-3 ${inputs.color.class} rounded-full`}
+                      />
+                    </span>
+                    <span className='flex cursor-pointer w-full capitalize whitespace-nowrap justify-between items-center pl-1 pr-2 py-1.5 justify-self-start text-sm'>
+                      <span className='mr-2 capitalize'>
+                        {inputs.color.name}
+                      </span>
+                    </span>
+                  </>
+                )}
+              </div>
+
+              {isSelectColorOpen && (
+                <SelectColor
+                  inputedColor={inputs.color}
+                  setColor={setColor}
+                  closeSelect={toggleSelectColor}
+                  sizes={selectColorSizes}
+                />
               )}
             </div>
-            {isSelectColorOpen && (
-              <SelectColor
-                inputedColor={inputs.color}
-                setColor={setColor}
-                closeSelect={toggleSelectColor}
-              />
-            )}
           </form>
 
           <div className='flex justify-end gap-2'>
@@ -173,6 +178,6 @@ export const EditProjectModal = ({
           </div>
         </div>
       </motion.div>
-    </>
+    </Backdrop>
   );
 };

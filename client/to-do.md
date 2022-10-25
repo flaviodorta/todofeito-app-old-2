@@ -23,16 +23,15 @@
 
 # to do
 
-- fix add todo in upcomign sections
+- change modal and selects to Portal to fix z-index issues
+- fix add todo in upcoming sections
 - create labels and projects content
 - add labels function
 - limits chars input
 - make todos dragglable between sections
 - user settings modal
 - add i18n
-
 - search todo
-
 - add persist to zustand
 - add sidebar resizable (react-resizable)
 - fix todo list placeholder

@@ -13,6 +13,7 @@ import { DraggableProvided, DraggableStateSnapshot } from 'react-beautiful-dnd';
 import { useEventListener } from '../hooks/useEventListener';
 import { getDayNumberInMonth, getMonthName } from '../helpers/functions';
 import { isToday } from 'date-fns';
+import { useDimensions } from '../hooks/useDimensions';
 
 type ITodoItem = {
   todo: ITodo;
@@ -34,6 +35,9 @@ export const TodoItem = ({
 
   const [renderedSelect, setRenderedSelect] =
     useState<IRenderableElements>(null);
+
+  const [dueDateSizes, dueDateRef] = useDimensions();
+  // const [projectsSizes, projectsRef] = useDimensions();
 
   const openDatePicker = () => {
     if (!renderedSelect) setRenderedSelect('date-picker');
@@ -123,6 +127,7 @@ export const TodoItem = ({
 
       <div className='w-full gap-1 flex pt-2 justify-between items-center h-fit text-xs color-gray-400'>
         <div
+          ref={dueDateRef}
           onClick={openDatePicker}
           className={`${
             renderedSelect === 'date-picker'
@@ -148,6 +153,7 @@ export const TodoItem = ({
               closeSelect={closeSelect}
               inputedDate={date}
               setDate={setDate}
+              sizes={dueDateSizes}
             />
           )}
         </div>

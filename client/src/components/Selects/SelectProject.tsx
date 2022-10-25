@@ -1,5 +1,5 @@
 import { Fragment } from 'react';
-import { IProject } from '../../helpers/types';
+import { IDimensions, IProject } from '../../helpers/types';
 import { useTodosStore } from '../../zustand';
 import { Backdrop } from '../Backdrop';
 
@@ -43,16 +43,26 @@ interface ISelectProjectProps {
   inputedProject: IProject;
   setProject: (project: IProject) => void;
   closeSelect: () => void;
+  sizes: IDimensions;
 }
 
-export const SelectProject = (props: ISelectProjectProps) => {
-  const { inputedProject, setProject, closeSelect } = props;
+export const SelectProject = ({
+  inputedProject,
+  setProject,
+  closeSelect,
+  sizes,
+}: ISelectProjectProps) => {
   const { getProjects } = useTodosStore();
 
   return (
-    <>
-      <Backdrop close={closeSelect} className='z-[2000]' />
-      <div className='top-9 -translate-x-1/4 absolute shadow-3xl border-[1px] border-gray-200 overflow-hidden z-[2001] rounded-sm w-fit h-fit bg-white'>
+    <Backdrop close={closeSelect} className='z-[2000]'>
+      <div
+        style={{
+          left: sizes.left + sizes.width / 2,
+          top: sizes.top + 48,
+        }}
+        className='fixed -translate-x-1/2 z-[2001] shadow-3xl border-[1px] border-gray-200 overflow-hidden rounded-sm w-fit h-fit bg-white'
+      >
         <div className='h-fit'>
           <input
             placeholder='Type a project'
@@ -73,6 +83,6 @@ export const SelectProject = (props: ISelectProjectProps) => {
           ))}
         </div>
       </div>
-    </>
+    </Backdrop>
   );
 };

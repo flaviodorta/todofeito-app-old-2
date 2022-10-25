@@ -19,14 +19,11 @@ import { AnimatePresence } from 'framer-motion';
 import { AddTodoModal } from './AddTodoModal';
 import { useToggle } from '../hooks/useToggle';
 
-export type INavbarButtonClicked = '' | 'user-icon';
-
-interface INavbarProps {}
-
-export const Navbar = (props: INavbarProps) => {
+export const Navbar = () => {
   const { fullName, email } = useUserStore();
-  const [buttonClicked, setButtonClicked] = useState<INavbarButtonClicked>('');
-  const { isSidebarOpen, toggleSidebar } = useUIStore();
+  const [buttonClicked, setButtonClicked] = useState('');
+  const { labelShowById, isSidebarOpen, toggleSidebar, setLabelShowById } =
+    useUIStore();
   const navigate = useNavigate();
 
   const fullNameSplitted = fullName.split(' ');
@@ -36,7 +33,7 @@ export const Navbar = (props: INavbarProps) => {
   const firstLetterOfLastName =
     fullNameSplitted[fullNameSplitted.length - 1][0];
 
-  const onClickNavbarButton = (buttonClicked: INavbarButtonClicked) =>
+  const onClickNavbarButton = (buttonClicked: string) =>
     setButtonClicked(buttonClicked);
 
   const [sidebarIconSizes, sidebarIconRef] = useDimensions();
@@ -59,7 +56,7 @@ export const Navbar = (props: INavbarProps) => {
     closeSidebar();
   };
 
-  const isMinorThanLargeScreen = width < 1024;
+  const isScreenMinorThanMedium = width < 768 || isMobile;
 
   const [isAddTodoModalOpen, toggleAddTodoModal] = useToggle(false);
 
@@ -71,52 +68,53 @@ export const Navbar = (props: INavbarProps) => {
         )}
       </AnimatePresence>
 
-      <nav
-        className={`
-      ${
-        isSidebarOpen && (isMobile || isMinorThanLargeScreen)
-          ? 'fixed z-[1000]'
-          : !isSidebarOpen && (isMobile || isMinorThanLargeScreen)
-          ? 'fixed z-[0]'
-          : isSidebarOpen && !isMobile
-          ? 'fixed z-[1000] md:static md:z-0'
-          : 'z-0'
-      }
-      w-screen h-12 bg-blue-600 flex justify-between items-center px-2 md:px-10`}
-      >
+      <nav className='z-[50] fixed w-screen h-12 bg-blue-600 flex justify-between items-center px-2 md:px-10'>
         <div className='navbar-buttons-wrapper'>
           {/* sidebar icon */}
           <button
             ref={sidebarIconRef}
             onClick={toggleSidebar}
+            onMouseEnter={() => setLabelShowById('sidebar-icon')}
+            onMouseLeave={() => setLabelShowById(null)}
             className='group navbar-button group'
           >
             <SidebarIcon className='navbar-icon' />
-            <Label
-              style={{
-                left: sidebarIconSizes.left + sidebarIconSizes.width / 2,
-                top: sidebarIconSizes.top + 48,
-              }}
-              content={isSidebarOpen ? 'Close menu' : 'Open menu'}
-              className='hidden sm:group-hover:block '
-            />
+
+            {labelShowById === 'sidebar-icon' && (
+              <Label
+                style={{
+                  left:
+                    sidebarIconSizes.left +
+                    sidebarIconSizes.width / 2 +
+                    (isScreenMinorThanMedium ? 24 : 0),
+                  top: sidebarIconSizes.top + 48,
+                }}
+                content={isSidebarOpen ? 'Close menu' : 'Open menu'}
+                className=''
+              />
+            )}
           </button>
 
           {/* home icon */}
           <button
             ref={homeIconRef}
             onClick={() => goToPage('/inbox')}
+            onMouseEnter={() => setLabelShowById('home-icon')}
+            onMouseLeave={() => setLabelShowById(null)}
             className='group navbar-button group'
           >
             <HomeIcon className='navbar-icon w-[20px] h-[20px]' />
-            <Label
-              style={{
-                left: homeIconSizes.left + homeIconSizes.width / 2,
-                top: homeIconSizes.top + 48,
-              }}
-              content='Go to home'
-              className='hidden sm:group-hover:block '
-            />
+
+            {labelShowById === 'home-icon' && (
+              <Label
+                style={{
+                  left: homeIconSizes.left + homeIconSizes.width / 2,
+                  top: homeIconSizes.top + 48,
+                }}
+                content='Go to home'
+                className=''
+              />
+            )}
           </button>
 
           {/* search bar */}
@@ -128,17 +126,22 @@ export const Navbar = (props: INavbarProps) => {
           <button
             ref={addTodoIconRef}
             onClick={openAddTodoModal}
+            onMouseEnter={() => setLabelShowById('add-todo-icon')}
+            onMouseLeave={() => setLabelShowById(null)}
             className='group navbar-button group'
           >
             <AddTodoIcon className='navbar-icon' />
-            <Label
-              style={{
-                left: addTodoIconSizes.left + addTodoIconSizes.width / 2,
-                top: addTodoIconSizes.top + 48,
-              }}
-              content='Add todo'
-              className='hidden sm:group-hover:block'
-            />
+
+            {labelShowById === 'add-todo-icon' && (
+              <Label
+                style={{
+                  left: addTodoIconSizes.left + addTodoIconSizes.width / 2,
+                  top: addTodoIconSizes.top + 48,
+                }}
+                content='Add todo'
+                className=''
+              />
+            )}
           </button>
 
           {/* user icon */}
@@ -149,17 +152,23 @@ export const Navbar = (props: INavbarProps) => {
               onClickNavbarButton('user-icon');
               closeSidebar();
             }}
+            onMouseEnter={() => setLabelShowById('user-icon')}
+            onMouseLeave={() => setLabelShowById(null)}
             onBlur={() => onClickNavbarButton('')}
           >
             <UserIcon className='group navbar-icon' />
-            {buttonClicked !== 'user-icon' && (
+
+            {buttonClicked !== 'user-icon' && labelShowById === 'user-icon' && (
               <Label
                 style={{
-                  left: userIconSizes.left + userIconSizes.width / 2 - 10,
+                  left:
+                    userIconSizes.left +
+                    userIconSizes.width / 2 +
+                    (isScreenMinorThanMedium ? -38 : -10),
                   top: userIconSizes.top + 48,
                 }}
                 content='Open profile menu'
-                className='hidden sm:group-hover:block  -left-1'
+                className='-left-1'
               />
             )}
             {/* dropdow user icon */}
