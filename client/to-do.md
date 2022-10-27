@@ -22,16 +22,17 @@
 - fix create project exit modal
 - change modal and selects to Portal to fix z-index issues
 - fix add todo in upcoming sections
+- memo upcoming sections
 
 # to do
 
-- memo upcoming sections
-
-- calcule width scrollbar to margin content
-- useRatio to update date in horizontal calendar
 - create labels and projects content
 - add labels function
 - limits chars input
+
+- calcule width scrollbar to margin content
+- useRatio to update date in horizontal calendar
+
 - make todos dragglable between sections
 - user settings modal
 - add i18n
@@ -43,5 +44,3 @@
 - refactor server
 - connect server with front end
 - create login page
-
-- useScrollRatio to take element position

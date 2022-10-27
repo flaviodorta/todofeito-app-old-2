@@ -17,3 +17,4 @@ export { CalendarDaysSolidIcon } from './Icons/CalendarDaysSolidIcon';
 export { ChevronIcon } from './Icons/ChevronIcon';
 export { TrashSolidIcon } from './Icons/TrashSolidIcon';
 export { MoreThreeDotsIcon } from './Icons/MoreThreeDotsIcon';
+export { ArrowLeftLongSolidIcon } from './Icons/ArrowLeftLongSolidIcon';

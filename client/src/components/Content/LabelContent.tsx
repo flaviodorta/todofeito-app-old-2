@@ -1,18 +1,21 @@
+import { omit } from 'lodash';
 import { nanoid } from 'nanoid';
 import { useCallback, useMemo, useRef, useState } from 'react';
-import { IProject, ITodo } from '../../helpers/types';
+import { Link, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+import { ILabel, IProject, ITodo } from '../../helpers/types';
 import { useUpdateState } from '../../hooks/useUpdateState';
 import { useTodosStore } from '../../zustand';
 import { AddSection } from '../AddSection';
 import { AddTodo } from '../AddTodo';
-import { PlusSolidIcon } from '../Icons';
+import { ArrowLeftLongSolidIcon, PlusSolidIcon } from '../Icons';
 import { SectionsList } from '../Lists/SectionsList';
 import { TodosList } from '../Lists/TodosList';
 import { ContentContainer } from './ContentContainer';
 
-export const InboxContent = () => {
+export const LabelContent = () => {
   const {
-    projects,
+    labels,
     sections,
     editTodo,
     completeTodo,
@@ -20,6 +23,11 @@ export const InboxContent = () => {
     deleteSection,
     setTodosByProject,
   } = useTodosStore();
+
+  const params = useParams();
+  const navigate = useNavigate();
+
+  console.log(params);
 
   const [todoInputOpenById, setTodoInputOpenById] = useState<string | null>(
     null
@@ -29,50 +37,42 @@ export const InboxContent = () => {
     string | null
   >(null);
 
+  const label = useMemo(
+    () => labels.filter((label) => label.id === params.labelId)[0],
+    [labels]
+  );
+
   const todos = useMemo(
     () =>
-      projects
-        .filter((project) => project.id === 'inbox')[0]
+      labels
+        .filter((label) => label.id === params.labelId)[0]
         .todos.filter((todo) => !todo.isCompleted && !todo.section),
-    [projects]
+    [labels]
   );
-
-  const [inboxSections, setSections] = useUpdateState(
-    sections.filter((section) => section.project.id === 'inbox'),
-    [sections]
-  );
-
-  const addSectionId = useRef(nanoid());
-
-  const openAddSection = () => setSectionInputOpenById(addSectionId.current);
 
   const id = nanoid();
   const addTodoId = useRef(id);
 
   const openAddTodo = () => setTodoInputOpenById(addTodoId.current);
 
-  const inboxProject: IProject = {
-    id: 'inbox',
-    name: 'Inbox',
-    color: {
-      name: 'Blue',
-      class: 'fill-blue-600',
-    },
-  };
+  const labelInfo: ILabel[] = [omit(label, 'todos')];
 
-  const setTodos = useCallback(
-    (todos: ITodo[]) => {
-      setTodosByProject({
-        ...inboxProject,
-        todos,
-      });
-    },
-    [projects]
-  );
+  const setTodos = useCallback((todos: ITodo[]) => {
+    setTodosByProject({
+      ...label,
+      todos,
+    });
+  }, []);
 
   const Heading = () => (
     <div className='flex items-center gap-2'>
-      <h2 className='font-bold text-xl'>Inbox</h2>
+      <button
+        onClick={() => navigate(-1)}
+        className='group relative h-7 w-7 flex items-center justify-center hover:bg-gray-200 duration-100'
+      >
+        <ArrowLeftLongSolidIcon className='fill-gray-400 group-hover:fill-gray-500 h-5 w-5' />
+      </button>
+      <h2 className='font-bold text-xl'>{label.name}</h2>
     </div>
   );
 
@@ -91,7 +91,7 @@ export const InboxContent = () => {
         <div className='mb-6'>
           {todoInputOpenById === addTodoId.current ? (
             <AddTodo
-              project={inboxProject}
+              labels={labelInfo}
               setTodoInputOpenById={setTodoInputOpenById}
               addTodo={addTodo}
             />
@@ -110,42 +110,6 @@ export const InboxContent = () => {
           )}
         </div>
       </div>
-
-      <div className='flex flex-col gap-1'>
-        {/* {sections.map((section) => ( */}
-        <SectionsList
-          sections={inboxSections}
-          setSections={setSections}
-          todoInputOpenById={todoInputOpenById}
-          sectionInputOpenById={sectionInputOpenById}
-          completeTodo={completeTodo}
-          addTodo={addTodo}
-          editTodo={editTodo}
-          setTodoInputOpenById={setTodoInputOpenById}
-          setSectionInputOpenById={setSectionInputOpenById}
-          deleteSection={deleteSection}
-        />
-        {/* ))} */}
-      </div>
-
-      {sections.length === 0 &&
-      sectionInputOpenById === addSectionId.current ? (
-        <AddSection previousSectionIndex={-1} project={inboxProject} />
-      ) : (
-        <div
-          onClick={openAddSection}
-          className='group opacity-0 hover:opacity-100 relative w-full flex items-center justify-center gap-2.5 h-fit cursor-pointer duration-200 ease-in transition-opacity'
-        >
-          <span
-            className={`${
-              sectionInputOpenById ? 'hidden' : 'block'
-            } font-medium text-md text-blue-600 z-10 px-2 bg-white`}
-          >
-            Add section
-          </span>
-          <span className='group absolute h-[1px] w-full top-1/2 left-0 rounded-full bg-blue-600' />
-        </div>
-      )}
     </ContentContainer>
   );
 };

@@ -22,7 +22,6 @@ import {
   labelHoverColors,
 } from '../helpers/constants';
 import { IRenderableElements } from '../helpers/types';
-// import { useUIStore, useTodosStore } from '../zustand';
 import { nanoid } from 'nanoid';
 import { ILabel, IProject, IInboxSection, ITodo } from '../helpers/types';
 import { useDimensions } from '../hooks/useDimensions';
@@ -32,6 +31,7 @@ interface IAddTodoItemProps {
   project?: IProject;
   section?: IInboxSection;
   date?: Date;
+  labels?: ILabel[];
   addTodo: (todo: ITodo) => void;
   setTodoInputOpenById: (id: string | null) => void;
 }
@@ -40,20 +40,17 @@ export const AddTodo = ({
   project,
   section,
   date,
+  labels,
   addTodo,
   setTodoInputOpenById,
 }: IAddTodoItemProps) => {
-  // const { addTodo } = useTodosStore();
-
-  // const { setTodoInputOpenById } = useUIStore();
-
   const [inputs, setInputs] = useState({
     title: '',
     description: '',
     project: project ? project : inboxProject,
     priority: 4,
     date: date ? date : new Date(),
-    labels: [] as ILabel[],
+    labels: labels ? labels : ([] as ILabel[]),
   });
 
   const [renderedSelect, setRenderedSelect] =
@@ -116,13 +113,11 @@ export const AddTodo = ({
   const sendNewTodo = () => {
     if (!inputs.title) return;
 
-    // addTodo(todo);
-    if (addTodo) addTodo(todo);
+    addTodo(todo);
 
     resetInputs();
 
     calcSizes();
-    //close();
   };
 
   const closeSelect = () => setRenderedSelect(null);
@@ -173,8 +168,6 @@ export const AddTodo = ({
   const { height } = useWindowSize();
 
   const canScroll = height - sizes.bottom < 0;
-
-  // console.log(dueDateSizes);
 
   useEffect(() => {
     if (!containerRef?.current) return;

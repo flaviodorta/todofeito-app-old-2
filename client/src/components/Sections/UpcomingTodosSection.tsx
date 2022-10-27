@@ -1,30 +1,13 @@
-// import { isEqual as isDateEqual, setDate } from 'date-fns';
 import { isEqual } from 'lodash';
 import { nanoid } from 'nanoid';
-import {
-  // forwardRef,
-  memo,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
-import {
-  // IProject,
-  // IUpcomingSection,
-  ITodosByDate,
-  ITodo,
-} from '../../helpers/types';
+import { memo, useEffect, useRef, useState } from 'react';
+import { ITodosByDate, ITodo } from '../../helpers/types';
 import { useToggle } from '../../hooks/useToggle';
-// import { useUpdateState } from '../../hooks/useUpdateState';
-// import { useTodosStore, useUIStore } from '../../zustand';
 import { AddTodo } from '../AddTodo';
-// import { EditTodo } from '../EditTodo';
 import { ChevronIcon, PlusSolidIcon } from '../Icons';
 import { TodosList } from '../Lists/TodosList';
 
 interface IUpcomingTodosSection {
-  // dates: ITodosByDate[];
   section: ITodosByDate;
   setTodosByDate: (date: ITodosByDate) => void;
   addTodo: (todo: ITodo) => void;
@@ -32,8 +15,6 @@ interface IUpcomingTodosSection {
   editTodo: (todo: ITodo) => void;
   setObserved: (el: HTMLDivElement | null, index: number) => void;
   index: number;
-  // todoInputOpenById: string | null;
-  // setTodoInputOpenById: (id: string | null) => void;
 }
 
 export const UpcomingTodosSectionMemoized = (props: IUpcomingTodosSection) => {
@@ -52,8 +33,6 @@ export const UpcomingTodosSectionMemoized = (props: IUpcomingTodosSection) => {
   const [todoInputOpenById, setTodoInputOpenById] = useState<string | null>(
     null
   );
-
-  console.log(section.todos);
 
   const todoInputId = useRef(nanoid());
 

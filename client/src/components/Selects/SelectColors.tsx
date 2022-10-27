@@ -100,8 +100,6 @@ export const SelectColor = ({
   const resize =
     resizeRight > 0 ? resizeRight + 10 : resizeLeft < 0 ? -resizeLeft + 10 : 0;
 
-  console.log(inputedColor);
-
   const [isSelectColorOpen, toggleSelectColor] = useToggle(false);
 
   const [isSelectColorInputFocused, setIsSelectColorInputFocus] =

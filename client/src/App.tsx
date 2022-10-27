@@ -5,6 +5,7 @@ import { TodayPage } from './pages/TodayPage';
 import { InboxPage } from './pages/InboxPage';
 import { UpcomingPage } from './pages/UpcomingPage';
 import { FiltersAndLabelsPage } from './pages/FiltersAndLabelsPage';
+import { LabelPage } from './pages/LabelPage';
 
 const queryClient = new QueryClient();
 
@@ -18,7 +19,7 @@ export default function App() {
             <Route path='/today' element={<TodayPage />} />
             <Route path='/upcoming' element={<UpcomingPage />} />
             <Route path='/filters-labels' element={<FiltersAndLabelsPage />} />
-            {/* <Route path='/filters-labels' element={<FiltersAndLabelsPage />} /> */}
+            <Route path='/filters-labels/:labelId' element={<LabelPage />} />
             <Route path='*' element={<InboxPage />} />
           </Routes>
         </BrowserRouter>

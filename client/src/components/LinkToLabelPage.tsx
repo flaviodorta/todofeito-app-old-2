@@ -4,12 +4,17 @@ import { ITodosByLabel } from '../helpers/types';
 interface ILinkToLabelPageProps {
   icon: React.ReactNode;
   label: ITodosByLabel;
+  showLabelPage: () => void;
 }
 
-export const LinkToLabelPage = ({ icon, label }: ILinkToLabelPageProps) => {
+export const LinkToLabelPage = ({
+  icon,
+  label,
+  showLabelPage,
+}: ILinkToLabelPageProps) => {
   return (
-    <Link to={label.id}>
-      <div className='cursor-pointer w-full h-10 flex items-center border-t-gray-500 border-b-gray-500 border-[1px]'>
+    <Link onClick={showLabelPage} to={label.id}>
+      <div className='cursor-pointer w-full h-10 flex items-center border-b-gray-300 border-b-[1px]'>
         <span className='p-2'>{icon}</span>
         <p>{label.name}</p>
       </div>
