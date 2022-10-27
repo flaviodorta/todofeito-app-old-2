@@ -67,14 +67,12 @@ export const Sidebar = () => {
           className='bg-black/50 md:hidden z-[20]'
         />
       )}
-
+      {/* 
       <AnimatePresence>
         {isCreateProjectModalOpen && (
-          <CreateProjectModal
-            closeCreateProjectModalOpen={toggleCreateProjectModalOpen}
-          />
+          <CreateProjectModal closeModal={toggleCreateProjectModalOpen} />
         )}
-      </AnimatePresence>
+      </AnimatePresence> */}
 
       <motion.div
         initial={false}
@@ -123,9 +121,9 @@ export const Sidebar = () => {
           </div>
 
           <div
-            onClick={() => goToPage('/labels')}
+            onClick={() => goToPage('/filters-labels')}
             className={`${
-              location.pathname === '/labels' ? 'bg-gray-200' : ''
+              location.pathname === '/filters-labels' ? 'bg-gray-200' : ''
             } w-full cursor-pointer hover:bg-gray-200 p-2 flex gap-3 items-center rounded-sm`}
           >
             <LabelIcon className='fill-violet-700' />

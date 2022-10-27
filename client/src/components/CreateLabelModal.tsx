@@ -1,23 +1,18 @@
 import { Backdrop } from './Backdrop';
 import { SelectColor } from './Selects/SelectColors';
 import { useTodosStore } from '../zustand';
-import { useToggle } from '../hooks/useToggle';
 import { useEffect, useRef, useState } from 'react';
-import { useOnClickOutside } from '../hooks/useOnClickOutside';
 import { onKeyUpEnter } from '../helpers/functions';
-import { IProject } from '../helpers/types';
+import { ILabel } from '../helpers/types';
 import { nanoid } from 'nanoid';
 import { motion } from 'framer-motion';
-import { useDimensions } from '../hooks/useDimensions';
 
-interface ICreateProjectModalProps {
+interface ICreateLabelModalProps {
   closeModal: () => void;
 }
 
-export const CreateProjectModal = ({
-  closeModal,
-}: ICreateProjectModalProps) => {
-  const { createProject } = useTodosStore();
+export const CreateLabelModal = ({ closeModal }: ICreateLabelModalProps) => {
+  const { createLabel } = useTodosStore();
 
   const [inputs, setInputs] = useState({
     name: '',
@@ -35,23 +30,24 @@ export const CreateProjectModal = ({
 
   const setName = (name: string) => setInputs((state) => ({ ...state, name }));
 
-  const createNewProject = () => {
+  const createNewLabel = () => {
     if (!inputs.name) return;
 
-    const project: IProject = {
+    const label: ILabel = {
       id: nanoid(),
       name: inputs.name,
       color: inputs.color,
     };
 
-    createProject(project);
+    createLabel(label);
 
     closeModal();
   };
 
   const projectNameInputRef = useRef<HTMLInputElement>(null);
+
   const createNewProjectOnKeyEnterInputProjectName = onKeyUpEnter(
-    createNewProject,
+    createNewLabel,
     projectNameInputRef
   );
 
@@ -69,7 +65,7 @@ export const CreateProjectModal = ({
         className='fixed left-1/2 top-40 w-[90%] sm:w-96 h-fit -translate-x-1/2 z-100 bg-white rounded-lg'
       >
         <div className='py-3 px-6 text-center'>
-          <span className='text-lg font-medium'>Add project</span>
+          <span className='text-lg font-medium'>Add label</span>
         </div>
 
         <hr className='border-gray-300' />
@@ -77,8 +73,8 @@ export const CreateProjectModal = ({
         <div className='py-5 px-6'>
           <form className='w-full flex flex-col gap-1 mb-4'>
             <div className='flex justify-between'>
-              <label htmlFor='project-name' className='text-sm font-medium'>
-                Name
+              <label htmlFor='label-name' className='text-sm font-medium'>
+                Label name
               </label>
               {inputs.name.length >= 100 && (
                 <span className='text-xs text-red-600 font-light'>
@@ -88,7 +84,7 @@ export const CreateProjectModal = ({
             </div>
             <input
               ref={projectNameInputRef}
-              id='project-name'
+              id='label-name'
               type='text'
               value={inputs.name}
               maxLength={120}
@@ -100,7 +96,7 @@ export const CreateProjectModal = ({
 
           <form className='relative w-full flex flex-col gap-1 mb-8'>
             <label htmlFor='project-color' className='text-sm font-medium'>
-              Color
+              Label color
             </label>
 
             <SelectColor
@@ -120,9 +116,9 @@ export const CreateProjectModal = ({
             </button>
 
             <button
-              onClick={createNewProject}
+              onClick={createNewLabel}
               onSubmit={(e) => {
-                createNewProject();
+                createNewLabel();
               }}
               className={`${
                 !inputs.name

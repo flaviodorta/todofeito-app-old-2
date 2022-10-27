@@ -88,6 +88,10 @@ export interface ITodosByPriority {
 export interface ILabel {
   id: string;
   name: string;
+  color: {
+    name: string;
+    class: string;
+  };
 }
 
 export interface ITodosByLabel extends ILabel {

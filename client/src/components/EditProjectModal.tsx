@@ -20,21 +20,21 @@ export const EditProjectModal = ({
 }: IEditProjectModalProps) => {
   const { editProject } = useTodosStore();
 
-  const [isSelectColorOpen, toggleSelectColor] = useToggle(false);
-  const [isSelectColorInputFocused, setIsSelectColorInputFocus] =
-    useState(false);
-
   const [inputs, setInputs] = useState({
-    name: project.name,
-    color: project.color,
+    name: '',
+    color: {
+      name: 'Stone',
+      class: 'fill-stone-600',
+    },
+    selectIconColor: 'bg-stone-600',
   });
 
-  const setColor = (color: { name: string; class: string }) =>
-    setInputs((state) => ({ ...state, color }));
+  const setColor = (
+    color: { name: string; class: string },
+    selectIconColor: string
+  ) => setInputs((state) => ({ ...state, color, selectIconColor }));
 
   const setName = (name: string) => setInputs((state) => ({ ...state, name }));
-
-  const selectColorRef = useRef<HTMLDivElement>(null);
 
   const sendEditedProject = () => {
     if (!project.name) return;
@@ -56,17 +56,6 @@ export const EditProjectModal = ({
     sendEditedProject,
     projectNameInputRef
   );
-
-  const focusSelectColorInput = () => setIsSelectColorInputFocus(true);
-  const unfocusSelectColorInput = () => setIsSelectColorInputFocus(false);
-
-  useEffect(() => {
-    if (isSelectColorOpen === false) focusSelectColorInput();
-  }, [isSelectColorOpen]);
-
-  useOnClickOutside(selectColorRef, unfocusSelectColorInput);
-
-  const [selectColorSizes, selectColorRef2] = useDimensions();
 
   useEffect(() => {
     projectNameInputRef?.current?.focus();
@@ -116,41 +105,12 @@ export const EditProjectModal = ({
               Color
             </label>
 
-            <div ref={selectColorRef2}>
-              <div
-                ref={selectColorRef}
-                onClick={toggleSelectColor}
-                className={`outline-none flex h-7 rounded-[3px] py-1  ${
-                  isSelectColorOpen ? 'border-gray-400' : 'border-gray-300'
-                } ${
-                  isSelectColorInputFocused ? 'border-gray-400' : ''
-                } border-[1px] duration-150 transition-all`}
-              >
-                {inputs && (
-                  <>
-                    <span className='flex items-center justify-center px-2'>
-                      <span
-                        className={`w-3 h-3 ${inputs.color.class} rounded-full`}
-                      />
-                    </span>
-                    <span className='flex cursor-pointer w-full capitalize whitespace-nowrap justify-between items-center pl-1 pr-2 py-1.5 justify-self-start text-sm'>
-                      <span className='mr-2 capitalize'>
-                        {inputs.color.name}
-                      </span>
-                    </span>
-                  </>
-                )}
-              </div>
-
-              {isSelectColorOpen && (
-                <SelectColor
-                  inputedColor={inputs.color}
-                  setColor={setColor}
-                  closeSelect={toggleSelectColor}
-                  sizes={selectColorSizes}
-                />
-              )}
-            </div>
+            <SelectColor
+              inputedColor={inputs.color}
+              selectIconColor={inputs.selectIconColor}
+              setColor={setColor}
+              cssProperty='fill'
+            />
           </form>
 
           <div className='flex justify-end gap-2'>
