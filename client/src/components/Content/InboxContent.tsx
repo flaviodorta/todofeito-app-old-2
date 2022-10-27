@@ -27,13 +27,6 @@ export const InboxContent = () => {
     setTodoInputOpenById,
   } = useUIStore();
 
-  // const [inboxTodos, setTodos] = useUpdateState(
-  //   projects
-  //     .filter((project) => project.id === 'inbox')[0]
-  //     .todos.filter((todo) => !todo.isCompleted && !todo.section),
-  //   [projects]
-  // );
-
   const todos = useMemo(
     () =>
       projects
@@ -83,7 +76,7 @@ export const InboxContent = () => {
 
   return (
     <ContentContainer heading={<Heading />}>
-      <div className='w-full px-4 md:px-0 '>
+      <div className='w-full px-9 md:px-0'>
         <TodosList
           todos={todos}
           setTodos={setTodos}

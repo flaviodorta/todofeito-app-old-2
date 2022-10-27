@@ -48,6 +48,7 @@ export const UpcomingTodosSectionMemoized = (props: IUpcomingTodosSection) => {
   } = props;
 
   const [isTodoListOpen, toggleTodoListOpen] = useToggle(false);
+
   const [todoInputOpenById, setTodoInputOpenById] = useState<string | null>(
     null
   );

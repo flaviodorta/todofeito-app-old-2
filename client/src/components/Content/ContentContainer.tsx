@@ -21,7 +21,7 @@ export const ContentContainer = ({
       className={`h-fit md:w-[768px] md:max-w-[768px] md:min-w-[768px] relative px-4 sm:px-0 mx-auto w-full flex-center flex-col gap-4`}
     >
       <div className='flex sticky z-[3] w-full lg:w-[1000px] bg-white top-0 justify-center items-center gap-2'>
-        <div className='w-full px-4 md:px-0 top-0 left-0 right-0 bg-white h-fit pt-12 flex-center'>
+        <div className='w-full px-11 md:px-0 top-0 left-0 right-0 bg-white h-fit pt-12 flex-center'>
           <div style={{ width: 768 }} className='w-full'>
             {heading}
           </div>
