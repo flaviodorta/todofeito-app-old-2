@@ -1,6 +1,6 @@
 import { nanoid } from 'nanoid';
-import { useRef } from 'react';
-import { IProject } from '../../helpers/types';
+import { useCallback, useMemo, useRef } from 'react';
+import { IProject, ITodo } from '../../helpers/types';
 import { useUpdateState } from '../../hooks/useUpdateState';
 import { useTodosStore, useUIStore } from '../../zustand';
 import { AddSection } from '../AddSection';
@@ -11,8 +11,15 @@ import { TodosList } from '../Lists/TodosList';
 import { ContentContainer } from './ContentContainer';
 
 export const InboxContent = () => {
-  const { projects, sections, editTodo, completeTodo, addTodo, deleteSection } =
-    useTodosStore();
+  const {
+    projects,
+    sections,
+    editTodo,
+    completeTodo,
+    addTodo,
+    deleteSection,
+    setTodosByProject,
+  } = useTodosStore();
   const {
     sectionInputOpenById,
     setSectionInputOpenById,
@@ -20,10 +27,18 @@ export const InboxContent = () => {
     setTodoInputOpenById,
   } = useUIStore();
 
-  const [inboxTodos, setTodos] = useUpdateState(
-    projects
-      .filter((project) => project.id === 'inbox')[0]
-      .todos.filter((todo) => !todo.isCompleted && !todo.section),
+  // const [inboxTodos, setTodos] = useUpdateState(
+  //   projects
+  //     .filter((project) => project.id === 'inbox')[0]
+  //     .todos.filter((todo) => !todo.isCompleted && !todo.section),
+  //   [projects]
+  // );
+
+  const todos = useMemo(
+    () =>
+      projects
+        .filter((project) => project.id === 'inbox')[0]
+        .todos.filter((todo) => !todo.isCompleted && !todo.section),
     [projects]
   );
 
@@ -41,12 +56,6 @@ export const InboxContent = () => {
 
   const openAddTodo = () => setTodoInputOpenById(addTodoId.current);
 
-  const Heading = () => (
-    <div className='flex items-center gap-2'>
-      <h2 className='font-bold text-xl'>Inbox</h2>
-    </div>
-  );
-
   const inboxProject: IProject = {
     id: 'inbox',
     name: 'Inbox',
@@ -56,13 +65,27 @@ export const InboxContent = () => {
     },
   };
 
-  // console.log(sections);
+  const setTodos = useCallback(
+    (todos: ITodo[]) => {
+      setTodosByProject({
+        ...inboxProject,
+        todos,
+      });
+    },
+    [projects]
+  );
+
+  const Heading = () => (
+    <div className='flex items-center gap-2'>
+      <h2 className='font-bold text-xl'>Inbox</h2>
+    </div>
+  );
 
   return (
     <ContentContainer heading={<Heading />}>
       <div className='w-full px-4 md:px-0 '>
         <TodosList
-          todos={inboxTodos}
+          todos={todos}
           setTodos={setTodos}
           completeTodo={completeTodo}
           editTodo={editTodo}
