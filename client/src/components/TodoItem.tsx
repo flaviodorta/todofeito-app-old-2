@@ -14,6 +14,7 @@ import { useEventListener } from '../hooks/useEventListener';
 import { getDayNumberInMonth, getMonthName } from '../helpers/functions';
 import { isToday } from 'date-fns';
 import { useDimensions } from '../hooks/useDimensions';
+import { isEqual } from 'lodash';
 
 type ITodoItem = {
   todo: ITodo;
@@ -188,5 +189,10 @@ export const TodoItemMemoized = ({
     </div>
   );
 };
+
+const todosItemPropsAreEqual = (
+  prevProps: Readonly<ITodoItem>,
+  nextProps: Readonly<ITodoItem>
+) => isEqual(prevProps.todo, nextProps.todo);
 
 export const TodoItem = memo(TodoItemMemoized);

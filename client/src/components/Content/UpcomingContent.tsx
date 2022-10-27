@@ -34,9 +34,11 @@ export const UpcomingContent = () => {
     []
   );
 
-  const [sections, setSections] = useUpdateState<ITodosByDate[]>(dates, [
-    dates,
-  ]);
+  // const [sections, setSections] = useUpdateState<ITodosByDate[]>(dates, [
+  //   dates,
+  // ]);
+
+  // const sections = useMemo(() => , [dates])
 
   return (
     <ContentContainer
@@ -51,7 +53,7 @@ export const UpcomingContent = () => {
             setTodosByDate={setTodosByDate}
             setObserved={setObserved}
             index={index}
-            section={sections[index]}
+            section={dates[index]}
             addTodo={addTodo}
             completeTodo={completeTodo}
             editTodo={editTodo}

@@ -151,7 +151,7 @@ export const todosStore = create<ITodosStore>((set, get) => {
     completeTodo: (todo: ITodo) =>
       set((state) => ({
         dates: state.dates.map((date) =>
-          date.date === todo.date
+          isSameDay(date.date, todo.date)
             ? {
                 ...date,
                 todos: date.todos.map((t) =>
