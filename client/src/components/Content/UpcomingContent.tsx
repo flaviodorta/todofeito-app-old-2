@@ -16,13 +16,8 @@ import { UpcomingTodosSection } from '../Sections/UpcomingTodosSection';
 import { ContentContainer } from './ContentContainer';
 
 export const UpcomingContent = () => {
-  const {
-    dates,
-    addTodo,
-    completeTodo,
-    editTodo,
-    setDate: setTodosDate,
-  } = useTodosStore();
+  const { dates, addTodo, completeTodo, editTodo, setTodosByDate } =
+    useTodosStore();
   // const { todoInputOpenById, setTodoInputOpenById } = useUIStore();
 
   const today = new Date();
@@ -53,7 +48,7 @@ export const UpcomingContent = () => {
           <UpcomingTodosSection
             // ref={(el) => (observedies.current[index] = el)}
             // dates={dates}
-            setTodosDate={setTodosDate}
+            setTodosByDate={setTodosByDate}
             setObserved={setObserved}
             index={index}
             section={sections[index]}

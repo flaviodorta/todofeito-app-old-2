@@ -73,7 +73,16 @@ export const todosStore = create<ITodosStore>((set, get) => {
     projects: projects,
     sections: [],
     labels: [],
-    setDate: (date: ITodosByDate) =>
+
+    setTodosByProject: (project: ITodosByProject) =>
+      set((state) => ({
+        ...state,
+        projects: state.projects.map((p) =>
+          p.id === project.id ? project : p
+        ),
+      })),
+
+    setTodosByDate: (date: ITodosByDate) =>
       set((state) => ({
         ...state,
         dates: state.dates.map((d) => (d.id === date.id ? date : d)),

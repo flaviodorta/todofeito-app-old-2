@@ -141,7 +141,8 @@ export interface ITodosStore {
 
   sections: ITodosBySection[];
 
-  setDate: (date: ITodosByDate) => void;
+  setTodosByProject: (project: ITodosByProject) => void;
+  setTodosByDate: (date: ITodosByDate) => void;
 
   getLabels: () => ILabel[];
   getProjects: () => IProject[];

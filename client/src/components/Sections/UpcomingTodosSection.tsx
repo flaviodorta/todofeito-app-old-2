@@ -26,7 +26,7 @@ import { TodosList } from '../Lists/TodosList';
 interface IUpcomingTodosSection {
   // dates: ITodosByDate[];
   section: ITodosByDate;
-  setTodosDate: (date: ITodosByDate) => void;
+  setTodosByDate: (date: ITodosByDate) => void;
   addTodo: (todo: ITodo) => void;
   completeTodo: (todo: ITodo) => void;
   editTodo: (todo: ITodo) => void;
@@ -39,7 +39,7 @@ interface IUpcomingTodosSection {
 export const UpcomingTodosSectionMemoized = (props: IUpcomingTodosSection) => {
   const {
     section,
-    setTodosDate,
+    setTodosByDate,
     addTodo,
     completeTodo,
     editTodo,
@@ -70,7 +70,7 @@ export const UpcomingTodosSectionMemoized = (props: IUpcomingTodosSection) => {
       todos,
     };
 
-    setTodosDate(thisTodosDate);
+    setTodosByDate(thisTodosDate);
   };
   const ref = useRef<HTMLDivElement>(null);
 

@@ -26,6 +26,7 @@ export const InboxContent = () => {
       .todos.filter((todo) => !todo.isCompleted && !todo.section),
     [projects]
   );
+
   const [inboxSections, setSections] = useUpdateState(
     sections.filter((section) => section.project.id === 'inbox'),
     [sections]

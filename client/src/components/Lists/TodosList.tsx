@@ -1,3 +1,4 @@
+import { isEqual } from 'lodash';
 import { memo } from 'react';
 import {
   DragDropContext,
@@ -28,8 +29,6 @@ export const TodosListMemoized = ({
   setTodoInputOpenById,
   todoInputOpenById,
 }: ITodosListProps) => {
-  // const { todoInputOpenById } = useUIStore();
-
   const onDragEnd = (result: DropResult) => {
     const { destination, source } = result;
 
@@ -91,4 +90,9 @@ export const TodosListMemoized = ({
   );
 };
 
-export const TodosList = memo(TodosListMemoized);
+const todosListPropsAreEqual = (
+  prevProps: Readonly<ITodosListProps>,
+  nextProps: Readonly<ITodosListProps>
+) => isEqual(prevProps.todos, nextProps.todos);
+
+export const TodosList = memo(TodosListMemoized, todosListPropsAreEqual);
