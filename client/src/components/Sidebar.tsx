@@ -41,8 +41,8 @@ export const Sidebar = () => {
     .todos.filter((todo) => !todo.isCompleted).length;
 
   const upcomingLength = dates
-    .filter((date) => compareDesc(date.date, new Date()) === -1)[0]
-    .todos.filter((todo) => !todo.isCompleted).length;
+    .map((date) => date.todos.filter((todo) => !todo.isCompleted).length)
+    .reduce((acc, length) => acc + length, 0);
 
   const labelsLength = labels.reduce(
     (acc, label) =>
