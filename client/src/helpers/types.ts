@@ -67,7 +67,7 @@ export interface ITodo {
   date: Date;
   priority: number;
   project: IProject;
-  section?: ISection;
+  section?: IInboxSection;
   labels: ILabel[];
 
   isCompleted: boolean;
@@ -113,14 +113,20 @@ export interface ITodosByProject {
   todos: ITodo[];
 }
 
-export interface ISection {
+export interface IUpcomingSection {
+  id: string;
+  name: string;
+  date: Date;
+}
+
+export interface IInboxSection {
   id: string;
   index: number;
   name: string;
   project: IProject;
 }
 
-export interface ITodosBySection extends ISection {
+export interface ITodosBySection extends IInboxSection {
   todos: ITodo[];
 }
 
@@ -135,9 +141,11 @@ export interface ITodosStore {
 
   sections: ITodosBySection[];
 
+  setDate: (date: ITodosByDate) => void;
+
   getLabels: () => ILabel[];
   getProjects: () => IProject[];
-  getSections: () => ISection[];
+  getSections: () => IInboxSection[];
 
   addTodo: (todo: ITodo) => void;
   editTodo: (todo: ITodo) => void;
@@ -147,8 +155,8 @@ export interface ITodosStore {
   editProject: (project: IProject) => void;
   deleteProject: (projectId: string) => void;
 
-  createSection: (section: ISection) => void;
-  editSection: (section: ISection) => void;
+  createSection: (section: IInboxSection) => void;
+  editSection: (section: IInboxSection) => void;
   deleteSection: (sectionId: string) => void;
 
   createLabel: (label: ILabel) => void;

@@ -1,27 +1,62 @@
+// import { isEqual as isDateEqual, setDate } from 'date-fns';
+import { isEqual } from 'lodash';
 import { nanoid } from 'nanoid';
-import { useState } from 'react';
-import { IProject, ISection, ITodo } from '../../helpers/types';
+import {
+  // forwardRef,
+  memo,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
+import {
+  // IProject,
+  // IUpcomingSection,
+  ITodosByDate,
+  ITodo,
+} from '../../helpers/types';
 import { useToggle } from '../../hooks/useToggle';
-import { useTodosStore, useUIStore } from '../../zustand';
+// import { useUpdateState } from '../../hooks/useUpdateState';
+// import { useTodosStore, useUIStore } from '../../zustand';
 import { AddTodo } from '../AddTodo';
+// import { EditTodo } from '../EditTodo';
 import { ChevronIcon, PlusSolidIcon } from '../Icons';
 import { TodosList } from '../Lists/TodosList';
 
 interface IUpcomingTodosSection {
-  section: { id: string; name: string; date: Date; todos: ITodo[] };
+  // dates: ITodosByDate[];
+  section: ITodosByDate;
+  setTodosDate: (date: ITodosByDate) => void;
+  addTodo: (todo: ITodo) => void;
+  completeTodo: (todo: ITodo) => void;
+  editTodo: (todo: ITodo) => void;
+  setObserved: (el: HTMLDivElement | null, index: number) => void;
+  index: number;
+  // todoInputOpenById: string | null;
+  // setTodoInputOpenById: (id: string | null) => void;
 }
 
-export const UpcomingTodosSection = ({ section }: IUpcomingTodosSection) => {
-  const { todoInputOpenById, setTodoInputOpenById } = useUIStore();
-  const { sections } = useTodosStore();
+export const UpcomingTodosSectionMemoized = (props: IUpcomingTodosSection) => {
+  const {
+    section,
+    setTodosDate,
+    addTodo,
+    completeTodo,
+    editTodo,
+    setObserved,
+    index,
+  } = props;
 
   const [isTodoListOpen, toggleTodoListOpen] = useToggle(false);
+  const [todoInputOpenById, setTodoInputOpenById] = useState<string | null>(
+    null
+  );
 
-  const [todos, setTodos] = useState(section.todos);
+  console.log(section.todos);
 
-  const todoInputId = nanoid();
+  const todoInputId = useRef(nanoid());
 
-  const openAddTodo = () => setTodoInputOpenById(todoInputId);
+  const openAddTodo = () => setTodoInputOpenById(todoInputId.current);
   const closeAddTodo = () => setTodoInputOpenById(null);
 
   const toggleTodoList = () => {
@@ -29,17 +64,24 @@ export const UpcomingTodosSection = ({ section }: IUpcomingTodosSection) => {
     toggleTodoListOpen();
   };
 
-  const upcomingProject: IProject = {
-    id: 'upcoming',
-    name: 'Upcoming',
-    color: {
-      name: 'Blue',
-      class: 'fill-blue-600',
-    },
+  const setThisTodosDate = (todos: ITodo[]) => {
+    const thisTodosDate: ITodosByDate = {
+      ...section,
+      todos,
+    };
+
+    setTodosDate(thisTodosDate);
   };
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setObserved(ref.current, index);
+  }, []);
+
+  console.log(section);
 
   return (
-    <div className='flex flex-col h-fit w-full'>
+    <div ref={ref} key={section.id} className='flex flex-col h-fit w-full'>
       <div className='sticky top-[151px] z-[2]'>
         <div className='relative flex justify-between items-center w-full text-sm  bg-white font-bold h-fit py-1 border-b-[1px] border-gray-300'>
           <span className='text-gray-500'>{section.name}</span>
@@ -59,17 +101,29 @@ export const UpcomingTodosSection = ({ section }: IUpcomingTodosSection) => {
 
       {isTodoListOpen && (
         <div className='w-full h-fit'>
-          <TodosList todos={todos} setTodos={setTodos} />
+          {section.todos.length > 0 ? (
+            <TodosList
+              todos={section.todos.filter((t) => !t.isCompleted)}
+              setTodos={setThisTodosDate}
+              editTodo={editTodo}
+              completeTodo={completeTodo}
+              todoInputOpenById={todoInputOpenById}
+              setTodoInputOpenById={setTodoInputOpenById}
+            />
+          ) : (
+            <span className='text-xs text-gray-400 pb-4'>
+              No todos in this day yet.
+            </span>
+          )}
         </div>
       )}
 
       <div className='mt-3'>
-        {todoInputOpenById === todoInputId ? (
+        {todoInputOpenById === todoInputId.current ? (
           <AddTodo
-            section={
-              { id: section.id, index: 1, name: section.name } as ISection
-            }
-            project={upcomingProject}
+            date={section.date}
+            addTodo={addTodo}
+            setTodoInputOpenById={setTodoInputOpenById}
           />
         ) : (
           <div
@@ -88,3 +142,13 @@ export const UpcomingTodosSection = ({ section }: IUpcomingTodosSection) => {
     </div>
   );
 };
+
+const sectionPropsAreEqual = (
+  prevProps: Readonly<IUpcomingTodosSection>,
+  nextProps: Readonly<IUpcomingTodosSection>
+) => isEqual(prevProps.section, nextProps.section);
+
+export const UpcomingTodosSection = memo(
+  UpcomingTodosSectionMemoized,
+  sectionPropsAreEqual
+);

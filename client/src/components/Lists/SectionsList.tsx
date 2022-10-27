@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import {
   DragDropContext,
   Draggable,
@@ -5,15 +6,35 @@ import {
   DropResult,
 } from 'react-beautiful-dnd';
 import { reorder } from '../../helpers/functions';
-import { ITodosBySection } from '../../helpers/types';
+import { ITodo, ITodosBySection } from '../../helpers/types';
+import { EditTodo } from '../EditTodo';
 import { TodosSection } from '../Sections/TodosSection';
 
 interface ISectionsListProps {
   sections: ITodosBySection[];
   setSections: React.Dispatch<React.SetStateAction<ITodosBySection[]>>;
+  todoInputOpenById: string | null;
+  sectionInputOpenById: string | null;
+  completeTodo: (todo: ITodo) => void;
+  addTodo: (todo: ITodo) => void;
+  editTodo: (todo: ITodo) => void;
+  setTodoInputOpenById: (id: string | null) => void;
+  setSectionInputOpenById: (id: string | null) => void;
+  deleteSection: (sectionId: string) => void;
 }
 
-export const SectionsList = ({ sections, setSections }: ISectionsListProps) => {
+export const SectionsList = ({
+  sections,
+  setSections,
+  todoInputOpenById,
+  sectionInputOpenById,
+  completeTodo,
+  addTodo,
+  editTodo,
+  setTodoInputOpenById,
+  setSectionInputOpenById,
+  deleteSection,
+}: ISectionsListProps) => {
   const onDragEnd = (result: DropResult) => {
     const { destination, source } = result;
 
@@ -28,8 +49,10 @@ export const SectionsList = ({ sections, setSections }: ISectionsListProps) => {
     setSections(reorder(sections, source.index, destination.index));
   };
 
+  console.log('section');
+
   return (
-    <div className='mb-4'>
+    <div className='mb-4 pl-11 pr-4 md:px-0'>
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId='tasks'>
           {(droppableProvided, droppableSnapshot) => (
@@ -50,6 +73,14 @@ export const SectionsList = ({ sections, setSections }: ISectionsListProps) => {
                       }
                     >
                       <TodosSection
+                        todoInputOpenById={todoInputOpenById}
+                        sectionInputOpenById={sectionInputOpenById}
+                        completeTodo={completeTodo}
+                        addTodo={addTodo}
+                        editTodo={editTodo}
+                        setTodoInputOpenById={setTodoInputOpenById}
+                        setSectionInputOpenById={setSectionInputOpenById}
+                        deleteSection={deleteSection}
                         section={section}
                         draggableProvided={draggableProvided}
                       />
@@ -66,3 +97,5 @@ export const SectionsList = ({ sections, setSections }: ISectionsListProps) => {
     </div>
   );
 };
+
+// export const SectionsList = memo(SectionsListMemoized);

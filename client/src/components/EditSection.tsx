@@ -1,10 +1,10 @@
 import { useRef, useState } from 'react';
 import { onKeyUpEnter } from '../helpers/functions';
-import { ISection } from '../helpers/types';
+import { IInboxSection } from '../helpers/types';
 import { useTodosStore, useUIStore } from '../zustand';
 
 interface IEditSectionProps {
-  section: ISection;
+  section: IInboxSection;
 }
 
 export const EditSection = ({ section }: IEditSectionProps) => {

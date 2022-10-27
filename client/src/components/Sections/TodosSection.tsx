@@ -1,13 +1,12 @@
 import { nanoid } from 'nanoid';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { DraggableProvided } from 'react-beautiful-dnd';
 import { isMobile } from 'react-device-detect';
-import { ISection, ITodosBySection } from '../../helpers/types';
+import { ITodo, ITodosBySection } from '../../helpers/types';
 import { useDimensions } from '../../hooks/useDimensions';
 import { useToggle } from '../../hooks/useToggle';
 import { useUpdateState } from '../../hooks/useUpdateState';
 import useWindowSize from '../../hooks/useWindowSize';
-import { useTodosStore, useUIStore } from '../../zustand';
 import { AddSection } from '../AddSection';
 import { AddTodo } from '../AddTodo';
 import { EditDropdown } from '../Dropdowns/EditDropdown';
@@ -24,18 +23,29 @@ import { TodosList } from '../Lists/TodosList';
 
 interface ITodosSection {
   section: ITodosBySection;
+  todoInputOpenById: string | null;
+  sectionInputOpenById: string | null;
   draggableProvided?: DraggableProvided;
+  completeTodo: (todo: ITodo) => void;
+  addTodo: (todo: ITodo) => void;
+  editTodo: (todo: ITodo) => void;
+  setTodoInputOpenById: (id: string | null) => void;
+  setSectionInputOpenById: (id: string | null) => void;
+  deleteSection: (sectionId: string) => void;
 }
 
-export const TodosSection = ({ section, draggableProvided }: ITodosSection) => {
-  const { sections, deleteSection } = useTodosStore();
-  const {
-    todoInputOpenById,
-    setTodoInputOpenById,
-    sectionInputOpenById,
-    setSectionInputOpenById,
-  } = useUIStore();
-
+export const TodosSection = ({
+  section,
+  todoInputOpenById,
+  sectionInputOpenById,
+  draggableProvided,
+  editTodo,
+  addTodo,
+  completeTodo,
+  setTodoInputOpenById,
+  setSectionInputOpenById,
+  deleteSection,
+}: ITodosSection) => {
   const [isTodoListOpen, toggleTodoListOpen] = useToggle(true);
   const [isHover, toggleHover] = useToggle(false);
 
@@ -151,10 +161,22 @@ export const TodosSection = ({ section, draggableProvided }: ITodosSection) => {
         {isTodoListOpen && (
           <div className='w-full flex flex-col gap-2'>
             {/* Todo list */}
-            <TodosList todos={todos} setTodos={setTodos} />
+            <TodosList
+              todos={todos}
+              setTodos={setTodos}
+              completeTodo={completeTodo}
+              editTodo={editTodo}
+              setTodoInputOpenById={setTodoInputOpenById}
+              todoInputOpenById={todoInputOpenById}
+            />
 
             {todoInputOpenById === addTodoIdRef.current ? (
-              <AddTodo section={section} project={section.project} />
+              <AddTodo
+                section={section}
+                project={section.project}
+                setTodoInputOpenById={setTodoInputOpenById}
+                addTodo={addTodo}
+              />
             ) : (
               <div
                 onClick={openAddTodo}

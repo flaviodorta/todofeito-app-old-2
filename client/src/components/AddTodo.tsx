@@ -22,28 +22,37 @@ import {
   labelHoverColors,
 } from '../helpers/constants';
 import { IRenderableElements } from '../helpers/types';
-import { useUIStore, useTodosStore } from '../zustand';
+// import { useUIStore, useTodosStore } from '../zustand';
 import { nanoid } from 'nanoid';
-import { ILabel, IProject, ISection, ITodo } from '../helpers/types';
+import { ILabel, IProject, IInboxSection, ITodo } from '../helpers/types';
 import { useDimensions } from '../hooks/useDimensions';
+import useWindowSize from '../hooks/useWindowSize';
 
 interface IAddTodoItemProps {
   project?: IProject;
-  section?: ISection;
+  section?: IInboxSection;
+  date?: Date;
+  addTodo: (todo: ITodo) => void;
+  setTodoInputOpenById: (id: string | null) => void;
 }
 
-export const AddTodo = (props: IAddTodoItemProps) => {
-  const { project, section } = props;
-  const { addTodo } = useTodosStore();
+export const AddTodo = ({
+  project,
+  section,
+  date,
+  addTodo,
+  setTodoInputOpenById,
+}: IAddTodoItemProps) => {
+  // const { addTodo } = useTodosStore();
 
-  const { setTodoInputOpenById } = useUIStore();
+  // const { setTodoInputOpenById } = useUIStore();
 
   const [inputs, setInputs] = useState({
     title: '',
     description: '',
     project: project ? project : inboxProject,
     priority: 4,
-    date: new Date(),
+    date: date ? date : new Date(),
     labels: [] as ILabel[],
   });
 
@@ -51,10 +60,17 @@ export const AddTodo = (props: IAddTodoItemProps) => {
     useState<IRenderableElements>(null);
 
   // centerlize select
-  const [dueDateSizes, dueDateRef] = useDimensions();
-  const [projectsSizes, projectsRef] = useDimensions();
-  const [labelsSizes, labelsRef] = useDimensions();
-  const [prioritySizes, priorityRef] = useDimensions();
+  const [dueDateSizes, dueDateRef, calcDueDateSizes] = useDimensions();
+  const [projectsSizes, projectsRef, calcProjectsSizes] = useDimensions();
+  const [labelsSizes, labelsRef, calcLabelsSizes] = useDimensions();
+  const [prioritySizes, priorityRef, calcPrioritySizes] = useDimensions();
+
+  const calcSizes = () => {
+    calcDueDateSizes();
+    calcProjectsSizes();
+    calcLabelsSizes();
+    calcPrioritySizes();
+  };
 
   const addLabel = (label: ILabel) =>
     setInputs((state) => ({
@@ -76,7 +92,7 @@ export const AddTodo = (props: IAddTodoItemProps) => {
       description: '',
       project: inboxProject,
       priority: 4,
-      date: new Date(),
+      date: date ? date : new Date(),
       labels: [] as ILabel[],
     }));
   };
@@ -100,9 +116,12 @@ export const AddTodo = (props: IAddTodoItemProps) => {
   const sendNewTodo = () => {
     if (!inputs.title) return;
 
-    addTodo(todo);
+    // addTodo(todo);
+    if (addTodo) addTodo(todo);
 
     resetInputs();
+
+    calcSizes();
     //close();
   };
 
@@ -149,14 +168,25 @@ export const AddTodo = (props: IAddTodoItemProps) => {
 
   const containerRef = useRef<HTMLDivElement>(null);
 
+  const [sizes, sizesRef] = useDimensions();
+
+  const { height } = useWindowSize();
+
+  const canScroll = height - sizes.bottom < 0;
+
+  // console.log(dueDateSizes);
+
   useEffect(() => {
     if (!containerRef?.current) return;
 
-    containerRef.current.scrollIntoView({ behavior: 'smooth' });
+    if (canScroll) {
+      containerRef.current.scrollIntoView({ behavior: 'smooth' });
+      console.log('scroll');
+    }
   }, [renderedSelect]);
 
   return (
-    <>
+    <div ref={sizesRef}>
       <div
         ref={containerRef}
         className={`${renderedSelect ? 'mb-80' : 'mb-0'} h-fit w-full`}
@@ -336,6 +366,6 @@ export const AddTodo = (props: IAddTodoItemProps) => {
           </button>
         </div>
       </div>
-    </>
+    </div>
   );
 };

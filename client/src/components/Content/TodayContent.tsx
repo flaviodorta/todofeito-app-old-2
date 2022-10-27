@@ -38,12 +38,5 @@ export const TodayContent = () => {
     },
   };
 
-  return (
-    <ContentContainer
-      heading={<Heading />}
-      todos={todayTodos}
-      setTodos={setTodos}
-      project={todayProject}
-    ></ContentContainer>
-  );
+  return <ContentContainer heading={<Heading />}></ContentContainer>;
 };

@@ -28,12 +28,5 @@ export const LabelsContent = () => {
     </div>
   );
 
-  return (
-    <ContentContainer
-      heading={<Heading />}
-      todos={labelsTodos}
-      setTodos={setTodos}
-      project={labelsProject}
-    ></ContentContainer>
-  );
+  return <ContentContainer heading={<Heading />}></ContentContainer>;
 };

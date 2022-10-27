@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import { IRenderableElements, ITodo } from '../helpers/types';
 import { useUIStore, useTodosStore } from '../zustand';
 import {
@@ -17,17 +17,23 @@ import { useDimensions } from '../hooks/useDimensions';
 
 type ITodoItem = {
   todo: ITodo;
+  completeTodo: (todo: ITodo) => void;
+  editTodo: (todo: ITodo) => void;
+  setTodoInputOpenById: (id: string | null) => void;
   draggableProvided: DraggableProvided;
   draggableSnapshot: DraggableStateSnapshot;
 };
 
-export const TodoItem = ({
+export const TodoItemMemoized = ({
   todo,
+  completeTodo,
+  editTodo,
+  setTodoInputOpenById,
   draggableProvided,
   draggableSnapshot,
 }: ITodoItem) => {
-  const { completeTodo, editTodo } = useTodosStore();
-  const { setTodoInputOpenById } = useUIStore();
+  // const { completeTodo, editTodo } = useTodosStore();
+  // const { setTodoInputOpenById } = useUIStore();
 
   const [checked, setChecked] = useState(todo.isCompleted);
   const [isHover, setIsHover] = useState(false);
@@ -39,17 +45,12 @@ export const TodoItem = ({
   const [dueDateSizes, dueDateRef] = useDimensions();
   // const [projectsSizes, projectsRef] = useDimensions();
 
-  const openDatePicker = () => {
-    if (!renderedSelect) setRenderedSelect('date-picker');
-  };
+  const openDatePicker = () =>
+    !renderedSelect ? setRenderedSelect('date-picker') : undefined;
 
-  const toggleHoverOn = () => {
-    if (!renderedSelect) setIsHover(true);
-  };
+  const toggleHoverOn = () => (!renderedSelect ? setIsHover(true) : undefined);
 
-  const toggleHoverOff = () => {
-    setIsHover(false);
-  };
+  const toggleHoverOff = () => setIsHover(false);
 
   useEffect(() => {
     const editDate = () => {
@@ -187,3 +188,5 @@ export const TodoItem = ({
     </div>
   );
 };
+
+export const TodoItem = memo(TodoItemMemoized);

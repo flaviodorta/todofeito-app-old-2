@@ -1,51 +1,68 @@
-import { isEqual } from 'date-fns';
-import { useMemo, useState } from 'react';
-import { IProject } from '../../helpers/types';
-import { useTodosStore } from '../../zustand';
+import { isEqual, isSameDay } from 'date-fns';
+import { nanoid } from 'nanoid';
+import {
+  Fragment,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
+import { IProject, ITodosByDate } from '../../helpers/types';
+import { useUpdateState } from '../../hooks/useUpdateState';
+import { useTodosStore, useUIStore } from '../../zustand';
 import { HorizontalCalendar } from '../HorizontalCalendar';
 import { UpcomingTodosSection } from '../Sections/UpcomingTodosSection';
 import { ContentContainer } from './ContentContainer';
 
 export const UpcomingContent = () => {
-  const { dates } = useTodosStore();
+  const {
+    dates,
+    addTodo,
+    completeTodo,
+    editTodo,
+    setDate: setTodosDate,
+  } = useTodosStore();
+  // const { todoInputOpenById, setTodoInputOpenById } = useUIStore();
 
   const today = new Date();
   const [date, setDate] = useState(today);
 
-  const dateIndex = useMemo(() => {
-    const index = dates.findIndex((d) => isEqual(d.date, date));
-    return index === -1 ? 0 : index;
-  }, [date]);
+  const observedies = useRef<(HTMLDivElement | null)[]>([]);
 
-  const [upcomingTodos, setTodos] = useState(
-    dates
-      .map((date) => date.todos)
-      .slice(dateIndex)
-      .reduce(
-        (acc, todos) => [...acc, ...todos.filter((todo) => !todo.isCompleted)],
-        []
-      )
+  // useRatio pra deslocar o scroll
+
+  const setObserved = useCallback(
+    (el: HTMLDivElement | null, index: number) => {
+      observedies.current[index] = el;
+    },
+    []
   );
 
-  const upcomingProject: IProject = {
-    id: 'upcoming',
-    name: 'Upcoming',
-    color: {
-      name: 'Blue',
-      class: 'fill-blue-600',
-    },
-  };
+  const [sections, setSections] = useUpdateState<ITodosByDate[]>(dates, [
+    dates,
+  ]);
 
   return (
     <ContentContainer
       heading={<HorizontalCalendar inputedDate={date} setDate={setDate} />}
-      todos={upcomingTodos}
-      setTodos={setTodos}
-      project={upcomingProject}
     >
-      <div className='flex flex-col gap-8'>
-        {dates.slice(dateIndex).map(({ id, name, date, todos }) => (
-          <UpcomingTodosSection section={{ id, name, date, todos }} />
+      {/* pra resolver o problema tem manter o mesmo array, apenas descolar o scroll */}
+      <div className='flex flex-col gap-8 px-8 md:px-0'>
+        {Array.from({ length: 365 }).map((_, index) => (
+          <UpcomingTodosSection
+            // ref={(el) => (observedies.current[index] = el)}
+            // dates={dates}
+            setTodosDate={setTodosDate}
+            setObserved={setObserved}
+            index={index}
+            section={sections[index]}
+            addTodo={addTodo}
+            completeTodo={completeTodo}
+            editTodo={editTodo}
+            // todoInputOpenById={todoInputOpenById}
+            // setTodoInputOpenById={setTodoInputOpenById}
+          />
         ))}
       </div>
     </ContentContainer>

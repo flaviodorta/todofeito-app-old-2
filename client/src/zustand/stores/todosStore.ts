@@ -1,4 +1,4 @@
-import { isEqual, isToday, isTomorrow } from 'date-fns';
+import { isEqual, isSameDay, isToday, isTomorrow } from 'date-fns';
 import { nanoid } from 'nanoid';
 import create from 'zustand';
 import {
@@ -9,7 +9,7 @@ import {
 import {
   ILabel,
   IProject,
-  ISection,
+  IInboxSection,
   ITodo,
   ITodosByDate,
   ITodosByLabel,
@@ -73,6 +73,11 @@ export const todosStore = create<ITodosStore>((set, get) => {
     projects: projects,
     sections: [],
     labels: [],
+    setDate: (date: ITodosByDate) =>
+      set((state) => ({
+        ...state,
+        dates: state.dates.map((d) => (d.id === date.id ? date : d)),
+      })),
 
     getLabels: () =>
       get().labels.map(
@@ -101,16 +106,17 @@ export const todosStore = create<ITodosStore>((set, get) => {
             index,
             name,
             project,
-          } as ISection)
+          } as IInboxSection)
       ),
 
     addTodo: (todo: ITodo) =>
       set((state) => ({
         ...state,
-        dates: state.dates.map((date) => ({
-          ...date,
-          todos: [...date.todos, todo],
-        })),
+        dates: state.dates.map((date) =>
+          isSameDay(date.date, todo.date)
+            ? { ...date, todos: [...date.todos, todo] }
+            : date
+        ),
         priorities: state.priorities.map((priority) =>
           priority.priority === todo.priority
             ? { ...priority, todos: [...priority.todos, todo] }
@@ -247,7 +253,7 @@ export const todosStore = create<ITodosStore>((set, get) => {
         projects: state.projects.filter((project) => project.id !== projectId),
       })),
 
-    createSection: (section: ISection) =>
+    createSection: (section: IInboxSection) =>
       set((state) => {
         const sections = Array.from(state.sections);
         const newTodosBySection = { ...section, todos: [] } as ITodosBySection;
@@ -259,7 +265,7 @@ export const todosStore = create<ITodosStore>((set, get) => {
         };
       }),
 
-    editSection: (section: ISection) =>
+    editSection: (section: IInboxSection) =>
       set((state) => ({
         ...state,
         sections: state.sections.map((oldSection) =>

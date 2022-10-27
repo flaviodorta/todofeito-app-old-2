@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import {
   DragDropContext,
   Draggable,
@@ -6,17 +7,28 @@ import {
 } from 'react-beautiful-dnd';
 import { reorder } from '../../helpers/functions';
 import { ITodo } from '../../helpers/types';
-import { useUIStore } from '../../zustand';
+// import { useUIStore } from '../../zustand';
 import { EditTodo } from '../EditTodo';
 import { TodoItem } from './../TodoItem';
 
 interface ITodosListProps {
   todos: ITodo[];
   setTodos: (todos: ITodo[]) => void;
+  completeTodo: (todo: ITodo) => void;
+  editTodo: (todo: ITodo) => void;
+  setTodoInputOpenById: (id: string | null) => void;
+  todoInputOpenById: string | null;
 }
 
-export const TodosList = ({ todos, setTodos }: ITodosListProps) => {
-  const { todoInputOpenById: inputOpenById } = useUIStore();
+export const TodosListMemoized = ({
+  todos,
+  setTodos,
+  completeTodo,
+  editTodo,
+  setTodoInputOpenById,
+  todoInputOpenById,
+}: ITodosListProps) => {
+  // const { todoInputOpenById } = useUIStore();
 
   const onDragEnd = (result: DropResult) => {
     const { destination, source } = result;
@@ -52,13 +64,16 @@ export const TodosList = ({ todos, setTodos }: ITodosListProps) => {
                         .style as React.CSSProperties
                     }
                   >
-                    {inputOpenById === todo.id ? (
+                    {todoInputOpenById === todo.id ? (
                       <div className='w-full h-60'>
                         <EditTodo todo={todo} />
                       </div>
                     ) : (
                       <TodoItem
                         todo={todo}
+                        completeTodo={completeTodo}
+                        editTodo={editTodo}
+                        setTodoInputOpenById={setTodoInputOpenById}
                         draggableProvided={draggableProvided}
                         draggableSnapshot={draggableSnapshot}
                       />
@@ -75,3 +90,5 @@ export const TodosList = ({ todos, setTodos }: ITodosListProps) => {
     </DragDropContext>
   );
 };
+
+export const TodosList = memo(TodosListMemoized);

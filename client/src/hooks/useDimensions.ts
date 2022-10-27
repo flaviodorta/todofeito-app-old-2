@@ -16,7 +16,8 @@ export function useDimensions<T extends HTMLElement = HTMLElement>({
   React.Dispatch<React.SetStateAction<T | null | undefined>>,
   () => void
 ] {
-  const [animationEnd, shouldMeasure] = useToggle(!withInitialAnimation);
+  // const [animationEnd, shouldMeasure] = useToggle(!withInitialAnimation);
+  const [calculateCount, setRecalculate] = useState(0);
   const [dimensions, setDimensions] = useState<IDimensions>({
     x: 0,
     y: 0,
@@ -29,6 +30,8 @@ export function useDimensions<T extends HTMLElement = HTMLElement>({
   });
   const [node, ref] = useState<T | null>();
 
+  const recalculate = () => setRecalculate((c) => c + 1);
+
   useIsomorphicLayoutEffect(() => {
     if (node && typeof window !== 'undefined') {
       const measure = () => {
@@ -37,7 +40,8 @@ export function useDimensions<T extends HTMLElement = HTMLElement>({
         });
       };
 
-      if (animationEnd) measure();
+      // if (animationEnd) measure();
+      measure();
 
       if (liveMeasure) {
         window.addEventListener('resize', measure);
@@ -49,7 +53,7 @@ export function useDimensions<T extends HTMLElement = HTMLElement>({
         };
       }
     }
-  }, [node, animationEnd]);
+  }, [node, calculateCount]);
 
-  return [dimensions, ref, shouldMeasure];
+  return [dimensions, ref, recalculate];
 }
