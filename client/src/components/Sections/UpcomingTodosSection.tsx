@@ -1,7 +1,9 @@
+import useResizeObserver from '@react-hook/resize-observer';
 import { isEqual } from 'lodash';
 import { nanoid } from 'nanoid';
 import { memo, useEffect, useRef, useState } from 'react';
 import { ITodosByDate, ITodo } from '../../helpers/types';
+import { useIsomorphicLayoutEffect } from '../../hooks/useIsomorphicLayoutEffect';
 import { useToggle } from '../../hooks/useToggle';
 import { AddTodo } from '../AddTodo';
 import { ChevronIcon, PlusSolidIcon } from '../Icons';
@@ -13,7 +15,8 @@ interface IUpcomingTodosSection {
   addTodo: (todo: ITodo) => void;
   completeTodo: (todo: ITodo) => void;
   editTodo: (todo: ITodo) => void;
-  setObserved: (el: HTMLDivElement) => void;
+  addObservedHeight: (height: number) => void;
+  setObservedHeight: (height: number, index: number) => void;
   index: number;
 }
 
@@ -24,7 +27,8 @@ export const UpcomingTodosSectionMemoized = (props: IUpcomingTodosSection) => {
     addTodo,
     completeTodo,
     editTodo,
-    setObserved,
+    setObservedHeight,
+    addObservedHeight,
     index,
   } = props;
 
@@ -53,15 +57,25 @@ export const UpcomingTodosSectionMemoized = (props: IUpcomingTodosSection) => {
     setTodosByDate(thisTodosDate);
   };
 
+  const ref = useRef<HTMLDivElement>(null);
+
+  useIsomorphicLayoutEffect(() => {
+    if (!ref.current) return;
+
+    addObservedHeight(ref.current.getBoundingClientRect().height);
+  }, [ref]);
+
+  useResizeObserver<HTMLDivElement>(ref, (entry) =>
+    setObservedHeight(entry.contentRect.height, index)
+  );
+
   return (
-    <div
-      ref={setObserved}
-      key={section.id}
-      className='flex flex-col h-fit w-full'
-    >
-      <div className='sticky top-[151px] z-[2]'>
+    <div ref={ref} key={section.id} className='flex flex-col h-fit w-full'>
+      <div className='sticky top-[148px] z-[2]'>
         <div className='relative flex justify-between items-center w-full text-sm  bg-white font-bold h-fit py-1 border-b-[1px] border-gray-300'>
-          <span className='text-gray-500'>{section.name}</span>
+          <span className='text-gray-500'>
+            {section.name} / index: {index}
+          </span>
 
           <span
             onClick={toggleTodoList}

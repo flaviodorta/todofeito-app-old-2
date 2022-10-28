@@ -1,4 +1,3 @@
-import { createRef } from 'react';
 import { isDesktop } from 'react-device-detect';
 import create from 'zustand';
 
@@ -9,8 +8,9 @@ interface IUIStore {
   sectionInputOpenById: string | null;
   labelShowById: string | null;
   withBackdropOpenById: string | null;
-  observediesRefs: HTMLDivElement[];
-  setObservedRef: (el: HTMLDivElement) => void;
+  observediesHeights: number[];
+  addObservedHeight: (height: number) => void;
+  setObservedHeight: (height: number, index: number) => void;
   toggleSidebar: () => void;
   toggleSidebarProjects: () => void;
   setTodoInputOpenById: (id: string | null) => void;
@@ -18,8 +18,6 @@ interface IUIStore {
   setLabelShowById: (id: string | null) => void;
   setWithBackdropOpenById: (id: string | null) => void;
 }
-
-const ref = createRef();
 
 const isMinorThanLargeScreen = window.innerWidth <= 1024;
 
@@ -30,11 +28,20 @@ export const UIStore = create<IUIStore>((set, get) => ({
   sectionInputOpenById: null,
   labelShowById: null,
   withBackdropOpenById: null,
-  observediesRefs: [],
-  setObservedRef: (el: HTMLDivElement) =>
+  observediesHeights: [],
+  addObservedHeight: (height: number) =>
     set((state) => ({
-      observediesRefs: [...state.observediesRefs, el],
+      observediesHeights: [...state.observediesHeights, height],
     })),
+  setObservedHeight: (height: number, index: number) =>
+    set((state) => {
+      const newObservediresHeights = [...state.observediesHeights];
+      newObservediresHeights[index] = height;
+
+      return {
+        observediesHeights: newObservediresHeights,
+      };
+    }),
   toggleSidebar: () =>
     set((state) => ({
       isSidebarOpen: !state.isSidebarOpen,

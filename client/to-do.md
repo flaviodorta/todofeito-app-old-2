@@ -37,10 +37,13 @@
 - make todos dragglable between sections
 - add i18n
 - search todo
-- add persist to zustand
 - add sidebar resizable (react-resizable)
-- fix todo list placeholder
 
 - refactor server
 - connect server with front end
 - create login page
+
+- add persist to zustand
+- fix todo list placeholder
+
+- create resizer observer hook with multiples refs

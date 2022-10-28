@@ -10,16 +10,17 @@ import { ContentContainer } from './ContentContainer';
 export const UpcomingContent = () => {
   const { dates, addTodo, completeTodo, editTodo, setTodosByDate } =
     useTodosStore();
-  const { setObservedRef, observediesRefs } = useUIStore();
+  const { addObservedHeight, setObservedHeight, observediesHeights } =
+    useUIStore();
 
   const today = new Date();
   const [date, setDate] = useState(today);
 
-  const container = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const [scrollIndex, scrollToIndex] = useIndexByScrollRatio({
-    container: container.current,
-    observedies: observediesRefs,
+    containerRef,
+    observediesHeights,
     gap: 32,
   });
 
@@ -27,6 +28,8 @@ export const UpcomingContent = () => {
     () => dates.findIndex((thisDate) => isSameDay(thisDate.date, date)),
     [date, dates]
   );
+
+  // console.log('scroll index: ', scrollIndex);
 
   const selectDate = useCallback(
     (date: Date) => {
@@ -38,15 +41,15 @@ export const UpcomingContent = () => {
   );
 
   useIsomorphicLayoutEffect(() => {
-    if (!container.current) return;
+    if (!containerRef.current) return;
 
-    container.current.addEventListener('scroll', (e) => {
+    containerRef.current.addEventListener('scroll', () => {
       if (scrollIndex !== dateIndex) {
         setDate(dates[scrollIndex].date);
       }
     });
 
-    return container.current.removeEventListener('scroll', () => {
+    return containerRef.current.removeEventListener('scroll', () => {
       if (scrollIndex !== dateIndex) {
         setDate(dates[scrollIndex].date);
       }
@@ -55,7 +58,7 @@ export const UpcomingContent = () => {
 
   return (
     <ContentContainer
-      ref={container}
+      ref={containerRef}
       heading={<HorizontalCalendar inputedDate={date} setDate={selectDate} />}
     >
       <div className='flex flex-col gap-8 px-11 md:px-0'>
@@ -63,7 +66,8 @@ export const UpcomingContent = () => {
           <UpcomingTodosSection
             key={dates[index].id}
             setTodosByDate={setTodosByDate}
-            setObserved={setObservedRef}
+            addObservedHeight={addObservedHeight}
+            setObservedHeight={setObservedHeight}
             index={index}
             section={dates[index]}
             addTodo={addTodo}
