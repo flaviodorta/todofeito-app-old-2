@@ -76,9 +76,7 @@ export const onKeyUpEnter =
     ref: React.RefObject<E>
   ) =>
   (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'Enter' && document.activeElement === ref.current) {
-      cb();
-    }
+    if (event.key === 'Enter' && document.activeElement === ref.current) cb();
   };
 
 export const getWeekDays = (date: Date) => {

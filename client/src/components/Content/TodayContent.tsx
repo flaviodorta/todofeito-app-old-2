@@ -38,8 +38,6 @@ export const TodayContent = () => {
     });
   }, []);
 
-  console.log(projects);
-
   const Heading = () => (
     <div className='flex items-center gap-2  md:w-[768px] md:max-w-[768px] md:min-w-[768px]'>
       <h2 className='font-bold text-xl'>Today</h2>

@@ -1,4 +1,4 @@
-import { isEqual, isSameDay, isToday, isTomorrow } from 'date-fns';
+import { isSameDay, isToday, isTomorrow } from 'date-fns';
 import { nanoid } from 'nanoid';
 import create from 'zustand';
 import {
@@ -73,6 +73,10 @@ export const todosStore = create<ITodosStore>((set, get) => {
     projects: projects,
     sections: [],
     labels: [],
+
+    // setSections: (sections: ),
+
+    setTodosBySection: (section: ITodosBySection) => set((state) => ({})),
 
     setTodosByProject: (project: ITodosByProject) =>
       set((state) => ({

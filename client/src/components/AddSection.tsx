@@ -7,13 +7,14 @@ import { useTodosStore, useUIStore } from '../zustand';
 interface IAddSectionProps {
   previousSectionIndex: number;
   project: IProject;
+  setSectionInputOpenById: (id: string | null) => void;
 }
 
 export const AddSection = ({
   previousSectionIndex,
   project,
+  setSectionInputOpenById,
 }: IAddSectionProps) => {
-  const { setSectionInputOpenById } = useUIStore();
   const { createSection } = useTodosStore();
   const [inputs, setInputs] = useState({
     name: '',
@@ -31,6 +32,7 @@ export const AddSection = ({
       project,
       index: previousSectionIndex + 1,
     });
+
     close();
   };
 

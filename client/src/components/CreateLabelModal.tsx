@@ -20,13 +20,10 @@ export const CreateLabelModal = ({ closeModal }: ICreateLabelModalProps) => {
       name: 'Stone',
       class: 'fill-stone-600',
     },
-    selectIconColor: 'bg-stone-600',
   });
 
-  const setColor = (
-    color: { name: string; class: string },
-    selectIconColor: string
-  ) => setInputs((state) => ({ ...state, color, selectIconColor }));
+  const setColor = (color: { name: string; class: string }) =>
+    setInputs((state) => ({ ...state, color }));
 
   const setName = (name: string) => setInputs((state) => ({ ...state, name }));
 
@@ -99,12 +96,7 @@ export const CreateLabelModal = ({ closeModal }: ICreateLabelModalProps) => {
               Label color
             </label>
 
-            <SelectColor
-              inputedColor={inputs.color}
-              selectIconColor={inputs.selectIconColor}
-              setColor={setColor}
-              cssProperty='fill'
-            />
+            <SelectColor inputedColor={inputs.color} setColor={setColor} />
           </form>
 
           <div className='flex justify-end gap-2'>

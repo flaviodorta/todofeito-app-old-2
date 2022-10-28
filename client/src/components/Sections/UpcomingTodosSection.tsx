@@ -13,7 +13,7 @@ interface IUpcomingTodosSection {
   addTodo: (todo: ITodo) => void;
   completeTodo: (todo: ITodo) => void;
   editTodo: (todo: ITodo) => void;
-  setObserved: (el: HTMLDivElement | null, index: number) => void;
+  setObserved: (el: HTMLDivElement) => void;
   index: number;
 }
 
@@ -52,16 +52,13 @@ export const UpcomingTodosSectionMemoized = (props: IUpcomingTodosSection) => {
 
     setTodosByDate(thisTodosDate);
   };
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    setObserved(ref.current, index);
-  }, []);
-
-  console.log(section);
 
   return (
-    <div ref={ref} key={section.id} className='flex flex-col h-fit w-full'>
+    <div
+      ref={setObserved}
+      key={section.id}
+      className='flex flex-col h-fit w-full'
+    >
       <div className='sticky top-[151px] z-[2]'>
         <div className='relative flex justify-between items-center w-full text-sm  bg-white font-bold h-fit py-1 border-b-[1px] border-gray-300'>
           <span className='text-gray-500'>{section.name}</span>

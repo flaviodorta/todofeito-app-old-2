@@ -12,15 +12,19 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { sidebarProjectsWrapper } from '../helpers/variants';
 import { isMobile } from 'react-device-detect';
 import { Backdrop } from './Backdrop';
-import { compareDesc, isToday } from 'date-fns';
-import { Fragment } from 'react';
+import { isToday } from 'date-fns';
 import useWindowSize from '../hooks/useWindowSize';
 import { useToggle } from '../hooks/useToggle';
 import { CreateProjectModal } from './CreateProjectModal';
 import { SidebarProject } from './SidebarProject';
 
 export const Sidebar = () => {
-  const { isSidebarOpen, toggleSidebar } = useUIStore();
+  const {
+    isSidebarOpen,
+    toggleSidebar,
+    isSidebarProjectsOpen,
+    toggleSidebarProjects,
+  } = useUIStore();
 
   const { getProjects, projects, dates, labels } = useTodosStore();
   const location = useLocation();
@@ -50,7 +54,7 @@ export const Sidebar = () => {
     0
   );
 
-  const [isSidebarProjectsOpen, toggleSidebarProjects] = useToggle(false);
+  // const [isSidebarProjectsOpen, toggleSidebarProjects] = useToggle(false);
 
   const [isCreateProjectModalOpen, toggleCreateProjectModalOpen] =
     useToggle(false);
@@ -67,12 +71,12 @@ export const Sidebar = () => {
           className='bg-black/50 md:hidden z-[20]'
         />
       )}
-      {/* 
+
       <AnimatePresence>
         {isCreateProjectModalOpen && (
           <CreateProjectModal closeModal={toggleCreateProjectModalOpen} />
         )}
-      </AnimatePresence> */}
+      </AnimatePresence>
 
       <motion.div
         initial={false}
@@ -167,13 +171,14 @@ export const Sidebar = () => {
             {getProjects()
               .slice(1)
               .map((project) => (
-                <Fragment key={project.id}>
-                  <SidebarProject
-                    project={project}
-                    isSidebarProjectsOpen={isSidebarProjectsOpen}
-                    onClick={() => navigate(`/${project.name}`)}
-                  />
-                </Fragment>
+                // <Fragment key={project.id}>
+                <SidebarProject
+                  key={project.id}
+                  project={project}
+                  isSidebarProjectsOpen={isSidebarProjectsOpen}
+                  onClick={() => navigate(`/projects/${project.id}`)}
+                />
+                // </Fragment>
               ))}
           </motion.div>
         </div>

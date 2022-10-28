@@ -1,6 +1,6 @@
 import { sidebarProjectWrapper } from '../helpers/variants';
 import { AnimatePresence, motion } from 'framer-motion';
-import { MoreThreeDotsIcon, TrashSolidIcon } from './Icons';
+import { CircleSolidIcon, MoreThreeDotsIcon, TrashSolidIcon } from './Icons';
 import { EditDropdown } from './Dropdowns/EditDropdown';
 import { useTodosStore, useUIStore } from '../zustand';
 import { useEffect, useRef, useState } from 'react';
@@ -33,9 +33,14 @@ export const SidebarProject = ({
 
   const [isEditProjectModalOpen, toggleEditProjectModalOpen] = useToggle(false);
 
+  const [isOptionsDropdownHover, toggleIsOptionsDropdownHover] =
+    useToggle(false);
+
   const [optionsIconSizes, optionsIconRef, shouldMeasure] = useDimensions();
 
-  console.log(optionsIconSizes);
+  console.log(project.color);
+
+  const ref = useRef<HTMLDivElement>(null);
 
   return (
     <>
@@ -49,8 +54,13 @@ export const SidebarProject = ({
       </AnimatePresence>
 
       <motion.div
+        ref={ref}
         key={project.id}
-        onClick={onClick}
+        onClick={(e) =>
+          e.target === ref.current && !isOptionsDropdownHover
+            ? onClick()
+            : undefined
+        }
         onAnimationComplete={shouldMeasure}
         className={`${
           isSidebarProjectsOpen ? 'hover:bg-gray-200' : ''
@@ -60,18 +70,26 @@ export const SidebarProject = ({
           variants={sidebarProjectWrapper}
           className='flex cursor-pointer items-center gap-4'
         >
-          <span className={`w-2.5 h-2.5 rounded-full ${project.color.class}`} />
+          <CircleSolidIcon
+            className={`w-2.5 h-2.5 rounded-full ${project.color.class}`}
+          />
+
           <span className='text-sm'>{project.name}</span>
 
           <div className='relative ml-auto'>
-            <span ref={optionsIconRef}>
+            <span
+              ref={optionsIconRef}
+              className='h-full w-5 group hover:bg-red-600/30'
+              onMouseEnter={toggleIsOptionsDropdownHover}
+              onMouseLeave={toggleIsOptionsDropdownHover}
+            >
               <MoreThreeDotsIcon
                 onClick={() => setWithBackdropOpenById(project.id)}
                 className={`${
                   withBackdropOpenById === project.id
                     ? 'fill-gray-600 opacity-100'
-                    : 'opacity-0'
-                } relative group-hover:opacity-100 hover:fill-gray-600 duration-100 transition-all fill-gray-400 ml-auto`}
+                    : 'opacity-0 group-hover:opacity-100 hover:fill-gray-600'
+                } relative duration-100 transition-all fill-gray-400 ml-auto z-[2]`}
               />
             </span>
 

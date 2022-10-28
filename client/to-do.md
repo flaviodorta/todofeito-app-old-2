@@ -23,18 +23,18 @@
 - change modal and selects to Portal to fix z-index issues
 - fix add todo in upcoming sections
 - memo upcoming sections
+- create labels
+- add labels function
+- create projects content
 
 # to do
 
-- create labels and projects content
-- add labels function
-- limits chars input
-
-- calcule width scrollbar to margin content
 - useRatio to update date in horizontal calendar
 
-- make todos dragglable between sections
+- limits chars input
+
 - user settings modal
+- make todos dragglable between sections
 - add i18n
 - search todo
 - add persist to zustand

@@ -1,41 +1,25 @@
 import { omit } from 'lodash';
 import { nanoid } from 'nanoid';
 import { useCallback, useMemo, useRef, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
-import { ILabel, IProject, ITodo } from '../../helpers/types';
-import { useUpdateState } from '../../hooks/useUpdateState';
+import { ILabel, ITodo } from '../../helpers/types';
 import { useTodosStore } from '../../zustand';
-import { AddSection } from '../AddSection';
 import { AddTodo } from '../AddTodo';
 import { ArrowLeftLongSolidIcon, PlusSolidIcon } from '../Icons';
-import { SectionsList } from '../Lists/SectionsList';
 import { TodosList } from '../Lists/TodosList';
 import { ContentContainer } from './ContentContainer';
 
 export const LabelContent = () => {
-  const {
-    labels,
-    sections,
-    editTodo,
-    completeTodo,
-    addTodo,
-    deleteSection,
-    setTodosByProject,
-  } = useTodosStore();
+  const { labels, editTodo, completeTodo, addTodo, setTodosByProject } =
+    useTodosStore();
 
   const params = useParams();
   const navigate = useNavigate();
 
-  console.log(params);
-
   const [todoInputOpenById, setTodoInputOpenById] = useState<string | null>(
     null
   );
-
-  const [sectionInputOpenById, setSectionInputOpenById] = useState<
-    string | null
-  >(null);
 
   const label = useMemo(
     () => labels.filter((label) => label.id === params.labelId)[0],

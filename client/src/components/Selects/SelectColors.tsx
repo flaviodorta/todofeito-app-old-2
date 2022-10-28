@@ -1,12 +1,11 @@
 import { Fragment, useEffect, useRef, useState } from 'react';
 import { Backdrop } from '../Backdrop';
-import { selectBgColors, selectFillColors } from '../../helpers/constants';
-import { IDimensions } from '../../helpers/types';
+import { selectFillColors } from '../../helpers/constants';
 import { useDimensions } from '../../hooks/useDimensions';
 import useWindowSize from '../../hooks/useWindowSize';
-import { findKey } from 'lodash';
 import { useToggle } from '../../hooks/useToggle';
 import { useOnClickOutside } from '../../hooks/useOnClickOutside';
+import { CircleSolidIcon } from '../Icons';
 
 interface ISelectColorOptionProps {
   thisColor: {
@@ -17,11 +16,7 @@ interface ISelectColorOptionProps {
     class: string;
     name: string;
   };
-  selectIconColor: string;
-  setColor: (
-    color: { name: string; class: string },
-    selectIconColor: string
-  ) => void;
+  setColor: (color: { name: string; class: string }) => void;
   closeSelect: () => void;
 }
 
@@ -30,22 +25,18 @@ export const SelectColorOption = (
 ): JSX.Element => {
   const { thisColor, inputedColor, setColor, closeSelect } = props;
 
-  // case is fill css property pass bg class to circle color
-  const colorName = thisColor.name.toLowerCase();
-  const bgClass = Object.entries(selectBgColors).filter((el) =>
-    el[0].match(colorName)
-  )[0][1];
-
   return (
     <div
       onClick={() => {
-        setColor({ name: thisColor.name, class: thisColor.class }, bgClass);
+        setColor({ name: thisColor.name, class: thisColor.class });
         closeSelect();
       }}
       className='hover:bg-gray-200 flex justify-start'
     >
       <span className='flex items-center justify-center px-2'>
-        <span className={`w-3 h-3 ${bgClass} fill-red-600 rounded-full`} />
+        <CircleSolidIcon
+          className={`w-3 h-3 ${thisColor.class} rounded-full`}
+        />
       </span>
       <span className='flex cursor-pointer w-full capitalize whitespace-nowrap justify-between items-center pl-1 pr-2 py-1.5 justify-self-start text-sm'>
         <span className='mr-2 capitalize'>{thisColor.name}</span>
@@ -65,23 +56,11 @@ interface ISelectColorProps {
     class: string;
     name: string;
   };
-  selectIconColor: string;
-  setColor: (
-    color: { name: string; class: string },
-    selectIconColor: string
-  ) => void;
-  cssProperty?: string;
+  setColor: (color: { name: string; class: string }) => void;
 }
 
-export const SelectColor = ({
-  inputedColor,
-  selectIconColor,
-  setColor,
-  cssProperty = 'bg',
-}: ISelectColorProps) => {
-  const colors = cssProperty === 'fill' ? selectFillColors : selectBgColors;
-
-  const colorsEntries = Object.entries(colors).map((color) => ({
+export const SelectColor = ({ inputedColor, setColor }: ISelectColorProps) => {
+  const colorsEntries = Object.entries(selectFillColors).map((color) => ({
     name: color[0],
     class: color[1],
   }));
@@ -131,7 +110,9 @@ export const SelectColor = ({
           {inputedColor && (
             <>
               <span className='flex items-center justify-center px-2'>
-                <span className={`w-3 h-3 ${selectIconColor} rounded-full`} />
+                <CircleSolidIcon
+                  className={`w-3 h-3 ${inputedColor.class} rounded-full`}
+                />
               </span>
               <span className='flex cursor-pointer w-full capitalize whitespace-nowrap justify-between items-center pl-1 pr-2 py-1.5 justify-self-start text-sm'>
                 <span className='mr-2 capitalize'>{inputedColor.name}</span>
@@ -157,7 +138,6 @@ export const SelectColor = ({
                 <Fragment key={i}>
                   <SelectColorOption
                     thisColor={color}
-                    selectIconColor={selectIconColor}
                     inputedColor={inputedColor}
                     setColor={setColor}
                     closeSelect={toggleSelectColor}

@@ -6,6 +6,7 @@ import { InboxPage } from './pages/InboxPage';
 import { UpcomingPage } from './pages/UpcomingPage';
 import { FiltersAndLabelsPage } from './pages/FiltersAndLabelsPage';
 import { LabelPage } from './pages/LabelPage';
+import { ProjectPage } from './pages/ProjectPage';
 
 const queryClient = new QueryClient();
 
@@ -20,6 +21,7 @@ export default function App() {
             <Route path='/upcoming' element={<UpcomingPage />} />
             <Route path='/filters-labels' element={<FiltersAndLabelsPage />} />
             <Route path='/filters-labels/:labelId' element={<LabelPage />} />
+            <Route path='/projects/:projectId' element={<ProjectPage />} />
             <Route path='*' element={<InboxPage />} />
           </Routes>
         </BrowserRouter>

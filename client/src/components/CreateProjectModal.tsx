@@ -25,13 +25,10 @@ export const CreateProjectModal = ({
       name: 'Stone',
       class: 'fill-stone-600',
     },
-    selectIconColor: 'bg-stone-600',
   });
 
-  const setColor = (
-    color: { name: string; class: string },
-    selectIconColor: string
-  ) => setInputs((state) => ({ ...state, color, selectIconColor }));
+  const setColor = (color: { name: string; class: string }) =>
+    setInputs((state) => ({ ...state, color }));
 
   const setName = (name: string) => setInputs((state) => ({ ...state, name }));
 
@@ -75,7 +72,7 @@ export const CreateProjectModal = ({
         <hr className='border-gray-300' />
 
         <div className='py-5 px-6'>
-          <form className='w-full flex flex-col gap-1 mb-4'>
+          <div className='w-full flex flex-col gap-1 mb-4'>
             <div className='flex justify-between'>
               <label htmlFor='project-name' className='text-sm font-medium'>
                 Name
@@ -96,20 +93,15 @@ export const CreateProjectModal = ({
               onKeyUp={createNewProjectOnKeyEnterInputProjectName}
               className='outline-none text-sm h-7 rounded-[3px] py-1 px-2 border-gray-300 focus:border-gray-400 border-[1px] duration-150 transition-all'
             />
-          </form>
+          </div>
 
-          <form className='relative w-full flex flex-col gap-1 mb-8'>
+          <div className='relative w-full flex flex-col gap-1 mb-8'>
             <label htmlFor='project-color' className='text-sm font-medium'>
               Color
             </label>
 
-            <SelectColor
-              inputedColor={inputs.color}
-              selectIconColor={inputs.selectIconColor}
-              setColor={setColor}
-              cssProperty='fill'
-            />
-          </form>
+            <SelectColor inputedColor={inputs.color} setColor={setColor} />
+          </div>
 
           <div className='flex justify-end gap-2'>
             <button
@@ -121,9 +113,6 @@ export const CreateProjectModal = ({
 
             <button
               onClick={createNewProject}
-              onSubmit={(e) => {
-                createNewProject();
-              }}
               className={`${
                 !inputs.name
                   ? 'cursor-not-allowed bg-blue-400'

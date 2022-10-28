@@ -157,7 +157,7 @@ export const TodosSection = ({
         </span>
       </div>
 
-      <div className='w-full h-fit mb-4'>
+      <div className='w-full h-fit mb-2'>
         {isTodoListOpen && (
           <div className='w-full flex flex-col gap-2'>
             {/* Todo list */}
@@ -195,11 +195,12 @@ export const TodosSection = ({
       </div>
 
       {/* add new section */}
-      <div className='w-full'>
+      <div className='w-full mb-5'>
         {sectionInputOpenById === addSectionIdRef.current ? (
           <AddSection
             previousSectionIndex={section.index}
             project={section.project}
+            setSectionInputOpenById={setSectionInputOpenById}
           />
         ) : (
           <div
