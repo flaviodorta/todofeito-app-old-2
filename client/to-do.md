@@ -26,18 +26,17 @@
 - create labels
 - add labels function
 - create projects content
+- useRatio to update date in horizontal calendar
 
 # to do
 
-- useRatio to update date in horizontal calendar
-
+- fix project/labels page
 - limits chars input
-
 - user settings modal
 - make todos dragglable between sections
-- add i18n
 - search todo
 - add sidebar resizable (react-resizable)
+- add i18n
 
 - refactor server
 - connect server with front end

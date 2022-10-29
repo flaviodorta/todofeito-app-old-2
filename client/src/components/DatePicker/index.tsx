@@ -29,22 +29,22 @@ export const DatePicker = ({
   setDate,
   sizes,
 }: IDatePickerProps): JSX.Element => {
-  const today = new Date();
-  const currentYear = getYearNumber(today);
+  // const inputedDate = new Date();
+  const currentYear = getYearNumber(inputedDate);
   const currentDay: IDay = {
-    date: today,
-    numberInMonth: getDayNumberInMonth(today),
-    nameInWeek: getDayNameInWeek(today),
+    date: inputedDate,
+    numberInMonth: getDayNumberInMonth(inputedDate),
+    nameInWeek: getDayNameInWeek(inputedDate),
   };
   const currentMonth: IMonth = {
-    name: getMonthName(today),
-    number: getMonthNumber(today),
-    totalDays: getDaysInMonth(today),
+    name: getMonthName(inputedDate),
+    number: getMonthNumber(inputedDate),
+    totalDays: getDaysInMonth(inputedDate),
     totalOfLastDays: getTotalLastDaysInMonth(
       new Date(
-        getYearNumber(today),
-        getMonthNumber(today),
-        getTotalLastDaysInMonth(today)
+        getYearNumber(inputedDate),
+        getMonthNumber(inputedDate),
+        getTotalLastDaysInMonth(inputedDate)
       )
     ),
   };
