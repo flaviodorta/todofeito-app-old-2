@@ -91,23 +91,15 @@ export function useIndexByScrollRatio<T extends HTMLElement = HTMLElement>({
     containerRef.current?.addEventListener('scroll', () => {
       const scrollRatio =
         (containerRef.current?.scrollTop as number) / observediesTotalHeight;
-      // (containerRef.current?.scrollHeight as number);
 
       const idx = getIndexByRatio(scrollRatio, ratios);
-      // console.log('scroll ratio: ', scrollRatio);
-      // console.log('ratio: ', ratios[index]);
-      // console.log('scroll height', containerRef.current?.scrollHeight);
-      // console.log('ratios ratio: ', scrollRatio / ratios[index]);
 
       if (index !== idx) setIndex(idx);
-      // if (scrollRatio / ratios[index] > 0)
-      //   setIndex(Math.floor(scrollRatio / ratios[index]));
     });
 
     return containerRef.current.removeEventListener('scroll', () => {
       const scrollRatio =
         (containerRef.current?.scrollTop as number) / observediesTotalHeight;
-      // (containerRef.current?.scrollHeight as number);
 
       const idx = getIndexByRatio(scrollRatio, ratios);
 

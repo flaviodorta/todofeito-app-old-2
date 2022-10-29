@@ -81,9 +81,8 @@ export const ProjectContent = () => {
       <h2 className='font-bold text-xl'>{project.name}</h2>
     </div>
   );
-
   return (
-    <ContentContainer heading={<Heading />}>
+    <ContentContainer todos={todos} setTodos={setTodos} heading={<Heading />}>
       <div className='w-full px-9 md:px-0'>
         <TodosList
           todos={todos}

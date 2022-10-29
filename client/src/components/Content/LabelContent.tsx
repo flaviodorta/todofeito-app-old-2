@@ -61,7 +61,7 @@ export const LabelContent = () => {
   );
 
   return (
-    <ContentContainer heading={<Heading />}>
+    <ContentContainer todos={todos} setTodos={setTodos} heading={<Heading />}>
       <div className='w-full px-9 md:px-0'>
         <TodosList
           todos={todos}

@@ -29,8 +29,6 @@ export const UpcomingContent = () => {
     [date, dates]
   );
 
-  // console.log('scroll index: ', scrollIndex);
-
   const selectDate = useCallback(
     (date: Date) => {
       scrollToIndex(

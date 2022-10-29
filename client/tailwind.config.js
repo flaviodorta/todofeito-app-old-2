@@ -19,6 +19,9 @@ module.exports = {
         90: '90',
         100: '100',
       },
+      colors: {
+        black: '#202020',
+      },
     },
   },
   plugins: [require('tailwindcss-scoped-groups')],

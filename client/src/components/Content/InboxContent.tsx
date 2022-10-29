@@ -1,5 +1,5 @@
 import { nanoid } from 'nanoid';
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { IProject, ITodo } from '../../helpers/types';
 import { useUpdateState } from '../../hooks/useUpdateState';
@@ -21,9 +21,6 @@ export const InboxContent = () => {
     deleteSection,
     setTodosByProject,
   } = useTodosStore();
-
-  const params = useParams();
-  const navigate = useNavigate();
 
   const [todoInputOpenById, setTodoInputOpenById] = useState<string | null>(
     null
@@ -81,7 +78,7 @@ export const InboxContent = () => {
   );
 
   return (
-    <ContentContainer heading={<Heading />}>
+    <ContentContainer todos={todos} setTodos={setTodos} heading={<Heading />}>
       <div className='w-full px-9 md:px-0'>
         <TodosList
           todos={todos}

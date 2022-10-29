@@ -1,6 +1,5 @@
 import { memo, useEffect, useState } from 'react';
 import { IRenderableElements, ITodo } from '../helpers/types';
-import { useUIStore, useTodosStore } from '../zustand';
 import {
   CalendarRegularIcon,
   GripVerticalSolidIcon,
@@ -15,18 +14,21 @@ import { getDayNumberInMonth, getMonthName } from '../helpers/functions';
 import { isToday } from 'date-fns';
 import { useDimensions } from '../hooks/useDimensions';
 import { isEqual } from 'lodash';
+import { EditTodo } from './EditTodo';
 
 type ITodoItem = {
   todo: ITodo;
+  // todoInputOpenById: string | null;
+  setTodoInputOpenById: (id: string | null) => void;
   completeTodo: (todo: ITodo) => void;
   editTodo: (todo: ITodo) => void;
-  setTodoInputOpenById: (id: string | null) => void;
   draggableProvided: DraggableProvided;
   draggableSnapshot: DraggableStateSnapshot;
 };
 
 export const TodoItemMemoized = ({
   todo,
+  // todoInputOpenById,
   completeTodo,
   editTodo,
   setTodoInputOpenById,
@@ -82,6 +84,13 @@ export const TodoItemMemoized = ({
       completeTodo(todo);
     }, 200);
   };
+
+  // if (todoInputOpenById === todo.id)
+  //   <div className='w-full h-60'>
+  //     <EditTodo todo={todo} setTodoInputOpenById={setTodoInputOpenById} />
+  //   </div>;
+
+  console.log('render ', todo.id);
 
   return (
     <div
@@ -179,7 +188,10 @@ export const TodoItemMemoized = ({
       {isHover && (
         <div className='absolute  flex items-center gap-2 top-1 right-0'>
           <span
-            onClick={() => setTodoInputOpenById(todo.id)}
+            onClick={() => {
+              setTodoInputOpenById(todo.id);
+              console.log('click ', todo.id);
+            }}
             className='group mini-button-option cursor-pointer'
           >
             <PenSolidIcon className='fill-gray-400 group-hover:fill-gray-500' />
@@ -195,4 +207,4 @@ const todosItemPropsAreEqual = (
   nextProps: Readonly<ITodoItem>
 ) => isEqual(prevProps.todo, nextProps.todo);
 
-export const TodoItem = memo(TodoItemMemoized);
+export const TodoItem = memo(TodoItemMemoized, todosItemPropsAreEqual);

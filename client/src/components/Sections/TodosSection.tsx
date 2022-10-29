@@ -93,7 +93,6 @@ export const TodosSection = ({
       />
     );
   }
-
   return (
     <div className='flex flex-col h-fit w-full'>
       <div {...mobileDraggable} className='sticky top-[76px] z-[2]'>
@@ -102,7 +101,12 @@ export const TodosSection = ({
           onMouseLeave={toggleHover}
           className='relative flex justify-between items-center w-full text-sm  bg-white font-bold h-fit pb-1 border-b-[1px] border-gray-300'
         >
-          {section.name}
+          <span className='flex items-center gap-2 text-center'>
+            {section.name}
+            <span className='font-light text-gray-600 text-xs relative top-[1px]'>
+              {todos.length ? todos.length : undefined}
+            </span>
+          </span>
 
           {draggableProvided?.dragHandleProps && width >= 768 && !isMobile && (
             <span

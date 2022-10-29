@@ -1,5 +1,5 @@
 import { isEqual } from 'lodash';
-import { memo } from 'react';
+import { memo, useEffect, useRef, useState } from 'react';
 import {
   DragDropContext,
   Draggable,
@@ -8,26 +8,26 @@ import {
 } from 'react-beautiful-dnd';
 import { reorder } from '../../helpers/functions';
 import { ITodo } from '../../helpers/types';
-// import { useUIStore } from '../../zustand';
+import { useUpdateState } from '../../hooks/useUpdateState';
 import { EditTodo } from '../EditTodo';
 import { TodoItem } from './../TodoItem';
 
 interface ITodosListProps {
   todos: ITodo[];
+  todoInputOpenById: string | null;
   setTodos: (todos: ITodo[]) => void;
   completeTodo: (todo: ITodo) => void;
   editTodo: (todo: ITodo) => void;
   setTodoInputOpenById: (id: string | null) => void;
-  todoInputOpenById: string | null;
 }
 
 export const TodosListMemoized = ({
   todos,
+  todoInputOpenById,
   setTodos,
   completeTodo,
   editTodo,
   setTodoInputOpenById,
-  todoInputOpenById,
 }: ITodosListProps) => {
   const onDragEnd = (result: DropResult) => {
     const { destination, source } = result;
@@ -73,8 +73,8 @@ export const TodosListMemoized = ({
                     ) : (
                       <TodoItem
                         todo={todo}
-                        completeTodo={completeTodo}
                         editTodo={editTodo}
+                        completeTodo={completeTodo}
                         setTodoInputOpenById={setTodoInputOpenById}
                         draggableProvided={draggableProvided}
                         draggableSnapshot={draggableSnapshot}
@@ -93,9 +93,4 @@ export const TodosListMemoized = ({
   );
 };
 
-const todosListPropsAreEqual = (
-  prevProps: Readonly<ITodosListProps>,
-  nextProps: Readonly<ITodosListProps>
-) => isEqual(prevProps.todos, nextProps.todos);
-
-export const TodosList = memo(TodosListMemoized, todosListPropsAreEqual);
+export const TodosList = memo(TodosListMemoized);

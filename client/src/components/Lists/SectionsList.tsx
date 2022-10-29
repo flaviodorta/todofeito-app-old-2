@@ -25,9 +25,9 @@ interface ISectionsListProps {
 
 export const SectionsList = ({
   sections,
-  setSections,
   todoInputOpenById,
   sectionInputOpenById,
+  setSections,
   completeTodo,
   addTodo,
   editTodo,
@@ -48,8 +48,6 @@ export const SectionsList = ({
 
     setSections(reorder(sections, source.index, destination.index));
   };
-
-  console.log('section');
 
   return (
     <div className='mb-4 pl-11 pr-4 md:px-0'>

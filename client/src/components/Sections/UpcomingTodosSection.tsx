@@ -72,9 +72,13 @@ export const UpcomingTodosSectionMemoized = (props: IUpcomingTodosSection) => {
   return (
     <div ref={ref} key={section.id} className='flex flex-col h-fit w-full'>
       <div className='sticky top-[148px] z-[2]'>
-        <div className='relative flex justify-between items-center w-full text-sm  bg-white font-bold h-fit py-1 border-b-[1px] border-gray-300'>
-          <span className='text-gray-500'>
-            {section.name} / index: {index}
+        <div className='relative flex justify-between items-center w-full text-sm bg-white font-bold h-fit py-1 border-b-[1px] border-gray-300'>
+          <span
+            className={`${
+              section.todos.length > 0 ? 'text-black' : 'text-gray-500'
+            }`}
+          >
+            {section.name}
           </span>
 
           <span
@@ -98,8 +102,8 @@ export const UpcomingTodosSectionMemoized = (props: IUpcomingTodosSection) => {
               setTodos={setThisTodosDate}
               editTodo={editTodo}
               completeTodo={completeTodo}
-              todoInputOpenById={todoInputOpenById}
               setTodoInputOpenById={setTodoInputOpenById}
+              todoInputOpenById={todoInputOpenById}
             />
           ) : (
             <span className='text-xs text-gray-400 pb-4'>

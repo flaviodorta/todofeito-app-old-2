@@ -102,6 +102,8 @@ export const AddTodo = ({
 
   const close = () => setTodoInputOpenById(null);
 
+  console.log();
+
   const sendNewTodo = () => {
     if (!inputs.title) return;
 
@@ -169,6 +171,10 @@ export const AddTodo = ({
       console.log('scroll');
     }
   }, [renderedSelect]);
+
+  // useEffect(() => {
+  //   return () => setTodoInputOpenById(null);
+  // }, []);
 
   return (
     <div ref={sizesRef}>
