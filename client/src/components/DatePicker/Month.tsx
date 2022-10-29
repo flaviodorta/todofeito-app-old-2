@@ -1,4 +1,3 @@
-import { nanoid } from 'nanoid';
 import { Fragment } from 'react';
 import { ICalendarState } from '../../helpers/types';
 import { Day } from './Day';

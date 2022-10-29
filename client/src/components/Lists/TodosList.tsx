@@ -65,7 +65,10 @@ export const TodosListMemoized = ({
                   >
                     {todoInputOpenById === todo.id ? (
                       <div className='w-full h-60'>
-                        <EditTodo todo={todo} />
+                        <EditTodo
+                          todo={todo}
+                          setTodoInputOpenById={setTodoInputOpenById}
+                        />
                       </div>
                     ) : (
                       <TodoItem

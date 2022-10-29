@@ -20,18 +20,18 @@ import { SelectLabel } from './Selects/SelectLabel';
 import { SelectPriority } from './Selects/SelectPriority';
 import { labelColors, labelHoverColors } from '../helpers/constants';
 import { ILabel, IProject, IRenderableElements, ITodo } from '../helpers/types';
-import { useUIStore, useTodosStore } from '../zustand';
+import { useTodosStore } from '../zustand';
 import { useDimensions } from '../hooks/useDimensions';
 
 interface IEditTodoProps {
   todo: ITodo;
+  setTodoInputOpenById: (id: string | null) => void;
 }
 
-export const EditTodo = ({ todo }: IEditTodoProps) => {
+export const EditTodo = ({ todo, setTodoInputOpenById }: IEditTodoProps) => {
   const { id, title, description, section, date, project, priority, labels } =
     todo;
   const { editTodo } = useTodosStore();
-  const { setTodoInputOpenById } = useUIStore();
 
   const [inputs, setInputs] = useState({
     title,

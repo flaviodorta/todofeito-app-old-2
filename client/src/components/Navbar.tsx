@@ -22,9 +22,10 @@ import { useToggle } from '../hooks/useToggle';
 export const Navbar = () => {
   const { fullName, email } = useUserStore();
   const [buttonClicked, setButtonClicked] = useState('');
-  const { labelShowById, isSidebarOpen, toggleSidebar, setLabelShowById } =
-    useUIStore();
+  const { isSidebarOpen, toggleSidebar } = useUIStore();
   const navigate = useNavigate();
+
+  const [labelShowById, setLabelShowById] = useState<string | null>(null);
 
   const fullNameSplitted = fullName.split(' ');
   const firstName = fullNameSplitted[0];

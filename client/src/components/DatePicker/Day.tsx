@@ -2,7 +2,6 @@ import { compareAsc, getMonth, getYear, isToday } from 'date-fns';
 import { useRef } from 'react';
 import { getDayNumberInMonth } from '../../helpers/functions';
 import { motion } from 'framer-motion';
-import { nanoid } from 'nanoid';
 
 interface IDayProps {
   className?: string;

@@ -86,7 +86,12 @@ export const TodosSection = ({
   const [optionsIconSizes, optionsIconRef] = useDimensions();
 
   if (sectionInputOpenById === editSectionIdRef.current) {
-    return <EditSection section={section} />;
+    return (
+      <EditSection
+        section={section}
+        setSectionInputOpenById={setSectionInputOpenById}
+      />
+    );
   }
 
   return (

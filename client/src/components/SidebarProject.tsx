@@ -3,7 +3,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { CircleSolidIcon, MoreThreeDotsIcon, TrashSolidIcon } from './Icons';
 import { EditDropdown } from './Dropdowns/EditDropdown';
 import { useTodosStore, useUIStore } from '../zustand';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { IProject } from '../helpers/types';
 import { useToggle } from '../hooks/useToggle';
 import { EditProjectModal } from './EditProjectModal';
@@ -19,8 +19,11 @@ export const SidebarProject = ({
   onClick: () => void;
   isSidebarProjectsOpen: boolean;
 }) => {
-  const { withBackdropOpenById, setWithBackdropOpenById } = useUIStore();
+  // const { isOptionsDropdownOpen, setIsOptionsDropdownOpen } = useUIStore();
   const { deleteProject } = useTodosStore();
+  const [isOptionsDropdownOpen, setIsOptionsDropdownOpen] = useState<
+    string | null
+  >(null);
 
   const [editingProject, setEditingProject] = useState<IProject>({
     id: '',
@@ -37,8 +40,6 @@ export const SidebarProject = ({
     useToggle(false);
 
   const [optionsIconSizes, optionsIconRef, shouldMeasure] = useDimensions();
-
-  console.log(project.color);
 
   const ref = useRef<HTMLDivElement>(null);
 
@@ -84,24 +85,24 @@ export const SidebarProject = ({
               onMouseLeave={toggleIsOptionsDropdownHover}
             >
               <MoreThreeDotsIcon
-                onClick={() => setWithBackdropOpenById(project.id)}
+                onClick={() => setIsOptionsDropdownOpen(project.id)}
                 className={`${
-                  withBackdropOpenById === project.id
+                  isOptionsDropdownOpen === project.id
                     ? 'fill-gray-600 opacity-100'
                     : 'opacity-0 group-hover:opacity-100 hover:fill-gray-600'
                 } relative duration-100 transition-all fill-gray-400 ml-auto z-[2]`}
               />
             </span>
 
-            {withBackdropOpenById === project.id && (
+            {isOptionsDropdownOpen === project.id && (
               <EditDropdown
                 sizes={optionsIconSizes}
-                close={() => setWithBackdropOpenById(null)}
+                close={() => setIsOptionsDropdownOpen(null)}
               >
                 <span
                   onClick={() => {
                     setEditingProject(project);
-                    setWithBackdropOpenById(null);
+                    setIsOptionsDropdownOpen(null);
                     toggleEditProjectModalOpen();
                   }}
                   className='w-full flex items-center gap-2 px-2 py-1 hover:bg-gray-300/30'

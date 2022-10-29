@@ -44,14 +44,15 @@ export const AddTodo = ({
   addTodo,
   setTodoInputOpenById,
 }: IAddTodoItemProps) => {
-  const [inputs, setInputs] = useState({
+  const defaultInputsValues = {
     title: '',
     description: '',
     project: project ? project : inboxProject,
     priority: 4,
     date: date ? date : new Date(),
     labels: labels ? labels : ([] as ILabel[]),
-  });
+  };
+  const [inputs, setInputs] = useState(defaultInputsValues);
 
   const [renderedSelect, setRenderedSelect] =
     useState<IRenderableElements>(null);
@@ -83,16 +84,7 @@ export const AddTodo = ({
       ),
     }));
 
-  const resetInputs = () => {
-    setInputs((state) => ({
-      title: '',
-      description: '',
-      project: inboxProject,
-      priority: 4,
-      date: date ? date : new Date(),
-      labels: [] as ILabel[],
-    }));
-  };
+  const resetInputs = () => setInputs(defaultInputsValues);
 
   const todo: ITodo = {
     id: nanoid(),

@@ -64,6 +64,8 @@ export const ProjectContent = () => {
 
   const thisProject: IProject = omit(project, 'todos');
 
+  console.log(thisProject);
+
   const setTodos = useCallback(
     (todos: ITodo[]) => {
       setTodosByProject({
