@@ -1,14 +1,11 @@
 import { Backdrop } from './Backdrop';
 import { SelectColor } from './Selects/SelectColors';
 import { useTodosStore } from '../zustand';
-import { useToggle } from '../hooks/useToggle';
 import { useEffect, useRef, useState } from 'react';
-import { useOnClickOutside } from '../hooks/useOnClickOutside';
 import { onKeyUpEnter } from '../helpers/functions';
 import { IProject } from '../helpers/types';
 import { nanoid } from 'nanoid';
 import { motion } from 'framer-motion';
-import { useDimensions } from '../hooks/useDimensions';
 
 interface ICreateProjectModalProps {
   closeModal: () => void;

@@ -23,14 +23,19 @@ export const HorizontalCalendar = ({
   const [renderedSelect, setRenderedSelect] =
     useState<IRenderableElements>(null);
 
-  const [dueDateSizes, dueDateRef] = useDimensions();
+  const [dueDateSizes, dueDateRef, calcDueDateSizes] = useDimensions();
 
   const [weekDays, setWeekDays] = useState<Date[]>(getWeekDays(inputedDate));
 
   const closeSelect = () => setRenderedSelect(null);
 
   const openDatePicker = () =>
-    !renderedSelect ? setRenderedSelect('date-picker') : undefined;
+    !renderedSelect
+      ? () => {
+          setRenderedSelect('date-picker');
+          calcDueDateSizes();
+        }
+      : undefined;
 
   const goToToday = () => {
     setDate(today);

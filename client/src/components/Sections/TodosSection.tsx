@@ -69,12 +69,20 @@ export const TodosSection = ({
     toggleTodoListOpen();
   };
 
+  const containerRef = useRef<HTMLDivElement>(null!);
+
+  const [optionsIconSizes, optionsIconRef, calcOptionsSizes] = useDimensions({
+    parentRef: containerRef,
+  });
+
   const [isOptionsDropdownOpen, setIsOptionsDropdown] = useState(false);
 
-  const toggleOptionsDropdown = () =>
-    isOptionsDropdownOpen
-      ? setIsOptionsDropdown(false)
-      : setIsOptionsDropdown(true);
+  const toggleOptionsDropdown = () => {
+    if (isOptionsDropdownOpen) {
+      setIsOptionsDropdown(false);
+      calcOptionsSizes();
+    } else setIsOptionsDropdown(true);
+  };
 
   const { width } = useWindowSize();
 
@@ -93,15 +101,6 @@ export const TodosSection = ({
     setSectionInputOpenById(editSectionIdRef.current);
   const openAddTodo = () => setTodoInputOpenById(addTodoIdRef.current);
 
-  const [optionsIconSizes, optionsIconRef, recalcOptionsSizes] =
-    useDimensions();
-
-  const containerRef = useRef<HTMLDivElement>(null!);
-
-  useResizeObserver(containerRef, () => recalcOptionsSizes());
-
-  // console.log(todos);
-
   if (sectionInputOpenById === editSectionIdRef.current) {
     return (
       <EditSection
@@ -110,14 +109,6 @@ export const TodosSection = ({
       />
     );
   }
-
-  console.log(droppableSnapshot.isDraggingOver);
-
-  // if (todos.length === 0 && droppableSnapshot.isDraggingOver) {
-  //   return (
-  //     <div className='h-10 bg-gray-400 rounded-md transition-all duration-100' />
-  //   );
-  // }
 
   return (
     <div

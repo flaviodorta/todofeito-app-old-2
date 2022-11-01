@@ -46,10 +46,16 @@ export const EditTodo = ({ todo, setTodoInputOpenById }: IEditTodoProps) => {
     useState<IRenderableElements>(null);
 
   // centerlize select
-  const [dueDateSizes, dueDateRef] = useDimensions();
-  const [projectsSizes, projectsRef] = useDimensions();
-  const [labelsSizes, labelsRef] = useDimensions();
-  const [prioritySizes, priorityRef] = useDimensions();
+  const containerRef = useRef<HTMLDivElement>(null!);
+
+  const [dueDateSizes, dueDateRef] = useDimensions({ parentRef: containerRef });
+  const [projectsSizes, projectsRef] = useDimensions({
+    parentRef: containerRef,
+  });
+  const [labelsSizes, labelsRef] = useDimensions({ parentRef: containerRef });
+  const [prioritySizes, priorityRef] = useDimensions({
+    parentRef: containerRef,
+  });
 
   const addLabel = (label: ILabel) =>
     setInputs((state) => ({
@@ -129,8 +135,6 @@ export const EditTodo = ({ todo, setTodoInputOpenById }: IEditTodoProps) => {
   useEffect(() => {
     titleInputRef?.current?.focus();
   }, []);
-
-  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!containerRef?.current) return;

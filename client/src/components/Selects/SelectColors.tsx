@@ -65,9 +65,9 @@ export const SelectColor = ({ inputedColor, setColor }: ISelectColorProps) => {
     class: color[1],
   }));
 
-  const [containerSizes, containerRef] = useDimensions();
+  const [containerSizes, containerInputDropdownRef] = useDimensions();
 
-  const [selectColorSizes, selectColorRef2] = useDimensions();
+  const [selectColorSizes, selectColorInputContainerRef] = useDimensions();
 
   const { width } = useWindowSize();
 
@@ -91,15 +91,15 @@ export const SelectColor = ({ inputedColor, setColor }: ISelectColorProps) => {
     if (isSelectColorOpen === false) focusSelectColorInput();
   }, [isSelectColorOpen]);
 
-  const selectColorRef = useRef<HTMLDivElement>(null);
+  const selectColorInputRef = useRef<HTMLDivElement>(null);
 
-  useOnClickOutside(selectColorRef, unfocusSelectColorInput);
+  useOnClickOutside(selectColorInputRef, unfocusSelectColorInput);
 
   return (
     <>
-      <div ref={selectColorRef2}>
+      <div ref={selectColorInputContainerRef}>
         <div
-          ref={selectColorRef}
+          ref={selectColorInputRef}
           onClick={toggleSelectColor}
           className={`outline-none flex h-7 rounded-[3px] py-1  ${
             isSelectColorOpen ? 'border-gray-400' : 'border-gray-300'
@@ -125,7 +125,7 @@ export const SelectColor = ({ inputedColor, setColor }: ISelectColorProps) => {
       {isSelectColorOpen && (
         <Backdrop close={toggleSelectColor} className='z-[2000]'>
           <div
-            ref={containerRef}
+            ref={containerInputDropdownRef}
             style={{
               left: selectColorSizes.left + selectColorSizes.width / 2 + resize,
               top: selectColorSizes.top + selectColorSizes.height,
@@ -135,14 +135,13 @@ export const SelectColor = ({ inputedColor, setColor }: ISelectColorProps) => {
           >
             <div className='dropdown-select overflow-y-scroll h-48 w-full'>
               {colorsEntries.map((color, i) => (
-                <Fragment key={i}>
-                  <SelectColorOption
-                    thisColor={color}
-                    inputedColor={inputedColor}
-                    setColor={setColor}
-                    closeSelect={toggleSelectColor}
-                  />
-                </Fragment>
+                <SelectColorOption
+                  key={i}
+                  thisColor={color}
+                  inputedColor={inputedColor}
+                  setColor={setColor}
+                  closeSelect={toggleSelectColor}
+                />
               ))}
             </div>
           </div>

@@ -29,7 +29,6 @@ export const DatePicker = ({
   setDate,
   sizes,
 }: IDatePickerProps): JSX.Element => {
-  // const inputedDate = new Date();
   const currentYear = getYearNumber(inputedDate);
   const currentDay: IDay = {
     date: inputedDate,
@@ -183,7 +182,7 @@ export const DatePicker = ({
   console.log(resize);
 
   return (
-    <Backdrop close={closeSelect} className='z-[2000] bg-black/50'>
+    <Backdrop close={closeSelect} className='z-[2000]'>
       <div
         ref={containerRef}
         style={{

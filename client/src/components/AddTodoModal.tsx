@@ -47,6 +47,8 @@ export const AddTodoModal = (props: IAddTodoModalProps) => {
     useState<IRenderableElements>(null);
 
   // centerlize select
+  const containerRef = useRef<HTMLDivElement>(null!);
+
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const [dueDateSizes, dueDateRef, shouldMeasureDueDate] = useDimensions({
@@ -157,6 +159,7 @@ export const AddTodoModal = (props: IAddTodoModalProps) => {
   return (
     <Backdrop close={closeAddTodoModal} className='z-[1000]'>
       <motion.div
+        ref={containerRef}
         variants={addTodoModal}
         initial='initial'
         animate='animate'

@@ -2,7 +2,7 @@ import { sidebarProjectWrapper } from '../helpers/variants';
 import { AnimatePresence, motion } from 'framer-motion';
 import { CircleSolidIcon, MoreThreeDotsIcon, TrashSolidIcon } from './Icons';
 import { EditDropdown } from './Dropdowns/EditDropdown';
-import { useTodosStore, useUIStore } from '../zustand';
+import { useTodosStore } from '../zustand';
 import { useRef, useState } from 'react';
 import { IProject } from '../helpers/types';
 import { useToggle } from '../hooks/useToggle';
@@ -39,9 +39,11 @@ export const SidebarProject = ({
   const [isOptionsDropdownHover, toggleIsOptionsDropdownHover] =
     useToggle(false);
 
-  const [optionsIconSizes, optionsIconRef, shouldMeasure] = useDimensions();
-
   const ref = useRef<HTMLDivElement>(null);
+
+  const [optionsIconSizes, optionsIconRef, calcSizes] = useDimensions({
+    parentRef: ref,
+  });
 
   return (
     <>
@@ -62,7 +64,7 @@ export const SidebarProject = ({
             ? onClick()
             : undefined
         }
-        onAnimationComplete={shouldMeasure}
+        onAnimationComplete={calcSizes}
         className={`${
           isSidebarProjectsOpen ? 'hover:bg-gray-200' : ''
         } relative group h-fit rounded-md p-1.5 w-full`}
@@ -85,7 +87,10 @@ export const SidebarProject = ({
               onMouseLeave={toggleIsOptionsDropdownHover}
             >
               <MoreThreeDotsIcon
-                onClick={() => setIsOptionsDropdownOpen(project.id)}
+                onClick={() => {
+                  setIsOptionsDropdownOpen(project.id);
+                  calcSizes();
+                }}
                 className={`${
                   isOptionsDropdownOpen === project.id
                     ? 'fill-gray-600 opacity-100'

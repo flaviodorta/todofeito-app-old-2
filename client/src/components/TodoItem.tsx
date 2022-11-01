@@ -1,4 +1,4 @@
-import { memo, useEffect, useState } from 'react';
+import { memo, useEffect, useRef, useState } from 'react';
 import { IRenderableElements, ITodo } from '../helpers/types';
 import {
   CalendarRegularIcon,
@@ -46,7 +46,9 @@ export const TodoItemMemoized = ({
   const [renderedSelect, setRenderedSelect] =
     useState<IRenderableElements>(null);
 
-  const [dueDateSizes, dueDateRef] = useDimensions();
+  const containerRef = useRef<HTMLDivElement>(null!);
+
+  const [dueDateSizes, dueDateRef] = useDimensions({ parentRef: containerRef });
   // const [projectsSizes, projectsRef] = useDimensions();
 
   const openDatePicker = () =>
@@ -107,6 +109,7 @@ export const TodoItemMemoized = ({
 
   return (
     <div
+      ref={containerRef}
       className={`relative w-full h-fit mb-5
       ${
         draggableSnapshot.isDragging

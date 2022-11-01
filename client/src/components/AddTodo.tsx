@@ -57,11 +57,23 @@ export const AddTodo = ({
   const [renderedSelect, setRenderedSelect] =
     useState<IRenderableElements>(null);
 
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const [sizes, sizesRef] = useDimensions();
+
   // centerlize select
-  const [dueDateSizes, dueDateRef, calcDueDateSizes] = useDimensions();
-  const [projectsSizes, projectsRef, calcProjectsSizes] = useDimensions();
-  const [labelsSizes, labelsRef, calcLabelsSizes] = useDimensions();
-  const [prioritySizes, priorityRef, calcPrioritySizes] = useDimensions();
+  const [dueDateSizes, dueDateRef, calcDueDateSizes] = useDimensions({
+    parentRef: containerRef,
+  });
+  const [projectsSizes, projectsRef, calcProjectsSizes] = useDimensions({
+    parentRef: containerRef,
+  });
+  const [labelsSizes, labelsRef, calcLabelsSizes] = useDimensions({
+    parentRef: containerRef,
+  });
+  const [prioritySizes, priorityRef, calcPrioritySizes] = useDimensions({
+    parentRef: containerRef,
+  });
 
   const calcSizes = () => {
     calcDueDateSizes();
@@ -101,8 +113,6 @@ export const AddTodo = ({
   };
 
   const close = () => setTodoInputOpenById(null);
-
-  console.log();
 
   const sendNewTodo = () => {
     if (!inputs.title) return;
@@ -154,10 +164,6 @@ export const AddTodo = ({
   useEffect(() => {
     titleInputRef?.current?.focus();
   }, []);
-
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  const [sizes, sizesRef] = useDimensions();
 
   const { height } = useWindowSize();
 
