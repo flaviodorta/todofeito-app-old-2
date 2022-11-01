@@ -1,8 +1,10 @@
+import useResizeObserver from '@react-hook/resize-observer';
+import { isEqual } from 'lodash';
 import { nanoid } from 'nanoid';
-import { useRef, useState } from 'react';
+import { memo, useMemo, useRef, useState } from 'react';
 import { DraggableProvided } from 'react-beautiful-dnd';
 import { isMobile } from 'react-device-detect';
-import { ITodo, ITodosBySection } from '../../helpers/types';
+import { ISection, ITodo } from '../../helpers/types';
 import { useDimensions } from '../../hooks/useDimensions';
 import { useToggle } from '../../hooks/useToggle';
 import { useUpdateState } from '../../hooks/useUpdateState';
@@ -22,23 +24,27 @@ import { PenSolidIcon } from '../Icons/Icons/PenSolidIcon';
 import { TodosList } from '../Lists/TodosList';
 
 interface ITodosSection {
-  section: ITodosBySection;
+  todos: ITodo[];
+  section: ISection;
   todoInputOpenById: string | null;
   sectionInputOpenById: string | null;
   draggableProvided?: DraggableProvided;
+  addSection: (section: ISection) => void;
   completeTodo: (todo: ITodo) => void;
   addTodo: (todo: ITodo) => void;
   editTodo: (todo: ITodo) => void;
   setTodoInputOpenById: (id: string | null) => void;
   setSectionInputOpenById: (id: string | null) => void;
-  deleteSection: (sectionId: string) => void;
+  deleteSection: (section: ISection) => void;
 }
 
 export const TodosSection = ({
+  todos,
   section,
   todoInputOpenById,
   sectionInputOpenById,
   draggableProvided,
+  addSection,
   editTodo,
   addTodo,
   completeTodo,
@@ -47,12 +53,8 @@ export const TodosSection = ({
   deleteSection,
 }: ITodosSection) => {
   const [isTodoListOpen, toggleTodoListOpen] = useToggle(true);
-  const [isHover, toggleHover] = useToggle(false);
 
-  const [todos, setTodos] = useUpdateState(
-    section.todos.filter((todo) => !todo.isCompleted),
-    [section]
-  );
+  const [isHover, toggleHover] = useToggle(false);
 
   const toggleTodoList = () => {
     if (isTodoListOpen) setTodoInputOpenById(null);
@@ -83,7 +85,14 @@ export const TodosSection = ({
     setSectionInputOpenById(editSectionIdRef.current);
   const openAddTodo = () => setTodoInputOpenById(addTodoIdRef.current);
 
-  const [optionsIconSizes, optionsIconRef] = useDimensions();
+  const [optionsIconSizes, optionsIconRef, recalcOptionsSizes] =
+    useDimensions();
+
+  const containerRef = useRef<HTMLDivElement>(null!);
+
+  useResizeObserver(containerRef, () => recalcOptionsSizes());
+
+  // console.log(todos);
 
   if (sectionInputOpenById === editSectionIdRef.current) {
     return (
@@ -93,8 +102,9 @@ export const TodosSection = ({
       />
     );
   }
+
   return (
-    <div className='flex flex-col h-fit w-full'>
+    <div ref={containerRef} className='flex flex-col h-fit w-full'>
       <div {...mobileDraggable} className='sticky top-[76px] z-[2]'>
         <div
           onMouseEnter={toggleHover}
@@ -104,7 +114,7 @@ export const TodosSection = ({
           <span className='flex items-center gap-2 text-center'>
             {section.name}
             <span className='font-light text-gray-600 text-xs relative top-[1px]'>
-              {todos.length ? todos.length : undefined}
+              {todos?.length ? todos.length : undefined}
             </span>
           </span>
 
@@ -155,7 +165,7 @@ export const TodosSection = ({
               </span>
 
               <span
-                onClick={() => deleteSection(section.id)}
+                onClick={() => deleteSection(section)}
                 className='w-full flex items-center gap-2 px-2 py-1 hover:bg-gray-300/30'
               >
                 <TrashSolidIcon className='fill-gray-400/70' />
@@ -171,8 +181,8 @@ export const TodosSection = ({
           <div className='w-full flex flex-col gap-2'>
             {/* Todo list */}
             <TodosList
+              droppableId={section.id}
               todos={todos}
-              setTodos={setTodos}
               completeTodo={completeTodo}
               editTodo={editTodo}
               setTodoInputOpenById={setTodoInputOpenById}
@@ -194,8 +204,8 @@ export const TodosSection = ({
                 <span className='group p-0.5 rounded-full bg-white group-hover:bg-blue-600 flex-center'>
                   <PlusSolidIcon className='stroke-[1px] fill-blue-600 group-hover:fill-white' />
                 </span>
-                <span className='font-light text-md text-gray-400 group-hover:text-blue-600'>
-                  Add task
+                <span className='cursor-pointer font-light text-md text-gray-400 group-hover:text-blue-600'>
+                  Add todo
                 </span>
               </div>
             )}
@@ -207,8 +217,9 @@ export const TodosSection = ({
       <div className='w-full mb-5'>
         {sectionInputOpenById === addSectionIdRef.current ? (
           <AddSection
-            previousSectionIndex={section.index}
-            project={section.project}
+            addSection={addSection}
+            previousSectionIndex={section.index!}
+            project={section.project!}
             setSectionInputOpenById={setSectionInputOpenById}
           />
         ) : (
@@ -219,7 +230,7 @@ export const TodosSection = ({
             <span
               className={`${
                 sectionInputOpenById === addSectionIdRef.current ? '' : 'block'
-              } font-medium text-md text-blue-600 z-10 px-2 bg-white`}
+              } cursor-pointer font-medium text-md text-blue-600 z-10 px-2 bg-white`}
             >
               Add section
             </span>
@@ -231,3 +242,16 @@ export const TodosSection = ({
     </div>
   );
 };
+
+const todosSectionAreEqual = (
+  prevProps: Readonly<ITodosSection>,
+  nextProps: Readonly<ITodosSection>
+) =>
+  isEqual(prevProps.section, nextProps.section) &&
+  isEqual(prevProps.todos, nextProps.todos) &&
+  // prevProps.sectionInputOpenById !== prevProps.section.id &&
+  // nextProps.sectionInputOpenById !== nextProps.section.id &&
+  prevProps.todoInputOpenById !== prevProps.section.id &&
+  nextProps.todoInputOpenById !== nextProps.section.id;
+
+// export const TodosSection = memo(TodosSectionMemoized, todosSectionAreEqual);

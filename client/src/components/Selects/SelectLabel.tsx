@@ -68,7 +68,7 @@ export const SelectLabel = ({
   closeSelect,
   sizes,
 }: ISelectLabelProps) => {
-  const { getLabels } = useTodosStore();
+  const { labels } = useTodosStore();
 
   const [containerSizes, containerRef] = useDimensions();
 
@@ -100,10 +100,10 @@ export const SelectLabel = ({
         </div>
 
         <div className='dropdown-select overflow-y-scroll h-fit w-full'>
-          {getLabels().length === 0 ? (
+          {labels.length === 0 ? (
             <span className='text-xs px-2 text-gray-500'>No labels</span>
           ) : (
-            getLabels()
+            labels
               .sort((a, b) => a.name.localeCompare(b.name))
               .map((label, i) => (
                 <Fragment key={i}>

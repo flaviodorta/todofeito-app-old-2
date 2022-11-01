@@ -59,6 +59,39 @@ export type IPriorityLabelColors =
   | 'fill-blue-600'
   | null;
 
+export interface TodosStore {
+  todos: ITodo[];
+  projects: IProject[];
+  labels: ILabel[];
+  sections: ISection[];
+
+  setTodos: (todos: ITodo[]) => void;
+  addTodo: (todo: ITodo) => void;
+  editTodo: (todo: ITodo) => void;
+  completeTodo: (todo: ITodo) => void;
+
+  addProject: (project: IProject) => void;
+  deleteProject: (project: IProject) => void;
+  editProject: (project: IProject) => void;
+
+  setSections: (sections: ISection[]) => void;
+  addSection: (section: ISection) => void;
+  deleteSection: (section: ISection) => void;
+  editSection: (section: ISection) => void;
+
+  addLabel: (label: ILabel) => void;
+  deleteLabel: (label: ILabel) => void;
+  editLabel: (label: ILabel) => void;
+}
+
+export interface ISection {
+  readonly id: string;
+  index?: number;
+  name: string;
+  readonly date: Date;
+  project: IProject;
+}
+
 export interface ITodo {
   id: string;
   title: string;
@@ -67,22 +100,10 @@ export interface ITodo {
   date: Date;
   priority: number;
   project: IProject;
-  section?: IInboxSection;
+  section?: ISection;
   labels: ILabel[];
 
   isCompleted: boolean;
-}
-
-export interface ITodosByDate {
-  id: string;
-  name: string;
-  date: Date;
-  todos: ITodo[];
-}
-
-export interface ITodosByPriority {
-  priority: number;
-  todos: ITodo[];
 }
 
 export interface ILabel {
@@ -94,10 +115,6 @@ export interface ILabel {
   };
 }
 
-export interface ITodosByLabel extends ILabel {
-  todos: ITodo[];
-}
-
 export interface IProject {
   id: string;
   name: string;
@@ -107,69 +124,7 @@ export interface IProject {
   };
 }
 
-export interface ITodosByProject {
-  id: string;
-  name: string;
-  color: {
-    name: string;
-    class: string;
-  };
-  todos: ITodo[];
-}
-
-export interface IUpcomingSection {
-  id: string;
-  name: string;
-  date: Date;
-}
-
-export interface IInboxSection {
-  id: string;
-  index: number;
-  name: string;
-  project: IProject;
-}
-
-export interface ITodosBySection extends IInboxSection {
-  todos: ITodo[];
-}
-
-export interface ITodosStore {
-  dates: ITodosByDate[];
-
-  priorities: ITodosByPriority[];
-
-  labels: ITodosByLabel[];
-
-  projects: ITodosByProject[];
-
-  sections: ITodosBySection[];
-
-  setTodosByProject: (project: ITodosByProject) => void;
-  setTodosByDate: (date: ITodosByDate) => void;
-
-  getLabels: () => ILabel[];
-  getProjects: () => IProject[];
-  getSections: () => IInboxSection[];
-
-  addTodo: (todo: ITodo) => void;
-  editTodo: (todo: ITodo) => void;
-  completeTodo: (todo: ITodo) => void;
-
-  createProject: (project: IProject) => void;
-  editProject: (project: IProject) => void;
-  deleteProject: (projectId: string) => void;
-
-  createSection: (section: IInboxSection) => void;
-  editSection: (section: IInboxSection) => void;
-  deleteSection: (sectionId: string) => void;
-
-  createLabel: (label: ILabel) => void;
-  editLabel: (label: ILabel) => void;
-  deleteLabel: (plabelsd: string) => void;
-}
-
-export interface IDimensions {
+export interface IDimensions extends DOMRectReadOnly {
   x: number;
   y: number;
   width: number;

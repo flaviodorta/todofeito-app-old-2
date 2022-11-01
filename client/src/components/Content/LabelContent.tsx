@@ -11,7 +11,7 @@ import { TodosList } from '../Lists/TodosList';
 import { ContentContainer } from './ContentContainer';
 
 export const LabelContent = () => {
-  const { labels, editTodo, completeTodo, addTodo, setTodosByProject } =
+  const { labels, editTodo, completeTodo, addTodo, setTodos, todos } =
     useTodosStore();
 
   const params = useParams();
@@ -22,31 +22,20 @@ export const LabelContent = () => {
   );
 
   const label = useMemo(
-    () => labels.filter((label) => label.id === params.labelId)[0],
-    [labels]
+    () => labels.filter((label) => label.id === params.labelId),
+    []
   );
 
-  const todos = useMemo(
+  const labelTodos = useMemo(
     () =>
-      labels
-        .filter((label) => label.id === params.labelId)[0]
-        .todos.filter((todo) => !todo.isCompleted && !todo.section),
-    [labels]
+      todos.filter((todo) => !todo.isCompleted && todo.id === params.labelId),
+    [todos]
   );
 
   const id = nanoid();
   const addTodoId = useRef(id);
 
   const openAddTodo = () => setTodoInputOpenById(addTodoId.current);
-
-  const labelInfo: ILabel[] = [omit(label, 'todos')];
-
-  const setTodos = useCallback((todos: ITodo[]) => {
-    setTodosByProject({
-      ...label,
-      todos,
-    });
-  }, []);
 
   const Heading = () => (
     <div className='flex items-center gap-2'>
@@ -56,16 +45,16 @@ export const LabelContent = () => {
       >
         <ArrowLeftLongSolidIcon className='fill-gray-400 group-hover:fill-gray-500 h-5 w-5' />
       </button>
-      <h2 className='font-bold text-xl'>{label.name}</h2>
+      <h2 className='font-bold text-xl'>{label[0].name}</h2>
     </div>
   );
 
   return (
-    <ContentContainer todos={todos} setTodos={setTodos} heading={<Heading />}>
+    <ContentContainer heading={<Heading />}>
       <div className='w-full px-9 md:px-0'>
         <TodosList
+          droppableId={label[0].id}
           todos={todos}
-          setTodos={setTodos}
           completeTodo={completeTodo}
           editTodo={editTodo}
           setTodoInputOpenById={setTodoInputOpenById}
@@ -75,7 +64,7 @@ export const LabelContent = () => {
         <div className='mb-6'>
           {todoInputOpenById === addTodoId.current ? (
             <AddTodo
-              labels={labelInfo}
+              labels={label}
               setTodoInputOpenById={setTodoInputOpenById}
               addTodo={addTodo}
             />

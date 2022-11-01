@@ -12,7 +12,7 @@ interface ICreateLabelModalProps {
 }
 
 export const CreateLabelModal = ({ closeModal }: ICreateLabelModalProps) => {
-  const { createLabel } = useTodosStore();
+  const { addLabel } = useTodosStore();
 
   const [inputs, setInputs] = useState({
     name: '',
@@ -36,7 +36,7 @@ export const CreateLabelModal = ({ closeModal }: ICreateLabelModalProps) => {
       color: inputs.color,
     };
 
-    createLabel(label);
+    addLabel(label);
 
     closeModal();
   };

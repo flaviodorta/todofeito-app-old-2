@@ -1,10 +1,11 @@
 import { nanoid } from 'nanoid';
 import { useRef, useState } from 'react';
 import { onKeyUpEnter } from '../helpers/functions';
-import { IProject } from '../helpers/types';
+import { IProject, ISection } from '../helpers/types';
 import { useTodosStore, useUIStore } from '../zustand';
 
 interface IAddSectionProps {
+  addSection: (section: ISection) => void;
   previousSectionIndex: number;
   project: IProject;
   setSectionInputOpenById: (id: string | null) => void;
@@ -13,9 +14,10 @@ interface IAddSectionProps {
 export const AddSection = ({
   previousSectionIndex,
   project,
+  addSection,
   setSectionInputOpenById,
 }: IAddSectionProps) => {
-  const { createSection } = useTodosStore();
+  // const { addSection } = useTodosStore();
   const [inputs, setInputs] = useState({
     name: '',
   });
@@ -26,9 +28,10 @@ export const AddSection = ({
   const close = () => setSectionInputOpenById(null);
 
   const createNewSection = () => {
-    createSection({
+    addSection({
       id: nanoid(),
       name: inputs.name,
+      date: new Date(),
       project,
       index: previousSectionIndex + 1,
     });

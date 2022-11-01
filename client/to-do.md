@@ -27,16 +27,21 @@
 - add labels function
 - create projects content
 - useRatio to update date in horizontal calendar
+- fix calendar open day
+- fix project/labels page
+- fix editing todo
 
 # to do
 
-- fix project/labels page
-- limits chars input
-- user settings modal
+- refactor todos store data structure
+- fix first todo from section don't completing
 - make todos dragglable between sections
+- user settings modal
 - search todo
 - add sidebar resizable (react-resizable)
 - add i18n
+- add flat design to no todos
+- add favicon
 
 - refactor server
 - connect server with front end

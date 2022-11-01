@@ -15,6 +15,7 @@ import { isToday } from 'date-fns';
 import { useDimensions } from '../hooks/useDimensions';
 import { isEqual } from 'lodash';
 import { EditTodo } from './EditTodo';
+import { useUIStore } from '../zustand';
 
 type ITodoItem = {
   todo: ITodo;
@@ -29,14 +30,14 @@ type ITodoItem = {
 export const TodoItemMemoized = ({
   todo,
   // todoInputOpenById,
+  draggableProvided,
+  draggableSnapshot,
   completeTodo,
   editTodo,
   setTodoInputOpenById,
-  draggableProvided,
-  draggableSnapshot,
 }: ITodoItem) => {
   // const { completeTodo, editTodo } = useTodosStore();
-  // const { setTodoInputOpenById } = useUIStore();
+  const { setDraggingElementId, draggingElementId } = useUIStore();
 
   const [checked, setChecked] = useState(todo.isCompleted);
   const [isHover, setIsHover] = useState(false);
@@ -85,12 +86,24 @@ export const TodoItemMemoized = ({
     }, 200);
   };
 
+  useEffect(() => {
+    // console.log('todo render ', todo.id);
+  }, []);
+
+  // console.log(draggableSnapshot.isDragging);
+  // console.log(draggingElementId);
+  useEffect(() => {
+    draggableSnapshot.isDragging
+      ? setDraggingElementId(todo.id)
+      : setDraggingElementId(null);
+  }, [draggableSnapshot.isDragging]);
+
   // if (todoInputOpenById === todo.id)
   //   <div className='w-full h-60'>
   //     <EditTodo todo={todo} setTodoInputOpenById={setTodoInputOpenById} />
   //   </div>;
 
-  console.log('render ', todo.id);
+  // console.log('render ', todo.id);
 
   return (
     <div
@@ -205,6 +218,9 @@ export const TodoItemMemoized = ({
 const todosItemPropsAreEqual = (
   prevProps: Readonly<ITodoItem>,
   nextProps: Readonly<ITodoItem>
-) => isEqual(prevProps.todo, nextProps.todo);
+) =>
+  isEqual(prevProps.todo, nextProps.todo) &&
+  isEqual(prevProps.draggableProvided, nextProps.draggableProvided) &&
+  isEqual(prevProps.draggableSnapshot, prevProps.draggableSnapshot);
 
 export const TodoItem = memo(TodoItemMemoized, todosItemPropsAreEqual);

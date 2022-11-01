@@ -21,15 +21,15 @@ import {
   labelColors,
   labelHoverColors,
 } from '../helpers/constants';
-import { IRenderableElements } from '../helpers/types';
+import { IRenderableElements, ISection } from '../helpers/types';
 import { nanoid } from 'nanoid';
-import { ILabel, IProject, IInboxSection, ITodo } from '../helpers/types';
+import { ILabel, IProject, ITodo } from '../helpers/types';
 import { useDimensions } from '../hooks/useDimensions';
 import useWindowSize from '../hooks/useWindowSize';
 
 interface IAddTodoItemProps {
   project?: IProject;
-  section?: IInboxSection;
+  section?: ISection;
   date?: Date;
   labels?: ILabel[];
   addTodo: (todo: ITodo) => void;

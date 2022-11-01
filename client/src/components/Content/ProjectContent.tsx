@@ -20,7 +20,8 @@ export const ProjectContent = () => {
     completeTodo,
     addTodo,
     deleteSection,
-    setTodosByProject,
+    setTodos,
+    todos,
   } = useTodosStore();
 
   const params = useParams();
@@ -38,16 +39,16 @@ export const ProjectContent = () => {
     [projects]
   );
 
-  const todos = useMemo(
+  const projectTodos = useMemo(
     () =>
-      projects
-        .filter((project) => project.id === params.projectId)[0]
-        .todos.filter((todo) => !todo.isCompleted && !todo.section),
-    [projects]
+      todos.filter(
+        (todo) => !todo.isCompleted && project.id === params.projectId
+      ),
+    [todos]
   );
 
   const [projectSections, setSections] = useUpdateState(
-    sections.filter((section) => section.project.id === project.id),
+    sections.filter((section) => section.project?.id === project.id),
     [sections]
   );
 
@@ -62,31 +63,17 @@ export const ProjectContent = () => {
 
   const openAddTodo = () => setTodoInputOpenById(addTodoId.current);
 
-  const thisProject: IProject = omit(project, 'todos');
-
-  console.log(thisProject);
-
-  const setTodos = useCallback(
-    (todos: ITodo[]) => {
-      setTodosByProject({
-        ...thisProject,
-        todos,
-      });
-    },
-    [projects]
-  );
-
   const Heading = () => (
     <div className='flex items-center gap-2'>
       <h2 className='font-bold text-xl'>{project.name}</h2>
     </div>
   );
   return (
-    <ContentContainer todos={todos} setTodos={setTodos} heading={<Heading />}>
+    <ContentContainer todos={todos} heading={<Heading />}>
       <div className='w-full px-9 md:px-0'>
         <TodosList
-          todos={todos}
-          setTodos={setTodos}
+          droppableId={project.id}
+          todos={projectTodos}
           completeTodo={completeTodo}
           editTodo={editTodo}
           setTodoInputOpenById={setTodoInputOpenById}
@@ -96,7 +83,7 @@ export const ProjectContent = () => {
         <div className='mb-6'>
           {todoInputOpenById === addTodoId.current ? (
             <AddTodo
-              project={thisProject}
+              project={project!}
               setTodoInputOpenById={setTodoInputOpenById}
               addTodo={addTodo}
             />
@@ -117,10 +104,9 @@ export const ProjectContent = () => {
       </div>
 
       <div className='flex flex-col gap-1'>
-        {/* {sections.map((section) => ( */}
-        <SectionsList
+        {/* <SectionsList
           sections={projectSections}
-          setSections={setSections}
+          sectionsTodos={[]}
           todoInputOpenById={todoInputOpenById}
           sectionInputOpenById={sectionInputOpenById}
           completeTodo={completeTodo}
@@ -129,19 +115,20 @@ export const ProjectContent = () => {
           setTodoInputOpenById={setTodoInputOpenById}
           setSectionInputOpenById={setSectionInputOpenById}
           deleteSection={deleteSection}
-        />
-        {/* ))} */}
+        /> */}
       </div>
 
       {sections.length === 0 && (
         <div>
           {sectionInputOpenById === addSectionId.current ? (
-            <AddSection
-              previousSectionIndex={-1}
-              project={thisProject}
-              setSectionInputOpenById={setSectionInputOpenById}
-            />
+            <div></div>
           ) : (
+            // <AddSection
+            //   addSection={(section) => {}}
+            //   previousSectionIndex={-1}
+            //   project={project!}
+            //   setSectionInputOpenById={setSectionInputOpenById}
+            // />
             <div
               onClick={openAddSection}
               className='group opacity-0 hover:opacity-100 relative w-full flex items-center justify-center gap-2.5 h-fit cursor-pointer duration-200 ease-in transition-opacity'

@@ -1,9 +1,9 @@
 import { Link } from 'react-router-dom';
-import { ITodosByLabel } from '../helpers/types';
+import { ILabel } from '../helpers/types';
 
 interface ILinkToLabelPageProps {
   icon: React.ReactNode;
-  label: ITodosByLabel;
+  label: ILabel;
   showLabelPage: () => void;
 }
 

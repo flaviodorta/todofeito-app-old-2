@@ -55,7 +55,7 @@ export const SelectProject = ({
   closeSelect,
   sizes,
 }: ISelectProjectProps) => {
-  const { getProjects } = useTodosStore();
+  const { projects } = useTodosStore();
 
   const [containerSizes, containerRef] = useDimensions();
 
@@ -88,7 +88,7 @@ export const SelectProject = ({
           />
         </div>
         <div className='dropdown-select overflow-y-scroll h-fit w-full'>
-          {getProjects().map((project, i) => (
+          {projects.map((project, i) => (
             <Fragment key={i}>
               <SelectProjectOption
                 thisProject={project}

@@ -17,7 +17,7 @@ interface ICreateProjectModalProps {
 export const CreateProjectModal = ({
   closeModal,
 }: ICreateProjectModalProps) => {
-  const { createProject } = useTodosStore();
+  const { addProject } = useTodosStore();
 
   const [inputs, setInputs] = useState({
     name: '',
@@ -41,7 +41,7 @@ export const CreateProjectModal = ({
       color: inputs.color,
     };
 
-    createProject(project);
+    addProject(project);
 
     closeModal();
   };

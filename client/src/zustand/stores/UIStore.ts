@@ -5,6 +5,8 @@ interface IUIStore {
   isSidebarOpen: boolean;
   isSidebarProjectsOpen: boolean;
   observediesHeights: number[];
+  draggingElementId: string | null;
+  setDraggingElementId: (id: string | null) => void;
   addObservedHeight: (height: number) => void;
   setObservedHeight: (height: number, index: number) => void;
   toggleSidebar: () => void;
@@ -17,6 +19,12 @@ export const UIStore = create<IUIStore>((set, get) => ({
   isSidebarOpen: !isDesktop ? false : isMinorThanLargeScreen ? false : true,
   isSidebarProjectsOpen: true,
   observediesHeights: [],
+  draggingElementId: null,
+  setDraggingElementId: (id: string | null) =>
+    set((state) => ({
+      ...state,
+      draggingElementId: id,
+    })),
   addObservedHeight: (height: number) =>
     set((state) => ({
       observediesHeights: [...state.observediesHeights, height],

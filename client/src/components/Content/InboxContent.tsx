@@ -1,9 +1,18 @@
+import { isEqual } from 'lodash';
 import { nanoid } from 'nanoid';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { IProject, ITodo } from '../../helpers/types';
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
+import { DragDropContext, DropResult } from 'react-beautiful-dnd';
+import { reorder } from '../../helpers/functions';
+import { IProject, ISection, ITodo } from '../../helpers/types';
 import { useUpdateState } from '../../hooks/useUpdateState';
-import { useTodosStore } from '../../zustand';
+import { useTodosStore, useUIStore } from '../../zustand';
 import { AddSection } from '../AddSection';
 import { AddTodo } from '../AddTodo';
 import { PlusSolidIcon } from '../Icons';
@@ -11,16 +20,36 @@ import { SectionsList } from '../Lists/SectionsList';
 import { TodosList } from '../Lists/TodosList';
 import { ContentContainer } from './ContentContainer';
 
+interface TodosSection {
+  todos: ITodo[];
+  id: string;
+  index?: number | undefined;
+  name: string;
+  date: Date;
+  project: IProject;
+}
+
 export const InboxContent = () => {
   const {
     projects,
     sections,
-    editTodo,
-    completeTodo,
-    addTodo,
-    deleteSection,
-    setTodosByProject,
+    editTodo: editT,
+    completeTodo: completeT,
+    addTodo: addT,
+    deleteSection: deleteS,
+    setTodos: setT,
+    setSections: setS,
+    addSection: addS,
+    // editTodo,
+    // completeTodo,
+    // addTodo,
+    // deleteSection,
+    // setTodos,
+    // setSections,
+    // addSection,
+    todos,
   } = useTodosStore();
+  const { draggingElementId } = useUIStore();
 
   const [todoInputOpenById, setTodoInputOpenById] = useState<string | null>(
     null
@@ -30,18 +59,43 @@ export const InboxContent = () => {
     string | null
   >(null);
 
-  const todos = useMemo(
-    () =>
-      projects
-        .filter((project) => project.id === 'inbox')[0]
-        .todos.filter((todo) => !todo.isCompleted && !todo.section),
-    [projects]
-  );
-
-  const [inboxSections, setSections] = useUpdateState(
-    sections.filter((section) => section.project.id === 'inbox'),
+  const inboxSections = useMemo(
+    () => sections.filter((section) => section.project?.id === 'inbox'),
     [sections]
   );
+
+  const [inboxTodos, setInboxTodos] = useState(
+    todos.filter((todo) => todo.project.id === 'inbox' && !todo.isCompleted)
+  );
+
+  const [inboxTodosSections, setInboxTodosSections] = useState<TodosSection[]>(
+    inboxSections.map((section) => ({
+      ...section,
+      todos: todos.filter(
+        (todo) => todo.section?.id === section.id && !todo.isCompleted
+      ),
+    }))
+  );
+
+  // useLayoutEffect(() => {
+  //   const lastTodoAdded = todos[todos.length - 1];
+  //   const existTodosInState =
+  //     inboxTodosSections.find((todo) => todo.id === lastTodoAdded.id) &&
+  //     inboxTodos.find((todo) => todo.id === lastTodoAdded.id);
+  //   console.log(lastTodoAdded);
+  //   console.log(existTodosInState);
+  //   console.log(inboxTodosSections);
+  //   if (!existTodosInState && lastTodoAdded)
+  //     lastTodoAdded.hasOwnProperty('section')
+  //       ? setInboxTodosSections((state) =>
+  //           state.map((sec) =>
+  //             sec.id === todos[todos.length - 1].section?.id
+  //               ? { ...sec, todos: [...sec.todos, todos[todos.length - 1]] }
+  //               : sec
+  //           )
+  //         )
+  //       : setInboxTodos((s) => [...s, todos[todos.length - 1]]);
+  // }, [todos]);
 
   const addSectionId = useRef(nanoid());
 
@@ -61,15 +115,179 @@ export const InboxContent = () => {
     },
   };
 
-  const setTodos = useCallback(
-    (todos: ITodo[]) => {
-      setTodosByProject({
-        ...inboxProject,
-        todos,
-      });
-    },
-    [projects]
-  );
+  const addTodo = (todo: ITodo) => {
+    if (!todo.section) setInboxTodos((state) => [...state, todo]);
+    else if (todo.section) {
+      setInboxTodosSections((state) =>
+        state.map((section) =>
+          todo.section?.id === section.id
+            ? { ...section, todos: [...section.todos, todo] }
+            : section
+        )
+      );
+    }
+    addT(todo);
+  };
+
+  const editTodo = useCallback((todo: ITodo) => {
+    editT(todo);
+  }, []);
+
+  const completeTodo = useCallback((todo: ITodo) => {
+    if (!todo.section)
+      setInboxTodos((state) => state.filter((t) => t.id !== todo.id));
+    else if (todo.section) {
+      setInboxTodosSections((state) =>
+        state.map((section) =>
+          todo.section?.id === section.id
+            ? {
+                ...section,
+                todos: section.todos.filter((t) => t.id !== todo.id),
+              }
+            : section
+        )
+      );
+    }
+    completeT(todo);
+  }, []);
+
+  const deleteSection = useCallback((section: ISection) => {
+    deleteS(section);
+  }, []);
+
+  const setTodos = useCallback((todos: ITodo[]) => {
+    setT(todos);
+  }, []);
+
+  const addSection = useCallback((section: ISection) => {
+    setInboxTodosSections((state) => [...state, { ...section, todos: [] }]);
+    addS(section);
+  }, []);
+
+  const setSections = useCallback((sections: ISection[]) => {
+    setS(sections);
+  }, []);
+
+  const onDragEnd = (result: DropResult) => {
+    const { destination, source } = result;
+
+    if (!destination) return;
+
+    if (
+      destination.droppableId === source.droppableId &&
+      destination.index === source.index
+    )
+      return;
+
+    const sourceTodosSectionIndex = sections.findIndex(
+      (s) => s.id === source.droppableId
+    );
+
+    const destinationTodosSectionIndex = sections.findIndex(
+      (s) => s.id === destination.droppableId
+    );
+
+    const destinationTodosSection =
+      destinationTodosSectionIndex !== -1
+        ? [...inboxTodosSections[destinationTodosSectionIndex].todos]
+        : [];
+
+    const draggingTodo: ITodo = todos.filter(
+      (todo) => todo.id === draggingElementId
+    )[0];
+
+    const editedTodo: ITodo = {
+      ...draggingTodo,
+      section: inboxSections[destinationTodosSectionIndex],
+    };
+
+    editTodo(editedTodo);
+
+    // inbox to inbox
+    if (source.droppableId === 'inbox' && destination.droppableId === 'inbox') {
+      setInboxTodos(reorder(inboxTodos, source.index, destination.index));
+      return;
+    }
+
+    // inbox to section
+    else if (
+      source.droppableId === 'inbox' &&
+      destination.droppableId !== 'inbox'
+    ) {
+      const newInboxTodos = inboxTodos.filter(
+        (todo) => todo.id !== editedTodo.id
+      );
+      destinationTodosSection.splice(destination.index, 0, editedTodo);
+      const newInboxTodosSections = [...inboxTodosSections];
+      newInboxTodosSections[destinationTodosSectionIndex].todos = [
+        ...destinationTodosSection,
+      ];
+      setInboxTodos(newInboxTodos);
+      setInboxTodosSections(newInboxTodosSections);
+      return;
+    } else if (
+      source.droppableId !== 'inbox' &&
+      destination.droppableId !== 'inbox'
+    ) {
+      if (source.droppableId === destination.droppableId) {
+        const newInboxTodoSections = inboxTodosSections.map(
+          (todosSection, i) => {
+            if (i === sourceTodosSectionIndex)
+              return {
+                ...todosSection,
+                todos: reorder(
+                  todosSection.todos,
+                  source.index,
+                  destination.index
+                ),
+              };
+
+            return todosSection;
+          }
+        );
+        setInboxTodosSections(newInboxTodoSections);
+        return;
+      }
+
+      const newInboxTodosSections = inboxTodosSections.map((todosSection, i) =>
+        i === sourceTodosSectionIndex
+          ? {
+              ...todosSection,
+              todos: todosSection.todos.filter(
+                (todo) => todo.id !== draggingTodo.id
+              ),
+            }
+          : todosSection
+      );
+      destinationTodosSection.splice(destination.index, 0, editedTodo);
+      newInboxTodosSections[destinationTodosSectionIndex].todos =
+        destinationTodosSection;
+      setInboxTodosSections(newInboxTodosSections);
+      return;
+    }
+
+    // section to inbox
+    else if (
+      source.droppableId !== 'inbox' &&
+      destination.droppableId === 'inbox'
+    ) {
+      const newInboxTodosSections = inboxTodosSections.map((todosSection, i) =>
+        i === sourceTodosSectionIndex
+          ? {
+              ...todosSection,
+              todos: todosSection.todos.filter(
+                (todo) => todo.id !== draggingTodo.id
+              ),
+            }
+          : todosSection
+      );
+      const newInboxTodos = [...inboxTodos];
+      newInboxTodos.splice(destination.index, 0, editedTodo);
+      setInboxTodos(newInboxTodos);
+      setInboxTodosSections(newInboxTodosSections);
+      return;
+    }
+  };
 
   const Heading = () => (
     <div className='flex items-center gap-2'>
@@ -78,79 +296,85 @@ export const InboxContent = () => {
   );
 
   return (
-    <ContentContainer todos={todos} setTodos={setTodos} heading={<Heading />}>
-      <div className='w-full px-9 md:px-0'>
-        <TodosList
-          todos={todos}
-          setTodos={setTodos}
-          completeTodo={completeTodo}
-          editTodo={editTodo}
-          setTodoInputOpenById={setTodoInputOpenById}
-          todoInputOpenById={todoInputOpenById}
-        />
+    <ContentContainer heading={<Heading />}>
+      <DragDropContext onDragEnd={onDragEnd}>
+        <div className='w-full px-9 md:px-0'>
+          <TodosList
+            droppableId='inbox'
+            todos={inboxTodos.filter((todo) => !todo.section)}
+            completeTodo={completeTodo}
+            editTodo={editTodo}
+            setTodoInputOpenById={setTodoInputOpenById}
+            todoInputOpenById={todoInputOpenById}
+          />
 
-        <div className='mb-6'>
-          {todoInputOpenById === addTodoId.current ? (
-            <AddTodo
-              project={inboxProject}
-              setTodoInputOpenById={setTodoInputOpenById}
-              addTodo={addTodo}
-            />
-          ) : (
-            <div
-              onClick={openAddTodo}
-              className='group w-full flex items-center gap-2.5 h-fit'
-            >
-              <span className='group p-0.5 rounded-full bg-white group-hover:bg-blue-600 flex-center'>
-                <PlusSolidIcon className='stroke-[1px] fill-blue-600 group-hover:fill-white' />
-              </span>
-              <span className='font-light text-md text-gray-400 group-hover:text-blue-600'>
-                Add task
-              </span>
-            </div>
-          )}
+          <div className='mb-6'>
+            {todoInputOpenById === addTodoId.current ? (
+              <AddTodo
+                project={inboxProject}
+                setTodoInputOpenById={setTodoInputOpenById}
+                addTodo={addTodo}
+              />
+            ) : (
+              <div
+                onClick={openAddTodo}
+                className='group w-full flex items-center gap-2.5 h-fit'
+              >
+                <span className='group p-0.5 rounded-full bg-white group-hover:bg-blue-600 flex-center'>
+                  <PlusSolidIcon className='stroke-[1px] fill-blue-600 group-hover:fill-white' />
+                </span>
+
+                <span className='cursor-pointer font-light text-md text-gray-400 group-hover:text-blue-600'>
+                  Add todo
+                </span>
+              </div>
+            )}
+          </div>
         </div>
-      </div>
 
-      <div className='flex flex-col gap-1'>
-        {/* {sections.map((section) => ( */}
-        <SectionsList
-          sections={inboxSections}
-          setSections={setSections}
-          todoInputOpenById={todoInputOpenById}
-          sectionInputOpenById={sectionInputOpenById}
-          completeTodo={completeTodo}
-          addTodo={addTodo}
-          editTodo={editTodo}
-          setTodoInputOpenById={setTodoInputOpenById}
-          setSectionInputOpenById={setSectionInputOpenById}
-          deleteSection={deleteSection}
-        />
-        {/* ))} */}
-      </div>
-
-      {sections.length === 0 &&
-      sectionInputOpenById === addSectionId.current ? (
-        <AddSection
-          previousSectionIndex={-1}
-          project={inboxProject}
-          setSectionInputOpenById={setSectionInputOpenById}
-        />
-      ) : (
-        <div
-          onClick={openAddSection}
-          className='group opacity-0 hover:opacity-100 relative w-full flex items-center justify-center gap-2.5 h-fit cursor-pointer duration-200 ease-in transition-opacity'
-        >
-          <span
-            className={`${
-              sectionInputOpenById ? 'hidden' : 'block'
-            } font-medium text-md text-blue-600 z-10 px-2 bg-white`}
-          >
-            Add section
-          </span>
-          <span className='group absolute h-[1px] w-full top-1/2 left-0 rounded-full bg-blue-600' />
+        <div className='flex flex-col gap-1'>
+          <SectionsList
+            sections={sections!}
+            sectionsTodos={inboxTodosSections!}
+            todoInputOpenById={todoInputOpenById}
+            sectionInputOpenById={sectionInputOpenById}
+            addSection={addSection}
+            completeTodo={completeTodo}
+            addTodo={addTodo}
+            editTodo={editTodo}
+            setTodoInputOpenById={setTodoInputOpenById}
+            setSectionInputOpenById={setSectionInputOpenById}
+            deleteSection={deleteSection}
+          />
         </div>
-      )}
+
+        {sections.length === 0 && (
+          <div>
+            {sectionInputOpenById === addSectionId.current ? (
+              <AddSection
+                addSection={addSection}
+                previousSectionIndex={-1}
+                project={inboxProject}
+                setSectionInputOpenById={setSectionInputOpenById}
+              />
+            ) : (
+              <div
+                onClick={openAddSection}
+                className='group opacity-0 hover:opacity-100 relative w-full flex items-center justify-center gap-2.5 h-fit cursor-pointer duration-200 ease-in transition-opacity'
+              >
+                <span
+                  className={`${
+                    sectionInputOpenById ? 'hidden' : 'block'
+                  } font-medium text-md text-blue-600 z-10 px-2 bg-white`}
+                >
+                  Add section
+                </span>
+                <span className='group absolute h-[1px] w-full top-1/2 left-0 rounded-full bg-blue-600' />
+              </div>
+            )}
+          </div>
+        )}
+      </DragDropContext>
     </ContentContainer>
   );
 };

@@ -1,3 +1,4 @@
+import { isToday } from 'date-fns';
 import { nanoid } from 'nanoid';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { ITodo } from '../../helpers/types';
@@ -8,7 +9,7 @@ import { TodosList } from '../Lists/TodosList';
 import { ContentContainer } from './ContentContainer';
 
 export const TodayContent = () => {
-  const { dates, projects, setTodosByDate, completeTodo, editTodo, addTodo } =
+  const { projects, todos, setTodos, completeTodo, editTodo, addTodo } =
     useTodosStore();
 
   const today = new Date();
@@ -26,17 +27,10 @@ export const TodayContent = () => {
 
   const openAddTodo = () => setTodoInputOpenById(todoInputId.current);
 
-  const todos = useMemo(
-    () => dates[0].todos.filter((todo) => !todo.isCompleted),
-    [dates]
+  const todayTodos = useMemo(
+    () => todos.filter((todo) => !todo.isCompleted && isToday(todo.date)),
+    [todos]
   );
-
-  const setTodos = useCallback((todos: ITodo[]) => {
-    setTodosByDate({
-      ...dates[0],
-      todos,
-    });
-  }, []);
 
   const Heading = () => (
     <div className='flex items-center gap-2  md:w-[768px] md:max-w-[768px] md:min-w-[768px]'>
@@ -48,11 +42,11 @@ export const TodayContent = () => {
   );
 
   return (
-    <ContentContainer todos={todos} setTodos={setTodos} heading={<Heading />}>
+    <ContentContainer heading={<Heading />}>
       <div className='w-full px-9 md:px-0'>
         <TodosList
-          todos={todos}
-          setTodos={setTodos}
+          droppableId='today'
+          todos={todayTodos}
           completeTodo={completeTodo}
           editTodo={editTodo}
           setTodoInputOpenById={setTodoInputOpenById}

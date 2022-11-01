@@ -11,7 +11,11 @@ export function useUpdateState<T>(
   const stateMemoized = useRef<T>(updateState);
 
   useIsomorphicLayoutEffect(() => {
-    if (!isEqual(stateMemoized.current, updateState)) setState(updateState);
+    stateMemoized.current = state;
+  }, [state]);
+
+  useIsomorphicLayoutEffect(() => {
+    if (!isEqual(stateMemoized, updateState)) setState(updateState);
   }, deps);
 
   return [state, setState];

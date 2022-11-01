@@ -111,7 +111,7 @@ export const SidebarProject = ({
                   <span>Edit project</span>
                 </span>
                 <span
-                  onClick={() => deleteProject(project.id)}
+                  onClick={() => deleteProject(project)}
                   className='w-full flex items-center gap-2 px-2 py-1 hover:bg-gray-300/30'
                 >
                   <TrashSolidIcon className='fill-gray-400/70' />

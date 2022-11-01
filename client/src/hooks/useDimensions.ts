@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect';
 import { useToggle } from './useToggle';
 import { IDimensions } from '../helpers/types';
+import useResizeObserver from '@react-hook/resize-observer';
 
 interface IUseDimensionsProps {
   liveMeasure?: boolean;
@@ -12,13 +13,13 @@ export function useDimensions<T extends HTMLElement = HTMLElement>({
   liveMeasure = true,
   withInitialAnimation = false,
 }: IUseDimensionsProps = {}): [
-  IDimensions,
-  React.Dispatch<React.SetStateAction<T | null | undefined>>,
+  DOMRect,
+  (instance: T | null) => void,
   () => void
 ] {
   // const [animationEnd, shouldMeasure] = useToggle(!withInitialAnimation);
   const [calculateCount, setRecalculate] = useState(0);
-  const [dimensions, setDimensions] = useState<IDimensions>({
+  const [dimensions, setDimensions] = useState<DOMRect>({
     x: 0,
     y: 0,
     width: 0,
@@ -27,33 +28,39 @@ export function useDimensions<T extends HTMLElement = HTMLElement>({
     right: 0,
     bottom: 0,
     left: 0,
+    toJSON: () => {},
   });
-  const [node, ref] = useState<T | null>();
+  const ref = useRef<HTMLElement | null>(null);
+
+  const setRef: React.RefCallback<HTMLElement> = useCallback((node) => {
+    ref.current = node;
+  }, []);
 
   const recalculate = () => setRecalculate((c) => c + 1);
 
+  // useResizeObserver(ref, (entry) => setDimensions(entry.contentRect));
+
   useIsomorphicLayoutEffect(() => {
-    if (node && typeof window !== 'undefined') {
-      const measure = () => {
-        window.requestAnimationFrame(() => {
-          setDimensions(node.getBoundingClientRect());
-        });
+    if (!ref.current && typeof window !== 'undefined') return;
+
+    const measure = () => {
+      window.requestAnimationFrame(() => {
+        setDimensions(ref.current?.getBoundingClientRect()!);
+      });
+    };
+
+    measure();
+
+    if (liveMeasure) {
+      window.addEventListener('resize', measure);
+      window.addEventListener('scroll', measure);
+
+      return () => {
+        window.removeEventListener('resize', measure);
+        window.removeEventListener('scroll', measure);
       };
-
-      // if (animationEnd) measure();
-      measure();
-
-      if (liveMeasure) {
-        window.addEventListener('resize', measure);
-        window.addEventListener('scroll', measure);
-
-        return () => {
-          window.removeEventListener('resize', measure);
-          window.removeEventListener('scroll', measure);
-        };
-      }
     }
-  }, [node, calculateCount]);
+  }, [ref, calculateCount]);
 
-  return [dimensions, ref, recalculate];
+  return [dimensions, setRef, recalculate];
 }

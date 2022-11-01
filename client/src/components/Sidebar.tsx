@@ -26,7 +26,7 @@ export const Sidebar = () => {
     toggleSidebarProjects,
   } = useUIStore();
 
-  const { getProjects, projects, dates, labels } = useTodosStore();
+  const { todos, projects } = useTodosStore();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -36,23 +36,17 @@ export const Sidebar = () => {
     navigate(path);
   };
 
-  const inboxLength = projects
-    .filter((project) => project.id === 'inbox')[0]
-    .todos.filter((todo) => !todo.isCompleted).length;
+  const inboxLength = todos.filter(
+    (todo) => todo.project.id === 'inbox' && !todo.isCompleted
+  ).length;
 
-  const todayLength = dates
-    .filter((date) => isToday(date.date))[0]
-    .todos.filter((todo) => !todo.isCompleted).length;
+  const todayLength = todos.filter(
+    (todo) => isToday(todo.date) && !todo.isCompleted
+  ).length;
 
-  const upcomingLength = dates
-    .map((date) => date.todos.filter((todo) => !todo.isCompleted).length)
-    .reduce((acc, length) => acc + length, 0);
+  const upcomingLength = todos.filter((todo) => !todo.isCompleted).length;
 
-  const labelsLength = labels.reduce(
-    (acc, label) =>
-      acc + label.todos.filter((todo) => !todo.isCompleted).length,
-    0
-  );
+  const labelsLength = todos.filter((todo) => todo.labels.length > 0).length;
 
   // const [isSidebarProjectsOpen, toggleSidebarProjects] = useToggle(false);
 
@@ -168,18 +162,16 @@ export const Sidebar = () => {
             variants={sidebarProjectsWrapper}
             className='w-full flex flex-col py-2 pl-4'
           >
-            {getProjects()
-              .slice(1)
-              .map((project) => (
-                // <Fragment key={project.id}>
-                <SidebarProject
-                  key={project.id}
-                  project={project}
-                  isSidebarProjectsOpen={isSidebarProjectsOpen}
-                  onClick={() => navigate(`/projects/${project.id}`)}
-                />
-                // </Fragment>
-              ))}
+            {projects.slice(1).map((project) => (
+              // <Fragment key={project.id}>
+              <SidebarProject
+                key={project.id}
+                project={project}
+                isSidebarProjectsOpen={isSidebarProjectsOpen}
+                onClick={() => navigate(`/projects/${project.id}`)}
+              />
+              // </Fragment>
+            ))}
           </motion.div>
         </div>
       </motion.div>

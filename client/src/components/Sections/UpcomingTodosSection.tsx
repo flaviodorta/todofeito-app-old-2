@@ -1,8 +1,9 @@
 import useResizeObserver from '@react-hook/resize-observer';
+import { isSameDay } from 'date-fns/esm';
 import { isEqual } from 'lodash';
 import { nanoid } from 'nanoid';
-import { memo, useEffect, useRef, useState } from 'react';
-import { ITodosByDate, ITodo } from '../../helpers/types';
+import { memo, useMemo, useRef, useState } from 'react';
+import { ITodo, ISection } from '../../helpers/types';
 import { useIsomorphicLayoutEffect } from '../../hooks/useIsomorphicLayoutEffect';
 import { useToggle } from '../../hooks/useToggle';
 import { AddTodo } from '../AddTodo';
@@ -10,8 +11,9 @@ import { ChevronIcon, PlusSolidIcon } from '../Icons';
 import { TodosList } from '../Lists/TodosList';
 
 interface IUpcomingTodosSection {
-  section: ITodosByDate;
-  setTodosByDate: (date: ITodosByDate) => void;
+  section: Omit<ISection, 'project'>;
+  setTodos: (todos: ITodo[]) => void;
+  todos: ITodo[];
   addTodo: (todo: ITodo) => void;
   completeTodo: (todo: ITodo) => void;
   editTodo: (todo: ITodo) => void;
@@ -23,7 +25,8 @@ interface IUpcomingTodosSection {
 export const UpcomingTodosSectionMemoized = (props: IUpcomingTodosSection) => {
   const {
     section,
-    setTodosByDate,
+    todos,
+    setTodos,
     addTodo,
     completeTodo,
     editTodo,
@@ -38,6 +41,14 @@ export const UpcomingTodosSectionMemoized = (props: IUpcomingTodosSection) => {
     null
   );
 
+  const thisDateTodos = useMemo(
+    () =>
+      todos.filter(
+        (todo) => !todo.isCompleted && isSameDay(todo.date, section.date)
+      ),
+    [todos]
+  );
+
   const todoInputId = useRef(nanoid());
 
   const openAddTodo = () => setTodoInputOpenById(todoInputId.current);
@@ -48,14 +59,14 @@ export const UpcomingTodosSectionMemoized = (props: IUpcomingTodosSection) => {
     toggleTodoListOpen();
   };
 
-  const setThisTodosDate = (todos: ITodo[]) => {
-    const thisTodosDate: ITodosByDate = {
-      ...section,
-      todos,
-    };
+  // const setThisTodosDate = (todos: ITodo[]) => {
+  //   const thisTodosDate: ITodosByDate = {
+  //     ...section,
+  //     todos,
+  //   };
 
-    setTodosByDate(thisTodosDate);
-  };
+  //   setTodosByDate(thisTodosDate);
+  // };
 
   const ref = useRef<HTMLDivElement>(null);
 
@@ -74,9 +85,7 @@ export const UpcomingTodosSectionMemoized = (props: IUpcomingTodosSection) => {
       <div className='sticky top-[148px] z-[2]'>
         <div className='relative flex justify-between items-center w-full text-sm bg-white font-bold h-fit py-1 border-b-[1px] border-gray-300'>
           <span
-            className={`${
-              section.todos.length > 0 ? 'text-black' : 'text-gray-500'
-            }`}
+            className={`${todos.length > 0 ? 'text-black' : 'text-gray-500'}`}
           >
             {section.name}
           </span>
@@ -96,10 +105,10 @@ export const UpcomingTodosSectionMemoized = (props: IUpcomingTodosSection) => {
 
       {isTodoListOpen && (
         <div className='w-full h-fit'>
-          {section.todos.length > 0 ? (
+          {todos.length > 0 ? (
             <TodosList
-              todos={section.todos.filter((t) => !t.isCompleted)}
-              setTodos={setThisTodosDate}
+              droppableId={section.id}
+              todos={thisDateTodos}
               editTodo={editTodo}
               completeTodo={completeTodo}
               setTodoInputOpenById={setTodoInputOpenById}
@@ -141,7 +150,16 @@ export const UpcomingTodosSectionMemoized = (props: IUpcomingTodosSection) => {
 const sectionPropsAreEqual = (
   prevProps: Readonly<IUpcomingTodosSection>,
   nextProps: Readonly<IUpcomingTodosSection>
-) => isEqual(prevProps.section, nextProps.section);
+) =>
+  isEqual(prevProps.section, nextProps.section) &&
+  isEqual(
+    prevProps.todos.filter((todo) =>
+      isSameDay(todo.date, prevProps.section.date)
+    ),
+    nextProps.todos.filter((todo) =>
+      isSameDay(todo.date, nextProps.section.date)
+    )
+  );
 
 export const UpcomingTodosSection = memo(
   UpcomingTodosSectionMemoized,
