@@ -15,7 +15,7 @@ import { ContentContainer } from './ContentContainer';
 
 export const UpcomingContent = () => {
   const { addTodo, completeTodo, editTodo, setTodos, todos } = useTodosStore();
-  const { addObservedHeight, setObservedHeight, observediesHeights } =
+  const { addObservedHeight, setObservedHeight, observediesHeights, ref } =
     useUIStore();
 
   const today = new Date();
@@ -68,15 +68,15 @@ export const UpcomingContent = () => {
   );
 
   useIsomorphicLayoutEffect(() => {
-    if (!containerRef.current) return;
+    if (!ref) return;
 
-    containerRef.current.addEventListener('scroll', () => {
+    ref.addEventListener('scroll', () => {
       if (scrollIndex !== dateIndex) {
         setDate(dates[scrollIndex].date);
       }
     });
 
-    return containerRef.current.removeEventListener('scroll', () => {
+    return ref.removeEventListener('scroll', () => {
       if (scrollIndex !== dateIndex) {
         setDate(dates[scrollIndex].date);
       }
@@ -110,10 +110,10 @@ export const UpcomingContent = () => {
 
   return (
     <ContentContainer
-      ref={containerRef}
+      // ref={containerRef}
       heading={<HorizontalCalendar inputedDate={date} setDate={selectDate} />}
     >
-      <div className='flex flex-col gap-8 px-11 md:px-0'>
+      {/* <div className='flex flex-col gap-8 px-11 md:px-0'>
         {Array.from({ length: 365 }).map((_, index) => (
           <UpcomingTodosSection
             key={dates[index].id}
@@ -128,7 +128,7 @@ export const UpcomingContent = () => {
             editTodo={editTodo}
           />
         ))}
-      </div>
+      </div> */}
     </ContentContainer>
   );
 };

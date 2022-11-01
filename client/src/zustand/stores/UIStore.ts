@@ -6,6 +6,8 @@ interface IUIStore {
   isSidebarProjectsOpen: boolean;
   observediesHeights: number[];
   draggingElementId: string | null;
+  ref: HTMLDivElement | null;
+  setRef: (node: HTMLDivElement | null) => void;
   setDraggingElementId: (id: string | null) => void;
   addObservedHeight: (height: number) => void;
   setObservedHeight: (height: number, index: number) => void;
@@ -20,6 +22,12 @@ export const UIStore = create<IUIStore>((set, get) => ({
   isSidebarProjectsOpen: true,
   observediesHeights: [],
   draggingElementId: null,
+  ref: null,
+  setRef: (node: HTMLDivElement | null) =>
+    set((state) => ({
+      ...state,
+      ref: node,
+    })),
   setDraggingElementId: (id: string | null) =>
     set((state) => ({
       ...state,

@@ -32,6 +32,7 @@ interface ITodosSection {
   section: ISection;
   todoInputOpenById: string | null;
   sectionInputOpenById: string | null;
+  draggingElementId: string | null;
   draggableProvided?: DraggableProvided;
   droppableSnapshot: DroppableStateSnapshot;
   draggableSnapshot: DraggableStateSnapshot;
@@ -49,6 +50,7 @@ export const TodosSection = ({
   section,
   todoInputOpenById,
   sectionInputOpenById,
+  draggingElementId,
   draggableProvided,
   droppableSnapshot,
   draggableSnapshot,
@@ -72,7 +74,7 @@ export const TodosSection = ({
   const containerRef = useRef<HTMLDivElement>(null!);
 
   const [optionsIconSizes, optionsIconRef, calcOptionsSizes] = useDimensions({
-    parentRef: containerRef,
+    parentRef: containerRef.current,
   });
 
   const [isOptionsDropdownOpen, setIsOptionsDropdown] = useState(false);
@@ -199,6 +201,7 @@ export const TodosSection = ({
             {/* Todo list */}
             <TodosList
               droppableId={section.id}
+              draggingElementId={draggingElementId}
               todos={todos}
               completeTodo={completeTodo}
               editTodo={editTodo}

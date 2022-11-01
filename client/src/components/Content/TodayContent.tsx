@@ -43,7 +43,7 @@ export const TodayContent = () => {
 
   return (
     <ContentContainer heading={<Heading />}>
-      <div className='w-full px-9 md:px-0'>
+      {/* <div className='w-full px-9 md:px-0'>
         <TodosList
           droppableId='today'
           todos={todayTodos}
@@ -74,7 +74,7 @@ export const TodayContent = () => {
             </div>
           )}
         </div>
-      </div>
+      </div> */}
     </ContentContainer>
   );
 };

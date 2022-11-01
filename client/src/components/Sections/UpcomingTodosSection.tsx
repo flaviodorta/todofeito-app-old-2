@@ -12,20 +12,22 @@ import { TodosList } from '../Lists/TodosList';
 
 interface IUpcomingTodosSection {
   section: Omit<ISection, 'project'>;
-  setTodos: (todos: ITodo[]) => void;
+  index: number;
   todos: ITodo[];
+  draggingElementId: string | null;
+  setTodos: (todos: ITodo[]) => void;
   addTodo: (todo: ITodo) => void;
   completeTodo: (todo: ITodo) => void;
   editTodo: (todo: ITodo) => void;
   addObservedHeight: (height: number) => void;
   setObservedHeight: (height: number, index: number) => void;
-  index: number;
 }
 
 export const UpcomingTodosSectionMemoized = (props: IUpcomingTodosSection) => {
   const {
     section,
     todos,
+    draggingElementId,
     setTodos,
     addTodo,
     completeTodo,
@@ -97,6 +99,7 @@ export const UpcomingTodosSectionMemoized = (props: IUpcomingTodosSection) => {
         <div className='w-full h-fit'>
           {todos.length > 0 ? (
             <TodosList
+              draggingElementId={draggingElementId}
               droppableId={section.id}
               todos={thisDateTodos}
               editTodo={editTodo}

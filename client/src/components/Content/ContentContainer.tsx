@@ -12,17 +12,17 @@ interface IContentContainerProps {
   todos?: ITodo[];
 }
 
-export const ContentContainer = forwardRef<
-  HTMLDivElement,
-  IContentContainerProps
->(({ children, heading }, ref) => {
-  const { isSidebarOpen } = useUIStore();
+export const ContentContainer = ({
+  children,
+  heading,
+}: IContentContainerProps) => {
+  const { isSidebarOpen, setRef } = useUIStore();
   const { setTodos, todos, setSections, sections, projects } = useTodosStore();
 
   return (
     // <DragDropContext onDragEnd={onDragEnd}>
     <div
-      ref={ref}
+      ref={setRef}
       className='z-[10] top-12 fixed right-0 left-0 h-[calc(100%-48px)] overflow-x-hidden overflow-y-auto'
     >
       <motion.div
@@ -44,4 +44,4 @@ export const ContentContainer = forwardRef<
     </div>
     // </DragDropContext>
   );
-});
+};

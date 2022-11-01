@@ -70,7 +70,7 @@ export const ProjectContent = () => {
   );
   return (
     <ContentContainer todos={todos} heading={<Heading />}>
-      <div className='w-full px-9 md:px-0'>
+      {/* <div className='w-full px-9 md:px-0'>
         <TodosList
           droppableId={project.id}
           todos={projectTodos}
@@ -104,7 +104,7 @@ export const ProjectContent = () => {
       </div>
 
       <div className='flex flex-col gap-1'>
-        {/* <SectionsList
+        <SectionsList
           sections={projectSections}
           sectionsTodos={[]}
           todoInputOpenById={todoInputOpenById}
@@ -115,7 +115,7 @@ export const ProjectContent = () => {
           setTodoInputOpenById={setTodoInputOpenById}
           setSectionInputOpenById={setSectionInputOpenById}
           deleteSection={deleteSection}
-        /> */}
+        />
       </div>
 
       {sections.length === 0 && (
@@ -144,7 +144,7 @@ export const ProjectContent = () => {
             </div>
           )}
         </div>
-      )}
+      )} */}
     </ContentContainer>
   );
 };

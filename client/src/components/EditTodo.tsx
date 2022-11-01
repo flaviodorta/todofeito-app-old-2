@@ -48,13 +48,17 @@ export const EditTodo = ({ todo, setTodoInputOpenById }: IEditTodoProps) => {
   // centerlize select
   const containerRef = useRef<HTMLDivElement>(null!);
 
-  const [dueDateSizes, dueDateRef] = useDimensions({ parentRef: containerRef });
-  const [projectsSizes, projectsRef] = useDimensions({
-    parentRef: containerRef,
+  const [dueDateSizes, dueDateRef] = useDimensions({
+    parentRef: containerRef.current,
   });
-  const [labelsSizes, labelsRef] = useDimensions({ parentRef: containerRef });
+  const [projectsSizes, projectsRef] = useDimensions({
+    parentRef: containerRef.current,
+  });
+  const [labelsSizes, labelsRef] = useDimensions({
+    parentRef: containerRef.current,
+  });
   const [prioritySizes, priorityRef] = useDimensions({
-    parentRef: containerRef,
+    parentRef: containerRef.current,
   });
 
   const addLabel = (label: ILabel) =>

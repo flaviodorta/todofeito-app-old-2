@@ -84,6 +84,8 @@ export const InboxContent = () => {
     }))
   );
 
+  console.log(inboxTodosSections);
+
   // useLayoutEffect(() => {
   //   const lastTodoAdded = todos[todos.length - 1];
   //   const existTodosInState =
@@ -168,6 +170,7 @@ export const InboxContent = () => {
 
   const addSection = useCallback((section: ISection) => {
     setInboxTodosSections((state) => [...state, { ...section, todos: [] }]);
+    setInboxSections((state) => [...state, section]);
     addS(section);
   }, []);
 
@@ -214,6 +217,8 @@ export const InboxContent = () => {
       ...draggingTodo,
       section: inboxSections[destinationTodosSectionIndex],
     };
+
+    console.log(inboxSections[destinationTodosSectionIndex]);
 
     if (
       source.droppableId === 'sections' &&
@@ -328,6 +333,7 @@ export const InboxContent = () => {
       <DragDropContext onDragEnd={onDragEnd}>
         <div className='w-full px-9 md:px-0'>
           <TodosList
+            draggingElementId={draggingElementId}
             droppableId='inbox'
             todos={inboxTodos}
             completeTodo={completeTodo}
@@ -366,6 +372,7 @@ export const InboxContent = () => {
             sectionsTodos={inboxTodosSections!}
             todoInputOpenById={todoInputOpenById}
             sectionInputOpenById={sectionInputOpenById}
+            draggingElementId={draggingElementId}
             setSections={setSections}
             addSection={addSection}
             completeTodo={completeTodo}

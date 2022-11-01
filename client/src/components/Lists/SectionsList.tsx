@@ -25,6 +25,7 @@ interface ISectionsListProps {
   sectionsTodos: ITodosSection[];
   todoInputOpenById: string | null;
   sectionInputOpenById: string | null;
+  draggingElementId: string | null;
   setSections: (sections: ITodosSection[]) => void;
   addSection: (section: ISection) => void;
   completeTodo: (todo: ITodo) => void;
@@ -40,6 +41,7 @@ export const SectionsList = ({
   sectionsTodos,
   todoInputOpenById,
   sectionInputOpenById,
+  draggingElementId,
   setSections,
   addSection,
   completeTodo,
@@ -95,6 +97,7 @@ export const SectionsList = ({
                       todoInputOpenById={todoInputOpenById}
                       sectionInputOpenById={sectionInputOpenById}
                       todos={section.todos}
+                      draggingElementId={draggingElementId}
                       section={omit(section, 'todos') as ISection}
                       draggableProvided={draggableProvided}
                       droppableSnapshot={droppableSnapshot}

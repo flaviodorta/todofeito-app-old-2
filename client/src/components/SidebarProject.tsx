@@ -42,7 +42,7 @@ export const SidebarProject = ({
   const ref = useRef<HTMLDivElement>(null);
 
   const [optionsIconSizes, optionsIconRef, calcSizes] = useDimensions({
-    parentRef: ref,
+    parentRef: ref.current,
   });
 
   return (

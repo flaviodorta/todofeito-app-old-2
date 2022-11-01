@@ -48,7 +48,9 @@ export const TodoItemMemoized = ({
 
   const containerRef = useRef<HTMLDivElement>(null!);
 
-  const [dueDateSizes, dueDateRef] = useDimensions({ parentRef: containerRef });
+  const [dueDateSizes, dueDateRef] = useDimensions({
+    parentRef: containerRef.current,
+  });
   // const [projectsSizes, projectsRef] = useDimensions();
 
   const openDatePicker = () =>

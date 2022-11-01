@@ -33,10 +33,11 @@
 - refactor todos store data structure
 - fix first todo from section don't completing
 - make todos dragglable between sections
+- sections order drag
+- fix recalculate dimensions
 
 # to do
 
-- sections order drag
 - add placeholder to list with no todos when dragging over
 - fix resizing dropping
 - todo modal

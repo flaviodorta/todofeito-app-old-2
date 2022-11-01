@@ -4,17 +4,17 @@ import { useToggle } from './useToggle';
 import { IDimensions } from '../helpers/types';
 import useResizeObserver from '@react-hook/resize-observer';
 
-interface IUseDimensionsProps<T> {
+interface IUseDimensionsProps {
   liveMeasure?: boolean;
   withInitialAnimation?: boolean;
-  parentRef?: React.MutableRefObject<T | null>;
+  parentRef?: HTMLDivElement | null;
 }
 
 export function useDimensions<T extends HTMLElement = HTMLElement>({
   liveMeasure = true,
   withInitialAnimation = false,
   parentRef,
-}: IUseDimensionsProps<T> = {}): [
+}: IUseDimensionsProps = {}): [
   DOMRect,
   (instance: T | null) => void,
   () => void
@@ -45,19 +45,9 @@ export function useDimensions<T extends HTMLElement = HTMLElement>({
       withInitialAnimationRef.current = false;
   };
 
-  useResizeObserver(parentRef ? parentRef : null, () => recalculate());
-
-  // useIsomorphicLayoutEffect(() => {
-  //   if (!ref.current && typeof window !== 'undefined') return;
-
-  //   const measure = () => {
-  //     window.requestAnimationFrame(() => {
-  //       setDimensions(ref.current?.getBoundingClientRect()!);
-  //     });
-  //   };
-
-  //   if (!withInitialAnimationRef.current) measure();
-  // }, [calculateCount]);
+  useResizeObserver(parentRef === undefined ? null : parentRef, () =>
+    recalculate()
+  );
 
   useIsomorphicLayoutEffect(() => {
     if (!ref.current && typeof window !== 'undefined') return;
@@ -66,6 +56,7 @@ export function useDimensions<T extends HTMLElement = HTMLElement>({
       window.requestAnimationFrame(() => {
         setDimensions(ref.current?.getBoundingClientRect()!);
       });
+      console.log('scroll');
     };
 
     if (!withInitialAnimationRef.current) measure();

@@ -18,16 +18,16 @@ import { Month } from './Month';
 interface IDatePickerProps {
   className?: string;
   inputedDate: Date;
+  sizes: IDimensions;
   setDate: (date: Date) => void;
   closeSelect: () => void;
-  sizes: IDimensions;
 }
 
 export const DatePicker = ({
-  closeSelect,
   inputedDate,
-  setDate,
   sizes,
+  closeSelect,
+  setDate,
 }: IDatePickerProps): JSX.Element => {
   const currentYear = getYearNumber(inputedDate);
   const currentDay: IDay = {
@@ -170,24 +170,29 @@ export const DatePicker = ({
 
   const [containerSizes, containerRef] = useDimensions();
 
-  const { width } = useWindowSize();
+  const { width, height } = useWindowSize();
 
   const resizeRight = containerSizes.width / 2 - (width - sizes.left);
 
   const resizeLeft = containerSizes.left;
 
-  const resize =
+  const resizeX =
     resizeRight > 0 ? resizeRight + 10 : resizeLeft < 0 ? -resizeLeft + 10 : 0;
 
-  console.log(resize);
+  const resizeY =
+    containerSizes.height > height - sizes.bottom
+      ? sizes.top - containerSizes.height
+      : sizes.top + sizes.height;
+
+  console.log(resizeY);
 
   return (
     <Backdrop close={closeSelect} className='z-[2000]'>
       <div
         ref={containerRef}
         style={{
-          left: sizes.left + sizes.width / 2 + resize,
-          top: sizes.top + sizes.height,
+          left: sizes.left + sizes.width / 2 + resizeX,
+          top: resizeY,
         }}
         className='fixed z-[2001] -translate-x-1/2 w-60 h-fit text-xs bg-white border-[1px] border-gray-100 shadow-3xl'
       >

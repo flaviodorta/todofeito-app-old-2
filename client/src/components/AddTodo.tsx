@@ -26,6 +26,8 @@ import { nanoid } from 'nanoid';
 import { ILabel, IProject, ITodo } from '../helpers/types';
 import { useDimensions } from '../hooks/useDimensions';
 import useWindowSize from '../hooks/useWindowSize';
+import useResizeObserver from '@react-hook/resize-observer';
+import { useUIStore } from '../zustand';
 
 interface IAddTodoItemProps {
   project?: IProject;
@@ -44,6 +46,7 @@ export const AddTodo = ({
   addTodo,
   setTodoInputOpenById,
 }: IAddTodoItemProps) => {
+  const { ref } = useUIStore();
   const defaultInputsValues = {
     title: '',
     description: '',
@@ -59,21 +62,25 @@ export const AddTodo = ({
 
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const [sizes, sizesRef] = useDimensions();
+  const [sizes, sizesRef] = useDimensions({
+    parentRef: ref,
+  });
 
   // centerlize select
   const [dueDateSizes, dueDateRef, calcDueDateSizes] = useDimensions({
-    parentRef: containerRef,
+    parentRef: ref,
   });
   const [projectsSizes, projectsRef, calcProjectsSizes] = useDimensions({
-    parentRef: containerRef,
+    parentRef: ref,
   });
   const [labelsSizes, labelsRef, calcLabelsSizes] = useDimensions({
-    parentRef: containerRef,
+    parentRef: ref,
   });
   const [prioritySizes, priorityRef, calcPrioritySizes] = useDimensions({
-    parentRef: containerRef,
+    parentRef: ref,
   });
+
+  // useResizeObserver(containerRef, (entry) => console.log(entry));
 
   const calcSizes = () => {
     calcDueDateSizes();
@@ -178,16 +185,9 @@ export const AddTodo = ({
     }
   }, [renderedSelect]);
 
-  // useEffect(() => {
-  //   return () => setTodoInputOpenById(null);
-  // }, []);
-
   return (
     <div ref={sizesRef}>
-      <div
-        ref={containerRef}
-        className={`${renderedSelect ? 'mb-80' : 'mb-0'} h-fit w-full`}
-      >
+      <div ref={containerRef} className='h-fit w-full'>
         <div className='border-gray-300 p-4 bg-white border-[1px] flex flex-col gap-4 h-fit w-full rounded-sm'>
           {/* checkeds labels */}
           {inputs.labels.length > 0 && (
