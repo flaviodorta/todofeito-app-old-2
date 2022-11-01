@@ -113,14 +113,14 @@ export const TodoItemMemoized = ({
           ? 'shadow-dragging-item border-none'
           : 'border-b-gray-200 border-b-[1px]'
       }
-      ${draggableSnapshot.isDropAnimating ? 'shadow-lg' : ''}
+      ${draggableSnapshot.isDropAnimating ? 'shadow-none' : ''}
       p-2
       outline-none
       flex
       flex-col
       gap-2
       transition-shadow
-      duration-75
+      duration-150
       rounded-lg
       bg-white`}
       onMouseEnter={toggleHoverOn}

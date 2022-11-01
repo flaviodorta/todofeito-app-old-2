@@ -33,11 +33,11 @@ export const InboxContent = () => {
   const {
     projects,
     sections,
-    editTodo: editT,
+    editTodo,
     completeTodo: completeT,
     addTodo: addT,
-    deleteSection: deleteS,
-    setTodos: setT,
+    deleteSection,
+    // setTodos,
     setSections,
     addSection: addS,
     // editTodo,
@@ -59,13 +59,20 @@ export const InboxContent = () => {
     string | null
   >(null);
 
-  const inboxSections = useMemo(
-    () => sections.filter((section) => section.project?.id === 'inbox'),
-    [sections]
+  // const inboxSections = useMemo(
+  //   () => sections.filter((section) => section.project?.id === 'inbox'),
+  //   [sections]
+  // );
+
+  const [inboxSections, setInboxSections] = useState(
+    sections.filter((section) => section.project?.id === 'inbox')
   );
 
   const [inboxTodos, setInboxTodos] = useState(
-    todos.filter((todo) => todo.project.id === 'inbox' && !todo.isCompleted)
+    todos.filter(
+      (todo) =>
+        todo.project.id === 'inbox' && !todo.isCompleted && !todo.section
+    )
   );
 
   const [inboxTodosSections, setInboxTodosSections] = useState<ITodosSection[]>(
@@ -129,9 +136,9 @@ export const InboxContent = () => {
     addT(todo);
   };
 
-  const editTodo = useCallback((todo: ITodo) => {
-    editT(todo);
-  }, []);
+  // const editTodo = useCallback((todo: ITodo) => {
+  //   editT(todo);
+  // }, []);
 
   const completeTodo = useCallback((todo: ITodo) => {
     if (!todo.section)
@@ -151,13 +158,13 @@ export const InboxContent = () => {
     completeT(todo);
   }, []);
 
-  const deleteSection = useCallback((section: ISection) => {
-    deleteS(section);
-  }, []);
+  // const deleteSection = useCallback((section: ISection) => {
+  //   deleteS(section);
+  // }, []);
 
-  const setTodos = useCallback((todos: ITodo[]) => {
-    setT(todos);
-  }, []);
+  // const setTodos = useCallback((todos: ITodo[]) => {
+  //   setT(todos);
+  // }, []);
 
   const addSection = useCallback((section: ISection) => {
     setInboxTodosSections((state) => [...state, { ...section, todos: [] }]);
@@ -208,15 +215,13 @@ export const InboxContent = () => {
       section: inboxSections[destinationTodosSectionIndex],
     };
 
-    editTodo(editedTodo);
-
     if (
       source.droppableId === 'sections' &&
       destination.droppableId === 'sections'
     ) {
       console.log('here');
       console.log(reorder(inboxTodosSections, source.index, destination.index));
-      setSections(reorder(sections, source.index, destination.index));
+      setInboxSections(reorder(sections, source.index, destination.index));
       setInboxTodosSections(
         reorder(inboxTodosSections, source.index, destination.index)
       );
@@ -225,7 +230,8 @@ export const InboxContent = () => {
 
     // inbox to inbox
     if (source.droppableId === 'inbox' && destination.droppableId === 'inbox') {
-      setInboxTodos(reorder(inboxTodos, source.index, destination.index));
+      const x = reorder(inboxTodos, source.index, destination.index);
+      setInboxTodos(x);
       return;
     }
 
@@ -307,6 +313,8 @@ export const InboxContent = () => {
       setInboxTodosSections(newInboxTodosSections);
       return;
     }
+
+    editTodo(editedTodo);
   };
 
   const Heading = () => (
@@ -321,7 +329,7 @@ export const InboxContent = () => {
         <div className='w-full px-9 md:px-0'>
           <TodosList
             droppableId='inbox'
-            todos={inboxTodos.filter((todo) => !todo.section)}
+            todos={inboxTodos}
             completeTodo={completeTodo}
             editTodo={editTodo}
             setTodoInputOpenById={setTodoInputOpenById}

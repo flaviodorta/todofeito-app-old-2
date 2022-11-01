@@ -2,7 +2,11 @@ import useResizeObserver from '@react-hook/resize-observer';
 import { isEqual } from 'lodash';
 import { nanoid } from 'nanoid';
 import { memo, useMemo, useRef, useState } from 'react';
-import { DraggableProvided } from 'react-beautiful-dnd';
+import {
+  DraggableProvided,
+  DraggableStateSnapshot,
+  DroppableStateSnapshot,
+} from 'react-beautiful-dnd';
 import { isMobile } from 'react-device-detect';
 import { ISection, ITodo } from '../../helpers/types';
 import { useDimensions } from '../../hooks/useDimensions';
@@ -29,6 +33,8 @@ interface ITodosSection {
   todoInputOpenById: string | null;
   sectionInputOpenById: string | null;
   draggableProvided?: DraggableProvided;
+  droppableSnapshot: DroppableStateSnapshot;
+  draggableSnapshot: DraggableStateSnapshot;
   addSection: (section: ISection) => void;
   completeTodo: (todo: ITodo) => void;
   addTodo: (todo: ITodo) => void;
@@ -44,6 +50,8 @@ export const TodosSection = ({
   todoInputOpenById,
   sectionInputOpenById,
   draggableProvided,
+  droppableSnapshot,
+  draggableSnapshot,
   addSection,
   editTodo,
   addTodo,
@@ -103,8 +111,26 @@ export const TodosSection = ({
     );
   }
 
+  console.log(droppableSnapshot.isDraggingOver);
+
+  // if (todos.length === 0 && droppableSnapshot.isDraggingOver) {
+  //   return (
+  //     <div className='h-10 bg-gray-400 rounded-md transition-all duration-100' />
+  //   );
+  // }
+
   return (
-    <div ref={containerRef} className='flex flex-col h-fit w-full'>
+    <div
+      ref={containerRef}
+      className={`${
+        droppableSnapshot.isDraggingOver ? 'bg-gray-400/10 rounded-sm' : ''
+      } 
+      ${draggableSnapshot.isDragging ? 'shadow-3xl' : ''}
+      ${draggableSnapshot.isDropAnimating ? 'shadow-none' : ''}
+      transition-shadow
+      duration-150
+      flex flex-col h-fit w-full`}
+    >
       <div {...mobileDraggable} className='sticky top-[76px] z-[2]'>
         <div
           onMouseEnter={toggleHover}

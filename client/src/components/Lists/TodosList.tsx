@@ -35,13 +35,13 @@ export const TodosListMemoized = ({
         <div
           ref={droppableProvided.innerRef}
           {...droppableProvided.droppableProps}
-          className={`${
-            todos?.length === 0
-              ? 'h-6'
-              : droppableSnapshot.isDraggingOver
-              ? 'bg-gray-100/80 rounded-md'
+          className={`
+          ${
+            droppableSnapshot.isDraggingOver && todos.length === 0
+              ? 'h-10 w-full bg-red-600'
               : ''
-          } relative flex flex-col`}
+          }
+          relative flex flex-col`}
         >
           {todos?.map((todo, i) => (
             <Draggable key={todo.id} draggableId={todo.id} index={i}>
