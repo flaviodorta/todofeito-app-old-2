@@ -61,14 +61,14 @@ export const FiltersAndLabelsContent = () => {
               {isLabelsLinksListOpen && (
                 <div className='flex flex-col '>
                   {labels.map((label) => (
-                    <Fragment>
-                      <LinkToLabelPage
-                        key={label.id}
-                        showLabelPage={toggleIsOutletShow}
-                        icon={<LabelIcon className={`${label.color.class}`} />}
-                        label={label}
-                      />
-                    </Fragment>
+                    // <Fragment>
+                    <LinkToLabelPage
+                      key={label.id}
+                      showLabelPage={toggleIsOutletShow}
+                      icon={<LabelIcon className={`${label.color.class}`} />}
+                      label={label}
+                    />
+                    // </Fragment>
                   ))}
                 </div>
               )}

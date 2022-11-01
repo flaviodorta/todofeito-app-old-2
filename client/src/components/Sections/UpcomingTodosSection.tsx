@@ -58,16 +58,6 @@ export const UpcomingTodosSectionMemoized = (props: IUpcomingTodosSection) => {
     if (isTodoListOpen) closeAddTodo();
     toggleTodoListOpen();
   };
-
-  // const setThisTodosDate = (todos: ITodo[]) => {
-  //   const thisTodosDate: ITodosByDate = {
-  //     ...section,
-  //     todos,
-  //   };
-
-  //   setTodosByDate(thisTodosDate);
-  // };
-
   const ref = useRef<HTMLDivElement>(null);
 
   useIsomorphicLayoutEffect(() => {

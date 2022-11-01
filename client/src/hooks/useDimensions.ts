@@ -40,6 +40,8 @@ export function useDimensions<T extends HTMLElement = HTMLElement>({
 
   // useResizeObserver(ref, (entry) => setDimensions(entry.contentRect));
 
+  useIsomorphicLayoutEffect(() => {});
+
   useIsomorphicLayoutEffect(() => {
     if (!ref.current && typeof window !== 'undefined') return;
 
@@ -60,7 +62,7 @@ export function useDimensions<T extends HTMLElement = HTMLElement>({
         window.removeEventListener('scroll', measure);
       };
     }
-  }, [ref, calculateCount]);
+  }, [ref]);
 
   return [dimensions, setRef, recalculate];
 }

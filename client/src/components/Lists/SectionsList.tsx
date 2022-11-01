@@ -10,7 +10,7 @@ import { IProject, ISection, ITodo } from '../../helpers/types';
 import { EditTodo } from '../EditTodo';
 import { TodosSection } from '../Sections/TodosSection';
 
-interface TodosSection {
+interface ITodosSection {
   todos: ITodo[];
   id: string;
   index?: number | undefined;
@@ -21,9 +21,10 @@ interface TodosSection {
 
 interface ISectionsListProps {
   sections: ISection[];
-  sectionsTodos: TodosSection[];
+  sectionsTodos: ITodosSection[];
   todoInputOpenById: string | null;
   sectionInputOpenById: string | null;
+  setSections: (sections: ITodosSection[]) => void;
   addSection: (section: ISection) => void;
   completeTodo: (todo: ITodo) => void;
   addTodo: (todo: ITodo) => void;
@@ -39,6 +40,7 @@ export const SectionsListMemoized = memo(
     sectionsTodos,
     todoInputOpenById,
     sectionInputOpenById,
+    setSections,
     addSection,
     completeTodo,
     addTodo,
@@ -47,8 +49,29 @@ export const SectionsListMemoized = memo(
     setSectionInputOpenById,
     deleteSection,
   }: ISectionsListProps) => {
+    const onDragEnd = (result: DropResult) => {
+      const { destination, source } = result;
+
+      if (!destination) return;
+
+      if (
+        destination.droppableId === source.droppableId &&
+        destination.index === source.index
+      )
+        return;
+
+      console.log(source.index, ' ', destination.index);
+
+      const x = sectionsTodos;
+      console.log(x);
+      console.log(reorder(sectionsTodos, source.index, destination.index));
+
+      setSections(reorder(sectionsTodos, source.index, destination.index));
+    };
+
     return (
       <div className='mb-4 pl-11 pr-4 md:px-0'>
+        {/* <DragDropContext onDragEnd={onDragEnd}> */}
         <Droppable droppableId='sections' type='SECTIONS'>
           {(droppableProvided, droppableSnapshot) => (
             <div
@@ -90,6 +113,7 @@ export const SectionsListMemoized = memo(
             </div>
           )}
         </Droppable>
+        {/* </DragDropContext> */}
       </div>
     );
   }

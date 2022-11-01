@@ -30,12 +30,16 @@
 - fix calendar open day
 - fix project/labels page
 - fix editing todo
-
-# to do
-
 - refactor todos store data structure
 - fix first todo from section don't completing
 - make todos dragglable between sections
+
+# to do
+
+- sections order drag
+- add placeholder to list with no todos when dragging over
+- fix resizing dropping
+- todo modal
 - user settings modal
 - search todo
 - add sidebar resizable (react-resizable)
@@ -46,8 +50,10 @@
 - refactor server
 - connect server with front end
 - create login page
+- create auth pages
 
 - add persist to zustand
 - fix todo list placeholder
 
 - create resizer observer hook with multiples refs
+- create useHover that take a screen tab

@@ -20,7 +20,7 @@ import { SectionsList } from '../Lists/SectionsList';
 import { TodosList } from '../Lists/TodosList';
 import { ContentContainer } from './ContentContainer';
 
-interface TodosSection {
+interface ITodosSection {
   todos: ITodo[];
   id: string;
   index?: number | undefined;
@@ -38,7 +38,7 @@ export const InboxContent = () => {
     addTodo: addT,
     deleteSection: deleteS,
     setTodos: setT,
-    setSections: setS,
+    setSections,
     addSection: addS,
     // editTodo,
     // completeTodo,
@@ -68,7 +68,7 @@ export const InboxContent = () => {
     todos.filter((todo) => todo.project.id === 'inbox' && !todo.isCompleted)
   );
 
-  const [inboxTodosSections, setInboxTodosSections] = useState<TodosSection[]>(
+  const [inboxTodosSections, setInboxTodosSections] = useState<ITodosSection[]>(
     inboxSections.map((section) => ({
       ...section,
       todos: todos.filter(
@@ -164,9 +164,9 @@ export const InboxContent = () => {
     addS(section);
   }, []);
 
-  const setSections = useCallback((sections: ISection[]) => {
-    setS(sections);
-  }, []);
+  // const setSections = useCallback((sections: ITodosSection[]) => {
+  //   setInboxTodosSections(sections);
+  // }, []);
 
   const onDragEnd = (result: DropResult) => {
     const { destination, source } = result;
@@ -178,6 +178,13 @@ export const InboxContent = () => {
       destination.index === source.index
     )
       return;
+
+    console.log(
+      'source id ',
+      source.index,
+      ' destination id ',
+      destination.index
+    );
 
     const sourceTodosSectionIndex = sections.findIndex(
       (s) => s.id === source.droppableId
@@ -202,6 +209,19 @@ export const InboxContent = () => {
     };
 
     editTodo(editedTodo);
+
+    if (
+      source.droppableId === 'sections' &&
+      destination.droppableId === 'sections'
+    ) {
+      console.log('here');
+      console.log(reorder(inboxTodosSections, source.index, destination.index));
+      setSections(reorder(sections, source.index, destination.index));
+      setInboxTodosSections(
+        reorder(inboxTodosSections, source.index, destination.index)
+      );
+      return;
+    }
 
     // inbox to inbox
     if (source.droppableId === 'inbox' && destination.droppableId === 'inbox') {
@@ -338,6 +358,7 @@ export const InboxContent = () => {
             sectionsTodos={inboxTodosSections!}
             todoInputOpenById={todoInputOpenById}
             sectionInputOpenById={sectionInputOpenById}
+            setSections={setSections}
             addSection={addSection}
             completeTodo={completeTodo}
             addTodo={addTodo}
