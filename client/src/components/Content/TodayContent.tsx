@@ -9,8 +9,7 @@ import { TodosList } from '../Lists/TodosList';
 import { ContentContainer } from './ContentContainer';
 
 export const TodayContent = () => {
-  const { projects, todos, setTodos, completeTodo, editTodo, addTodo } =
-    useTodosStore();
+  const { todos, completeTodo, editTodo, addTodo } = useTodosStore();
 
   const today = new Date();
   const month = today.toLocaleString('en', { month: 'short' });
@@ -43,7 +42,7 @@ export const TodayContent = () => {
 
   return (
     <ContentContainer heading={<Heading />}>
-      {/* <div className='w-full px-9 md:px-0'>
+      <div className='w-full px-9 md:px-0'>
         <TodosList
           droppableId='today'
           todos={todayTodos}
@@ -74,7 +73,7 @@ export const TodayContent = () => {
             </div>
           )}
         </div>
-      </div> */}
+      </div>
     </ContentContainer>
   );
 };

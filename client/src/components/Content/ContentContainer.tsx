@@ -1,8 +1,7 @@
 import { useTodosStore, useUIStore } from '../../zustand';
 import { motion } from 'framer-motion';
 import { isDesktop } from 'react-device-detect';
-import { forwardRef } from 'react';
-import { DragDropContext, Droppable, DropResult } from 'react-beautiful-dnd';
+import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 import { reorder } from '../../helpers/functions';
 import { ITodo } from '../../helpers/types';
 import { useDndPlaceholder } from '../../hooks/useDndPlaceholder';
