@@ -11,6 +11,7 @@ import {
 import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 import { reorder } from '../../helpers/functions';
 import { IProject, ISection, ITodo } from '../../helpers/types';
+import { useDndPlaceholder } from '../../hooks/useDndPlaceholder';
 import { useUpdateState } from '../../hooks/useUpdateState';
 import { useTodosStore, useUIStore } from '../../zustand';
 import { AddSection } from '../AddSection';
@@ -84,7 +85,7 @@ export const InboxContent = () => {
     }))
   );
 
-  console.log(inboxTodosSections);
+  // console.log(inboxTodosSections);
 
   // useLayoutEffect(() => {
   //   const lastTodoAdded = todos[todos.length - 1];
@@ -178,6 +179,8 @@ export const InboxContent = () => {
   //   setInboxTodosSections(sections);
   // }, []);
 
+  const { placeholderProps, onDragStart, onDragUpdate } = useDndPlaceholder();
+
   const onDragEnd = (result: DropResult) => {
     const { destination, source } = result;
 
@@ -224,8 +227,8 @@ export const InboxContent = () => {
       source.droppableId === 'sections' &&
       destination.droppableId === 'sections'
     ) {
-      console.log('here');
-      console.log(reorder(inboxTodosSections, source.index, destination.index));
+      // console.log('here');
+      // console.log(reorder(inboxTodosSections, source.index, destination.index));
       setInboxSections(reorder(sections, source.index, destination.index));
       setInboxTodosSections(
         reorder(inboxTodosSections, source.index, destination.index)
@@ -330,12 +333,17 @@ export const InboxContent = () => {
 
   return (
     <ContentContainer heading={<Heading />}>
-      <DragDropContext onDragEnd={onDragEnd}>
+      <DragDropContext
+        onDragStart={onDragStart}
+        onDragUpdate={onDragUpdate}
+        onDragEnd={onDragEnd}
+      >
         <div className='w-full px-9 md:px-0'>
           <TodosList
             draggingElementId={draggingElementId}
-            droppableId='inbox'
             todos={inboxTodos}
+            placeholderProps={placeholderProps}
+            droppableId='inbox'
             completeTodo={completeTodo}
             editTodo={editTodo}
             setTodoInputOpenById={setTodoInputOpenById}

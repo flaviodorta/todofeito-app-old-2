@@ -1,5 +1,6 @@
-import { isEqual } from 'lodash';
-import { memo, useEffect, useRef, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { isEmpty, isEqual } from 'lodash';
+import { memo, useDebugValue, useEffect, useRef, useState } from 'react';
 import {
   DragDropContext,
   Draggable,
@@ -8,6 +9,10 @@ import {
 } from 'react-beautiful-dnd';
 import { reorder } from '../../helpers/functions';
 import { ITodo } from '../../helpers/types';
+import {
+  IPlaceholderProps,
+  useDndPlaceholder,
+} from '../../hooks/useDndPlaceholder';
 import { useUpdateState } from '../../hooks/useUpdateState';
 import { EditTodo } from '../EditTodo';
 import { TodoItem } from './../TodoItem';
@@ -17,6 +22,7 @@ interface ITodosListProps {
   todos: ITodo[];
   todoInputOpenById: string | null;
   draggingElementId: string | null;
+  placeholderProps?: IPlaceholderProps;
   completeTodo: (todo: ITodo) => void;
   editTodo: (todo: ITodo) => void;
   setTodoInputOpenById: (id: string | null) => void;
@@ -27,10 +33,13 @@ export const TodosListMemoized = ({
   todos,
   todoInputOpenById,
   draggingElementId,
+  placeholderProps,
   completeTodo,
   editTodo,
   setTodoInputOpenById,
 }: ITodosListProps) => {
+  // const { placeholderProps, on} = useDndPlaceholder();
+
   return (
     <Droppable droppableId={`${droppableId}`} type='TODOS'>
       {(droppableProvided, droppableSnapshot) =>
@@ -84,6 +93,19 @@ export const TodosListMemoized = ({
               </Draggable>
             ))}
             {droppableProvided.placeholder}
+            {placeholderProps &&
+              !isEmpty(placeholderProps) &&
+              droppableSnapshot.isDraggingOver && (
+                <div
+                  className='absolute bg-gray-300/90 rounded-md blur-sm transition-colors ease-out duration-1000'
+                  style={{
+                    top: placeholderProps.y,
+                    left: placeholderProps.x,
+                    height: placeholderProps.height,
+                    width: placeholderProps.width,
+                  }}
+                />
+              )}
           </div>
         )
       }

@@ -119,6 +119,7 @@ export const TodoItemMemoized = ({
           : 'border-b-gray-200 border-b-[1px]'
       }
       ${draggableSnapshot.isDropAnimating ? 'shadow-none' : ''}
+      z-[1]
       p-2
       outline-none
       flex

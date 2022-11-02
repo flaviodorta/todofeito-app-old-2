@@ -49,6 +49,8 @@ export function useDimensions<T extends HTMLElement = HTMLElement>({
     recalculate()
   );
 
+  useResizeObserver(ref, () => recalculate);
+
   useIsomorphicLayoutEffect(() => {
     if (!ref.current && typeof window !== 'undefined') return;
 
