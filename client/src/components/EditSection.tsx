@@ -1,18 +1,20 @@
 import { useRef, useState } from 'react';
 import { onKeyUpEnter } from '../helpers/functions';
 import { ISection } from '../helpers/types';
-import { useTodosStore } from '../zustand';
+// import { useTodosStore } from '../zustand';
 
 interface IEditSectionProps {
   section: ISection;
+  editSection: (section: ISection) => void;
   setSectionInputOpenById: (id: string | null) => void;
 }
 
 export const EditSection = ({
   section,
+  editSection,
   setSectionInputOpenById,
 }: IEditSectionProps) => {
-  const { editSection } = useTodosStore();
+  // const { editSection } = useTodosStore();
   const [inputs, setInputs] = useState({
     name: section.name,
   });

@@ -17,14 +17,13 @@ export interface IPlaceholderProps {
   y: number;
 }
 
-export function useDndPlaceholder() {
-  const [placeholderProps, setPlaceholderProps] = useState<IPlaceholderProps>({
-    height: 0,
-    width: 0,
-    x: 0,
-    y: 0,
-  });
+interface IUseDndPlaceholder {
+  setPlaceholderProps:
+    | React.Dispatch<React.SetStateAction<IPlaceholderProps>>
+    | ((placeholderProps: IPlaceholderProps) => void);
+}
 
+export function useDndPlaceholder({ setPlaceholderProps }: IUseDndPlaceholder) {
   const onDragStart = (e: DragStart) => {
     const draggedDOM = getDraggedDom(e.draggableId)!;
 
@@ -35,14 +34,6 @@ export function useDndPlaceholder() {
     const { clientHeight, clientWidth } = draggedDOM;
 
     const sourceIndex = e.source.index;
-
-    console.log(
-      [...(draggedDOM.parentNode as HTMLElement).children].reduce((s, e) => {
-        const style = window.getComputedStyle(e);
-        const marginBottom = parseFloat(style.marginBottom);
-        return s + e.clientHeight + marginBottom;
-      }, 0)
-    );
 
     const clientY = parseFloat(
       window.getComputedStyle(parentDraggedDOM).paddingTop +
@@ -65,8 +56,6 @@ export function useDndPlaceholder() {
       y: clientY,
       x: clientX,
     });
-
-    console.log(placeholderProps);
   };
 
   const onDragUpdate = (e: DragUpdate) => {
@@ -104,19 +93,6 @@ export function useDndPlaceholder() {
       window.getComputedStyle(draggedDOM.parentNode as HTMLElement).paddingLeft
     );
 
-    console.log(
-      parseFloat(
-        window.getComputedStyle(parentDraggedDOM).paddingTop +
-          updateArray.slice(0, destinationIndex).reduce((sum, el) => {
-            const style = window.getComputedStyle(el);
-            const marginBottom = parseFloat(style.marginBottom);
-            return sum + el.clientHeight + marginBottom;
-          }, 0)
-      )
-    );
-    console.log(sourceIndex, ' ', destinationIndex);
-    console.log(placeholderProps);
-
     setPlaceholderProps({
       height: clientHeight,
       width: clientWidth,
@@ -125,5 +101,5 @@ export function useDndPlaceholder() {
     });
   };
 
-  return { placeholderProps, onDragStart, onDragUpdate };
+  return { onDragStart, onDragUpdate };
 }

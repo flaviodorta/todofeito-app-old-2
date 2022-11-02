@@ -35,18 +35,23 @@
 - make todos dragglable between sections
 - sections order drag
 - fix recalculate dimensions
+- add placeholder to list with no todos when dragging over
+- fix resizing dropping
+- fix todo list placeholder
+- fix edit todo and section
 
 # to do
 
-- add placeholder to list with no todos when dragging over
-- fix resizing dropping
-- todo modal
-- user settings modal
+- fix reorder algorithm
+- add placeholder to all lists
+- fix lists in all pages
 - search todo
 - add sidebar resizable (react-resizable)
-- add i18n
 - add flat design to no todos
 - add favicon
+- user settings modal
+- add i18n
+- fix reponsible details
 
 - refactor server
 - connect server with front end
@@ -54,7 +59,8 @@
 - create auth pages
 
 - add persist to zustand
-- fix todo list placeholder
 
+- subtasks
+- todo modal
 - create resizer observer hook with multiples refs
 - create useHover that take a screen tab

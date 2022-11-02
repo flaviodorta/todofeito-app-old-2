@@ -58,7 +58,6 @@ export function useDimensions<T extends HTMLElement = HTMLElement>({
       window.requestAnimationFrame(() => {
         setDimensions(ref.current?.getBoundingClientRect()!);
       });
-      console.log('scroll');
     };
 
     if (!withInitialAnimationRef.current) measure();

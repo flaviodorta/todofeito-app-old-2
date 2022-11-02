@@ -99,7 +99,7 @@ export const UpcomingTodosSectionMemoized = (props: IUpcomingTodosSection) => {
         <div className='w-full h-fit'>
           {todos.length > 0 ? (
             <TodosList
-              draggingElementId={draggingElementId}
+              // draggingElementId={draggingElementId}
               droppableId={section.id}
               todos={thisDateTodos}
               editTodo={editTodo}

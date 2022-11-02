@@ -32,10 +32,10 @@ interface ITodosSection {
   section: ISection;
   todoInputOpenById: string | null;
   sectionInputOpenById: string | null;
-  draggingElementId: string | null;
   draggableProvided?: DraggableProvided;
   droppableSnapshot: DroppableStateSnapshot;
   draggableSnapshot: DraggableStateSnapshot;
+  editSection: (section: ISection) => void;
   addSection: (section: ISection) => void;
   completeTodo: (todo: ITodo) => void;
   addTodo: (todo: ITodo) => void;
@@ -50,10 +50,10 @@ export const TodosSection = ({
   section,
   todoInputOpenById,
   sectionInputOpenById,
-  draggingElementId,
   draggableProvided,
   droppableSnapshot,
   draggableSnapshot,
+  editSection,
   addSection,
   editTodo,
   addTodo,
@@ -106,6 +106,7 @@ export const TodosSection = ({
   if (sectionInputOpenById === editSectionIdRef.current) {
     return (
       <EditSection
+        editSection={editSection}
         section={section}
         setSectionInputOpenById={setSectionInputOpenById}
       />
@@ -201,7 +202,6 @@ export const TodosSection = ({
             {/* Todo list */}
             <TodosList
               droppableId={section.id}
-              draggingElementId={draggingElementId}
               todos={todos}
               completeTodo={completeTodo}
               editTodo={editTodo}

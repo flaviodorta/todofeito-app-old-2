@@ -59,7 +59,7 @@ export const EditProjectModal = ({
   }, []);
 
   return (
-    <Backdrop close={closeEditProjectModalOpen} className='bg-black/50 z-90'>
+    <Backdrop close={closeEditProjectModalOpen} className='z-90 bg-black/50'>
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}

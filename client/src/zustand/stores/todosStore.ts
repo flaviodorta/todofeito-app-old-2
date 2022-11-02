@@ -49,16 +49,10 @@ export const todosStore = create<TodosStore>((set, get) => {
         };
       }),
     setTodos: (todos: ITodo[]) =>
-      set((state) => {
-        const arr = state.todos.filter(
-          (todo) => !todos.find((s) => s.id === todo.id)
-        );
-
-        return {
-          ...state,
-          todos: [...arr, ...todos],
-        };
-      }),
+      set((state) => ({
+        ...state,
+        todos: todos,
+      })),
 
     addTodo: (todo: ITodo) =>
       set((state) => ({

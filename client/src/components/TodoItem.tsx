@@ -20,6 +20,7 @@ import { useUIStore } from '../zustand';
 type ITodoItem = {
   todo: ITodo;
   // todoInputOpenById: string | null;
+  setDraggingElementId: (id: string | null) => void;
   setTodoInputOpenById: (id: string | null) => void;
   completeTodo: (todo: ITodo) => void;
   editTodo: (todo: ITodo) => void;
@@ -32,13 +33,11 @@ export const TodoItemMemoized = ({
   // todoInputOpenById,
   draggableProvided,
   draggableSnapshot,
+  setDraggingElementId,
   completeTodo,
   editTodo,
   setTodoInputOpenById,
 }: ITodoItem) => {
-  // const { completeTodo, editTodo } = useTodosStore();
-  const { setDraggingElementId, draggingElementId } = useUIStore();
-
   const [checked, setChecked] = useState(todo.isCompleted);
   const [isHover, setIsHover] = useState(false);
   const [date, setDate] = useState(todo.date);
@@ -91,12 +90,6 @@ export const TodoItemMemoized = ({
   };
 
   useEffect(() => {
-    // console.log('todo render ', todo.id);
-  }, []);
-
-  // console.log(draggableSnapshot.isDragging);
-  // console.log(draggingElementId);
-  useEffect(() => {
     draggableSnapshot.isDragging
       ? setDraggingElementId(todo.id)
       : setDraggingElementId(null);
@@ -106,8 +99,6 @@ export const TodoItemMemoized = ({
   //   <div className='w-full h-60'>
   //     <EditTodo todo={todo} setTodoInputOpenById={setTodoInputOpenById} />
   //   </div>;
-
-  // console.log('render ', todo.id);
 
   return (
     <div

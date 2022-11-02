@@ -57,7 +57,7 @@ export const SelectProject = ({
 }: ISelectProjectProps) => {
   const { projects } = useTodosStore();
 
-  const [containerSizes, containerRef] = useDimensions();
+  const [containerSizes, containerRef] = useDimensions({});
 
   const { width } = useWindowSize();
 

@@ -53,7 +53,7 @@ export const CreateLabelModal = ({ closeModal }: ICreateLabelModalProps) => {
   }, []);
 
   return (
-    <Backdrop close={closeModal} className='bg-black/50 z-[1000]'>
+    <Backdrop close={closeModal} className='z-[1000] bg-black/50'>
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}

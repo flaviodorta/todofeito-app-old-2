@@ -62,7 +62,7 @@ export const Sidebar = () => {
           elementId='layout'
           isShow={isSidebarOpen && (isMobile || isScreenMinorThanMedium)}
           close={toggleSidebar}
-          className='bg-black/50 md:hidden z-[20]'
+          className='md:hidden z-[20]'
         />
       )}
 

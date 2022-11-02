@@ -1,19 +1,10 @@
-import { AnimatePresence, motion } from 'framer-motion';
-import { isEmpty, isEqual } from 'lodash';
-import { memo, useDebugValue, useEffect, useRef, useState } from 'react';
-import {
-  DragDropContext,
-  Draggable,
-  Droppable,
-  DropResult,
-} from 'react-beautiful-dnd';
-import { reorder } from '../../helpers/functions';
+import { isEmpty } from 'lodash';
+import { memo } from 'react';
+import { Draggable, Droppable } from 'react-beautiful-dnd';
 import { ITodo } from '../../helpers/types';
-import {
-  IPlaceholderProps,
-  useDndPlaceholder,
-} from '../../hooks/useDndPlaceholder';
+import { IPlaceholderProps } from '../../hooks/useDndPlaceholder';
 import { useUpdateState } from '../../hooks/useUpdateState';
+import { useUIStore } from '../../zustand';
 import { EditTodo } from '../EditTodo';
 import { TodoItem } from './../TodoItem';
 
@@ -21,7 +12,7 @@ interface ITodosListProps {
   droppableId: string;
   todos: ITodo[];
   todoInputOpenById: string | null;
-  draggingElementId: string | null;
+  // draggingElementId: string | null;
   placeholderProps?: IPlaceholderProps;
   completeTodo: (todo: ITodo) => void;
   editTodo: (todo: ITodo) => void;
@@ -32,14 +23,13 @@ export const TodosListMemoized = ({
   droppableId,
   todos,
   todoInputOpenById,
-  draggingElementId,
+  // draggingElementId,
   placeholderProps,
   completeTodo,
   editTodo,
   setTodoInputOpenById,
 }: ITodosListProps) => {
-  // const { placeholderProps, on} = useDndPlaceholder();
-
+  const { setDraggingElementId } = useUIStore();
   return (
     <Droppable droppableId={`${droppableId}`} type='TODOS'>
       {(droppableProvided, droppableSnapshot) =>
@@ -75,12 +65,14 @@ export const TodosListMemoized = ({
                       <div className='w-full h-60'>
                         <EditTodo
                           todo={todo}
+                          editTodo={editTodo}
                           setTodoInputOpenById={setTodoInputOpenById}
                         />
                       </div>
                     ) : (
                       <TodoItem
                         todo={todo}
+                        setDraggingElementId={setDraggingElementId}
                         editTodo={editTodo}
                         completeTodo={completeTodo}
                         setTodoInputOpenById={setTodoInputOpenById}

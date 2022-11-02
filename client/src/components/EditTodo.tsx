@@ -25,13 +25,18 @@ import { useDimensions } from '../hooks/useDimensions';
 
 interface IEditTodoProps {
   todo: ITodo;
+  editTodo: (todo: ITodo) => void;
   setTodoInputOpenById: (id: string | null) => void;
 }
 
-export const EditTodo = ({ todo, setTodoInputOpenById }: IEditTodoProps) => {
+export const EditTodo = ({
+  todo,
+  editTodo,
+  setTodoInputOpenById,
+}: IEditTodoProps) => {
   const { id, title, description, section, date, project, priority, labels } =
     todo;
-  const { editTodo } = useTodosStore();
+  // const { editTodo } = useTodosStore();
 
   const [inputs, setInputs] = useState({
     title,

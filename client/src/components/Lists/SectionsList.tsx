@@ -1,32 +1,14 @@
-import { omit } from 'lodash';
-import { memo } from 'react';
-import {
-  DragDropContext,
-  Draggable,
-  Droppable,
-  DropResult,
-} from 'react-beautiful-dnd';
-import { reorder } from '../../helpers/functions';
-import { IProject, ISection, ITodo } from '../../helpers/types';
-import { EditTodo } from '../EditTodo';
+import { Draggable, Droppable } from 'react-beautiful-dnd';
+import { ISection, ITodo } from '../../helpers/types';
 import { TodosSection } from '../Sections/TodosSection';
 
-interface ITodosSection {
-  todos: ITodo[];
-  id: string;
-  index?: number | undefined;
-  name: string;
-  date: Date;
-  project: IProject;
-}
-
 interface ISectionsListProps {
+  droppabledId: string;
+  todos: ITodo[];
   sections: ISection[];
-  sectionsTodos: ITodosSection[];
   todoInputOpenById: string | null;
   sectionInputOpenById: string | null;
-  draggingElementId: string | null;
-  setSections: (sections: ITodosSection[]) => void;
+  editSection: (section: ISection) => void;
   addSection: (section: ISection) => void;
   completeTodo: (todo: ITodo) => void;
   addTodo: (todo: ITodo) => void;
@@ -37,12 +19,12 @@ interface ISectionsListProps {
 }
 
 export const SectionsList = ({
+  droppabledId,
+  todos,
   sections,
-  sectionsTodos,
   todoInputOpenById,
   sectionInputOpenById,
-  draggingElementId,
-  setSections,
+  editSection,
   addSection,
   completeTodo,
   addTodo,
@@ -51,30 +33,9 @@ export const SectionsList = ({
   setSectionInputOpenById,
   deleteSection,
 }: ISectionsListProps) => {
-  const onDragEnd = (result: DropResult) => {
-    const { destination, source } = result;
-
-    if (!destination) return;
-
-    if (
-      destination.droppableId === source.droppableId &&
-      destination.index === source.index
-    )
-      return;
-
-    console.log(source.index, ' ', destination.index);
-
-    const x = sectionsTodos;
-    console.log(x);
-    console.log(reorder(sectionsTodos, source.index, destination.index));
-
-    setSections(reorder(sectionsTodos, source.index, destination.index));
-  };
-
   return (
     <div className='mb-4 pl-11 pr-4 md:px-0'>
-      {/* <DragDropContext onDragEnd={onDragEnd}> */}
-      <Droppable droppableId='sections' type='SECTIONS'>
+      <Droppable droppableId={`${droppabledId}`} type='SECTIONS'>
         {(droppableProvided, droppableSnapshot) => (
           <div
             ref={droppableProvided.innerRef}
@@ -82,7 +43,7 @@ export const SectionsList = ({
             className={`
               relative flex flex-col`}
           >
-            {sectionsTodos.map((section, i) => (
+            {sections.map((section, i) => (
               <Draggable key={section.id} draggableId={section.id} index={i}>
                 {(draggableProvided, draggableSnapshot) => (
                   <div
@@ -96,12 +57,14 @@ export const SectionsList = ({
                     <TodosSection
                       todoInputOpenById={todoInputOpenById}
                       sectionInputOpenById={sectionInputOpenById}
-                      todos={section.todos}
-                      draggingElementId={draggingElementId}
-                      section={omit(section, 'todos') as ISection}
+                      todos={todos.filter(
+                        (t) => t.section?.id === section.id && !t.isCompleted
+                      )}
+                      section={section}
                       draggableProvided={draggableProvided}
                       droppableSnapshot={droppableSnapshot}
                       draggableSnapshot={draggableSnapshot}
+                      editSection={editSection}
                       addSection={addSection}
                       completeTodo={completeTodo}
                       addTodo={addTodo}
@@ -114,12 +77,10 @@ export const SectionsList = ({
                 )}
               </Draggable>
             ))}
-
             {droppableProvided.placeholder}
           </div>
         )}
       </Droppable>
-      {/* </DragDropContext> */}
     </div>
   );
 };

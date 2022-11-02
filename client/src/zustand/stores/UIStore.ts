@@ -1,14 +1,19 @@
 import { isDesktop } from 'react-device-detect';
 import create from 'zustand';
+import { IPlaceholderProps } from '../../hooks/useDndPlaceholder';
 
 interface IUIStore {
   isSidebarOpen: boolean;
   isSidebarProjectsOpen: boolean;
   observediesHeights: number[];
   draggingElementId: string | null;
+  draggingOverElementId: string | null;
   ref: HTMLDivElement | null;
+  placeholderProps: IPlaceholderProps;
+  setPlaceholderProps: (placeholderProps: IPlaceholderProps) => void;
   setRef: (node: HTMLDivElement | null) => void;
   setDraggingElementId: (id: string | null) => void;
+  setDraggingOverElementId: (id: string | null) => void;
   addObservedHeight: (height: number) => void;
   setObservedHeight: (height: number, index: number) => void;
   toggleSidebar: () => void;
@@ -22,7 +27,19 @@ export const UIStore = create<IUIStore>((set, get) => ({
   isSidebarProjectsOpen: true,
   observediesHeights: [],
   draggingElementId: null,
+  draggingOverElementId: null,
+  placeholderProps: {
+    height: 0,
+    width: 0,
+    y: 0,
+    x: 0,
+  },
   ref: null,
+  setPlaceholderProps: (placeholderProps: IPlaceholderProps) =>
+    set((state) => ({
+      ...state,
+      placeholderProps,
+    })),
   setRef: (node: HTMLDivElement | null) =>
     set((state) => ({
       ...state,
@@ -32,6 +49,11 @@ export const UIStore = create<IUIStore>((set, get) => ({
     set((state) => ({
       ...state,
       draggingElementId: id,
+    })),
+  setDraggingOverElementId: (id: string | null) =>
+    set((state) => ({
+      ...state,
+      draggingOverElementId: id,
     })),
   addObservedHeight: (height: number) =>
     set((state) => ({
