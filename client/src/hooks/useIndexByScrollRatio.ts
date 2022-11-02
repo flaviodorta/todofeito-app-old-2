@@ -2,7 +2,7 @@ import { useCallback, useMemo, useState } from 'react';
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect';
 
 interface IUseScrollRatioProps<T extends HTMLElement = HTMLElement> {
-  containerRef: React.RefObject<T>;
+  ref: T;
   observediesHeights: number[];
   gap?: number;
 }
@@ -20,7 +20,7 @@ const getIndexByRatio = (value: number, ratios: number[]) =>
 
 export function useIndexByScrollRatio<T extends HTMLElement = HTMLElement>({
   gap = 0,
-  containerRef,
+  ref,
   observediesHeights,
 }: IUseScrollRatioProps<T>): [number, (index: number) => void] {
   const [index, setIndex] = useState(0);
@@ -68,44 +68,34 @@ export function useIndexByScrollRatio<T extends HTMLElement = HTMLElement>({
   // working
   const scrollToIndex = useCallback(
     (index: number) => {
-      if (
-        !containerRef.current &&
-        ratios.length === 0 &&
-        !observediesTotalHeight
-      )
-        return;
+      if (!ref && ratios.length === 0 && !observediesTotalHeight) return;
 
-      containerRef.current?.scrollTo(
-        0,
-        ratios[index - 1] * observediesTotalHeight
-      );
+      ref.scrollTo(0, ratios[index - 1] * observediesTotalHeight);
 
       setIndex(index);
     },
-    [containerRef, observediesTotalHeight, ratios]
+    [ref, observediesTotalHeight, ratios]
   );
 
   useIsomorphicLayoutEffect(() => {
-    if (!containerRef.current) return;
+    if (!ref) return;
 
-    containerRef.current?.addEventListener('scroll', () => {
-      const scrollRatio =
-        (containerRef.current?.scrollTop as number) / observediesTotalHeight;
-
-      const idx = getIndexByRatio(scrollRatio, ratios);
-
-      if (index !== idx) setIndex(idx);
-    });
-
-    return containerRef.current.removeEventListener('scroll', () => {
-      const scrollRatio =
-        (containerRef.current?.scrollTop as number) / observediesTotalHeight;
+    ref.addEventListener('scroll', () => {
+      const scrollRatio = (ref?.scrollTop as number) / observediesTotalHeight;
 
       const idx = getIndexByRatio(scrollRatio, ratios);
 
       if (index !== idx) setIndex(idx);
     });
-  }, [index, observediesHeights, containerRef]);
+
+    return ref.removeEventListener('scroll', () => {
+      const scrollRatio = (ref.scrollTop as number) / observediesTotalHeight;
+
+      const idx = getIndexByRatio(scrollRatio, ratios);
+
+      if (index !== idx) setIndex(idx);
+    });
+  }, [index, observediesHeights, ref]);
 
   return [index, scrollToIndex];
 }

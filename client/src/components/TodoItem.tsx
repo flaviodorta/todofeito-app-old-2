@@ -101,9 +101,10 @@ export const TodoItemMemoized = ({
   //   </div>;
 
   return (
+    // <div className='pb-5 bg-white'>
     <div
       ref={containerRef}
-      className={`relative w-full h-fit mb-5
+      className={`relative w-full h-full mb-2
       ${
         draggableSnapshot.isDragging
           ? 'shadow-dragging-item border-none'
@@ -209,6 +210,7 @@ export const TodoItemMemoized = ({
         </div>
       )}
     </div>
+    // </div>
   );
 };
 

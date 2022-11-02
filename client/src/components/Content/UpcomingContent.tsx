@@ -14,41 +14,28 @@ import { UpcomingTodosSection } from '../Sections/UpcomingTodosSection';
 import { ContentContainer } from './ContentContainer';
 
 export const UpcomingContent = () => {
-  const { addTodo, completeTodo, editTodo, setTodos, todos } = useTodosStore();
+  const {
+    addTodo,
+    completeTodo,
+    editTodo,
+    setTodos,
+    toggleUpcomingDateList,
+    todos,
+    dates,
+  } = useTodosStore();
   const { addObservedHeight, setObservedHeight, observediesHeights, ref } =
     useUIStore();
 
   const today = new Date();
-  const dates = (() => {
-    const arr = [];
-
-    for (let i = 0; i < 365; i++) {
-      const date = new Date(
-        today.getFullYear(),
-        today.getMonth(),
-        today.getDate() + i
-      );
-
-      arr.push({
-        id: nanoid(),
-        date: date,
-        name: `${capitalizeFirstLetter(
-          getMonthName(date).substring(0, 3)
-        )}  ${date.getDate()} ${
-          isToday(date) ? '‧ Today' : isTomorrow(date) ? '‧ Tomorrow' : ''
-        } ‧ ${capitalizeFirstLetter(getDayNameInWeek(date))} `,
-      });
-    }
-
-    return arr;
-  })();
 
   const [date, setDate] = useState(today);
 
   const containerRef = useRef<HTMLDivElement>(null);
 
+  console.log(todos);
+
   const [scrollIndex, scrollToIndex] = useIndexByScrollRatio({
-    containerRef,
+    ref: ref!,
     observediesHeights,
     gap: 32,
   });
@@ -57,6 +44,7 @@ export const UpcomingContent = () => {
     () => dates.findIndex((thisDate) => isSameDay(thisDate.date, date)),
     [date]
   );
+  console.log(scrollIndex, ' ', observediesHeights);
 
   const selectDate = useCallback(
     (date: Date) => {
@@ -64,71 +52,46 @@ export const UpcomingContent = () => {
         dates.findIndex((thisDate) => isSameDay(thisDate.date, date))
       );
     },
-    [dates, scrollToIndex]
+    [dates, scrollIndex]
   );
 
   useIsomorphicLayoutEffect(() => {
     if (!ref) return;
 
     ref.addEventListener('scroll', () => {
-      if (scrollIndex !== dateIndex) {
+      if (scrollIndex !== dateIndex && dates[scrollIndex].date) {
         setDate(dates[scrollIndex].date);
       }
     });
 
     return ref.removeEventListener('scroll', () => {
-      if (scrollIndex !== dateIndex) {
+      if (scrollIndex !== dateIndex && dates[scrollIndex].date) {
         setDate(dates[scrollIndex].date);
       }
     });
   }, [scrollIndex]);
 
-  // const dates = (() => {
-  //   const arr = [];
-
-  //   for (let i = 0; i < 365; i++) {
-  //     const date = new Date(
-  //       today.getFullYear(),
-  //       today.getMonth(),
-  //       today.getDate() + i
-  //     );
-
-  //     arr.push({
-  //       id: nanoid(),
-  //       date: date,
-  //       name: `${capitalizeFirstLetter(
-  //         getMonthName(date).substring(0, 3)
-  //       )}  ${date.getDate()} ${
-  //         isToday(date) ? '‧ Today' : isTomorrow(date) ? '‧ Tomorrow' : ''
-  //       } ‧ ${capitalizeFirstLetter(getDayNameInWeek(date))} `,
-  //       todos: [],
-  //     } as ITodosByDate);
-  //   }
-
-  //   return arr;
-  // })();
-
   return (
     <ContentContainer
-      // ref={containerRef}
       heading={<HorizontalCalendar inputedDate={date} setDate={selectDate} />}
     >
-      {/* <div className='flex flex-col gap-8 px-11 md:px-0'>
-        {Array.from({ length: 365 }).map((_, index) => (
+      <div className='flex flex-col gap-8 px-11 md:px-0'>
+        {dates.map((section, index) => (
           <UpcomingTodosSection
-            key={dates[index].id}
+            key={section.id}
+            todos={todos.filter((todo) => isSameDay(todo.date, section.date))}
+            section={section}
+            index={index}
+            toggleUpcomingDateList={toggleUpcomingDateList}
             setTodos={setTodos}
-            todos={todos}
             addObservedHeight={addObservedHeight}
             setObservedHeight={setObservedHeight}
-            index={index}
-            section={dates[index]}
             addTodo={addTodo}
             completeTodo={completeTodo}
             editTodo={editTodo}
           />
         ))}
-      </div> */}
+      </div>
     </ContentContainer>
   );
 };

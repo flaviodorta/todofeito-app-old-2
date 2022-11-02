@@ -3,18 +3,18 @@ import { isSameDay } from 'date-fns/esm';
 import { isEqual } from 'lodash';
 import { nanoid } from 'nanoid';
 import { memo, useMemo, useRef, useState } from 'react';
-import { ITodo, ISection } from '../../helpers/types';
+import { ITodo, IUpcomingSection } from '../../helpers/types';
 import { useIsomorphicLayoutEffect } from '../../hooks/useIsomorphicLayoutEffect';
-import { useToggle } from '../../hooks/useToggle';
 import { AddTodo } from '../AddTodo';
 import { ChevronIcon, PlusSolidIcon } from '../Icons';
 import { TodosList } from '../Lists/TodosList';
 
 interface IUpcomingTodosSection {
-  section: Omit<ISection, 'project'>;
+  section: IUpcomingSection;
   index: number;
   todos: ITodo[];
-  draggingElementId: string | null;
+  // draggingElementId: string | null;
+  toggleUpcomingDateList: (upcomingDateId: string) => void;
   setTodos: (todos: ITodo[]) => void;
   addTodo: (todo: ITodo) => void;
   completeTodo: (todo: ITodo) => void;
@@ -27,8 +27,8 @@ export const UpcomingTodosSectionMemoized = (props: IUpcomingTodosSection) => {
   const {
     section,
     todos,
-    draggingElementId,
-    setTodos,
+    // draggingElementId,
+    toggleUpcomingDateList,
     addTodo,
     completeTodo,
     editTodo,
@@ -36,9 +36,6 @@ export const UpcomingTodosSectionMemoized = (props: IUpcomingTodosSection) => {
     addObservedHeight,
     index,
   } = props;
-
-  const [isTodoListOpen, toggleTodoListOpen] = useToggle(false);
-
   const [todoInputOpenById, setTodoInputOpenById] = useState<string | null>(
     null
   );
@@ -57,8 +54,8 @@ export const UpcomingTodosSectionMemoized = (props: IUpcomingTodosSection) => {
   const closeAddTodo = () => setTodoInputOpenById(null);
 
   const toggleTodoList = () => {
-    if (isTodoListOpen) closeAddTodo();
-    toggleTodoListOpen();
+    if (section.isListOpen) closeAddTodo();
+    toggleUpcomingDateList(section.id);
   };
   const ref = useRef<HTMLDivElement>(null);
 
@@ -88,14 +85,14 @@ export const UpcomingTodosSectionMemoized = (props: IUpcomingTodosSection) => {
           >
             <ChevronIcon
               className={`${
-                isTodoListOpen ? '' : '-rotate-90'
+                section.isListOpen ? '' : '-rotate-90'
               } w-[20px] h-[20px] stroke-gray-500 group-hover:stroke-gray-600 duration-150 transition-all`}
             />
           </span>
         </div>
       </div>
 
-      {isTodoListOpen && (
+      {section.isListOpen && (
         <div className='w-full h-fit'>
           {todos.length > 0 ? (
             <TodosList
@@ -145,14 +142,7 @@ const sectionPropsAreEqual = (
   nextProps: Readonly<IUpcomingTodosSection>
 ) =>
   isEqual(prevProps.section, nextProps.section) &&
-  isEqual(
-    prevProps.todos.filter((todo) =>
-      isSameDay(todo.date, prevProps.section.date)
-    ),
-    nextProps.todos.filter((todo) =>
-      isSameDay(todo.date, nextProps.section.date)
-    )
-  );
+  isEqual(prevProps.todos, nextProps.todos);
 
 export const UpcomingTodosSection = memo(
   UpcomingTodosSectionMemoized,

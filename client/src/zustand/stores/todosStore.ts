@@ -1,17 +1,25 @@
 // import { isSameDay, isToday, isTomorrow } from 'date-fns';
 // import { nanoid } from 'nanoid';
+import { isToday, isTomorrow } from 'date-fns';
+import { nanoid } from 'nanoid';
 import create from 'zustand';
 import // capitalizeFirstLetter,
 // getDayNameInWeek,
 // getMonthName,
 '../../helpers/functions';
 import {
+  capitalizeFirstLetter,
+  getDayNameInWeek,
+  getMonthName,
+} from '../../helpers/functions';
+import {
   ILabel,
   IProject,
   ISection,
   // IInboxSection,
   ITodo,
-  TodosStore,
+  IUpcomingSection,
+  ITodosStore,
   // ITodosByDate,
   // ITodosByLabel,
   // ITodosByPriority,
@@ -20,7 +28,7 @@ import {
   // ITodosStore,
 } from '../../helpers/types';
 
-export const todosStore = create<TodosStore>((set, get) => {
+export const todosStore = create<ITodosStore>((set, get) => {
   const projects: IProject[] = [
     {
       id: 'inbox',
@@ -31,12 +39,47 @@ export const todosStore = create<TodosStore>((set, get) => {
       },
     },
   ];
+  const today = new Date();
+  const dates: IUpcomingSection[] = (() => {
+    const arr = [];
+
+    for (let i = 0; i < 365; i++) {
+      const date = new Date(
+        today.getFullYear(),
+        today.getMonth(),
+        today.getDate() + i
+      );
+
+      arr.push({
+        id: nanoid(),
+        date: date,
+        name: `${capitalizeFirstLetter(
+          getMonthName(date).substring(0, 3)
+        )}  ${date.getDate()} ${
+          isToday(date) ? '‧ Today' : isTomorrow(date) ? '‧ Tomorrow' : ''
+        } ‧ ${capitalizeFirstLetter(getDayNameInWeek(date))} `,
+        isListOpen: false,
+      });
+    }
+
+    return arr;
+  })();
 
   return {
     todos: [],
     projects: projects,
     sections: [],
     labels: [],
+    dates,
+    toggleUpcomingDateList: (upcomingDateId: string) =>
+      set((state) => ({
+        ...state,
+        dates: dates.map((date) =>
+          date.id === upcomingDateId
+            ? { ...date, isListOpen: !date.isListOpen }
+            : date
+        ),
+      })),
     setSections: (sections: ISection[]) =>
       set((state) => {
         const arr = state.sections.filter(

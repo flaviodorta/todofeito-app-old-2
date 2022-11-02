@@ -59,11 +59,14 @@ export type IPriorityLabelColors =
   | 'fill-blue-600'
   | null;
 
-export interface TodosStore {
+export interface ITodosStore {
   todos: ITodo[];
   projects: IProject[];
   labels: ILabel[];
   sections: ISection[];
+  dates: IUpcomingSection[];
+
+  toggleUpcomingDateList: (upcomingDateId: string) => void;
 
   setTodos: (todos: ITodo[]) => void;
   addTodo: (todo: ITodo) => void;
@@ -82,6 +85,13 @@ export interface TodosStore {
   addLabel: (label: ILabel) => void;
   deleteLabel: (label: ILabel) => void;
   editLabel: (label: ILabel) => void;
+}
+
+export interface IUpcomingSection {
+  id: string;
+  name: string;
+  date: Date;
+  isListOpen: boolean;
 }
 
 export interface ISection {
