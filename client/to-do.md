@@ -42,6 +42,7 @@
 - fix reorder algorithm
 - add placeholder to all lists
 - fix lists in all pages
+- add todo list in label
 
 # to do
 

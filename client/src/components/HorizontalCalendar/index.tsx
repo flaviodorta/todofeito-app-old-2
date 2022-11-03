@@ -29,13 +29,12 @@ export const HorizontalCalendar = ({
 
   const closeSelect = () => setRenderedSelect(null);
 
-  const openDatePicker = () =>
-    !renderedSelect
-      ? () => {
-          setRenderedSelect('date-picker');
-          calcDueDateSizes();
-        }
-      : undefined;
+  const openDatePicker = () => {
+    if (!renderedSelect) {
+      setRenderedSelect('date-picker');
+      calcDueDateSizes();
+    }
+  };
 
   const goToToday = () => {
     setDate(today);

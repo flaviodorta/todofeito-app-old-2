@@ -110,7 +110,7 @@ export const UpcomingTodosSection = (props: IUpcomingTodosSection) => {
       </div>
 
       {open && (
-        <div className='w-full h-fit'>
+        <div className={`w-full h-fit`}>
           <TodosList
             placeholderProps={placeholderProps}
             droppableId={section.id}

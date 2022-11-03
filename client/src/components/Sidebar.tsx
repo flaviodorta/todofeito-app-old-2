@@ -167,6 +167,7 @@ export const Sidebar = () => {
               <SidebarProject
                 key={project.id}
                 project={project}
+                projects={projects}
                 isSidebarProjectsOpen={isSidebarProjectsOpen}
                 onClick={() => navigate(`/projects/${project.id}`)}
               />

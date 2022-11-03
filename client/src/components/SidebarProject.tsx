@@ -9,17 +9,21 @@ import { useToggle } from '../hooks/useToggle';
 import { EditProjectModal } from './EditProjectModal';
 import { PenSolidIcon } from './Icons/Icons/PenSolidIcon';
 import { useDimensions } from '../hooks/useDimensions';
+import { useNavigate } from 'react-router-dom';
+import fi from 'date-fns/esm/locale/fi/index.js';
 
 export const SidebarProject = ({
   project,
-  onClick,
   isSidebarProjectsOpen,
+  projects,
+  onClick,
 }: {
   project: IProject;
-  onClick: () => void;
+  projects: IProject[];
   isSidebarProjectsOpen: boolean;
+  onClick: () => void;
 }) => {
-  // const { isOptionsDropdownOpen, setIsOptionsDropdownOpen } = useUIStore();
+  const navigate = useNavigate();
   const { deleteProject } = useTodosStore();
   const [isOptionsDropdownOpen, setIsOptionsDropdownOpen] = useState<
     string | null
@@ -41,9 +45,26 @@ export const SidebarProject = ({
 
   const ref = useRef<HTMLDivElement>(null);
 
+  const sidebarProjectRef = useRef<HTMLDivElement>(null!);
+
   const [optionsIconSizes, optionsIconRef, calcSizes] = useDimensions({
     parentRef: ref.current,
   });
+
+  const onDeleteProject = () => {
+    const findIndex = projects.findIndex((p) => p.id === project.id);
+    const index =
+      findIndex === -1
+        ? projects.length - 1 >= 0
+          ? projects.length
+          : -1
+        : findIndex;
+    const projectId = projects[index].id;
+    console.log(projectId);
+    deleteProject(project);
+    if (index === -1) navigate('/inbox');
+    navigate(`/inbox/${projectId}`);
+  };
 
   return (
     <>
@@ -57,13 +78,8 @@ export const SidebarProject = ({
       </AnimatePresence>
 
       <motion.div
-        ref={ref}
         key={project.id}
-        onClick={(e) =>
-          e.target === ref.current && !isOptionsDropdownHover
-            ? onClick()
-            : undefined
-        }
+        ref={ref}
         onAnimationComplete={calcSizes}
         className={`${
           isSidebarProjectsOpen ? 'hover:bg-gray-200' : ''
@@ -71,6 +87,10 @@ export const SidebarProject = ({
       >
         <motion.div
           variants={sidebarProjectWrapper}
+          ref={sidebarProjectRef}
+          onClick={(e) =>
+            e.target === sidebarProjectRef.current ? onClick() : undefined
+          }
           className='flex cursor-pointer items-center gap-4'
         >
           <CircleSolidIcon
@@ -116,7 +136,7 @@ export const SidebarProject = ({
                   <span>Edit project</span>
                 </span>
                 <span
-                  onClick={() => deleteProject(project)}
+                  onClick={() => onDeleteProject()}
                   className='w-full flex items-center gap-2 px-2 py-1 hover:bg-gray-300/30'
                 >
                   <TrashSolidIcon className='fill-gray-400/70' />

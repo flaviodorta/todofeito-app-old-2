@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect';
 
 interface IUseScrollRatioProps<T extends HTMLElement = HTMLElement> {
@@ -22,8 +22,9 @@ export function useIndexByScrollRatio<T extends HTMLElement = HTMLElement>({
   gap = 0,
   ref,
   observediesHeights,
-}: IUseScrollRatioProps<T>): [number, (index: number) => void] {
+}: IUseScrollRatioProps<T>): [number, (index: number) => void, number] {
   const [index, setIndex] = useState(0);
+  const lastIndex = useRef(0);
 
   const observediesTotalHeight = useMemo(
     () =>
@@ -80,22 +81,21 @@ export function useIndexByScrollRatio<T extends HTMLElement = HTMLElement>({
   useIsomorphicLayoutEffect(() => {
     if (!ref) return;
 
-    ref.addEventListener('scroll', () => {
+    const setIndexByScroll = () => {
       const scrollRatio = (ref?.scrollTop as number) / observediesTotalHeight;
 
       const idx = getIndexByRatio(scrollRatio, ratios);
 
       if (index !== idx) setIndex(idx);
-    });
+    };
 
-    return ref.removeEventListener('scroll', () => {
-      const scrollRatio = (ref.scrollTop as number) / observediesTotalHeight;
+    ref.addEventListener('scroll', setIndexByScroll);
 
-      const idx = getIndexByRatio(scrollRatio, ratios);
-
-      if (index !== idx) setIndex(idx);
-    });
+    return () => {
+      ref.removeEventListener('scroll', setIndexByScroll);
+      lastIndex.current = index;
+    };
   }, [index, observediesHeights, ref]);
 
-  return [index, scrollToIndex];
+  return [index, scrollToIndex, lastIndex.current];
 }

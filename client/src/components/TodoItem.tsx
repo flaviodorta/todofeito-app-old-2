@@ -107,13 +107,7 @@ export const TodoItemMemoized = ({
       : setDraggingOverElementId(null);
   }, [draggableSnapshot.draggingOver]);
 
-  // if (todoInputOpenById === todo.id)
-  //   <div className='w-full h-60'>
-  //     <EditTodo todo={todo} setTodoInputOpenById={setTodoInputOpenById} />
-  //   </div>;
-
   return (
-    // <div className='pb-5 bg-white'>
     <div
       ref={containerRef}
       className={`relative w-full h-full mb-2
@@ -222,7 +216,6 @@ export const TodoItemMemoized = ({
         </div>
       )}
     </div>
-    // </div>
   );
 };
 

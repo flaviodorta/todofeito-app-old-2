@@ -4,7 +4,7 @@ import { useCallback, useMemo, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { IProject, ITodo } from '../../helpers/types';
 import { useUpdateState } from '../../hooks/useUpdateState';
-import { useTodosStore } from '../../zustand';
+import { useTodosStore, useUIStore } from '../../zustand';
 import { AddSection } from '../AddSection';
 import { AddTodo } from '../AddTodo';
 import { PlusSolidIcon } from '../Icons';
@@ -15,14 +15,17 @@ import { ContentContainer } from './ContentContainer';
 export const ProjectContent = () => {
   const {
     projects,
+    todos,
     sections,
     editTodo,
     completeTodo,
     addTodo,
     deleteSection,
     setTodos,
-    todos,
+    addSection,
+    editSection,
   } = useTodosStore();
+  const { draggingOverElementId, placeholderProps } = useUIStore();
 
   const params = useParams();
 
@@ -70,10 +73,12 @@ export const ProjectContent = () => {
   );
   return (
     <ContentContainer heading={<Heading />}>
-      {/* <div className='w-full px-9 md:px-0'>
+      <div className='w-full px-9 md:px-0'>
         <TodosList
           droppableId={project.id}
           todos={projectTodos}
+          placeholderProps={placeholderProps}
+          draggingOverElementId={draggingOverElementId}
           completeTodo={completeTodo}
           editTodo={editTodo}
           setTodoInputOpenById={setTodoInputOpenById}
@@ -106,7 +111,12 @@ export const ProjectContent = () => {
       <div className='flex flex-col gap-1'>
         <SectionsList
           sections={projectSections}
-          sectionsTodos={[]}
+          addSection={addSection}
+          editSection={editSection}
+          placeholderProps={placeholderProps}
+          todos={projectTodos}
+          droppabledId={project.id}
+          draggingOverElementId={draggingOverElementId}
           todoInputOpenById={todoInputOpenById}
           sectionInputOpenById={sectionInputOpenById}
           completeTodo={completeTodo}
@@ -144,7 +154,7 @@ export const ProjectContent = () => {
             </div>
           )}
         </div>
-      )} */}
+      )}
     </ContentContainer>
   );
 };

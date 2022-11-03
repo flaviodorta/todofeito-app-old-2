@@ -1,4 +1,4 @@
-import { isSameDay } from 'date-fns';
+import { getDaysInMonth, isSameDay } from 'date-fns';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { DropResult } from 'react-beautiful-dnd';
 import { ITodo } from '../../helpers/types';
@@ -30,23 +30,111 @@ export const UpcomingContent = () => {
     draggingOverElementId,
   } = useUIStore();
 
-  console.log(draggingOverElementId);
+  // console.log(draggingOverElementId);
   // console.log(todos);
 
   const today = new Date();
 
   const [date, setDate] = useState(today);
+  const dayInNextMonth = new Date(
+    today.getFullYear(),
+    today.getMonth() + 1,
+    today.getDate()
+  );
+  const daysInMonth = getDaysInMonth(date);
+  const daysInNextMonth = getDaysInMonth(dayInNextMonth);
+  const [days, setDays] = useState(daysInMonth);
 
-  const [days, setDays] = useState([0, 60]);
-  const lastDay = useRef(days[0] / 2);
+  const lastIndex = useRef(0);
 
-  const limitedDates = useMemo(() => dates.slice(days[0], days[1]), [days]);
+  const limitedDates = useMemo(
+    () => dates.slice(days - daysInMonth, days + daysInNextMonth),
+    [days]
+  );
 
-  const [scrollIndex, scrollToIndex] = useIndexByScrollRatio({
+  const [scrollIndex, scrollToIndex, lastScrollIndex] = useIndexByScrollRatio({
     ref: ref!,
     observediesHeights,
     gap: 32,
   });
+
+  console.log('days ', days);
+  console.log('scroll index', scrollIndex);
+  console.log('last index', lastScrollIndex);
+
+  // lastIndex.current = scrollIndex - 1;
+
+  useEffect(() => {
+    if (scrollIndex === days) {
+      if (scrollIndex > lastIndex.current) {
+        setDays((days) => days + daysInNextMonth);
+        setDate(
+          new Date(
+            today.getFullYear(),
+            today.getMonth(),
+            today.getDate() + lastIndex.current
+          )
+        );
+        lastIndex.current = scrollIndex;
+      }
+      if (scrollIndex < lastIndex.current) {
+        setDays((days) => days - daysInNextMonth);
+        setDate(
+          new Date(
+            today.getFullYear(),
+            today.getMonth(),
+            today.getDate() + lastIndex.current
+          )
+        );
+        lastIndex.current = scrollIndex;
+      }
+    }
+  }, [scrollIndex]);
+
+  useEffect(() => {
+    // console.log(scrollIndex);
+    // console.log(lastIndex.current);
+    return () => {
+      lastIndex.current = scrollIndex;
+    };
+  }, [scrollIndex]);
+
+  useEffect(() => {
+    console.log('days - daysInMonth ', days - daysInMonth);
+    console.log('days + daysInNextMonth ', days + daysInNextMonth);
+  }, [days]);
+
+  // useEffect(() => {
+  //   if (scrollIndex > lastIndex.current) {
+  //     if (scrollIndex > days - 5 && scrollIndex < days + 5) {
+  //       setDays((days) => days + 30);
+  // setDate(
+  //   new Date(
+  //     today.getFullYear(),
+  //     today.getMonth(),
+  //     today.getDate() + lastIndex.current
+  //   )
+  // );
+  //       lastIndex.current = scrollIndex;
+  //       console.log('up ', scrollIndex, ' lastIndex ', lastIndex.current);
+  //     }
+  //   }
+  //   if (scrollIndex < lastIndex.current) {
+  //     if (scrollIndex > days / 2 - 5 && scrollIndex < days / 2 + 5) {
+  //       setDays((days) => days - 30);
+  //       lastIndex.current = scrollIndex;
+  //       console.log('down ', scrollIndex, ' lastIndex ', lastIndex.current);
+  //     }
+  //   }
+  //   console.log(
+  //     'scrol ',
+  //     scrollIndex,
+  //     ' lastIndex ',
+  //     lastIndex.current,
+  //     ' days ',
+  //     days
+  //   );
+  // }, [scrollIndex]);
 
   // console.log(limitedDates);
 
@@ -79,6 +167,7 @@ export const UpcomingContent = () => {
     if (!ref) return;
 
     ref.addEventListener('scroll', () => {
+      // need && dates[scrollIndex].date condition setDate can be called beacuse of imprecision ratios
       if (scrollIndex !== dateIndex && dates[scrollIndex].date) {
         setDate(dates[scrollIndex].date);
       }
@@ -105,7 +194,7 @@ export const UpcomingContent = () => {
     const sourceDroppableId = source.droppableId;
     const destinationDroppableId = destination.droppableId;
 
-    const sourceIndex = source.index;
+    // const sourceIndex = source.index;
     const destinationIndex = destination.index;
 
     const destinationDateIndex = dates.findIndex(
@@ -126,20 +215,7 @@ export const UpcomingContent = () => {
       isSameDay(todo.date, destinationDate.date)
     );
 
-    // console.log('destinationDate.date ', destinationDate.date);
-    // console.log('destinationDroppableId ', destinationDroppableId);
-    // console.log('sourceDroppableId ', sourceDroppableId);
-    // console.log('editedTodo ', editedTodo);
-
     if (destinationDroppableId === sourceDroppableId) {
-      // console.log('destinationDateIndex ', destinationDateIndex);
-      // console.log('destinationDate ', destinationDate);
-      // console.log('sourceIndex ', sourceIndex);
-      // console.log('destinationIndex ', destinationIndex);
-      // console.log(
-      //   'destinationTodosList[destinationIndex] ',
-      //   destinationTodosList[destinationIndex]
-      // );
       const destinationIndexInTodosArray = todos.findIndex(
         (t) => t.id === destinationTodosList[destinationIndex].id
       );
@@ -171,19 +247,8 @@ export const UpcomingContent = () => {
         (t) => t.id === destinationTodosList[destinationIndex].id
       );
 
-      console.log(
-        'destinationTodosList[destinationIndex].id ',
-        destinationTodosList[destinationIndex].id
-      );
-      console.log(
-        'destinationIndexInTodosArray ',
-        destinationIndexInTodosArray
-      );
-
-      console.log('todos before', todos);
       todos.splice(sourceIndexInTodosArray, 1);
       todos.splice(destinationIndexInTodosArray, 0, editedTodo);
-      console.log('todos after', todos);
 
       setTodos(todos);
       return;
