@@ -1,6 +1,8 @@
 import { nanoid } from 'nanoid';
 import { useMemo, useRef, useState } from 'react';
-import { IProject } from '../../helpers/types';
+import { DropResult } from 'react-beautiful-dnd';
+import { reorder } from '../../helpers/functions';
+import { IProject, ITodo } from '../../helpers/types';
 import { useTodosStore, useUIStore } from '../../zustand';
 import { AddSection } from '../AddSection';
 import { AddTodo } from '../AddTodo';
@@ -19,8 +21,11 @@ export const InboxContent = () => {
     editSection,
     deleteSection,
     addSection,
+    setTodos,
+    setSections,
   } = useTodosStore();
-  const { placeholderProps } = useUIStore();
+  const { placeholderProps, draggingElementId, draggingOverElementId } =
+    useUIStore();
 
   const [todoInputOpenById, setTodoInputOpenById] = useState<string | null>(
     null
@@ -68,14 +73,116 @@ export const InboxContent = () => {
     </div>
   );
 
+  const onDragEnd = (result: DropResult) => {
+    const { destination, source } = result;
+
+    if (!destination) return;
+
+    if (
+      destination.droppableId === source.droppableId &&
+      destination.index === source.index
+    )
+      return;
+
+    const sourceDroppableId = source.droppableId;
+    const destinationDroppableId = destination.droppableId;
+
+    const sourceIndex = source.index;
+    const destinationIndex = destination.index;
+
+    // const sourceSectionIndex = sections.findIndex(
+    //   (s) => s.id === sourceDroppableId
+    // );
+
+    if (
+      sourceDroppableId !== 'sections' &&
+      destinationDroppableId !== 'sections'
+    ) {
+      const destinationSectionIndex = sections.findIndex(
+        (s) => s.id === destinationDroppableId
+      );
+      const draggingTodo: ITodo = todos.filter(
+        (todo) => todo.id === draggingElementId
+      )[0];
+      const draggingTodoIndexInTodosArray = todos.findIndex(
+        (t) => t.id === draggingTodo.id
+      );
+      const editedTodo: ITodo = {
+        ...draggingTodo,
+        section: sections[destinationSectionIndex],
+      };
+
+      let todosCopy: ITodo[];
+
+      const destinationTodosList = todos.filter((todo) =>
+        editedTodo.section !== undefined
+          ? todo.section?.id === destinationDroppableId
+          : !todo.section && todo.project.id === 'inbox'
+      );
+
+      if (destinationTodosList.length === 0) {
+        todosCopy = [...todos];
+        todosCopy.splice(draggingTodoIndexInTodosArray, 1, editedTodo);
+        setTodos(todosCopy);
+        return;
+      }
+
+      if (destinationIndex === destinationTodosList.length) {
+        todosCopy = todos.filter((todo) => todo.id !== editedTodo.id);
+        const lastTodoIndexOfDestinationArrayInTodosArray = todos.findIndex(
+          (el) => el.id === destinationTodosList[destinationIndex - 1].id
+        );
+        todosCopy.splice(
+          lastTodoIndexOfDestinationArrayInTodosArray + 1,
+          0,
+          editedTodo
+        );
+        setTodos(todosCopy);
+        return;
+      }
+
+      if (sourceDroppableId === destinationDroppableId) {
+        todosCopy = [...todos];
+        setTodos(
+          reorder(
+            todosCopy,
+            draggingTodoIndexInTodosArray,
+            draggingTodoIndexInTodosArray + destinationIndex - sourceIndex
+          )
+        );
+        return;
+      }
+
+      if (sourceDroppableId !== destinationDroppableId) {
+        todosCopy = [...todos];
+        todosCopy.splice(draggingTodoIndexInTodosArray, 1);
+        const i = todosCopy.findIndex(
+          (t) => t.id === destinationTodosList[destinationIndex].id
+        );
+        todosCopy.splice(i, 0, editedTodo);
+        setTodos(todosCopy);
+        return;
+      }
+    }
+
+    if (
+      sourceDroppableId === 'sections' &&
+      destinationDroppableId === 'sections'
+    ) {
+      setSections(reorder(sections, sourceIndex, destinationIndex));
+      return;
+    }
+  };
+
   return (
-    <ContentContainer heading={<Heading />}>
+    <ContentContainer heading={<Heading />} onDragEndPage={onDragEnd}>
       <div className='w-full px-9 md:px-0'>
         <TodosList
           // draggingElementId={draggingElementId}
           todos={inboxTodos}
           placeholderProps={placeholderProps}
           droppableId='inbox'
+          draggingOverElementId={draggingOverElementId}
           completeTodo={completeTodo}
           editTodo={editTodo}
           setTodoInputOpenById={setTodoInputOpenById}
@@ -113,6 +220,8 @@ export const InboxContent = () => {
           todos={todos}
           todoInputOpenById={todoInputOpenById}
           sectionInputOpenById={sectionInputOpenById}
+          placeholderProps={placeholderProps}
+          draggingOverElementId={draggingOverElementId}
           editSection={editSection}
           addSection={addSection}
           completeTodo={completeTodo}

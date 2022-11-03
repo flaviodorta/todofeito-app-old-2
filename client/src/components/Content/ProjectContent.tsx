@@ -69,7 +69,7 @@ export const ProjectContent = () => {
     </div>
   );
   return (
-    <ContentContainer todos={todos} heading={<Heading />}>
+    <ContentContainer heading={<Heading />}>
       {/* <div className='w-full px-9 md:px-0'>
         <TodosList
           droppableId={project.id}

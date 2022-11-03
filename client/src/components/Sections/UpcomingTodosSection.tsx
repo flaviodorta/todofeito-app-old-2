@@ -2,9 +2,11 @@ import useResizeObserver from '@react-hook/resize-observer';
 import { isSameDay } from 'date-fns/esm';
 import { isEqual } from 'lodash';
 import { nanoid } from 'nanoid';
-import { memo, useMemo, useRef, useState } from 'react';
+import { memo, useEffect, useMemo, useRef, useState } from 'react';
 import { ITodo, IUpcomingSection } from '../../helpers/types';
+import { IPlaceholderProps } from '../../hooks/useDndPlaceholder';
 import { useIsomorphicLayoutEffect } from '../../hooks/useIsomorphicLayoutEffect';
+import { useToggle } from '../../hooks/useToggle';
 import { AddTodo } from '../AddTodo';
 import { ChevronIcon, PlusSolidIcon } from '../Icons';
 import { TodosList } from '../Lists/TodosList';
@@ -13,7 +15,8 @@ interface IUpcomingTodosSection {
   section: IUpcomingSection;
   index: number;
   todos: ITodo[];
-  // draggingElementId: string | null;
+  placeholderProps: IPlaceholderProps;
+  draggingOverElementId: string | null;
   toggleUpcomingDateList: (upcomingDateId: string) => void;
   setTodos: (todos: ITodo[]) => void;
   addTodo: (todo: ITodo) => void;
@@ -23,22 +26,27 @@ interface IUpcomingTodosSection {
   setObservedHeight: (height: number, index: number) => void;
 }
 
-export const UpcomingTodosSectionMemoized = (props: IUpcomingTodosSection) => {
+export const UpcomingTodosSection = (props: IUpcomingTodosSection) => {
   const {
     section,
     todos,
-    // draggingElementId,
+    index,
+    placeholderProps,
+    draggingOverElementId,
     toggleUpcomingDateList,
     addTodo,
     completeTodo,
     editTodo,
     setObservedHeight,
     addObservedHeight,
-    index,
   } = props;
   const [todoInputOpenById, setTodoInputOpenById] = useState<string | null>(
     null
   );
+
+  // console.log(section.id);
+
+  const [open, toggle] = useToggle(false);
 
   const thisDateTodos = useMemo(
     () =>
@@ -54,8 +62,9 @@ export const UpcomingTodosSectionMemoized = (props: IUpcomingTodosSection) => {
   const closeAddTodo = () => setTodoInputOpenById(null);
 
   const toggleTodoList = () => {
-    if (section.isListOpen) closeAddTodo();
-    toggleUpcomingDateList(section.id);
+    if (open) closeAddTodo();
+    console.log(section.id);
+    toggle();
   };
   const ref = useRef<HTMLDivElement>(null);
 
@@ -68,6 +77,14 @@ export const UpcomingTodosSectionMemoized = (props: IUpcomingTodosSection) => {
   useResizeObserver<HTMLDivElement>(ref, (entry) =>
     setObservedHeight(entry.contentRect.height, index)
   );
+
+  // useEffect(() => {
+  //   if (!ref.current) return;
+
+  //   ref.current?.addEventListener('dragover', (e) => {
+  //     if (e.target === ref.current) console.log('cu');
+  //   });
+  // }, [draggingOverElementId]);
 
   return (
     <div ref={ref} key={section.id} className='flex flex-col h-fit w-full'>
@@ -85,30 +102,25 @@ export const UpcomingTodosSectionMemoized = (props: IUpcomingTodosSection) => {
           >
             <ChevronIcon
               className={`${
-                section.isListOpen ? '' : '-rotate-90'
+                open ? '' : '-rotate-90'
               } w-[20px] h-[20px] stroke-gray-500 group-hover:stroke-gray-600 duration-150 transition-all`}
             />
           </span>
         </div>
       </div>
 
-      {section.isListOpen && (
+      {open && (
         <div className='w-full h-fit'>
-          {todos.length > 0 ? (
-            <TodosList
-              // draggingElementId={draggingElementId}
-              droppableId={section.id}
-              todos={thisDateTodos}
-              editTodo={editTodo}
-              completeTodo={completeTodo}
-              setTodoInputOpenById={setTodoInputOpenById}
-              todoInputOpenById={todoInputOpenById}
-            />
-          ) : (
-            <span className='text-xs text-gray-400 pb-4'>
-              No todos in this day yet.
-            </span>
-          )}
+          <TodosList
+            placeholderProps={placeholderProps}
+            droppableId={section.id}
+            todos={thisDateTodos}
+            draggingOverElementId={draggingOverElementId}
+            editTodo={editTodo}
+            completeTodo={completeTodo}
+            setTodoInputOpenById={setTodoInputOpenById}
+            todoInputOpenById={todoInputOpenById}
+          />
         </div>
       )}
 
@@ -142,9 +154,7 @@ const sectionPropsAreEqual = (
   nextProps: Readonly<IUpcomingTodosSection>
 ) =>
   isEqual(prevProps.section, nextProps.section) &&
-  isEqual(prevProps.todos, nextProps.todos);
+  isEqual(prevProps.todos, nextProps.todos) &&
+  isEqual(prevProps.placeholderProps, nextProps.placeholderProps);
 
-export const UpcomingTodosSection = memo(
-  UpcomingTodosSectionMemoized,
-  sectionPropsAreEqual
-);
+// export const UpcomingTodosSection = memo(UpcomingTodosSectionMemoized);

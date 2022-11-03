@@ -19,13 +19,14 @@ import { useUIStore } from '../zustand';
 
 type ITodoItem = {
   todo: ITodo;
+  draggableProvided: DraggableProvided;
+  draggableSnapshot: DraggableStateSnapshot;
   // todoInputOpenById: string | null;
+  setDraggingOverElementId: (id: string | null) => void;
   setDraggingElementId: (id: string | null) => void;
   setTodoInputOpenById: (id: string | null) => void;
   completeTodo: (todo: ITodo) => void;
   editTodo: (todo: ITodo) => void;
-  draggableProvided: DraggableProvided;
-  draggableSnapshot: DraggableStateSnapshot;
 };
 
 export const TodoItemMemoized = ({
@@ -33,6 +34,7 @@ export const TodoItemMemoized = ({
   // todoInputOpenById,
   draggableProvided,
   draggableSnapshot,
+  setDraggingOverElementId,
   setDraggingElementId,
   completeTodo,
   editTodo,
@@ -47,7 +49,7 @@ export const TodoItemMemoized = ({
 
   const containerRef = useRef<HTMLDivElement>(null!);
 
-  const [dueDateSizes, dueDateRef] = useDimensions({
+  const [dueDateSizes, dueDateRef, calcDueDate] = useDimensions({
     parentRef: containerRef.current,
   });
   // const [projectsSizes, projectsRef] = useDimensions();
@@ -94,6 +96,16 @@ export const TodoItemMemoized = ({
       ? setDraggingElementId(todo.id)
       : setDraggingElementId(null);
   }, [draggableSnapshot.isDragging]);
+
+  useEffect(() => {
+    calcDueDate();
+  }, [draggableSnapshot.isDragging]);
+
+  useEffect(() => {
+    draggableSnapshot.draggingOver
+      ? setDraggingOverElementId(draggableSnapshot.draggingOver)
+      : setDraggingOverElementId(null);
+  }, [draggableSnapshot.draggingOver]);
 
   // if (todoInputOpenById === todo.id)
   //   <div className='w-full h-60'>

@@ -1,4 +1,4 @@
-import { isEmpty } from 'lodash';
+import { drop, isEmpty, isEqual } from 'lodash';
 import { memo } from 'react';
 import { Draggable, Droppable } from 'react-beautiful-dnd';
 import { ITodo } from '../../helpers/types';
@@ -13,7 +13,8 @@ interface ITodosListProps {
   todos: ITodo[];
   todoInputOpenById: string | null;
   // draggingElementId: string | null;
-  placeholderProps?: IPlaceholderProps;
+  draggingOverElementId: string | null;
+  placeholderProps: IPlaceholderProps;
   completeTodo: (todo: ITodo) => void;
   editTodo: (todo: ITodo) => void;
   setTodoInputOpenById: (id: string | null) => void;
@@ -23,13 +24,15 @@ export const TodosListMemoized = ({
   droppableId,
   todos,
   todoInputOpenById,
-  // draggingElementId,
+  draggingOverElementId,
   placeholderProps,
   completeTodo,
   editTodo,
   setTodoInputOpenById,
 }: ITodosListProps) => {
-  const { setDraggingElementId } = useUIStore();
+  const { setDraggingElementId, setDraggingOverElementId } = useUIStore();
+  // console.log('render list ', droppableId);
+
   return (
     <Droppable droppableId={`${droppableId}`} type='TODOS'>
       {(droppableProvided, droppableSnapshot) =>
@@ -72,12 +75,13 @@ export const TodosListMemoized = ({
                     ) : (
                       <TodoItem
                         todo={todo}
+                        draggableProvided={draggableProvided}
+                        draggableSnapshot={draggableSnapshot}
+                        setDraggingOverElementId={setDraggingOverElementId}
                         setDraggingElementId={setDraggingElementId}
                         editTodo={editTodo}
                         completeTodo={completeTodo}
                         setTodoInputOpenById={setTodoInputOpenById}
-                        draggableProvided={draggableProvided}
-                        draggableSnapshot={draggableSnapshot}
                       />
                     )}
                   </div>
@@ -85,19 +89,17 @@ export const TodosListMemoized = ({
               </Draggable>
             ))}
             {droppableProvided.placeholder}
-            {placeholderProps &&
-              !isEmpty(placeholderProps) &&
-              droppableSnapshot.isDraggingOver && (
-                <div
-                  className='absolute bg-gray-300/90 rounded-md blur-sm transition-colors ease-out duration-1000'
-                  style={{
-                    top: placeholderProps.y,
-                    left: placeholderProps.x,
-                    height: placeholderProps.height,
-                    width: placeholderProps.width,
-                  }}
-                />
-              )}
+            {!isEmpty(placeholderProps) && droppableSnapshot.isDraggingOver && (
+              <div
+                className='absolute bg-gray-300/90 rounded-md blur-sm transition-colors ease-out duration-1000'
+                style={{
+                  top: placeholderProps.y,
+                  left: placeholderProps.x,
+                  height: placeholderProps.height,
+                  width: placeholderProps.width,
+                }}
+              />
+            )}
           </div>
         )
       }
@@ -105,4 +107,13 @@ export const TodosListMemoized = ({
   );
 };
 
-export const TodosList = memo(TodosListMemoized);
+const todosListAreEqual = (
+  prevProps: Readonly<ITodosListProps>,
+  nextProps: Readonly<ITodosListProps>
+) =>
+  isEqual(prevProps.todos, nextProps.todos) &&
+  prevProps.todoInputOpenById !== nextProps.todoInputOpenById &&
+  prevProps.draggingOverElementId !== prevProps.droppableId &&
+  nextProps.draggingOverElementId !== nextProps.droppableId;
+
+export const TodosList = memo(TodosListMemoized, todosListAreEqual);

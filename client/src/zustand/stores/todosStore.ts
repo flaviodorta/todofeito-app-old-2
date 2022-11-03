@@ -76,7 +76,7 @@ export const todosStore = create<ITodosStore>((set, get) => {
         ...state,
         dates: dates.map((date) =>
           date.id === upcomingDateId
-            ? { ...date, isListOpen: !date.isListOpen }
+            ? { ...date, isListOpen: date.isListOpen ? false : true }
             : date
         ),
       })),

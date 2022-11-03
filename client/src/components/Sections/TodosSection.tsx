@@ -10,6 +10,7 @@ import {
 import { isMobile } from 'react-device-detect';
 import { ISection, ITodo } from '../../helpers/types';
 import { useDimensions } from '../../hooks/useDimensions';
+import { IPlaceholderProps } from '../../hooks/useDndPlaceholder';
 import { useToggle } from '../../hooks/useToggle';
 import { useUpdateState } from '../../hooks/useUpdateState';
 import useWindowSize from '../../hooks/useWindowSize';
@@ -35,6 +36,8 @@ interface ITodosSection {
   draggableProvided?: DraggableProvided;
   droppableSnapshot: DroppableStateSnapshot;
   draggableSnapshot: DraggableStateSnapshot;
+  placeholderProps: IPlaceholderProps;
+  draggingOverElementId: string | null;
   editSection: (section: ISection) => void;
   addSection: (section: ISection) => void;
   completeTodo: (todo: ITodo) => void;
@@ -53,6 +56,8 @@ export const TodosSection = ({
   draggableProvided,
   droppableSnapshot,
   draggableSnapshot,
+  placeholderProps,
+  draggingOverElementId,
   editSection,
   addSection,
   editTodo,
@@ -203,6 +208,8 @@ export const TodosSection = ({
             <TodosList
               droppableId={section.id}
               todos={todos}
+              placeholderProps={placeholderProps}
+              draggingOverElementId={draggingOverElementId}
               completeTodo={completeTodo}
               editTodo={editTodo}
               setTodoInputOpenById={setTodoInputOpenById}

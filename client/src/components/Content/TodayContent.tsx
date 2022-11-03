@@ -2,7 +2,7 @@ import { isToday } from 'date-fns';
 import { nanoid } from 'nanoid';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { ITodo } from '../../helpers/types';
-import { useTodosStore } from '../../zustand';
+import { useTodosStore, useUIStore } from '../../zustand';
 import { AddTodo } from '../AddTodo';
 import { PlusSolidIcon } from '../Icons';
 import { TodosList } from '../Lists/TodosList';
@@ -10,6 +10,7 @@ import { ContentContainer } from './ContentContainer';
 
 export const TodayContent = () => {
   const { todos, completeTodo, editTodo, addTodo } = useTodosStore();
+  const { placeholderProps, draggingOverElementId } = useUIStore();
 
   const today = new Date();
   const month = today.toLocaleString('en', { month: 'short' });
@@ -46,6 +47,8 @@ export const TodayContent = () => {
         <TodosList
           droppableId='today'
           todos={todayTodos}
+          placeholderProps={placeholderProps}
+          draggingOverElementId={draggingOverElementId}
           completeTodo={completeTodo}
           editTodo={editTodo}
           setTodoInputOpenById={setTodoInputOpenById}

@@ -1,5 +1,6 @@
 import { Draggable, Droppable } from 'react-beautiful-dnd';
 import { ISection, ITodo } from '../../helpers/types';
+import { IPlaceholderProps } from '../../hooks/useDndPlaceholder';
 import { TodosSection } from '../Sections/TodosSection';
 
 interface ISectionsListProps {
@@ -8,6 +9,8 @@ interface ISectionsListProps {
   sections: ISection[];
   todoInputOpenById: string | null;
   sectionInputOpenById: string | null;
+  placeholderProps: IPlaceholderProps;
+  draggingOverElementId: string | null;
   editSection: (section: ISection) => void;
   addSection: (section: ISection) => void;
   completeTodo: (todo: ITodo) => void;
@@ -24,6 +27,8 @@ export const SectionsList = ({
   sections,
   todoInputOpenById,
   sectionInputOpenById,
+  placeholderProps,
+  draggingOverElementId,
   editSection,
   addSection,
   completeTodo,
@@ -64,6 +69,8 @@ export const SectionsList = ({
                       draggableProvided={draggableProvided}
                       droppableSnapshot={droppableSnapshot}
                       draggableSnapshot={draggableSnapshot}
+                      placeholderProps={placeholderProps}
+                      draggingOverElementId={draggingOverElementId}
                       editSection={editSection}
                       addSection={addSection}
                       completeTodo={completeTodo}
