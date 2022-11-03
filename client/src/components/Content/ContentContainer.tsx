@@ -64,6 +64,8 @@ export const ContentContainer = ({
         section: sections[destinationSectionIndex],
       };
 
+      console.log(editedTodo);
+
       const destinationTodosList = todos.filter((todo) =>
         editedTodo.section !== undefined
           ? todo.section?.id === destinationDroppableId
@@ -77,10 +79,17 @@ export const ContentContainer = ({
         (t) => t.id === draggingElementId
       );
 
-      todos.splice(sourceIndexInTodosArray, 1);
-      todos.splice(destinationIndexInTodosArray, 0, editedTodo);
+      const todosCopy = [...todos];
 
-      setTodos(todos);
+      console.log(destinationTodosList);
+      console.log('todos ', todosCopy);
+      const x = todosCopy.splice(sourceIndexInTodosArray, 1);
+      console.log('x ', x);
+      console.log('todos remove source ', todosCopy);
+      todosCopy.splice(destinationIndexInTodosArray, 0, editedTodo);
+      console.log('add in destination ', todosCopy);
+
+      setTodos(todosCopy);
     }
 
     if (

@@ -39,13 +39,15 @@
 - fix resizing dropping
 - fix todo list placeholder
 - fix edit todo and section
-
-# to do
-
 - fix reorder algorithm
 - add placeholder to all lists
 - fix lists in all pages
+
+# to do
+
+- fix project link page
 - search todo
+- todo modal
 - add sidebar resizable (react-resizable)
 - add flat design to no todos
 - add favicon
@@ -61,6 +63,5 @@
 - add persist to zustand
 
 - subtasks
-- todo modal
 - create resizer observer hook with multiples refs
 - create useHover that take a screen tab

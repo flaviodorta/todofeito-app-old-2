@@ -4,7 +4,7 @@ import { useCallback, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import { ILabel, ITodo } from '../../helpers/types';
-import { useTodosStore } from '../../zustand';
+import { useTodosStore, useUIStore } from '../../zustand';
 import { AddTodo } from '../AddTodo';
 import { ArrowLeftLongSolidIcon, PlusSolidIcon } from '../Icons';
 import { TodosList } from '../Lists/TodosList';
@@ -13,6 +13,7 @@ import { ContentContainer } from './ContentContainer';
 export const LabelContent = () => {
   const { labels, editTodo, completeTodo, addTodo, setTodos, todos } =
     useTodosStore();
+  const { draggingOverElementId, placeholderProps } = useUIStore();
 
   const params = useParams();
   const navigate = useNavigate();
@@ -21,14 +22,18 @@ export const LabelContent = () => {
     null
   );
 
-  const label = useMemo(
+  const [label] = useMemo(
     () => labels.filter((label) => label.id === params.labelId),
     []
   );
 
   const labelTodos = useMemo(
     () =>
-      todos.filter((todo) => !todo.isCompleted && todo.id === params.labelId),
+      todos.filter(
+        (todo) =>
+          !todo.isCompleted &&
+          todo.labels.some((label) => label.id === params.labelId)
+      ),
     [todos]
   );
 
@@ -45,26 +50,28 @@ export const LabelContent = () => {
       >
         <ArrowLeftLongSolidIcon className='fill-gray-400 group-hover:fill-gray-500 h-5 w-5' />
       </button>
-      <h2 className='font-bold text-xl'>{label[0].name}</h2>
+      <h2 className='font-bold text-xl'>{label.name}</h2>
     </div>
   );
 
   return (
     <ContentContainer heading={<Heading />}>
-      {/* <div className='w-full px-9 md:px-0'>
+      <div className='w-full px-9 md:px-0'>
         <TodosList
-          droppableId={label[0].id}
-          todos={todos}
+          droppableId={label.id}
+          todos={labelTodos}
+          placeholderProps={placeholderProps}
+          draggingOverElementId={draggingOverElementId}
+          todoInputOpenById={todoInputOpenById}
           completeTodo={completeTodo}
           editTodo={editTodo}
           setTodoInputOpenById={setTodoInputOpenById}
-          todoInputOpenById={todoInputOpenById}
         />
 
         <div className='mb-6'>
           {todoInputOpenById === addTodoId.current ? (
             <AddTodo
-              labels={label}
+              labels={[label]}
               setTodoInputOpenById={setTodoInputOpenById}
               addTodo={addTodo}
             />
@@ -82,7 +89,7 @@ export const LabelContent = () => {
             </div>
           )}
         </div>
-      </div> */}
+      </div>
     </ContentContainer>
   );
 };
