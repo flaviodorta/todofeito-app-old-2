@@ -43,17 +43,15 @@
 - add placeholder to all lists
 - fix lists in all pages
 - add todo list in label
+- fix project link page
 
 # to do
 
-- fix project link page
 - search todo
-- todo modal
-- add sidebar resizable (react-resizable)
-- add flat design to no todos
-- add favicon
 - user settings modal
 - add i18n
+- add flat design to no todos
+- add favicon
 - fix reponsible details
 
 - refactor server
@@ -63,6 +61,9 @@
 
 - add persist to zustand
 
+- add sidebar resizable (react-resizable)
+- todo modal
+- lazy render in upcoming pages
 - subtasks
 - create resizer observer hook with multiples refs
 - create useHover that take a screen tab

@@ -42,7 +42,7 @@ export const TodosListMemoized = ({
               droppableSnapshot.isDraggingOver
                 ? 'h-16 bg-gray-400/20 rounded-md'
                 : 'h-2'
-            }`}
+            } `}
             ref={droppableProvided.innerRef}
             {...droppableProvided.droppableProps}
           />

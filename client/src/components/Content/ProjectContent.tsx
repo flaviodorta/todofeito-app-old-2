@@ -50,12 +50,7 @@ export const ProjectContent = () => {
     [todos]
   );
 
-  const [projectSections, setSections] = useUpdateState(
-    sections.filter((section) => section.project?.id === project.id),
-    [sections]
-  );
-
-  console.log(sections.length);
+  const projectSections = useMemo(() => sections.filter(section => section.project.id ), [sections])
 
   const addSectionId = useRef(nanoid());
 
@@ -71,6 +66,7 @@ export const ProjectContent = () => {
       <h2 className='font-bold text-xl'>{project.name}</h2>
     </div>
   );
+
   return (
     <ContentContainer heading={<Heading />}>
       <div className='w-full px-9 md:px-0'>

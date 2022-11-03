@@ -2,7 +2,7 @@ import useResizeObserver from '@react-hook/resize-observer';
 import { isSameDay } from 'date-fns/esm';
 import { isEqual } from 'lodash';
 import { nanoid } from 'nanoid';
-import { memo, useEffect, useMemo, useRef, useState } from 'react';
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ITodo, IUpcomingSection } from '../../helpers/types';
 import { IPlaceholderProps } from '../../hooks/useDndPlaceholder';
 import { useIsomorphicLayoutEffect } from '../../hooks/useIsomorphicLayoutEffect';
@@ -46,8 +46,13 @@ export const UpcomingTodosSection = (props: IUpcomingTodosSection) => {
 
   // console.log(section.id);
 
-  const [open, toggle] = useToggle(false);
+  const notCompleteTodos = todos.filter((todo) => !todo.isCompleted);
 
+  const [isTodosListOpen, setIsTodosListOpen] = useState(false);
+
+  const openTodosList = () => setIsTodosListOpen(true);
+  const closeTodosList = () => setIsTodosListOpen(false);
+  console.log(isTodosListOpen);
   const thisDateTodos = useMemo(
     () =>
       todos.filter(
@@ -62,10 +67,17 @@ export const UpcomingTodosSection = (props: IUpcomingTodosSection) => {
   const closeAddTodo = () => setTodoInputOpenById(null);
 
   const toggleTodoList = () => {
-    if (open) closeAddTodo();
+    if (isTodosListOpen) closeAddTodo();
     console.log(section.id);
-    toggle();
+    isTodosListOpen ? closeTodosList() : openTodosList();
+    console.log(isTodosListOpen);
   };
+
+  // const addTodo = useCallback((todo: ITodo) => {
+  //   openTodosList();
+  //   addT(todo);
+  // }, []);
+
   const ref = useRef<HTMLDivElement>(null);
 
   useIsomorphicLayoutEffect(() => {
@@ -77,6 +89,28 @@ export const UpcomingTodosSection = (props: IUpcomingTodosSection) => {
   useResizeObserver<HTMLDivElement>(ref, (entry) =>
     setObservedHeight(entry.contentRect.height, index)
   );
+
+  const lastCompletedTodosLength = useRef(todos.length);
+  console.log(
+    'lastTodosLength ',
+    lastCompletedTodosLength,
+    'todos.length ',
+    todos.length
+  );
+  useEffect(() => {
+    if (
+      lastCompletedTodosLength.current === 0 &&
+      notCompleteTodos.length === 1 &&
+      !isTodosListOpen
+    ) {
+      openTodosList();
+      lastCompletedTodosLength.current = 1;
+    }
+
+    return () => {
+      lastCompletedTodosLength.current = notCompleteTodos.length;
+    };
+  }, [todos, isTodosListOpen, openTodosList]);
 
   // useEffect(() => {
   //   if (!ref.current) return;
@@ -91,7 +125,9 @@ export const UpcomingTodosSection = (props: IUpcomingTodosSection) => {
       <div className='sticky top-[148px] z-[2]'>
         <div className='relative flex justify-between items-center w-full text-sm bg-white font-bold h-fit py-1 border-b-[1px] border-gray-300'>
           <span
-            className={`${todos.length > 0 ? 'text-black' : 'text-gray-500'}`}
+            className={`${
+              notCompleteTodos.length > 0 ? 'text-black' : 'text-gray-500'
+            }`}
           >
             {section.name}
           </span>
@@ -102,15 +138,15 @@ export const UpcomingTodosSection = (props: IUpcomingTodosSection) => {
           >
             <ChevronIcon
               className={`${
-                open ? '' : '-rotate-90'
+                isTodosListOpen ? '' : '-rotate-90'
               } w-[20px] h-[20px] stroke-gray-500 group-hover:stroke-gray-600 duration-150 transition-all`}
             />
           </span>
         </div>
       </div>
 
-      {open && (
-        <div className={`w-full h-fit`}>
+      {isTodosListOpen && (
+        <div className='w-full h-fit'>
           <TodosList
             placeholderProps={placeholderProps}
             droppableId={section.id}

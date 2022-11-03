@@ -1,6 +1,7 @@
 import { getDaysInMonth, isSameDay } from 'date-fns';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { DropResult } from 'react-beautiful-dnd';
+import { getDayNumberInMonth } from '../../helpers/functions';
 import { ITodo } from '../../helpers/types';
 import { useIndexByScrollRatio } from '../../hooks/useIndexByScrollRatio';
 import { useIsomorphicLayoutEffect } from '../../hooks/useIsomorphicLayoutEffect';
@@ -33,24 +34,27 @@ export const UpcomingContent = () => {
   // console.log(draggingOverElementId);
   // console.log(todos);
 
+  // date-fns: addDays, isLastDayOfMonth
+
   const today = new Date();
 
   const [date, setDate] = useState(today);
-  const dayInNextMonth = new Date(
-    today.getFullYear(),
-    today.getMonth() + 1,
-    today.getDate()
-  );
-  const daysInMonth = getDaysInMonth(date);
-  const daysInNextMonth = getDaysInMonth(dayInNextMonth);
-  const [days, setDays] = useState(daysInMonth);
+  // const dayInNextMonth = useMemo(
+  //   () => new Date(date.getFullYear(), date.getMonth() + 1, date.getDate()),
+  //   [date]
+  // );
+  // const daysInMonth = useMemo(() => getDaysInMonth(date), [date]);
+  // const daysInNextMonth = useMemo(
+  //   () => getDaysInMonth(dayInNextMonth),
+  //   [dayInNextMonth]
+  // );
 
-  const lastIndex = useRef(0);
+  // const [days, setDays] = useState(daysInMonth);
 
-  const limitedDates = useMemo(
-    () => dates.slice(days - daysInMonth, days + daysInNextMonth),
-    [days]
-  );
+  // const lastIndex = useRef(0);
+
+  // const limitedDates = useMemo(() => dates.slice(0, days), [days, dates]);
+  // const [limit, setLimit] = useState([0, daysInMonth]);
 
   const [scrollIndex, scrollToIndex, lastScrollIndex] = useIndexByScrollRatio({
     ref: ref!,
@@ -58,96 +62,52 @@ export const UpcomingContent = () => {
     gap: 32,
   });
 
-  console.log('days ', days);
-  console.log('scroll index', scrollIndex);
-  console.log('last index', lastScrollIndex);
-
-  // lastIndex.current = scrollIndex - 1;
-
-  useEffect(() => {
-    if (scrollIndex === days) {
-      if (scrollIndex > lastIndex.current) {
-        setDays((days) => days + daysInNextMonth);
-        setDate(
-          new Date(
-            today.getFullYear(),
-            today.getMonth(),
-            today.getDate() + lastIndex.current
-          )
-        );
-        lastIndex.current = scrollIndex;
-      }
-      if (scrollIndex < lastIndex.current) {
-        setDays((days) => days - daysInNextMonth);
-        setDate(
-          new Date(
-            today.getFullYear(),
-            today.getMonth(),
-            today.getDate() + lastIndex.current
-          )
-        );
-        lastIndex.current = scrollIndex;
-      }
-    }
-  }, [scrollIndex]);
-
-  useEffect(() => {
-    // console.log(scrollIndex);
-    // console.log(lastIndex.current);
-    return () => {
-      lastIndex.current = scrollIndex;
-    };
-  }, [scrollIndex]);
-
-  useEffect(() => {
-    console.log('days - daysInMonth ', days - daysInMonth);
-    console.log('days + daysInNextMonth ', days + daysInNextMonth);
-  }, [days]);
+  // console.log('days ', days);
+  // console.log('scroll index', scrollIndex);
+  // console.log('last index', lastScrollIndex);
 
   // useEffect(() => {
-  //   if (scrollIndex > lastIndex.current) {
-  //     if (scrollIndex > days - 5 && scrollIndex < days + 5) {
-  //       setDays((days) => days + 30);
-  // setDate(
-  //   new Date(
-  //     today.getFullYear(),
-  //     today.getMonth(),
-  //     today.getDate() + lastIndex.current
-  //   )
-  // );
-  //       lastIndex.current = scrollIndex;
-  //       console.log('up ', scrollIndex, ' lastIndex ', lastIndex.current);
-  //     }
+  //   if (scrollIndex === days && scrollIndex > lastIndex.current) {
+  //     setDays((days) => days + daysInNextMonth);
+  //     setDate(
+  //       new Date(
+  //         today.getFullYear(),
+  //         today.getMonth(),
+  //         today.getDate() + lastScrollIndex
+  //       )
+  //     );
   //   }
-  //   if (scrollIndex < lastIndex.current) {
-  //     if (scrollIndex > days / 2 - 5 && scrollIndex < days / 2 + 5) {
-  //       setDays((days) => days - 30);
-  //       lastIndex.current = scrollIndex;
-  //       console.log('down ', scrollIndex, ' lastIndex ', lastIndex.current);
-  //     }
-  //   }
-  //   console.log(
-  //     'scrol ',
-  //     scrollIndex,
-  //     ' lastIndex ',
-  //     lastIndex.current,
-  //     ' days ',
-  //     days
-  //   );
-  // }, [scrollIndex]);
 
-  // console.log(limitedDates);
+  //   if (
+  //     scrollIndex === days - daysInMonth - 1 &&
+  //     scrollIndex < lastIndex.current &&
+  //     scrollIndex !== 0
+  //   ) {
+  //     setDays((days) => days - daysInNextMonth + 1);
+  //     setDate(
+  //       new Date(
+  //         today.getFullYear(),
+  //         today.getMonth(),
+  //         today.getDate() + lastScrollIndex - 1
+  //       )
+  //     );
+  //   }
+  // }, [scrollIndex]);
 
   // useEffect(() => {
-  //   if (scrollIndex >= days[1] / 2 && scrollIndex === lastDay.current) {
-  //     lastDay.current = lastDay.current + 30;
-  //     setDays([days[0] + 30 / 2, days[1] + 30]);
-  //   }
-  //   if (scrollIndex < days[1] / 2 && scrollIndex === lastDay.current) {
-  //     lastDay.current = lastDay.current - 30;
-  //     setDays([days[0] - 30 / 2, days[1] - 30]);
-  //   }
+  //   // console.log(scrollIndex);
+  //   // console.log(lastIndex.current);
+  //   // console.log(limitedDates);
+  //   return () => {
+  //     lastIndex.current = scrollIndex;
+  //   };
   // }, [scrollIndex]);
+
+  // useEffect(() => {
+  //   console.log('days - daysInMonth ', days - daysInMonth);
+  //   console.log('days + daysInNextMonth ', days + daysInNextMonth);
+  //   scrollToIndex(scrollIndex);
+  // }, [days]);
 
   const dateIndex = useMemo(
     () => dates.findIndex((thisDate) => isSameDay(thisDate.date, date)),
@@ -255,18 +215,33 @@ export const UpcomingContent = () => {
     }
   };
 
+  const infinityListRef = useRef<HTMLDivElement>(null!);
+
+  // console.log(ref?.scrollHeight! - ref?.clientHeight!, ' ', ref?.scrollTop);
+
+  // const loadMore = () => {
+  //   if (!ref) return;
+
+  //   if (
+  //     Math.floor(ref.scrollHeight - ref.scrollTop) -
+  //       Math.floor(ref.scrollTop) <=
+  //     0
+  //   )
+  //     setLimit((l) => [l[0] + l[1], l[1] + 30]);
+  // };
+
   return (
     <ContentContainer
       heading={<HorizontalCalendar inputedDate={date} setDate={selectDate} />}
       onDragEndPage={onDragEnd}
     >
-      <div className='flex flex-col gap-8 px-11 md:px-0'>
-        {limitedDates.map((section, index) => (
+      <div ref={infinityListRef} className='flex flex-col gap-8 px-11 md:px-0'>
+        {dates.slice(0, 10).map((date, i) => (
           <UpcomingTodosSection
-            key={section.id}
-            todos={todos.filter((todo) => isSameDay(todo.date, section.date))}
-            section={section}
-            index={index}
+            key={date.id}
+            todos={todos.filter((todo) => isSameDay(todo.date, date.date))}
+            section={date}
+            index={i}
             placeholderProps={placeholderProps}
             draggingOverElementId={draggingOverElementId}
             toggleUpcomingDateList={toggleUpcomingDateList}
