@@ -15,7 +15,7 @@ export const CreateLabelModal = ({ closeModal }: ICreateLabelModalProps) => {
   const { addLabel } = useTodosStore();
 
   const [inputs, setInputs] = useState({
-    name: '',
+    title: '',
     color: {
       name: 'Stone',
       class: 'fill-stone-600',
@@ -25,14 +25,16 @@ export const CreateLabelModal = ({ closeModal }: ICreateLabelModalProps) => {
   const setColor = (color: { name: string; class: string }) =>
     setInputs((state) => ({ ...state, color }));
 
-  const setName = (name: string) => setInputs((state) => ({ ...state, name }));
+  const setTitle = (title: string) =>
+    setInputs((state) => ({ ...state, title }));
 
   const createNewLabel = () => {
-    if (!inputs.name) return;
+    if (!inputs.title) return;
 
     const label: ILabel = {
       id: nanoid(),
-      name: inputs.name,
+      type: 'label',
+      title: inputs.title,
       color: inputs.color,
     };
 
@@ -71,11 +73,11 @@ export const CreateLabelModal = ({ closeModal }: ICreateLabelModalProps) => {
           <form className='w-full flex flex-col gap-1 mb-4'>
             <div className='flex justify-between'>
               <label htmlFor='label-name' className='text-sm font-medium'>
-                Label name
+                Label title
               </label>
-              {inputs.name.length >= 100 && (
+              {inputs.title.length >= 100 && (
                 <span className='text-xs text-red-600 font-light'>
-                  Character limit: {inputs.name.length}/120
+                  Character limit: {inputs.title.length}/120
                 </span>
               )}
             </div>
@@ -83,9 +85,9 @@ export const CreateLabelModal = ({ closeModal }: ICreateLabelModalProps) => {
               ref={projectNameInputRef}
               id='label-name'
               type='text'
-              value={inputs.name}
+              value={inputs.title}
               maxLength={120}
-              onChange={(e) => setName(e.target.value)}
+              onChange={(e) => setTitle(e.target.value)}
               onKeyUp={createNewProjectOnKeyEnterInputProjectName}
               className='outline-none text-sm h-7 rounded-[3px] py-1 px-2 border-gray-300 focus:border-gray-400 border-[1px] duration-150 transition-all'
             />
@@ -113,7 +115,7 @@ export const CreateLabelModal = ({ closeModal }: ICreateLabelModalProps) => {
                 createNewLabel();
               }}
               className={`${
-                !inputs.name
+                !inputs.title
                   ? 'cursor-not-allowed bg-blue-400'
                   : 'bg-blue-600 hover:bg-blue-700'
               } text-center select-none py-2 px-4 outline-none rounded-sm font-medium text-sm h-fit w-fit text-white hover:text-gray-200`}

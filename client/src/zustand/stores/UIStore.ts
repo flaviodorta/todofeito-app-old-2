@@ -1,5 +1,6 @@
 import { isDesktop } from 'react-device-detect';
 import create from 'zustand';
+import { ISearchedInputs } from '../../helpers/types';
 import { IPlaceholderProps } from '../../hooks/useDndPlaceholder';
 
 interface IUIStore {
@@ -10,6 +11,8 @@ interface IUIStore {
   draggingOverElementId: string | null;
   ref: HTMLDivElement | null;
   placeholderProps: IPlaceholderProps;
+  searchedInputs: ISearchedInputs;
+  setSearchedInputs: (searchInputs: ISearchedInputs) => void;
   setPlaceholderProps: (placeholderProps: IPlaceholderProps) => void;
   setRef: (node: HTMLDivElement | null) => void;
   setDraggingElementId: (id: string | null) => void;
@@ -35,6 +38,15 @@ export const UIStore = create<IUIStore>((set, get) => ({
     x: 0,
   },
   ref: null,
+  searchedInputs: {
+    recentSearches: [],
+    recentylViewed: [],
+  },
+  setSearchedInputs: (searchInputs: ISearchedInputs) =>
+    set((state) => ({
+      ...state,
+      searchedInputs: searchInputs,
+    })),
   setPlaceholderProps: (placeholderProps: IPlaceholderProps) =>
     set((state) => ({
       ...state,

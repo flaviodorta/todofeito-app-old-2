@@ -1,12 +1,6 @@
-// import { isSameDay, isToday, isTomorrow } from 'date-fns';
-// import { nanoid } from 'nanoid';
 import { isToday, isTomorrow } from 'date-fns';
 import { nanoid } from 'nanoid';
 import create from 'zustand';
-import // capitalizeFirstLetter,
-// getDayNameInWeek,
-// getMonthName,
-'../../helpers/functions';
 import {
   capitalizeFirstLetter,
   getDayNameInWeek,
@@ -16,23 +10,17 @@ import {
   ILabel,
   IProject,
   ISection,
-  // IInboxSection,
   ITodo,
   IUpcomingSection,
   ITodosStore,
-  // ITodosByDate,
-  // ITodosByLabel,
-  // ITodosByPriority,
-  // ITodosByProject,
-  // ITodosBySection,
-  // ITodosStore,
 } from '../../helpers/types';
 
 export const todosStore = create<ITodosStore>((set, get) => {
   const projects: IProject[] = [
     {
       id: 'inbox',
-      name: 'Inbox',
+      type: 'project',
+      title: 'Inbox',
       color: {
         name: 'Blue',
         class: 'fill-blue-600',
@@ -53,7 +41,7 @@ export const todosStore = create<ITodosStore>((set, get) => {
       arr.push({
         id: nanoid(),
         date: date,
-        name: `${capitalizeFirstLetter(
+        title: `${capitalizeFirstLetter(
           getMonthName(date).substring(0, 3)
         )}  ${date.getDate()} ${
           isToday(date) ? '‧ Today' : isTomorrow(date) ? '‧ Tomorrow' : ''

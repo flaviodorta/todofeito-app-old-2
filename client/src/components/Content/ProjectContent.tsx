@@ -50,7 +50,10 @@ export const ProjectContent = () => {
     [todos]
   );
 
-  const projectSections = useMemo(() => sections.filter(section => section.project.id ), [sections])
+  const projectSections = useMemo(
+    () => sections.filter((section) => section.project.id),
+    [sections]
+  );
 
   const addSectionId = useRef(nanoid());
 
@@ -63,7 +66,7 @@ export const ProjectContent = () => {
 
   const Heading = () => (
     <div className='flex items-center gap-2'>
-      <h2 className='font-bold text-xl'>{project.name}</h2>
+      <h2 className='font-bold text-xl'>{project.title}</h2>
     </div>
   );
 

@@ -60,12 +60,15 @@ export const InboxContent = () => {
 
   const inboxProject: IProject = {
     id: 'inbox',
-    name: 'Inbox',
+    type: 'project',
+    title: 'Inbox',
     color: {
       name: 'Blue',
       class: 'fill-blue-600',
     },
   };
+
+  console.log(sections);
 
   const Heading = () => (
     <div className='flex items-center gap-2'>

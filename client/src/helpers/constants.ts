@@ -63,7 +63,8 @@ export const selectFillColors = {
 
 export const inboxProject: IProject = {
   id: 'inbox',
-  name: 'Inbox',
+  type: 'project',
+  title: 'Inbox',
   color: {
     name: 'Blue',
     class: 'fill-blue-600',

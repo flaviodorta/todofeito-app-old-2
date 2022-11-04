@@ -107,6 +107,7 @@ export const AddTodo = ({
 
   const todo: ITodo = {
     id: nanoid(),
+    type: 'todo',
     title: inputs.title,
     description: inputs.description,
 
@@ -271,7 +272,7 @@ export const AddTodo = ({
                 />
 
                 <span className='text-xs capitalize'>
-                  {inputs.project.name}
+                  {inputs.project.title}
                 </span>
 
                 {renderedSelect === 'project-select' && (

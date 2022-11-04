@@ -1,54 +1,137 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { searchBar } from '../helpers/variants';
 import { useToggle } from '../hooks/useToggle';
-import { MagnifyingGlassSolidIcon as SearchIcon } from './Icons';
-import { fetchCountries } from '../api';
+import {
+  CircleIcon,
+  ClockRegularIcon,
+  InboxSolidIcon,
+  LabelIcon,
+  MagnifyingGlassSolidIcon as SearchIcon,
+  SectionSolidIcon,
+  SquareCheckRegularIcon,
+} from './Icons';
 import { useQuery } from '@tanstack/react-query';
-import { useTodosStore } from '../zustand';
-import { ITodo } from '../helpers/types';
-import { useIsomorphicLayoutEffect } from '../hooks/useIsomorphicLayoutEffect';
+import { useTodosStore, useUIStore } from '../zustand';
+import { ILabel, IProject, ISection, ITodo } from '../helpers/types';
+import { useNavigate } from 'react-router-dom';
+
+interface ISearchInput {
+  value: string;
+  results: {
+    projects: IProject[];
+    sections: ISection[];
+    labels: ILabel[];
+    todos: ITodo[];
+  };
+  recentSearches: string[];
+  recentylViewed: (IProject | ISection | ILabel | ITodo)[];
+}
 
 export const SearchBar = ({ onClick }: { onClick: () => void }) => {
-  const { todos } = useTodosStore();
+  const { projects, sections, labels, todos } = useTodosStore();
+  const { searchedInputs, setSearchedInputs } = useUIStore();
+
+  const navigate = useNavigate();
 
   const [isSearchBarOpen, toggleSearchBar] = useToggle(false);
-  const [searchInput, setSearchInput] = useState<{
-    value: string;
-    results: ITodo[];
-  }>({
+  const [inputs, setInputs] = useState<ISearchInput>({
     value: '',
-    results: [],
+    recentSearches: [],
+    results: {
+      projects: [],
+      sections: [],
+      labels: [],
+      todos: [],
+    },
+    recentylViewed: [],
   });
-  // const { data: countries } = useQuery(['countries'], fetchCountries);
 
-  const filterByText = (todos: ITodo[], searchText: string) =>
-    todos.filter((todo) =>
-      todo.title.toLowerCase().includes(searchText.toLowerCase())
+  function filterDataByText<T extends ITodo | IProject | ILabel | ISection>(
+    datas: T[],
+    searchText: string
+  ) {
+    return datas.filter((data) =>
+      data.title.toLowerCase().includes(searchText.toLowerCase())
     );
+  }
+  const onChangeSearchBarValue = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
 
-  const onChangeSearchBarValue = (e: React.ChangeEvent<HTMLInputElement>) =>
-    setSearchInput({
-      value: e.target.value,
-      results: filterByText(todos, e.target.value),
-    });
+    setInputs((state) => ({
+      ...state,
+      value: value,
+      results: {
+        projects: filterDataByText(projects, value),
+        sections: filterDataByText(sections, value),
+        labels: filterDataByText(labels, value),
+        todos: filterDataByText(todos, value),
+      },
+    }));
+  };
 
   const onBlurSearchBarValue = () =>
-    setSearchInput({
+    setInputs((state) => ({
+      ...state,
       value: '',
-      results: [],
-    });
+      results: {
+        projects: [],
+        sections: [],
+        labels: [],
+        todos: [],
+      },
+    }));
 
-  const searchValueAsRegExp = new RegExp('(' + searchInput.value + ')', 'm');
+  const searchValueAsRegExp = new RegExp('(' + inputs.value + ')', 'm');
 
   const bolderize = (str: string, regExp: RegExp) =>
     str.replace(regExp, '<strong>$1</strong>');
 
-  const resultsBold = searchInput.results.map((todo) =>
-    bolderize(todo.title, searchValueAsRegExp)
+  const resultsBoldProjects = inputs.results.projects.map((project) =>
+    bolderize(project.title, searchValueAsRegExp)
+  );
+  const resultsBoldSections = inputs.results.sections.map((project) =>
+    bolderize(project.title, searchValueAsRegExp)
+  );
+  const resultsBoldLabels = inputs.results.labels.map((project) =>
+    bolderize(project.title, searchValueAsRegExp)
+  );
+  const resultsBoldTodos = inputs.results.todos.map((project) =>
+    bolderize(project.title, searchValueAsRegExp)
   );
 
-  console.log(resultsBold);
+  const onClickSearchItem = (
+    path: string,
+    data: IProject | ISection | ILabel | ITodo
+  ) => {
+    setSearchedInputs({
+      recentSearches: [inputs.value, ...searchedInputs.recentSearches],
+      recentylViewed: [data, ...searchedInputs.recentylViewed],
+    });
+    navigate(path);
+  };
+
+  const getRecentlyViewedIcon = (
+    data: IProject | ISection | ILabel | ITodo
+  ) => {
+    if (data.type === 'project')
+      return data.id !== 'inbox' ? (
+        <CircleIcon className={`${(data as IProject).color.class} w-4 h-4`} />
+      ) : (
+        <InboxSolidIcon
+          className={`${(data as IProject).color.class} w-4 h-4`}
+        />
+      );
+
+    if (data.type === 'section')
+      return <SectionSolidIcon className='fill-[#202020] w-4 h-4' />;
+
+    if (data.type === 'label')
+      return <LabelIcon className='fill-[#202020] w-4 h-4' />;
+
+    if (data.type === 'todo')
+      return <SquareCheckRegularIcon className='fill-[#202020] w-4 h-4' />;
+  };
 
   return (
     <div className='relative'>
@@ -76,7 +159,7 @@ export const SearchBar = ({ onClick }: { onClick: () => void }) => {
           animate={isSearchBarOpen ? 'animate' : 'initial'}
           type='text'
           placeholder='Search'
-          value={searchInput.value}
+          value={inputs.value}
           onChange={onChangeSearchBarValue}
           onBlur={onBlurSearchBarValue}
           className={`navbar-search-bar ${
@@ -93,23 +176,135 @@ export const SearchBar = ({ onClick }: { onClick: () => void }) => {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
             className={`dropdown-searchbar-container ${
-              searchInput.value ? 'border-[1px]' : ''
+              inputs.value ? 'border-[1px]' : ''
             }`}
           >
-            {searchInput.value && (
-              <span className='dropdown-searchbar-title'>Results</span>
+            {inputs.value ? (
+              <div>
+                <span className='dropdown-searchbar-title'>Results</span>
+
+                {inputs.results.projects.length === 0 &&
+                  inputs.results.sections.length === 0 &&
+                  inputs.results.labels.length === 0 &&
+                  inputs.results.todos.length === 0 &&
+                  inputs.value && (
+                    <span className='dropdown-searchbar-no-results'>
+                      No results
+                    </span>
+                  )}
+
+                {inputs.results.projects.slice(0, 3).map((project, i) => (
+                  <li
+                    onClick={() =>
+                      onClickSearchItem(`/projects/${project.id}`, project)
+                    }
+                    className='py-2 px-4 flex items-center gap-4 hover:bg-black/5 cursor-pointer w-full'
+                  >
+                    <span className='flex-center items-center h-full w-fit'>
+                      {project.id !== 'inbox' ? (
+                        <CircleIcon
+                          className={`${project.color.class} w-4 h-4`}
+                        />
+                      ) : (
+                        <InboxSolidIcon
+                          className={`${project.color.class} w-4 h-4`}
+                        />
+                      )}
+                    </span>
+                    <span
+                      dangerouslySetInnerHTML={{
+                        __html: resultsBoldProjects[i],
+                      }}
+                    />
+                  </li>
+                ))}
+
+                {inputs.results.sections.slice(0, 3).map((section, i) => (
+                  <li
+                    onClick={() =>
+                      onClickSearchItem(
+                        `/${section.project.id}/${section.id}`,
+                        section
+                      )
+                    }
+                    className='py-2 px-4 flex items-center gap-4 hover:bg-black/5 cursor-pointer w-full'
+                  >
+                    <span className='flex-center items-center h-full w-fit'>
+                      <SectionSolidIcon className='fill-[#202020] w-4 h-4' />
+                    </span>
+                    <span
+                      dangerouslySetInnerHTML={{
+                        __html: resultsBoldSections[i],
+                      }}
+                    />
+                  </li>
+                ))}
+
+                {inputs.results.labels.slice(0, 3).map((label, i) => (
+                  <li
+                    onClick={() =>
+                      onClickSearchItem(`/labels/${label.id}`, label)
+                    }
+                    className='py-2 px-4 flex items-center gap-4 hover:bg-black/5 cursor-pointer w-full'
+                  >
+                    <span className='flex-center items-center h-full w-fit'>
+                      <LabelIcon className='fill-[#202020] w-4 h-4' />
+                    </span>
+                    <span
+                      dangerouslySetInnerHTML={{ __html: resultsBoldLabels[i] }}
+                    />
+                  </li>
+                ))}
+
+                {inputs.results.todos.slice(0, 3).map((todo, i) => (
+                  <li
+                    onClick={() =>
+                      onClickSearchItem(`/${todo.project.id}/`, todo)
+                    }
+                    className='py-2 px-4 flex items-center gap-4 hover:bg-black/5 cursor-pointer w-full'
+                  >
+                    <span className='flex-center items-center h-full w-fit'>
+                      <SquareCheckRegularIcon className='fill-[#202020] w-4 h-4' />
+                    </span>
+                    <span
+                      dangerouslySetInnerHTML={{ __html: resultsBoldTodos[i] }}
+                    />
+                  </li>
+                ))}
+              </div>
+            ) : (
+              <div>
+                <div>
+                  <span className='dropdown-searchbar-title'>
+                    Recente searches
+                  </span>
+
+                  {searchedInputs.recentSearches.slice(0, 5).map((search) => (
+                    <li className='py-2 px-4 flex items-center gap-4 hover:bg-black/5 cursor-pointer w-full'>
+                      <span className='flex-center items-center h-full w-fit'>
+                        <ClockRegularIcon className='fill-[#202020] w-4 h-4' />
+                      </span>
+                      <span>{search}</span>
+                    </li>
+                  ))}
+                </div>
+
+                <div>
+                  <span className='dropdown-searchbar-title'>
+                    Recently viewed
+                  </span>
+
+                  {searchedInputs.recentylViewed.slice(0, 5).map((recent) => (
+                    <li className='py-2 px-4 flex items-center gap-4 hover:bg-black/5 cursor-pointer w-full'>
+                      <span className='flex-center items-center h-full w-fit'>
+                        {getRecentlyViewedIcon(recent)}
+                      </span>
+                      <span>{recent.title}</span>
+                    </li>
+                  ))}
+                </div>
+              </div>
             )}
-            {searchInput.results.length === 0 && searchInput.value && (
-              <span className='dropdown-searchbar-no-results'>No results</span>
-            )}
-            {searchInput.results.slice(0, 5).map((todo, i) => (
-              <li className='dropdown-result'>
-                <span>icon</span>
-                <span
-                  dangerouslySetInnerHTML={{ __html: resultsBold[i] }}
-                ></span>
-              </li>
-            ))}
           </motion.ul>
         )}
       </AnimatePresence>

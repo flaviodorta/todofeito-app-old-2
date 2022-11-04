@@ -19,3 +19,6 @@ export { TrashSolidIcon } from './Icons/TrashSolidIcon';
 export { MoreThreeDotsIcon } from './Icons/MoreThreeDotsIcon';
 export { ArrowLeftLongSolidIcon } from './Icons/ArrowLeftLongSolidIcon';
 export { CircleSolidIcon } from './Icons/CircleSolidIcon';
+export { SectionSolidIcon } from './Icons/SectionSolidIcon';
+export { SquareCheckRegularIcon } from './Icons/SquareCheckRegularIcon';
+export { ClockRegularIcon } from './Icons/ClockRegularIcon';

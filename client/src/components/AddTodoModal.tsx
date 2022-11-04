@@ -87,6 +87,7 @@ export const AddTodoModal = (props: IAddTodoModalProps) => {
 
   const todo: ITodo = {
     id: nanoid(),
+    type: 'todo',
     title: inputs.title,
     description: inputs.description,
 
@@ -248,7 +249,7 @@ export const AddTodoModal = (props: IAddTodoModalProps) => {
                 className='fill-sky-600 -translate-y-[1px]'
               />
               <span className='text-xs capitalize'>
-                {inputs.project.name ? inputs.project.name : 'Inbox'}
+                {inputs.project.title ? inputs.project.title : 'Inbox'}
               </span>
 
               {renderedSelect === 'project-select' && (

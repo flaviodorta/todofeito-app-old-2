@@ -107,7 +107,7 @@ export const UpcomingTodosSectionMemoized = (props: IUpcomingTodosSection) => {
               notCompleteTodos.length > 0 ? 'text-black' : 'text-gray-500'
             }`}
           >
-            {section.name}
+            {section.title}
           </span>
 
           <span

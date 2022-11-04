@@ -31,7 +31,8 @@ export const SidebarProject = ({
 
   const [editingProject, setEditingProject] = useState<IProject>({
     id: '',
-    name: '',
+    type: 'project',
+    title: '',
     color: {
       name: '',
       class: '',
@@ -97,7 +98,7 @@ export const SidebarProject = ({
             className={`w-2.5 h-2.5 rounded-full ${project.color.class}`}
           />
 
-          <span className='text-sm'>{project.name}</span>
+          <span className='text-sm'>{project.title}</span>
 
           <div className='relative ml-auto'>
             <span

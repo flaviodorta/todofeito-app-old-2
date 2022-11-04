@@ -39,7 +39,7 @@ export const SelectLabelOption = (
         <LabelIcon width='16px' height='16px' className='fill-gray-500' />
       </span>
       <span className='text-sm py-2 whitespace-nowrap text-clip'>
-        {thisLabel.name}
+        {thisLabel.title}
       </span>
       <div className='ml-auto px-4 py-2 flex items-center justify-center'>
         <input
@@ -104,7 +104,7 @@ export const SelectLabel = ({
             <span className='text-xs px-2 text-gray-500'>No labels</span>
           ) : (
             labels
-              .sort((a, b) => a.name.localeCompare(b.name))
+              .sort((a, b) => a.title.localeCompare(b.title))
               .map((label, i) => (
                 <Fragment key={i}>
                   <SelectLabelOption

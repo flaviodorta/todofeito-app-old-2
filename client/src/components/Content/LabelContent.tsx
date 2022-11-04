@@ -50,7 +50,7 @@ export const LabelContent = () => {
       >
         <ArrowLeftLongSolidIcon className='fill-gray-400 group-hover:fill-gray-500 h-5 w-5' />
       </button>
-      <h2 className='font-bold text-xl'>{label.name}</h2>
+      <h2 className='font-bold text-xl'>{label.title}</h2>
     </div>
   );
 

@@ -8,6 +8,8 @@ export type IRenderableElements =
   | 'priority-select'
   | null;
 
+export type IDataTypes = 'project' | 'section' | 'label' | 'todo';
+
 export interface IUIStore {
   dropdownPosition: { x: number; y: number };
   renderedElements: IRenderableElements[];
@@ -16,10 +18,9 @@ export interface IUIStore {
   setRenderedElements: (selectType: IRenderableElements, show: boolean) => void;
 }
 
-export interface Country {
-  name: {
-    common: string;
-  };
+export interface ISearchedInputs {
+  recentSearches: string[];
+  recentylViewed: (IProject | ISection | ILabel | ITodo)[];
 }
 
 export interface IUserStore {
@@ -89,7 +90,7 @@ export interface ITodosStore {
 
 export interface IUpcomingSection {
   id: string;
-  name: string;
+  title: string;
   date: Date;
   isListOpen: boolean;
 }
@@ -97,13 +98,15 @@ export interface IUpcomingSection {
 export interface ISection {
   readonly id: string;
   index?: number;
-  name: string;
+  type: IDataTypes;
+  title: string;
   readonly date: Date;
   project: IProject;
 }
 
 export interface ITodo {
   id: string;
+  type: IDataTypes;
   title: string;
   description: string;
 
@@ -118,7 +121,8 @@ export interface ITodo {
 
 export interface ILabel {
   id: string;
-  name: string;
+  type: IDataTypes;
+  title: string;
   color: {
     name: string;
     class: string;
@@ -127,7 +131,8 @@ export interface ILabel {
 
 export interface IProject {
   id: string;
-  name: string;
+  type: IDataTypes;
+  title: string;
   color: {
     name: string;
     class: string;

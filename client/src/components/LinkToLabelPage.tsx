@@ -16,7 +16,7 @@ export const LinkToLabelPage = ({
     <Link onClick={showLabelPage} to={label.id}>
       <div className='cursor-pointer w-full h-10 flex items-center border-b-gray-300 border-b-[1px]'>
         <span className='p-2'>{icon}</span>
-        <p>{label.name}</p>
+        <p>{label.title}</p>
       </div>
     </Link>
   );

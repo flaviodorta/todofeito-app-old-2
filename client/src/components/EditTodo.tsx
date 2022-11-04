@@ -82,6 +82,7 @@ export const EditTodo = ({
 
   const editedTodo: ITodo = {
     id,
+    type: 'todo',
     title: inputs.title,
     description: inputs.description,
 
@@ -240,7 +241,7 @@ export const EditTodo = ({
                 />
 
                 <span className='text-xs capitalize'>
-                  {inputs.project.name}
+                  {inputs.project.title}
                 </span>
 
                 {renderedSelect === 'project-select' && (

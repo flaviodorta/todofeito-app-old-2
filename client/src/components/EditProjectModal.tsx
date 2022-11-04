@@ -18,7 +18,7 @@ export const EditProjectModal = ({
   const { editProject } = useTodosStore();
 
   const [inputs, setInputs] = useState({
-    name: '',
+    title: '',
     color: {
       name: 'Stone',
       class: 'fill-stone-600',
@@ -28,17 +28,19 @@ export const EditProjectModal = ({
   const setColor = (color: { name: string; class: string }) =>
     setInputs((state) => ({ ...state, color }));
 
-  const setName = (name: string) => setInputs((state) => ({ ...state, name }));
+  const setTitle = (title: string) =>
+    setInputs((state) => ({ ...state, title }));
 
   const sendEditedProject = (
     e?: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
     e?.preventDefault();
-    if (!project.name) return;
+    if (!project.title) return;
 
     const editedProject: IProject = {
       id: project.id,
-      name: inputs.name,
+      type: 'project',
+      title: inputs.title,
       color: inputs.color,
     };
 
@@ -78,11 +80,11 @@ export const EditProjectModal = ({
             <div className='w-full flex flex-col gap-1 mb-4'>
               <div className='flex justify-between'>
                 <label htmlFor='project-name' className='text-sm font-medium'>
-                  Name
+                  Title
                 </label>
-                {project.name.length >= 100 && (
+                {project.title.length >= 100 && (
                   <span className='text-xs text-red-600 font-light'>
-                    Character limit: {project.name.length}/120
+                    Character limit: {project.title.length}/120
                   </span>
                 )}
               </div>
@@ -90,9 +92,9 @@ export const EditProjectModal = ({
                 ref={projectNameInputRef}
                 id='project-name'
                 type='text'
-                value={inputs.name}
+                value={inputs.title}
                 maxLength={120}
-                onChange={(e) => setName(e.target.value)}
+                onChange={(e) => setTitle(e.target.value)}
                 onKeyUp={(e) => {
                   e.preventDefault();
                   editProjectOnKeyEnterInputProjectName(e);
@@ -120,7 +122,7 @@ export const EditProjectModal = ({
               <button
                 onClick={sendEditedProject}
                 className={`${
-                  !project.name
+                  !project.title
                     ? 'cursor-not-allowed bg-blue-400'
                     : 'bg-blue-600 hover:bg-blue-700'
                 } text-center select-none py-2 px-4 outline-none rounded-sm font-medium text-sm h-fit w-fit text-white hover:text-gray-200`}

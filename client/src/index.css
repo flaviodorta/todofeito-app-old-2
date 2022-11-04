@@ -4,7 +4,7 @@
 
 @layer base {
   #root {
-    @apply h-screen w-screen text-[#202020] text-[16px] bg-white font-roboto overflow-hidden;
+    @apply h-screen w-screen text-[#202020] text-[14px] bg-white font-roboto overflow-hidden;
     -webkit-font-smoothing: antialiased;
   }
 
@@ -17,7 +17,6 @@
 
 @layer components {
   /* custom utilities */
-
   .flex-center {
     @apply flex items-center justify-center;
   }

@@ -16,7 +16,7 @@ export const EditSection = ({
 }: IEditSectionProps) => {
   // const { editSection } = useTodosStore();
   const [inputs, setInputs] = useState({
-    name: section.name,
+    title: section.title,
   });
 
   const close = () => setSectionInputOpenById(null);
@@ -24,7 +24,7 @@ export const EditSection = ({
   const sendEditedSection = () => {
     editSection({
       ...section,
-      name: inputs.name,
+      title: inputs.title,
     });
 
     close();
@@ -43,10 +43,10 @@ export const EditSection = ({
         ref={sectionNameInputRef}
         id='project-name'
         type='text'
-        value={inputs.name}
+        value={inputs.title}
         placeholder='Name this section'
         maxLength={120}
-        onChange={(e) => setInputs({ name: e.target.value })}
+        onChange={(e) => setInputs({ title: e.target.value })}
         onKeyUp={createNewSectionOnKeyEnterInputSectionName}
         className='placeholder:font-bold placeholder:text-gray-500 outline-none text-sm h-7 rounded-[3px] py-1 px-2 border-gray-300 focus:border-gray-400 border-[1px] duration-150 transition-all'
       />
@@ -55,7 +55,7 @@ export const EditSection = ({
         <button
           onClick={sendEditedSection}
           className={`${
-            !inputs.name
+            !inputs.title
               ? 'cursor-not-allowed bg-blue-400'
               : 'bg-blue-600 hover:bg-blue-700'
           } text-center w-fit select-none p-2 outline-none rounded-sm font-medium text-sm h-fit text-white hover:text-gray-200`}

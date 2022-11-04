@@ -2,7 +2,6 @@ import { nanoid } from 'nanoid';
 import { useRef, useState } from 'react';
 import { onKeyUpEnter } from '../helpers/functions';
 import { IProject, ISection } from '../helpers/types';
-import { useTodosStore, useUIStore } from '../zustand';
 
 interface IAddSectionProps {
   addSection: (section: ISection) => void;
@@ -17,20 +16,20 @@ export const AddSection = ({
   addSection,
   setSectionInputOpenById,
 }: IAddSectionProps) => {
-  // const { addSection } = useTodosStore();
   const [inputs, setInputs] = useState({
-    name: '',
+    title: '',
   });
 
-  const setName = (e: React.ChangeEvent<HTMLInputElement>) =>
-    setInputs({ name: e.target.value });
+  const setTitle = (e: React.ChangeEvent<HTMLInputElement>) =>
+    setInputs({ title: e.target.value });
 
   const close = () => setSectionInputOpenById(null);
 
   const createNewSection = () => {
     addSection({
       id: nanoid(),
-      name: inputs.name,
+      type: 'section',
+      title: inputs.title,
       date: new Date(),
       project,
       index: previousSectionIndex + 1,
@@ -51,10 +50,10 @@ export const AddSection = ({
         ref={sectionNameInputRef}
         id='project-name'
         type='text'
-        value={inputs.name}
+        value={inputs.title}
         placeholder='Name this section'
         maxLength={120}
-        onChange={setName}
+        onChange={setTitle}
         onKeyUp={createNewSectionOnKeyEnterInputSectionName}
         className='placeholder:font-bold placeholder:text-gray-500 outline-none text-sm h-7 rounded-[3px] py-1 px-2 border-gray-300 focus:border-gray-400 border-[1px] duration-150 transition-all'
       />
@@ -63,7 +62,7 @@ export const AddSection = ({
         <button
           onClick={createNewSection}
           className={`${
-            !inputs.name
+            !inputs.title
               ? 'cursor-not-allowed bg-blue-400'
               : 'bg-blue-600 hover:bg-blue-700'
           } text-center w-fit select-none p-2 outline-none rounded-sm font-medium text-sm h-fit text-white hover:text-gray-200`}

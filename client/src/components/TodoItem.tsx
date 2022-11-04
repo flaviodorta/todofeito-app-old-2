@@ -22,6 +22,7 @@ type ITodoItem = {
   draggableProvided: DraggableProvided;
   draggableSnapshot: DraggableStateSnapshot;
   // todoInputOpenById: string | null;
+  disableDraggable?: boolean;
   setDraggingOverElementId: (id: string | null) => void;
   setDraggingElementId: (id: string | null) => void;
   setTodoInputOpenById: (id: string | null) => void;
@@ -34,6 +35,7 @@ export const TodoItemMemoized = ({
   // todoInputOpenById,
   draggableProvided,
   draggableSnapshot,
+  disableDraggable = false,
   setDraggingOverElementId,
   setDraggingElementId,
   completeTodo,
@@ -188,19 +190,21 @@ export const TodoItemMemoized = ({
 
         <span className='h-fit w-fit flex-center gap-1'>
           <InboxSolidIcon className='fill-blue-600 w-3 h-3' />
-          <span className='capitalize'>{todo.project.name}</span>
+          <span className='capitalize'>{todo.project.title}</span>
         </span>
       </div>
 
-      <span
-        {...draggableProvided.dragHandleProps}
-        style={{ cursor: 'all-scroll' }}
-        className={`${
-          isHover ? 'opacity-100' : 'opacity-0'
-        } hover:opacity-100 group cursor-crosshair w-6 h-7 rounded-md flex-center absolute -left-7 top-1.5 hover:bg-gray-200 duration-100`}
-      >
-        <GripVerticalSolidIcon className='fill-gray-400 group-hover:fill-gray-600 w-3 h-3.5' />
-      </span>
+      {!disableDraggable && (
+        <span
+          {...draggableProvided.dragHandleProps}
+          style={{ cursor: 'all-scroll' }}
+          className={`${
+            isHover ? 'opacity-100' : 'opacity-0'
+          } hover:opacity-100 group cursor-crosshair w-6 h-7 rounded-md flex-center absolute -left-7 top-1.5 hover:bg-gray-200 duration-100`}
+        >
+          <GripVerticalSolidIcon className='fill-gray-400 group-hover:fill-gray-600 w-3 h-3.5' />
+        </span>
+      )}
 
       {isHover && (
         <div className='absolute  flex items-center gap-2 top-1 right-0'>

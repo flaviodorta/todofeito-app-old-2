@@ -137,7 +137,7 @@ export const TodosSection = ({
           className='relative flex justify-between items-center w-full text-sm  bg-white font-bold h-fit pb-1 border-b-[1px] border-gray-300'
         >
           <span className='flex items-center gap-2 text-center'>
-            {section.name}
+            {section.title}
             <span className='font-light text-gray-600 text-xs relative top-[1px]'>
               {todos?.length ? todos.length : undefined}
             </span>
