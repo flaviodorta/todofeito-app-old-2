@@ -158,7 +158,7 @@ export const TodosSection = ({
           {/* open/close todos list */}
           <span
             onClick={toggleTodoList}
-            className='group absolute -left-8 top-0 cursor-pointer w-6 h-6 rounded-sm z-[2] bg-white hover:bg-gray-200 flex items-center justify-center'
+            className='group absolute -left-8 top-0 cursor-pointer w-6 h-6 rounded-sm z-[2] hover:bg-gray-200 flex items-center justify-center'
           >
             <ChevronIcon
               className={`${

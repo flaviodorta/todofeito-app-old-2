@@ -47,11 +47,13 @@
 - search todo, add recent view, search page
 - fix edit todo
 - fix sidebar project link
+- fix project page
+- fix todos render in projects page
 
 # to do
 
-- fix todos render in projects page
-
+- fix drag function in today, upcoming, label pages
+- fix placeholder calc when haven't todos in list
 - user settings modal
 - add i18n
 - add flat design to no todos
@@ -68,7 +70,6 @@
 - add sidebar resizable (react-resizable)
 - todo modal
 - subtasks
-- fix project page
 - lazy render in upcoming pages
 - create resizer observer hook with multiples refs
 - create useHover that take a screen tab

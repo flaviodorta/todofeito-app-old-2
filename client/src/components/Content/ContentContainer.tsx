@@ -9,14 +9,14 @@ import { useDndPlaceholder } from '../../hooks/useDndPlaceholder';
 interface IContentContainerProps {
   heading: React.ReactNode;
   children?: React.ReactNode;
-  project?: IProject;
+  page?: string;
   onDragEndPage?: (result: DropResult) => void;
 }
 
 export const ContentContainer = ({
   children,
   heading,
-  project,
+  page,
   onDragEndPage,
 }: IContentContainerProps) => {
   const { isSidebarOpen, setRef, draggingElementId, setPlaceholderProps } =
@@ -52,6 +52,11 @@ export const ContentContainer = ({
 
     const sourceIndex = source.index;
     const destinationIndex = destination.index;
+
+    if (page === 'today') {
+      setTodos(reorder(todos, sourceIndex, destinationIndex));
+      return;
+    }
 
     if (
       sourceDroppableType !== 'sections' &&

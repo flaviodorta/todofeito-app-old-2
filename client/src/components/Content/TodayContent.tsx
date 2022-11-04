@@ -42,10 +42,10 @@ export const TodayContent = () => {
   );
 
   return (
-    <ContentContainer heading={<Heading />}>
+    <ContentContainer heading={<Heading />} page='today'>
       <div className='w-full px-9 md:px-0'>
         <TodosList
-          droppableId='today'
+          droppableId='todos'
           todos={todayTodos}
           placeholderProps={placeholderProps}
           draggingOverElementId={draggingOverElementId}

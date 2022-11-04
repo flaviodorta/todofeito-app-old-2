@@ -76,7 +76,7 @@ export const ProjectContent = () => {
   );
 
   return (
-    <ContentContainer heading={<Heading />} project={project}>
+    <ContentContainer heading={<Heading />}>
       <div className='w-full px-9 md:px-0'>
         <TodosList
           todos={projectTodos}
