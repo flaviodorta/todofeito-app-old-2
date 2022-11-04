@@ -7,6 +7,7 @@ import { UpcomingPage } from './pages/UpcomingPage';
 import { FiltersAndLabelsPage } from './pages/FiltersAndLabelsPage';
 import { LabelPage } from './pages/LabelPage';
 import { ProjectPage } from './pages/ProjectPage';
+import { SearchResultsPage } from './pages/SearchResultsPage';
 
 const queryClient = new QueryClient();
 
@@ -22,6 +23,10 @@ export default function App() {
             <Route path='/filters-labels' element={<FiltersAndLabelsPage />} />
             <Route path='/filters-labels/:labelId' element={<LabelPage />} />
             <Route path='/projects/:projectId' element={<ProjectPage />} />
+            <Route
+              path='/search/:searchedText'
+              element={<SearchResultsPage />}
+            />
             <Route path='*' element={<InboxPage />} />
           </Routes>
         </BrowserRouter>

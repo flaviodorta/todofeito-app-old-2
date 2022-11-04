@@ -36,7 +36,6 @@ export const EditTodo = ({
 }: IEditTodoProps) => {
   const { id, title, description, section, date, project, priority, labels } =
     todo;
-  // const { editTodo } = useTodosStore();
 
   const [inputs, setInputs] = useState({
     title,

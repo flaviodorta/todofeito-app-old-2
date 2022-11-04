@@ -75,7 +75,7 @@ export const onKeyUpEnter =
     cb: T,
     ref: React.RefObject<E>
   ) =>
-  (event: React.KeyboardEvent<HTMLInputElement>) => {
+  (event: React.KeyboardEvent<E>) => {
     if (event.key === 'Enter' && document.activeElement === ref.current) cb();
   };
 
@@ -116,3 +116,10 @@ export const getWeekDays = (date: Date) => {
 export const capitalizeFirstLetter = (string: string) => {
   return string.charAt(0).toUpperCase() + string.slice(1);
 };
+
+export function getDatasByIds<T extends { id: string }>(
+  array: T[],
+  arrayIds: string[]
+): T[] {
+  return array.filter((el) => arrayIds.some((id) => id === el.id));
+}

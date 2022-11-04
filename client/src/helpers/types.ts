@@ -19,8 +19,14 @@ export interface IUIStore {
 }
 
 export interface ISearchedInputs {
+  results: {
+    projectsIds: string[];
+    sectionsIds: string[];
+    labelsIds: string[];
+    todosIds: string[];
+  };
   recentSearches: string[];
-  recentylViewed: (IProject | ISection | ILabel | ITodo)[];
+  recentlyViewedIds: string[];
 }
 
 export interface IUserStore {

@@ -39,8 +39,14 @@ export const UIStore = create<IUIStore>((set, get) => ({
   },
   ref: null,
   searchedInputs: {
+    results: {
+      projectsIds: [],
+      sectionsIds: [],
+      labelsIds: [],
+      todosIds: [],
+    },
     recentSearches: [],
-    recentylViewed: [],
+    recentlyViewedIds: [],
   },
   setSearchedInputs: (searchInputs: ISearchedInputs) =>
     set((state) => ({

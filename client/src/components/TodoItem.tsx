@@ -19,23 +19,23 @@ import { useUIStore } from '../zustand';
 
 type ITodoItem = {
   todo: ITodo;
-  draggableProvided: DraggableProvided;
-  draggableSnapshot: DraggableStateSnapshot;
-  // todoInputOpenById: string | null;
-  disableDraggable?: boolean;
-  setDraggingOverElementId: (id: string | null) => void;
-  setDraggingElementId: (id: string | null) => void;
+  draggableProvided?: DraggableProvided;
+  draggableSnapshot?: DraggableStateSnapshot;
+  todoInputOpenById?: string | null;
+  isDraggableDisabled?: boolean;
+  setDraggingOverElementId?: (id: string | null) => void;
+  setDraggingElementId?: (id: string | null) => void;
   setTodoInputOpenById: (id: string | null) => void;
   completeTodo: (todo: ITodo) => void;
   editTodo: (todo: ITodo) => void;
 };
 
-export const TodoItemMemoized = ({
+export const TodoItem = ({
   todo,
-  // todoInputOpenById,
+  todoInputOpenById,
   draggableProvided,
   draggableSnapshot,
-  disableDraggable = false,
+  isDraggableDisabled = false,
   setDraggingOverElementId,
   setDraggingElementId,
   completeTodo,
@@ -54,7 +54,6 @@ export const TodoItemMemoized = ({
   const [dueDateSizes, dueDateRef, calcDueDate] = useDimensions({
     parentRef: containerRef.current,
   });
-  // const [projectsSizes, projectsRef] = useDimensions();
 
   const openDatePicker = () =>
     !renderedSelect ? setRenderedSelect('date-picker') : undefined;
@@ -94,31 +93,47 @@ export const TodoItemMemoized = ({
   };
 
   useEffect(() => {
-    draggableSnapshot.isDragging
-      ? setDraggingElementId(todo.id)
-      : setDraggingElementId(null);
-  }, [draggableSnapshot.isDragging]);
+    if (setDraggingElementId && draggableSnapshot) {
+      draggableSnapshot.isDragging
+        ? setDraggingElementId(todo.id)
+        : setDraggingElementId(null);
+    }
+  }, [draggableSnapshot?.isDragging]);
 
   useEffect(() => {
     calcDueDate();
-  }, [draggableSnapshot.isDragging]);
+  }, [draggableSnapshot?.isDragging]);
 
   useEffect(() => {
-    draggableSnapshot.draggingOver
-      ? setDraggingOverElementId(draggableSnapshot.draggingOver)
-      : setDraggingOverElementId(null);
-  }, [draggableSnapshot.draggingOver]);
+    if (setDraggingOverElementId && draggableSnapshot) {
+      draggableSnapshot.draggingOver
+        ? setDraggingOverElementId(draggableSnapshot.draggingOver)
+        : setDraggingOverElementId(null);
+    }
+  }, [draggableSnapshot?.draggingOver]);
+
+  if (todoInputOpenById === todo.id) {
+    return (
+      <EditTodo
+        todo={todo}
+        editTodo={editTodo}
+        setTodoInputOpenById={setTodoInputOpenById}
+      />
+    );
+  }
+
+  console.log('todo input open id ', todoInputOpenById);
 
   return (
     <div
       ref={containerRef}
       className={`relative w-full h-full mb-2
       ${
-        draggableSnapshot.isDragging
+        draggableSnapshot?.isDragging
           ? 'shadow-dragging-item border-none'
           : 'border-b-gray-200 border-b-[1px]'
       }
-      ${draggableSnapshot.isDropAnimating ? 'shadow-none' : ''}
+      ${draggableSnapshot?.isDropAnimating ? 'shadow-none' : ''}
       z-[1]
       p-2
       outline-none
@@ -194,9 +209,9 @@ export const TodoItemMemoized = ({
         </span>
       </div>
 
-      {!disableDraggable && (
+      {!isDraggableDisabled && (
         <span
-          {...draggableProvided.dragHandleProps}
+          {...draggableProvided?.dragHandleProps}
           style={{ cursor: 'all-scroll' }}
           className={`${
             isHover ? 'opacity-100' : 'opacity-0'
@@ -223,12 +238,14 @@ export const TodoItemMemoized = ({
   );
 };
 
-const todosItemPropsAreEqual = (
-  prevProps: Readonly<ITodoItem>,
-  nextProps: Readonly<ITodoItem>
-) =>
-  isEqual(prevProps.todo, nextProps.todo) &&
-  isEqual(prevProps.draggableProvided, nextProps.draggableProvided) &&
-  isEqual(prevProps.draggableSnapshot, prevProps.draggableSnapshot);
+// const todosItemPropsAreEqual = (
+//   prevProps: Readonly<ITodoItem>,
+//   nextProps: Readonly<ITodoItem>
+// ) =>
+//   isEqual(prevProps.todo, nextProps.todo) &&
+//   isEqual(prevProps.draggableProvided, nextProps.draggableProvided) &&
+//   isEqual(prevProps.draggableSnapshot, prevProps.draggableSnapshot) &&
+//   prevProps.todoInputOpenById !== prevProps.todo.id &&
+//   nextProps.todoInputOpenById !== nextProps.todo.id;
 
-export const TodoItem = memo(TodoItemMemoized, todosItemPropsAreEqual);
+// export const TodoItem = memo(TodoItemMemoized, todosItemPropsAreEqual);

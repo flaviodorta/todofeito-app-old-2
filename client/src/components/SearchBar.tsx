@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import React, { useEffect, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { searchBar } from '../helpers/variants';
 import { useToggle } from '../hooks/useToggle';
 import {
@@ -15,17 +15,18 @@ import { useQuery } from '@tanstack/react-query';
 import { useTodosStore, useUIStore } from '../zustand';
 import { ILabel, IProject, ISection, ITodo } from '../helpers/types';
 import { useNavigate } from 'react-router-dom';
+import { getDatasByIds, onKeyUpEnter } from '../helpers/functions';
 
 interface ISearchInput {
   value: string;
   results: {
-    projects: IProject[];
-    sections: ISection[];
-    labels: ILabel[];
-    todos: ITodo[];
+    projectsIds: string[];
+    sectionsIds: string[];
+    labelsIds: string[];
+    todosIds: string[];
   };
-  recentSearches: string[];
-  recentylViewed: (IProject | ISection | ILabel | ITodo)[];
+  // recentSearches: string[];
+  // recentylViewed: (IProject | ISection | ILabel | ITodo)[];
 }
 
 export const SearchBar = ({ onClick }: { onClick: () => void }) => {
@@ -34,18 +35,18 @@ export const SearchBar = ({ onClick }: { onClick: () => void }) => {
 
   const navigate = useNavigate();
 
-  const [isSearchBarOpen, toggleSearchBar] = useToggle(false);
-  const [inputs, setInputs] = useState<ISearchInput>({
+  const defaultInputValues = {
     value: '',
-    recentSearches: [],
     results: {
-      projects: [],
-      sections: [],
-      labels: [],
-      todos: [],
+      projectsIds: [],
+      sectionsIds: [],
+      labelsIds: [],
+      todosIds: [],
     },
-    recentylViewed: [],
-  });
+  };
+
+  const [isSearchBarOpen, toggleSearchBar] = useToggle(false);
+  const [inputs, setInputs] = useState<ISearchInput>(defaultInputValues);
 
   function filterDataByText<T extends ITodo | IProject | ILabel | ISection>(
     datas: T[],
@@ -62,10 +63,10 @@ export const SearchBar = ({ onClick }: { onClick: () => void }) => {
       ...state,
       value: value,
       results: {
-        projects: filterDataByText(projects, value),
-        sections: filterDataByText(sections, value),
-        labels: filterDataByText(labels, value),
-        todos: filterDataByText(todos, value),
+        projectsIds: filterDataByText(projects, value).map((data) => data.id),
+        sectionsIds: filterDataByText(sections, value).map((data) => data.id),
+        labelsIds: filterDataByText(labels, value).map((data) => data.id),
+        todosIds: filterDataByText(todos, value).map((data) => data.id),
       },
     }));
   };
@@ -75,39 +76,63 @@ export const SearchBar = ({ onClick }: { onClick: () => void }) => {
       ...state,
       value: '',
       results: {
-        projects: [],
-        sections: [],
-        labels: [],
-        todos: [],
+        projectsIds: [],
+        sectionsIds: [],
+        labelsIds: [],
+        todosIds: [],
       },
     }));
+
+  const searchedProjects = getDatasByIds(projects, inputs.results.projectsIds);
+  const searchedSections = getDatasByIds(sections, inputs.results.sectionsIds);
+  const searchedLabels = getDatasByIds(labels, inputs.results.labelsIds);
+  const searchedTodos = getDatasByIds(todos, inputs.results.todosIds);
+  const recentlyViewed = [...projects, ...sections, ...labels, ...todos].filter(
+    (data) => searchedInputs.recentlyViewedIds.some((id) => id === data.id)
+  );
 
   const searchValueAsRegExp = new RegExp('(' + inputs.value + ')', 'm');
 
   const bolderize = (str: string, regExp: RegExp) =>
     str.replace(regExp, '<strong>$1</strong>');
 
-  const resultsBoldProjects = inputs.results.projects.map((project) =>
+  const resultsBoldProjects = searchedProjects.map((project) =>
     bolderize(project.title, searchValueAsRegExp)
   );
-  const resultsBoldSections = inputs.results.sections.map((project) =>
+  const resultsBoldSections = searchedSections.map((project) =>
     bolderize(project.title, searchValueAsRegExp)
   );
-  const resultsBoldLabels = inputs.results.labels.map((project) =>
+  const resultsBoldLabels = searchedLabels.map((project) =>
     bolderize(project.title, searchValueAsRegExp)
   );
-  const resultsBoldTodos = inputs.results.todos.map((project) =>
+  const resultsBoldTodos = searchedTodos.map((project) =>
     bolderize(project.title, searchValueAsRegExp)
   );
+
+  const searchBarRef = useRef<HTMLInputElement>(null!);
+
+  const searchOnPressEnter = onKeyUpEnter(() => {
+    setInputs(defaultInputValues);
+
+    setSearchedInputs({
+      results: inputs.results,
+      recentSearches: [inputs.value, ...searchedInputs.recentSearches],
+      recentlyViewedIds: [...searchedInputs.recentlyViewedIds],
+    });
+
+    navigate(`/search/${inputs.value}`);
+  }, searchBarRef);
 
   const onClickSearchItem = (
     path: string,
     data: IProject | ISection | ILabel | ITodo
   ) => {
     setSearchedInputs({
+      results: inputs.results,
       recentSearches: [inputs.value, ...searchedInputs.recentSearches],
-      recentylViewed: [data, ...searchedInputs.recentylViewed],
+      recentlyViewedIds: [data.id, ...searchedInputs.recentlyViewedIds],
     });
+
     navigate(path);
   };
 
@@ -154,6 +179,7 @@ export const SearchBar = ({ onClick }: { onClick: () => void }) => {
           /
         </button>
         <motion.input
+          ref={searchBarRef}
           variants={searchBar}
           initial={false}
           animate={isSearchBarOpen ? 'animate' : 'initial'}
@@ -162,6 +188,7 @@ export const SearchBar = ({ onClick }: { onClick: () => void }) => {
           value={inputs.value}
           onChange={onChangeSearchBarValue}
           onBlur={onBlurSearchBarValue}
+          onKeyUp={searchOnPressEnter}
           className={`navbar-search-bar ${
             isSearchBarOpen ? 'bg-white/100' : ''
           }`}
@@ -183,18 +210,19 @@ export const SearchBar = ({ onClick }: { onClick: () => void }) => {
               <div>
                 <span className='dropdown-searchbar-title'>Results</span>
 
-                {inputs.results.projects.length === 0 &&
-                  inputs.results.sections.length === 0 &&
-                  inputs.results.labels.length === 0 &&
-                  inputs.results.todos.length === 0 &&
+                {searchedProjects.length === 0 &&
+                  searchedSections.length === 0 &&
+                  searchedLabels.length === 0 &&
+                  searchedTodos.length === 0 &&
                   inputs.value && (
                     <span className='dropdown-searchbar-no-results'>
                       No results
                     </span>
                   )}
 
-                {inputs.results.projects.slice(0, 3).map((project, i) => (
+                {searchedProjects.slice(0, 3).map((project, i) => (
                   <li
+                    key={project.id}
                     onClick={() =>
                       onClickSearchItem(`/projects/${project.id}`, project)
                     }
@@ -219,8 +247,9 @@ export const SearchBar = ({ onClick }: { onClick: () => void }) => {
                   </li>
                 ))}
 
-                {inputs.results.sections.slice(0, 3).map((section, i) => (
+                {searchedSections.slice(0, 3).map((section, i) => (
                   <li
+                    key={section.id}
                     onClick={() =>
                       onClickSearchItem(
                         `/${section.project.id}/${section.id}`,
@@ -240,8 +269,9 @@ export const SearchBar = ({ onClick }: { onClick: () => void }) => {
                   </li>
                 ))}
 
-                {inputs.results.labels.slice(0, 3).map((label, i) => (
+                {searchedLabels.slice(0, 3).map((label, i) => (
                   <li
+                    key={label.id}
                     onClick={() =>
                       onClickSearchItem(`/labels/${label.id}`, label)
                     }
@@ -256,8 +286,9 @@ export const SearchBar = ({ onClick }: { onClick: () => void }) => {
                   </li>
                 ))}
 
-                {inputs.results.todos.slice(0, 3).map((todo, i) => (
+                {searchedTodos.slice(0, 3).map((todo, i) => (
                   <li
+                    key={todo.id}
                     onClick={() =>
                       onClickSearchItem(`/${todo.project.id}/`, todo)
                     }
@@ -279,14 +310,19 @@ export const SearchBar = ({ onClick }: { onClick: () => void }) => {
                     Recente searches
                   </span>
 
-                  {searchedInputs.recentSearches.slice(0, 5).map((search) => (
-                    <li className='py-2 px-4 flex items-center gap-4 hover:bg-black/5 cursor-pointer w-full'>
-                      <span className='flex-center items-center h-full w-fit'>
-                        <ClockRegularIcon className='fill-[#202020] w-4 h-4' />
-                      </span>
-                      <span>{search}</span>
-                    </li>
-                  ))}
+                  {searchedInputs.recentSearches
+                    .slice(0, 5)
+                    .map((search, i) => (
+                      <li
+                        key={`${i}_${search}`}
+                        className='py-2 px-4 flex items-center gap-4 hover:bg-black/5 cursor-pointer w-full'
+                      >
+                        <span className='flex-center items-center h-full w-fit'>
+                          <ClockRegularIcon className='fill-[#202020] w-4 h-4' />
+                        </span>
+                        <span>{search}</span>
+                      </li>
+                    ))}
                 </div>
 
                 <div>
@@ -294,8 +330,11 @@ export const SearchBar = ({ onClick }: { onClick: () => void }) => {
                     Recently viewed
                   </span>
 
-                  {searchedInputs.recentylViewed.slice(0, 5).map((recent) => (
-                    <li className='py-2 px-4 flex items-center gap-4 hover:bg-black/5 cursor-pointer w-full'>
+                  {recentlyViewed.slice(0, 5).map((recent) => (
+                    <li
+                      key={recent.id}
+                      className='py-2 px-4 flex items-center gap-4 hover:bg-black/5 cursor-pointer w-full'
+                    >
                       <span className='flex-center items-center h-full w-fit'>
                         {getRecentlyViewedIcon(recent)}
                       </span>
