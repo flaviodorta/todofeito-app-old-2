@@ -54,10 +54,10 @@ export const LabelContent = () => {
   );
 
   return (
-    <ContentContainer heading={<Heading />}>
+    <ContentContainer heading={<Heading />} page='label'>
       <div className='w-full px-9 md:px-0'>
         <TodosList
-          droppableId={label.id}
+          droppableId={`todos~${label.id}`}
           todos={labelTodos}
           placeholderProps={placeholderProps}
           draggingOverElementId={draggingOverElementId}

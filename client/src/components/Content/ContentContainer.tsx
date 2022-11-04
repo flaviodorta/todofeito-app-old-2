@@ -78,6 +78,29 @@ export const ContentContainer = ({
       return;
     }
 
+    if (page === 'label') {
+      const labelId = draggingTodo.labels.filter(
+        (label) => label.id === destinationId
+      )[0].id;
+
+      const destinationTodosList = todos.filter((todo) =>
+        todo.labels.some((label) => label.id === labelId)
+      );
+
+      const destinationIndexInTodosArray = todos.findIndex(
+        (todo) => todo.id === destinationTodosList[destinationIndex].id
+      );
+
+      setTodos(
+        reorder(
+          todos,
+          draggingTodoIndexInTodosArray,
+          destinationIndexInTodosArray
+        )
+      );
+      return;
+    }
+
     if (
       sourceDroppableType !== 'sections' &&
       destinationDroppableType !== 'sections'
