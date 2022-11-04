@@ -163,15 +163,15 @@ export const Sidebar = () => {
             className='w-full flex flex-col py-2 pl-4'
           >
             {projects.slice(1).map((project) => (
-              // <Fragment key={project.id}>
               <SidebarProject
                 key={project.id}
                 project={project}
                 projects={projects}
                 isSidebarProjectsOpen={isSidebarProjectsOpen}
-                onClick={() => navigate(`/projects/${project.id}`)}
+                // onClick={() =>
+                //   navigate(`/projects/${project.id}`, { replace: true })
+                // }
               />
-              // </Fragment>
             ))}
           </motion.div>
         </div>

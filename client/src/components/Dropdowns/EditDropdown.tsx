@@ -30,7 +30,6 @@ export const EditDropdown = ({
   close: () => void;
   sizes: IDimensions;
 }) => {
-  console.log(sizes.left + sizes.width / 2);
   return (
     <Backdrop close={close} className='z-[100]'>
       <motion.div

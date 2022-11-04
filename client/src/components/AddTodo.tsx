@@ -182,7 +182,6 @@ export const AddTodo = ({
 
     if (canScroll) {
       containerRef.current.scrollIntoView({ behavior: 'smooth' });
-      console.log('scroll');
     }
   }, [renderedSelect]);
 

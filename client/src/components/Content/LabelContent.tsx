@@ -11,8 +11,7 @@ import { TodosList } from '../Lists/TodosList';
 import { ContentContainer } from './ContentContainer';
 
 export const LabelContent = () => {
-  const { labels, editTodo, completeTodo, addTodo, setTodos, todos } =
-    useTodosStore();
+  const { labels, editTodo, completeTodo, addTodo, todos } = useTodosStore();
   const { draggingOverElementId, placeholderProps } = useUIStore();
 
   const params = useParams();

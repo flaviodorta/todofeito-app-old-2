@@ -1,3 +1,4 @@
+import { isEmpty } from 'lodash';
 import { Draggable, Droppable } from 'react-beautiful-dnd';
 import { ISection, ITodo } from '../../helpers/types';
 import { IPlaceholderProps } from '../../hooks/useDndPlaceholder';
@@ -39,7 +40,7 @@ export const SectionsList = ({
   deleteSection,
 }: ISectionsListProps) => {
   return (
-    <div className='mb-4 pl-11 pr-4 md:px-0'>
+    <div className='mb-4 pl-11 pr-4 md:px-0 bg-white'>
       <Droppable droppableId={`${droppabledId}`} type='SECTIONS'>
         {(droppableProvided, droppableSnapshot) => (
           <div
@@ -85,6 +86,17 @@ export const SectionsList = ({
               </Draggable>
             ))}
             {droppableProvided.placeholder}
+            {!isEmpty(placeholderProps) && droppableSnapshot.isDraggingOver && (
+              <div
+                className='absolute bg-gray-300/90 rounded-md blur-sm transition-colors ease-out duration-1000'
+                style={{
+                  top: placeholderProps.y,
+                  left: placeholderProps.x,
+                  height: placeholderProps.height,
+                  width: placeholderProps.width,
+                }}
+              />
+            )}
           </div>
         )}
       </Droppable>

@@ -30,7 +30,7 @@ interface ISearchInput {
   // recentylViewed: (IProject | ISection | ILabel | ITodo)[];
 }
 
-export const SearchBar = ({ onClick }: { onClick?: () => void }) => {
+export const SearchBar = () => {
   const { projects, sections, labels, todos } = useTodosStore();
   const { searchedInputs, setSearchedInputs } = useUIStore();
 
@@ -61,6 +61,8 @@ export const SearchBar = ({ onClick }: { onClick?: () => void }) => {
     );
   }
   const onChangeSearchBarValue = (e: React.ChangeEvent<HTMLInputElement>) => {
+    openSearchBar();
+
     const value = e.target.value;
 
     setInputs((state) => ({
@@ -116,6 +118,8 @@ export const SearchBar = ({ onClick }: { onClick?: () => void }) => {
   const searchBarRef = useRef<HTMLInputElement>(null!);
 
   const searchOnPressEnter = onKeyUpEnter(() => {
+    if (!inputs.value) return;
+
     setInputs(defaultInputValues);
 
     setSearchedInputs({
@@ -123,6 +127,8 @@ export const SearchBar = ({ onClick }: { onClick?: () => void }) => {
       recentSearches: [inputs.value, ...searchedInputs.recentSearches],
       recentlyViewedIds: [...searchedInputs.recentlyViewedIds],
     });
+
+    closeSearchBar();
 
     navigate(`/search/${inputs.value}`);
   }, searchBarRef);
@@ -138,6 +144,8 @@ export const SearchBar = ({ onClick }: { onClick?: () => void }) => {
     });
 
     navigate(path);
+
+    closeSearchBar();
   };
 
   const getRecentlyViewedIcon = (
@@ -165,25 +173,36 @@ export const SearchBar = ({ onClick }: { onClick?: () => void }) => {
   const clearRecentSearches = () =>
     setSearchedInputs({ ...searchedInputs, recentSearches: [] });
 
+  const deleteRecentSearch = (index: number) => {
+    const recentSearchesCopy = [...searchedInputs.recentSearches];
+    recentSearchesCopy.splice(index, 1);
+    setSearchedInputs({
+      ...searchedInputs,
+      recentSearches: recentSearchesCopy,
+    });
+  };
+
   const dropdownRef = useRef<HTMLUListElement>(null!);
 
   useOnClickOutside(dropdownRef, closeSearchBar);
 
+  const isSearchBarFocused = document.activeElement === searchBarRef.current;
+
   return (
     <div className='relative'>
       <div
-        onClick={onClick}
+        onClick={openSearchBar}
         onFocus={openSearchBar}
         className='relative group flex items-center'
       >
         <SearchIcon
           className={`navbar-search-icon ${
-            isSearchBarOpen ? 'fill-gray-600' : ''
+            isSearchBarOpen || isSearchBarFocused ? 'fill-gray-600' : ''
           }`}
         />
         <button
           className={`navbar-open-search-icon ${
-            isSearchBarOpen ? 'opacity-100' : ''
+            isSearchBarOpen || isSearchBarFocused ? 'opacity-100' : ''
           }`}
         >
           /
@@ -199,9 +218,11 @@ export const SearchBar = ({ onClick }: { onClick?: () => void }) => {
           onChange={onChangeSearchBarValue}
           onBlur={onBlurSearchBarValue}
           onKeyUp={searchOnPressEnter}
-          className={`navbar-search-bar ${
-            isSearchBarOpen ? 'bg-white/100' : ''
-          }`}
+          className={`${
+            isSearchBarOpen || isSearchBarFocused
+              ? 'bg-white/100 placeholder:text-gray-600 focus:text-gray-900'
+              : 'bg-white/20 placeholder:text-white group-hover:bg-white/100 group-hover:placeholder:text-gray-600'
+          } placeholder:text-sm text-sm font-light h-6 rounded-sm outline-none pl-8 duration-150`}
         />
       </div>
 
@@ -213,7 +234,7 @@ export const SearchBar = ({ onClick }: { onClick?: () => void }) => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
-            className={`dropdown-searchbar-container ${
+            className={`absolute w-full rounded-sm top-7 shadow-2xl bg-white border-gray-200 ${
               inputs.value ? 'border-[1px]' : ''
             }`}
           >
@@ -332,12 +353,17 @@ export const SearchBar = ({ onClick }: { onClick?: () => void }) => {
                     .map((search, i) => (
                       <li
                         key={`${i}_${search}`}
+                        onClick={() => deleteRecentSearch(i)}
                         className='py-2 px-4 flex items-center gap-4 hover:bg-black/5 cursor-pointer w-full'
                       >
                         <span className='flex-center items-center h-full w-fit'>
                           <ClockRegularIcon className='fill-[#202020] w-4 h-4' />
                         </span>
                         <span>{search}</span>
+                        <span className='group ml-auto relative w-5 h-5 hover:bg-gray-200 rounded-sm flex-center'>
+                          <span className='absolute w-2.5 h-[1px] bg-gray-400 group-hover:bg-gray-500 rotate-45 -translate-x-1/2 left-1/2 top-1/2' />
+                          <span className='absolute w-2.5 h-[1px] bg-gray-400 group-hover:bg-gray-500 -rotate-45 -translate-x-1/2 left-1/2 top-1/2' />
+                        </span>
                       </li>
                     ))}
                 </div>

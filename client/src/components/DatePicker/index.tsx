@@ -184,8 +184,6 @@ export const DatePicker = ({
       ? sizes.top - containerSizes.height
       : sizes.top + sizes.height;
 
-  console.log(resizeY);
-
   return (
     <Backdrop close={closeSelect} className='z-[2000]'>
       <div

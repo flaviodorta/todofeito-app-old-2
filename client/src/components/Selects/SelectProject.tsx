@@ -68,8 +68,6 @@ export const SelectProject = ({
   const resize =
     resizeRight > 0 ? resizeRight + 10 : resizeLeft < 0 ? -resizeLeft + 10 : 0;
 
-  console.log(resize);
-
   return (
     <Backdrop close={closeSelect} className='z-[2000]'>
       <div

@@ -46,8 +46,11 @@
 - fix project link page
 - search todo, add recent view, search page
 - fix edit todo
+- fix sidebar project link
 
 # to do
+
+- fix todos render in projects page
 
 - user settings modal
 - add i18n
@@ -65,6 +68,7 @@
 - add sidebar resizable (react-resizable)
 - todo modal
 - subtasks
+- fix project page
 - lazy render in upcoming pages
 - create resizer observer hook with multiples refs
 - create useHover that take a screen tab

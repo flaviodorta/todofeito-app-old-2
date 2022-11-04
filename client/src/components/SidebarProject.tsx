@@ -11,6 +11,7 @@ import { PenSolidIcon } from './Icons/Icons/PenSolidIcon';
 import { useDimensions } from '../hooks/useDimensions';
 import { useNavigate } from 'react-router-dom';
 import fi from 'date-fns/esm/locale/fi/index.js';
+import { Link } from 'react-router-dom';
 
 export const SidebarProject = ({
   project,
@@ -21,7 +22,7 @@ export const SidebarProject = ({
   project: IProject;
   projects: IProject[];
   isSidebarProjectsOpen: boolean;
-  onClick: () => void;
+  onClick?: () => void;
 }) => {
   const navigate = useNavigate();
   const { deleteProject } = useTodosStore();
@@ -61,11 +62,12 @@ export const SidebarProject = ({
           : -1
         : findIndex;
     const projectId = projects[index].id;
-    console.log(projectId);
     deleteProject(project);
     if (index === -1) navigate('/inbox');
     navigate(`/inbox/${projectId}`);
   };
+
+  const [open, toggle] = useToggle(false);
 
   return (
     <>
@@ -78,76 +80,84 @@ export const SidebarProject = ({
         )}
       </AnimatePresence>
 
-      <motion.div
-        key={project.id}
-        ref={ref}
-        onAnimationComplete={calcSizes}
+      <div
+        onMouseEnter={toggle}
+        onMouseLeave={toggle}
         className={`${
           isSidebarProjectsOpen ? 'hover:bg-gray-200' : ''
-        } relative group h-fit rounded-md p-1.5 w-full`}
+        } group relative cursor-pointer`}
       >
-        <motion.div
-          variants={sidebarProjectWrapper}
-          ref={sidebarProjectRef}
-          onClick={(e) =>
-            e.target === sidebarProjectRef.current ? onClick() : undefined
-          }
-          className='flex cursor-pointer items-center gap-4'
-        >
-          <CircleSolidIcon
-            className={`w-2.5 h-2.5 rounded-full ${project.color.class}`}
-          />
+        <div className='absolute top-1/2 -translate-y-1/2 right-1 z-[2] ml-auto'>
+          <span
+            ref={optionsIconRef}
+            className='h-full w-5'
+            onMouseEnter={toggleIsOptionsDropdownHover}
+            onMouseLeave={toggleIsOptionsDropdownHover}
+          >
+            <MoreThreeDotsIcon
+              onClick={() => {
+                setIsOptionsDropdownOpen(project.id);
+                calcSizes();
+              }}
+              className={`${
+                isOptionsDropdownOpen === project.id
+                  ? 'fill-gray-600 opacity-100'
+                  : 'opacity-0 group-hover:opacity-100 hover:fill-gray-600'
+              } relative duration-100 transition-all fill-gray-400 ml-auto z-[2]`}
+            />
+          </span>
 
-          <span className='text-sm'>{project.title}</span>
-
-          <div className='relative ml-auto'>
-            <span
-              ref={optionsIconRef}
-              className='h-full w-5 group hover:bg-red-600/30'
-              onMouseEnter={toggleIsOptionsDropdownHover}
-              onMouseLeave={toggleIsOptionsDropdownHover}
+          {isOptionsDropdownOpen === project.id && (
+            <EditDropdown
+              sizes={optionsIconSizes}
+              close={() => setIsOptionsDropdownOpen(null)}
             >
-              <MoreThreeDotsIcon
+              <span
                 onClick={() => {
-                  setIsOptionsDropdownOpen(project.id);
-                  calcSizes();
+                  setEditingProject(project);
+                  setIsOptionsDropdownOpen(null);
+                  toggleEditProjectModalOpen();
                 }}
-                className={`${
-                  isOptionsDropdownOpen === project.id
-                    ? 'fill-gray-600 opacity-100'
-                    : 'opacity-0 group-hover:opacity-100 hover:fill-gray-600'
-                } relative duration-100 transition-all fill-gray-400 ml-auto z-[2]`}
-              />
-            </span>
-
-            {isOptionsDropdownOpen === project.id && (
-              <EditDropdown
-                sizes={optionsIconSizes}
-                close={() => setIsOptionsDropdownOpen(null)}
+                className='w-full flex items-center gap-2 px-2 py-1 hover:bg-gray-300/30'
               >
-                <span
-                  onClick={() => {
-                    setEditingProject(project);
-                    setIsOptionsDropdownOpen(null);
-                    toggleEditProjectModalOpen();
-                  }}
-                  className='w-full flex items-center gap-2 px-2 py-1 hover:bg-gray-300/30'
-                >
-                  <PenSolidIcon className='fill-gray-400/70' />
-                  <span>Edit project</span>
-                </span>
-                <span
-                  onClick={() => onDeleteProject()}
-                  className='w-full flex items-center gap-2 px-2 py-1 hover:bg-gray-300/30'
-                >
-                  <TrashSolidIcon className='fill-gray-400/70' />
-                  <span>Delete section</span>
-                </span>
-              </EditDropdown>
-            )}
-          </div>
-        </motion.div>
-      </motion.div>
+                <PenSolidIcon className='fill-gray-400/70' />
+                <span>Edit project</span>
+              </span>
+              <span
+                onClick={() => onDeleteProject()}
+                className='w-full flex items-center gap-2 px-2 py-1 hover:bg-gray-300/30'
+              >
+                <TrashSolidIcon className='fill-gray-400/70' />
+                <span>Delete section</span>
+              </span>
+            </EditDropdown>
+          )}
+        </div>
+
+        <Link to={`/projects/${project.id}`}>
+          <motion.div
+            key={project.id}
+            ref={ref}
+            onAnimationComplete={calcSizes}
+            className='relative group h-fit rounded-md p-1.5 w-full'
+          >
+            <motion.div
+              variants={sidebarProjectWrapper}
+              ref={sidebarProjectRef}
+              onClick={(e) =>
+                e.target === sidebarProjectRef.current ? undefined : undefined
+              }
+              className='flex items-center gap-4'
+            >
+              <CircleSolidIcon
+                className={`w-2.5 h-2.5 rounded-full ${project.color.class}`}
+              />
+
+              <span className='text-sm'>{project.title}</span>
+            </motion.div>
+          </motion.div>
+        </Link>
+      </div>
     </>
   );
 };

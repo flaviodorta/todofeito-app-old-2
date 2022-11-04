@@ -3,18 +3,20 @@ import { motion } from 'framer-motion';
 import { isDesktop } from 'react-device-detect';
 import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 import { reorder } from '../../helpers/functions';
-import { ITodo } from '../../helpers/types';
+import { IProject, ITodo } from '../../helpers/types';
 import { useDndPlaceholder } from '../../hooks/useDndPlaceholder';
 
 interface IContentContainerProps {
   heading: React.ReactNode;
   children?: React.ReactNode;
+  project?: IProject;
   onDragEndPage?: (result: DropResult) => void;
 }
 
 export const ContentContainer = ({
   children,
   heading,
+  project,
   onDragEndPage,
 }: IContentContainerProps) => {
   const { isSidebarOpen, setRef, draggingElementId, setPlaceholderProps } =
@@ -24,8 +26,6 @@ export const ContentContainer = ({
   const { onDragStart, onDragUpdate } = useDndPlaceholder({
     setPlaceholderProps,
   });
-
-  // console.log(todos);
 
   const onDragEnd = (result: DropResult) => {
     const { destination, source } = result;
@@ -41,20 +41,27 @@ export const ContentContainer = ({
     const sourceDroppableId = source.droppableId;
     const destinationDroppableId = destination.droppableId;
 
+    const sourceDroppableType = source.droppableId.split('~')[0];
+    const destinationDroppableType = destination.droppableId.split('~')[0];
+
+    // const sourceId = source.droppableId.split('~')[1];
+    const destinationId = destination.droppableId.split('~')[1];
+
+    console.log('sourceDroppableId ', sourceDroppableId);
+    console.log('destinationDroppableId ', destinationDroppableId);
+
     const sourceIndex = source.index;
     const destinationIndex = destination.index;
 
-    // const sourceSectionIndex = sections.findIndex(
-    //   (s) => s.id === sourceDroppableId
-    // );
-
     if (
-      sourceDroppableId !== 'sections' &&
-      destinationDroppableId !== 'sections'
+      sourceDroppableType !== 'sections' &&
+      destinationDroppableType !== 'sections'
     ) {
+      let todosCopy: ITodo[];
       const destinationSectionIndex = sections.findIndex(
-        (s) => s.id === destinationDroppableId
+        (s) => s.id === destinationId
       );
+
       const draggingTodo: ITodo = todos.filter(
         (todo) => todo.id === draggingElementId
       )[0];
@@ -64,37 +71,64 @@ export const ContentContainer = ({
         section: sections[destinationSectionIndex],
       };
 
-      console.log(editedTodo);
+      const draggingTodoIndexInTodosArray = todos.findIndex(
+        (t) => t.id === draggingTodo.id
+      );
 
       const destinationTodosList = todos.filter((todo) =>
         editedTodo.section !== undefined
-          ? todo.section?.id === destinationDroppableId
-          : !todo.section && todo.project.id === 'inbox'
+          ? todo.section?.id === destinationId
+          : !todo.section && todo.project.id === destinationId
       );
 
-      const destinationIndexInTodosArray = todos.findIndex(
-        (t) => t.id === destinationTodosList[destinationIndex].id
-      );
-      const sourceIndexInTodosArray = todos.findIndex(
-        (t) => t.id === draggingElementId
-      );
+      if (destinationTodosList.length === 0) {
+        todosCopy = [...todos];
+        todosCopy.splice(draggingTodoIndexInTodosArray, 1, editedTodo);
+        setTodos(todosCopy);
+        return;
+      }
 
-      const todosCopy = [...todos];
+      if (destinationIndex === destinationTodosList.length) {
+        todosCopy = todos.filter((todo) => todo.id !== editedTodo.id);
+        const lastTodoIndexOfDestinationArrayInTodosArray = todos.findIndex(
+          (el) => el.id === destinationTodosList[destinationIndex - 1].id
+        );
+        todosCopy.splice(
+          lastTodoIndexOfDestinationArrayInTodosArray + 1,
+          0,
+          editedTodo
+        );
+        setTodos(todosCopy);
+        return;
+      }
 
-      console.log(destinationTodosList);
-      console.log('todos ', todosCopy);
-      const x = todosCopy.splice(sourceIndexInTodosArray, 1);
-      console.log('x ', x);
-      console.log('todos remove source ', todosCopy);
-      todosCopy.splice(destinationIndexInTodosArray, 0, editedTodo);
-      console.log('add in destination ', todosCopy);
+      if (sourceDroppableId === destinationDroppableId) {
+        todosCopy = [...todos];
+        setTodos(
+          reorder(
+            todosCopy,
+            draggingTodoIndexInTodosArray,
+            draggingTodoIndexInTodosArray + destinationIndex - sourceIndex
+          )
+        );
+        return;
+      }
 
-      setTodos(todosCopy);
+      if (sourceDroppableId !== destinationDroppableId) {
+        todosCopy = [...todos];
+        todosCopy.splice(draggingTodoIndexInTodosArray, 1);
+        const i = todosCopy.findIndex(
+          (t) => t.id === destinationTodosList[destinationIndex].id
+        );
+        todosCopy.splice(i, 0, editedTodo);
+        setTodos(todosCopy);
+        return;
+      }
     }
 
     if (
-      sourceDroppableId === 'sections' &&
-      destinationDroppableId === 'sections'
+      sourceDroppableType === 'sections' &&
+      destinationDroppableType === 'sections'
     ) {
       setSections(reorder(sections, sourceIndex, destinationIndex));
       return;

@@ -223,7 +223,6 @@ export const TodoItem = ({
           <span
             onClick={() => {
               setTodoInputOpenById(todo.id);
-              console.log('click ', todo.id);
             }}
             className='group mini-button-option cursor-pointer'
           >

@@ -121,11 +121,11 @@ export const TodosSection = ({
   return (
     <div
       ref={containerRef}
-      className={`${
-        droppableSnapshot.isDraggingOver ? 'bg-gray-400/10 rounded-sm' : ''
-      } 
+      className={`
       ${draggableSnapshot.isDragging ? 'shadow-3xl' : ''}
       ${draggableSnapshot.isDropAnimating ? 'shadow-none' : ''}
+      bg-white
+      rounded-sm
       transition-shadow
       duration-150
       flex flex-col h-fit w-full`}
@@ -206,7 +206,7 @@ export const TodosSection = ({
           <div className='w-full flex flex-col gap-2'>
             {/* Todo list */}
             <TodosList
-              droppableId={section.id}
+              droppableId={`todos~${section.id}`}
               todos={todos}
               placeholderProps={placeholderProps}
               draggingOverElementId={draggingOverElementId}

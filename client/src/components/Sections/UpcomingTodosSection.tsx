@@ -26,7 +26,7 @@ interface IUpcomingTodosSection {
   setObservedHeight: (height: number, index: number) => void;
 }
 
-export const UpcomingTodosSectionMemoized = (props: IUpcomingTodosSection) => {
+export const UpcomingTodosSection = (props: IUpcomingTodosSection) => {
   const {
     section,
     todos,
@@ -127,7 +127,7 @@ export const UpcomingTodosSectionMemoized = (props: IUpcomingTodosSection) => {
         <div className='w-full h-fit'>
           <TodosList
             placeholderProps={placeholderProps}
-            droppableId={section.id}
+            droppableId={`todos~${section.id}`}
             todos={thisDateTodos}
             draggingOverElementId={draggingOverElementId}
             editTodo={editTodo}
@@ -163,12 +163,12 @@ export const UpcomingTodosSectionMemoized = (props: IUpcomingTodosSection) => {
   );
 };
 
-const sectionPropsAreEqual = (
-  prevProps: Readonly<IUpcomingTodosSection>,
-  nextProps: Readonly<IUpcomingTodosSection>
-) =>
-  isEqual(prevProps.section, nextProps.section) &&
-  isEqual(prevProps.todos, nextProps.todos) &&
-  isEqual(prevProps.placeholderProps, nextProps.placeholderProps);
+// const sectionPropsAreEqual = (
+//   prevProps: Readonly<IUpcomingTodosSection>,
+//   nextProps: Readonly<IUpcomingTodosSection>
+// ) =>
+//   isEqual(prevProps.section, nextProps.section) &&
+//   isEqual(prevProps.todos, nextProps.todos) &&
+//   isEqual(prevProps.placeholderProps, nextProps.placeholderProps);
 
-export const UpcomingTodosSection = memo(UpcomingTodosSectionMemoized);
+// export const UpcomingTodosSection = memo(UpcomingTodosSectionMemoized);

@@ -1,6 +1,6 @@
 import { omit } from 'lodash';
 import { nanoid } from 'nanoid';
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { IProject, ITodo } from '../../helpers/types';
 import { useUpdateState } from '../../hooks/useUpdateState';
@@ -27,7 +27,7 @@ export const ProjectContent = () => {
   } = useTodosStore();
   const { draggingOverElementId, placeholderProps } = useUIStore();
 
-  const params = useParams();
+  const { projectId } = useParams();
 
   const [todoInputOpenById, setTodoInputOpenById] = useState<string | null>(
     null
@@ -38,22 +38,27 @@ export const ProjectContent = () => {
   >(null);
 
   const project = useMemo(
-    () => projects.filter((project) => project.id === params.projectId)[0],
-    [projects]
+    () => projects.filter((project) => project.id === projectId)[0],
+    [projects, projectId]
   );
 
   const projectTodos = useMemo(
     () =>
       todos.filter(
-        (todo) => !todo.isCompleted && project.id === params.projectId
+        (todo) => !todo.isCompleted && todo.project.id === projectId
       ),
-    [todos]
+    [todos, projectId]
   );
 
   const projectSections = useMemo(
-    () => sections.filter((section) => section.project.id),
-    [sections]
+    () => sections.filter((section) => section.project.id === projectId),
+    [sections, projectId]
   );
+
+  // console.log('projectId ', projectId);
+  // console.log('project ', project);
+  // console.log('projectTodos ', projectTodos);
+  // console.log('projectSections ', projectSections);
 
   const addSectionId = useRef(nanoid());
 
@@ -71,17 +76,17 @@ export const ProjectContent = () => {
   );
 
   return (
-    <ContentContainer heading={<Heading />}>
+    <ContentContainer heading={<Heading />} project={project}>
       <div className='w-full px-9 md:px-0'>
         <TodosList
-          droppableId={project.id}
           todos={projectTodos}
+          droppableId={`project~${project.id}`}
           placeholderProps={placeholderProps}
           draggingOverElementId={draggingOverElementId}
+          todoInputOpenById={todoInputOpenById}
           completeTodo={completeTodo}
           editTodo={editTodo}
           setTodoInputOpenById={setTodoInputOpenById}
-          todoInputOpenById={todoInputOpenById}
         />
 
         <div className='mb-6'>
@@ -110,14 +115,14 @@ export const ProjectContent = () => {
       <div className='flex flex-col gap-1'>
         <SectionsList
           sections={projectSections}
-          addSection={addSection}
-          editSection={editSection}
           placeholderProps={placeholderProps}
           todos={projectTodos}
-          droppabledId={project.id}
+          droppabledId={`sections~${project.id}`}
           draggingOverElementId={draggingOverElementId}
           todoInputOpenById={todoInputOpenById}
           sectionInputOpenById={sectionInputOpenById}
+          addSection={addSection}
+          editSection={editSection}
           completeTodo={completeTodo}
           addTodo={addTodo}
           editTodo={editTodo}
@@ -130,14 +135,15 @@ export const ProjectContent = () => {
       {sections.length === 0 && (
         <div>
           {sectionInputOpenById === addSectionId.current ? (
-            <div></div>
+            <div>
+              <AddSection
+                addSection={addSection}
+                previousSectionIndex={-1}
+                project={project!}
+                setSectionInputOpenById={setSectionInputOpenById}
+              />
+            </div>
           ) : (
-            // <AddSection
-            //   addSection={(section) => {}}
-            //   previousSectionIndex={-1}
-            //   project={project!}
-            //   setSectionInputOpenById={setSectionInputOpenById}
-            // />
             <div
               onClick={openAddSection}
               className='group opacity-0 hover:opacity-100 relative w-full flex items-center justify-center gap-2.5 h-fit cursor-pointer duration-200 ease-in transition-opacity'
