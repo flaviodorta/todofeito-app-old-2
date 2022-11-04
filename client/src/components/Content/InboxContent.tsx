@@ -1,5 +1,5 @@
 import { nanoid } from 'nanoid';
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { DropResult } from 'react-beautiful-dnd';
 import { reorder } from '../../helpers/functions';
 import { IProject, ITodo } from '../../helpers/types';
@@ -68,8 +68,6 @@ export const InboxContent = () => {
     },
   };
 
-  console.log(sections);
-
   const Heading = () => (
     <div className='flex items-center gap-2'>
       <h2 className='font-bold text-xl'>Inbox</h2>
@@ -92,10 +90,6 @@ export const InboxContent = () => {
 
     const sourceIndex = source.index;
     const destinationIndex = destination.index;
-
-    // const sourceSectionIndex = sections.findIndex(
-    //   (s) => s.id === sourceDroppableId
-    // );
 
     if (
       sourceDroppableId !== 'sections' &&

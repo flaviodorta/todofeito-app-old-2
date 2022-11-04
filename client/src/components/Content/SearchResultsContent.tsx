@@ -33,11 +33,11 @@ export const SearchResultsContent = () => {
         <TodoItem
           key={todo.id}
           todo={todo}
+          todoInputOpenById={todoInputOpenById}
+          isDraggableDisabled={true}
           setTodoInputOpenById={setTodoInputOpenById}
           completeTodo={completeTodo}
           editTodo={editTodo}
-          todoInputOpenById={todoInputOpenById}
-          isDraggableDisabled={true}
         />
       ))}
     </ContentContainer>

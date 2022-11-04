@@ -119,7 +119,7 @@ export const Navbar = () => {
           </button>
 
           {/* search bar */}
-          <SearchBar onClick={closeSidebar} />
+          <SearchBar />
         </div>
 
         {/* add todo icon */}

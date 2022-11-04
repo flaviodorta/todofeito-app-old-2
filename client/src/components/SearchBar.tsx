@@ -16,6 +16,7 @@ import { useTodosStore, useUIStore } from '../zustand';
 import { ILabel, IProject, ISection, ITodo } from '../helpers/types';
 import { useNavigate } from 'react-router-dom';
 import { getDatasByIds, onKeyUpEnter } from '../helpers/functions';
+import { useOnClickOutside } from '../hooks/useOnClickOutside';
 
 interface ISearchInput {
   value: string;
@@ -29,7 +30,7 @@ interface ISearchInput {
   // recentylViewed: (IProject | ISection | ILabel | ITodo)[];
 }
 
-export const SearchBar = ({ onClick }: { onClick: () => void }) => {
+export const SearchBar = ({ onClick }: { onClick?: () => void }) => {
   const { projects, sections, labels, todos } = useTodosStore();
   const { searchedInputs, setSearchedInputs } = useUIStore();
 
@@ -45,8 +46,11 @@ export const SearchBar = ({ onClick }: { onClick: () => void }) => {
     },
   };
 
-  const [isSearchBarOpen, toggleSearchBar] = useToggle(false);
+  const [isSearchBarOpen, setIsSearchBarOpen] = useState(false);
   const [inputs, setInputs] = useState<ISearchInput>(defaultInputValues);
+
+  const openSearchBar = () => setIsSearchBarOpen(true);
+  const closeSearchBar = () => setIsSearchBarOpen(false);
 
   function filterDataByText<T extends ITodo | IProject | ILabel | ISection>(
     datas: T[],
@@ -158,12 +162,18 @@ export const SearchBar = ({ onClick }: { onClick: () => void }) => {
       return <SquareCheckRegularIcon className='fill-[#202020] w-4 h-4' />;
   };
 
+  const clearRecentSearches = () =>
+    setSearchedInputs({ ...searchedInputs, recentSearches: [] });
+
+  const dropdownRef = useRef<HTMLUListElement>(null!);
+
+  useOnClickOutside(dropdownRef, closeSearchBar);
+
   return (
     <div className='relative'>
       <div
         onClick={onClick}
-        onFocus={toggleSearchBar}
-        onBlur={toggleSearchBar}
+        onFocus={openSearchBar}
         className='relative group flex items-center'
       >
         <SearchIcon
@@ -198,6 +208,7 @@ export const SearchBar = ({ onClick }: { onClick: () => void }) => {
       <AnimatePresence>
         {isSearchBarOpen && (
           <motion.ul
+            ref={dropdownRef}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -306,8 +317,14 @@ export const SearchBar = ({ onClick }: { onClick: () => void }) => {
             ) : (
               <div>
                 <div>
-                  <span className='dropdown-searchbar-title'>
+                  <span className='dropdown-searchbar-title flex justify-between'>
                     Recente searches
+                    <span
+                      onClick={clearRecentSearches}
+                      className='text-sm text-gray-500 font-light cursor-pointer'
+                    >
+                      Clear
+                    </span>
                   </span>
 
                   {searchedInputs.recentSearches

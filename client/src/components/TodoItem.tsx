@@ -29,7 +29,7 @@ type ITodoItem = {
   editTodo: (todo: ITodo) => void;
 };
 
-export const TodoItemMemoized = ({
+export const TodoItem = ({
   todo,
   todoInputOpenById,
   draggableProvided,
@@ -97,11 +97,11 @@ export const TodoItemMemoized = ({
         ? setDraggingElementId(todo.id)
         : setDraggingElementId(null);
     }
-  }, [draggableSnapshot?.isDragging, draggableSnapshot]);
+  }, [draggableSnapshot?.isDragging]);
 
   useEffect(() => {
     calcDueDate();
-  }, [draggableSnapshot?.isDragging, calcDueDate]);
+  }, [draggableSnapshot?.isDragging]);
 
   useEffect(() => {
     if (setDraggingOverElementId && draggableSnapshot) {
@@ -109,7 +109,7 @@ export const TodoItemMemoized = ({
         ? setDraggingOverElementId(draggableSnapshot.draggingOver)
         : setDraggingOverElementId(null);
     }
-  }, [draggableSnapshot?.draggingOver, draggableSnapshot]);
+  }, [draggableSnapshot?.draggingOver]);
 
   if (todoInputOpenById === todo.id) {
     return (
@@ -235,14 +235,14 @@ export const TodoItemMemoized = ({
   );
 };
 
-const todosItemPropsAreEqual = (
-  prevProps: Readonly<ITodoItem>,
-  nextProps: Readonly<ITodoItem>
-) =>
-  isEqual(prevProps.todo, nextProps.todo) &&
-  isEqual(prevProps.draggableProvided, nextProps.draggableProvided) &&
-  isEqual(prevProps.draggableSnapshot, prevProps.draggableSnapshot) &&
-  prevProps.todoInputOpenById !== prevProps.todo.id &&
-  nextProps.todoInputOpenById !== nextProps.todo.id;
+// const todosItemPropsAreEqual = (
+//   prevProps: Readonly<ITodoItem>,
+//   nextProps: Readonly<ITodoItem>
+// ) =>
+//   isEqual(prevProps.todo, nextProps.todo) &&
+//   isEqual(prevProps.draggableProvided, nextProps.draggableProvided) &&
+//   isEqual(prevProps.draggableSnapshot, prevProps.draggableSnapshot) &&
+//   prevProps.todoInputOpenById !== prevProps.todo.id &&
+//   nextProps.todoInputOpenById !== nextProps.todo.id;
 
-export const TodoItem = memo(TodoItemMemoized, todosItemPropsAreEqual);
+// export const TodoItem = memo(TodoItemMemoized, todosItemPropsAreEqual);

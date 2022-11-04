@@ -45,10 +45,10 @@
 - add todo list in label
 - fix project link page
 - search todo, add recent view, search page
+- fix edit todo
 
 # to do
 
-- fix edit todo
 - user settings modal
 - add i18n
 - add flat design to no todos

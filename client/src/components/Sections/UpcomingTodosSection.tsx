@@ -100,8 +100,8 @@ export const UpcomingTodosSectionMemoized = (props: IUpcomingTodosSection) => {
 
   return (
     <div ref={ref} key={section.id} className='flex flex-col h-fit w-full'>
-      <div className='sticky top-[148px] z-[2]'>
-        <div className='relative flex justify-between items-center w-full text-sm bg-white font-bold h-fit py-1 border-b-[1px] border-gray-300'>
+      <div className='sticky top-[147px] z-[2]'>
+        <div className='relative flex justify-between items-center w-full text-sm bg-white font-bold h-fit py-1.5 border-b-[1px] border-gray-300'>
           <span
             className={`${
               notCompleteTodos.length > 0 ? 'text-black' : 'text-gray-500'
