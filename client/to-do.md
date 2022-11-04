@@ -44,10 +44,11 @@
 - fix lists in all pages
 - add todo list in label
 - fix project link page
+- search todo, add recent view, search page
 
 # to do
 
-- search todo
+- fix edit todo
 - user settings modal
 - add i18n
 - add flat design to no todos
@@ -63,7 +64,7 @@
 
 - add sidebar resizable (react-resizable)
 - todo modal
-- lazy render in upcoming pages
 - subtasks
+- lazy render in upcoming pages
 - create resizer observer hook with multiples refs
 - create useHover that take a screen tab

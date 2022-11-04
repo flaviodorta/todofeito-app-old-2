@@ -15,13 +15,12 @@ import { isToday } from 'date-fns';
 import { useDimensions } from '../hooks/useDimensions';
 import { isEqual } from 'lodash';
 import { EditTodo } from './EditTodo';
-import { useUIStore } from '../zustand';
 
 type ITodoItem = {
   todo: ITodo;
+  todoInputOpenById: string | null;
   draggableProvided?: DraggableProvided;
   draggableSnapshot?: DraggableStateSnapshot;
-  todoInputOpenById?: string | null;
   isDraggableDisabled?: boolean;
   setDraggingOverElementId?: (id: string | null) => void;
   setDraggingElementId?: (id: string | null) => void;
@@ -30,7 +29,7 @@ type ITodoItem = {
   editTodo: (todo: ITodo) => void;
 };
 
-export const TodoItem = ({
+export const TodoItemMemoized = ({
   todo,
   todoInputOpenById,
   draggableProvided,
@@ -98,11 +97,11 @@ export const TodoItem = ({
         ? setDraggingElementId(todo.id)
         : setDraggingElementId(null);
     }
-  }, [draggableSnapshot?.isDragging]);
+  }, [draggableSnapshot?.isDragging, draggableSnapshot]);
 
   useEffect(() => {
     calcDueDate();
-  }, [draggableSnapshot?.isDragging]);
+  }, [draggableSnapshot?.isDragging, calcDueDate]);
 
   useEffect(() => {
     if (setDraggingOverElementId && draggableSnapshot) {
@@ -110,7 +109,7 @@ export const TodoItem = ({
         ? setDraggingOverElementId(draggableSnapshot.draggingOver)
         : setDraggingOverElementId(null);
     }
-  }, [draggableSnapshot?.draggingOver]);
+  }, [draggableSnapshot?.draggingOver, draggableSnapshot]);
 
   if (todoInputOpenById === todo.id) {
     return (
@@ -121,8 +120,6 @@ export const TodoItem = ({
       />
     );
   }
-
-  console.log('todo input open id ', todoInputOpenById);
 
   return (
     <div
@@ -238,14 +235,14 @@ export const TodoItem = ({
   );
 };
 
-// const todosItemPropsAreEqual = (
-//   prevProps: Readonly<ITodoItem>,
-//   nextProps: Readonly<ITodoItem>
-// ) =>
-//   isEqual(prevProps.todo, nextProps.todo) &&
-//   isEqual(prevProps.draggableProvided, nextProps.draggableProvided) &&
-//   isEqual(prevProps.draggableSnapshot, prevProps.draggableSnapshot) &&
-//   prevProps.todoInputOpenById !== prevProps.todo.id &&
-//   nextProps.todoInputOpenById !== nextProps.todo.id;
+const todosItemPropsAreEqual = (
+  prevProps: Readonly<ITodoItem>,
+  nextProps: Readonly<ITodoItem>
+) =>
+  isEqual(prevProps.todo, nextProps.todo) &&
+  isEqual(prevProps.draggableProvided, nextProps.draggableProvided) &&
+  isEqual(prevProps.draggableSnapshot, prevProps.draggableSnapshot) &&
+  prevProps.todoInputOpenById !== prevProps.todo.id &&
+  nextProps.todoInputOpenById !== nextProps.todo.id;
 
-// export const TodoItem = memo(TodoItemMemoized, todosItemPropsAreEqual);
+export const TodoItem = memo(TodoItemMemoized, todosItemPropsAreEqual);

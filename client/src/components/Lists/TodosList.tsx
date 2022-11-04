@@ -75,6 +75,7 @@ export const TodosListMemoized = ({
                     ) : (
                       <TodoItem
                         todo={todo}
+                        todoInputOpenById={todoInputOpenById}
                         draggableProvided={draggableProvided}
                         draggableSnapshot={draggableSnapshot}
                         setDraggingOverElementId={setDraggingOverElementId}
