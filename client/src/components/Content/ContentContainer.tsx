@@ -5,6 +5,7 @@ import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 import { reorder } from '../../helpers/functions';
 import { IProject, ITodo } from '../../helpers/types';
 import { useDndPlaceholder } from '../../hooks/useDndPlaceholder';
+import { isToday } from 'date-fns';
 
 interface IContentContainerProps {
   heading: React.ReactNode;
@@ -53,8 +54,27 @@ export const ContentContainer = ({
     const sourceIndex = source.index;
     const destinationIndex = destination.index;
 
+    const draggingTodo: ITodo = todos.filter(
+      (todo) => todo.id === draggingElementId
+    )[0];
+
+    const draggingTodoIndexInTodosArray = todos.findIndex(
+      (t) => t.id === draggingTodo.id
+    );
+
     if (page === 'today') {
-      setTodos(reorder(todos, sourceIndex, destinationIndex));
+      const destinationTodosList = todos.filter((todo) => isToday(todo.date));
+      const destinationIndexInTodosArray = todos.findIndex(
+        (todo) => todo.id === destinationTodosList[destinationIndex].id
+      );
+
+      setTodos(
+        reorder(
+          todos,
+          draggingTodoIndexInTodosArray,
+          destinationIndexInTodosArray
+        )
+      );
       return;
     }
 
@@ -67,18 +87,10 @@ export const ContentContainer = ({
         (s) => s.id === destinationId
       );
 
-      const draggingTodo: ITodo = todos.filter(
-        (todo) => todo.id === draggingElementId
-      )[0];
-
       const editedTodo: ITodo = {
         ...draggingTodo,
         section: sections[destinationSectionIndex],
       };
-
-      const draggingTodoIndexInTodosArray = todos.findIndex(
-        (t) => t.id === draggingTodo.id
-      );
 
       const destinationTodosList = todos.filter((todo) =>
         editedTodo.section !== undefined
