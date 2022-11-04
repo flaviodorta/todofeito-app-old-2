@@ -26,7 +26,7 @@ interface IUpcomingTodosSection {
   setObservedHeight: (height: number, index: number) => void;
 }
 
-export const UpcomingTodosSection = (props: IUpcomingTodosSection) => {
+export const UpcomingTodosSectionMemoized = (props: IUpcomingTodosSection) => {
   const {
     section,
     todos,
@@ -44,15 +44,13 @@ export const UpcomingTodosSection = (props: IUpcomingTodosSection) => {
     null
   );
 
-  // console.log(section.id);
-
   const notCompleteTodos = todos.filter((todo) => !todo.isCompleted);
 
   const [isTodosListOpen, setIsTodosListOpen] = useState(false);
 
   const openTodosList = () => setIsTodosListOpen(true);
   const closeTodosList = () => setIsTodosListOpen(false);
-  console.log(isTodosListOpen);
+
   const thisDateTodos = useMemo(
     () =>
       todos.filter(
@@ -68,15 +66,8 @@ export const UpcomingTodosSection = (props: IUpcomingTodosSection) => {
 
   const toggleTodoList = () => {
     if (isTodosListOpen) closeAddTodo();
-    console.log(section.id);
     isTodosListOpen ? closeTodosList() : openTodosList();
-    console.log(isTodosListOpen);
   };
-
-  // const addTodo = useCallback((todo: ITodo) => {
-  //   openTodosList();
-  //   addT(todo);
-  // }, []);
 
   const ref = useRef<HTMLDivElement>(null);
 
@@ -91,12 +82,7 @@ export const UpcomingTodosSection = (props: IUpcomingTodosSection) => {
   );
 
   const lastCompletedTodosLength = useRef(todos.length);
-  console.log(
-    'lastTodosLength ',
-    lastCompletedTodosLength,
-    'todos.length ',
-    todos.length
-  );
+
   useEffect(() => {
     if (
       lastCompletedTodosLength.current === 0 &&
@@ -111,14 +97,6 @@ export const UpcomingTodosSection = (props: IUpcomingTodosSection) => {
       lastCompletedTodosLength.current = notCompleteTodos.length;
     };
   }, [todos, isTodosListOpen, openTodosList]);
-
-  // useEffect(() => {
-  //   if (!ref.current) return;
-
-  //   ref.current?.addEventListener('dragover', (e) => {
-  //     if (e.target === ref.current) console.log('cu');
-  //   });
-  // }, [draggingOverElementId]);
 
   return (
     <div ref={ref} key={section.id} className='flex flex-col h-fit w-full'>
@@ -193,4 +171,4 @@ const sectionPropsAreEqual = (
   isEqual(prevProps.todos, nextProps.todos) &&
   isEqual(prevProps.placeholderProps, nextProps.placeholderProps);
 
-// export const UpcomingTodosSection = memo(UpcomingTodosSectionMemoized);
+export const UpcomingTodosSection = memo(UpcomingTodosSectionMemoized);

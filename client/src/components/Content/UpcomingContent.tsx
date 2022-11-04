@@ -217,26 +217,13 @@ export const UpcomingContent = () => {
 
   const infinityListRef = useRef<HTMLDivElement>(null!);
 
-  // console.log(ref?.scrollHeight! - ref?.clientHeight!, ' ', ref?.scrollTop);
-
-  // const loadMore = () => {
-  //   if (!ref) return;
-
-  //   if (
-  //     Math.floor(ref.scrollHeight - ref.scrollTop) -
-  //       Math.floor(ref.scrollTop) <=
-  //     0
-  //   )
-  //     setLimit((l) => [l[0] + l[1], l[1] + 30]);
-  // };
-
   return (
     <ContentContainer
       heading={<HorizontalCalendar inputedDate={date} setDate={selectDate} />}
       onDragEndPage={onDragEnd}
     >
       <div ref={infinityListRef} className='flex flex-col gap-8 px-11 md:px-0'>
-        {dates.slice(0, 10).map((date, i) => (
+        {dates.map((date, i) => (
           <UpcomingTodosSection
             key={date.id}
             todos={todos.filter((todo) => isSameDay(todo.date, date.date))}
