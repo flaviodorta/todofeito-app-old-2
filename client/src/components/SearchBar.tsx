@@ -310,7 +310,7 @@ export const SearchBar = () => {
                     className='py-2 px-4 flex items-center gap-4 hover:bg-black/5 cursor-pointer w-full'
                   >
                     <span className='flex-center items-center h-full w-fit'>
-                      <LabelIcon className='fill-[#202020] w-4 h-4' />
+                      <LabelIcon className={`${label.color.class} w-4 h-4`} />
                     </span>
                     <span
                       dangerouslySetInnerHTML={{ __html: resultsBoldLabels[i] }}

@@ -1,9 +1,7 @@
-import { omit } from 'lodash';
 import { nanoid } from 'nanoid';
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
-import { ILabel, ITodo } from '../../helpers/types';
 import { useTodosStore, useUIStore } from '../../zustand';
 import { AddTodo } from '../AddTodo';
 import { ArrowLeftLongSolidIcon, PlusSolidIcon } from '../Icons';

@@ -79,8 +79,8 @@ export const InboxContent = () => {
       <div className='w-full px-9 md:px-0'>
         <TodosList
           // draggingElementId={draggingElementId}
-          todos={inboxTodos}
           droppableId='todos~inbox'
+          todos={inboxTodos}
           placeholderProps={placeholderProps}
           draggingOverElementId={draggingOverElementId}
           todoInputOpenById={todoInputOpenById}

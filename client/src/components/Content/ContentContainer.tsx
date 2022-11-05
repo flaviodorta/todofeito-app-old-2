@@ -194,16 +194,13 @@ export const ContentContainer = ({
             return;
           }
 
-          console.log('todos ', todosCopy);
           todosCopy.splice(sourceIndexInTodosArray, 1);
-          console.log('todos ', todosCopy);
 
           const destinationIndexInTodosArray = todosCopy.findIndex(
             (t) => t.id === destinationTodosList[destinationIndex].id
           );
 
           todosCopy.splice(destinationIndexInTodosArray, 0, editedTodo);
-          console.log('todos ', todosCopy);
           setTodos(todosCopy);
           return;
         }

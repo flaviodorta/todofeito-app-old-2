@@ -46,7 +46,7 @@ export const UpcomingTodosSection = (props: IUpcomingTodosSection) => {
 
   const notCompleteTodos = todos.filter((todo) => !todo.isCompleted);
 
-  const [isTodosListOpen, setIsTodosListOpen] = useState(false);
+  const [isTodosListOpen, setIsTodosListOpen] = useState(true);
 
   const openTodosList = () => setIsTodosListOpen(true);
   const closeTodosList = () => setIsTodosListOpen(false);
@@ -110,7 +110,7 @@ export const UpcomingTodosSection = (props: IUpcomingTodosSection) => {
             {section.title}
           </span>
 
-          <span
+          {/* <span
             onClick={toggleTodoList}
             className='group absolute -left-7 top-[1.5px] cursor-pointer w-6 h-6 rounded-sm z-[2] bg-white hover:bg-gray-200 flex items-center justify-center'
           >
@@ -119,7 +119,7 @@ export const UpcomingTodosSection = (props: IUpcomingTodosSection) => {
                 isTodosListOpen ? '' : '-rotate-90'
               } w-[20px] h-[20px] stroke-gray-500 group-hover:stroke-gray-600 duration-150 transition-all`}
             />
-          </span>
+          </span> */}
         </div>
       </div>
 

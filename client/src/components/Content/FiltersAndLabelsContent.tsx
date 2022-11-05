@@ -11,7 +11,7 @@ import { ContentContainer } from './ContentContainer';
 export const FiltersAndLabelsContent = () => {
   const { labels } = useTodosStore();
 
-  const [isLabelsLinksListOpen, toggleLabelsLinksListOpen] = useToggle(false);
+  const [isLabelsLinksListOpen, toggleLabelsLinksListOpen] = useToggle(true);
   const [isCreateLabelModalOpen, toggleIsCreateLabelModalOpen] =
     useToggle(false);
   const [isOutletShow, toggleIsOutletShow] = useToggle(true);
