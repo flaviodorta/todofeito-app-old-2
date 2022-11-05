@@ -55,11 +55,6 @@ export const ProjectContent = () => {
     [sections, projectId]
   );
 
-  // console.log('projectId ', projectId);
-  // console.log('project ', project);
-  // console.log('projectTodos ', projectTodos);
-  // console.log('projectSections ', projectSections);
-
   const addSectionId = useRef(nanoid());
 
   const openAddSection = () => setSectionInputOpenById(addSectionId.current);
@@ -76,7 +71,7 @@ export const ProjectContent = () => {
   );
 
   return (
-    <ContentContainer heading={<Heading />}>
+    <ContentContainer page='project' heading={<Heading />}>
       <div className='w-full px-9 md:px-0'>
         <TodosList
           todos={projectTodos}

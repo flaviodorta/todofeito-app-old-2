@@ -3,9 +3,9 @@ import { motion } from 'framer-motion';
 import { isDesktop } from 'react-device-detect';
 import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 import { reorder } from '../../helpers/functions';
-import { IProject, ITodo } from '../../helpers/types';
+import { ITodo } from '../../helpers/types';
 import { useDndPlaceholder } from '../../hooks/useDndPlaceholder';
-import { isToday } from 'date-fns';
+import { isSameDay, isToday } from 'date-fns';
 
 interface IContentContainerProps {
   heading: React.ReactNode;
@@ -22,7 +22,7 @@ export const ContentContainer = ({
 }: IContentContainerProps) => {
   const { isSidebarOpen, setRef, draggingElementId, setPlaceholderProps } =
     useUIStore();
-  const { setTodos, todos, setSections, sections } = useTodosStore();
+  const { setTodos, todos, dates, setSections, sections } = useTodosStore();
 
   const { onDragStart, onDragUpdate } = useDndPlaceholder({
     setPlaceholderProps,
@@ -45,20 +45,16 @@ export const ContentContainer = ({
     const sourceDroppableType = source.droppableId.split('~')[0];
     const destinationDroppableType = destination.droppableId.split('~')[0];
 
-    // const sourceId = source.droppableId.split('~')[1];
     const destinationId = destination.droppableId.split('~')[1];
 
-    console.log('sourceDroppableId ', sourceDroppableId);
-    console.log('destinationDroppableId ', destinationDroppableId);
-
     const sourceIndex = source.index;
-    const destinationIndex = destination.index;
+    let destinationIndex = destination.index;
 
     const draggingTodo: ITodo = todos.filter(
       (todo) => todo.id === draggingElementId
     )[0];
 
-    const draggingTodoIndexInTodosArray = todos.findIndex(
+    const sourceIndexInTodosArray = todos.findIndex(
       (t) => t.id === draggingTodo.id
     );
 
@@ -69,13 +65,64 @@ export const ContentContainer = ({
       );
 
       setTodos(
-        reorder(
-          todos,
-          draggingTodoIndexInTodosArray,
-          destinationIndexInTodosArray
-        )
+        reorder(todos, sourceIndexInTodosArray, destinationIndexInTodosArray)
       );
       return;
+    }
+
+    if (page === 'upcoming') {
+      const destinationDateIndex = dates.findIndex(
+        (s) => s.id === destinationId
+      );
+      const destinationDate = dates[destinationDateIndex];
+
+      const editedTodo: ITodo = {
+        ...draggingTodo,
+        date: destinationDate.date,
+      };
+
+      const destinationTodosList = todos.filter((todo) =>
+        isSameDay(todo.date, destinationDate.date)
+      );
+
+      if (destinationDroppableId === sourceDroppableId) {
+        const destinationIndexInTodosArray = todos.findIndex(
+          (t) => t.id === destinationTodosList[destinationIndex].id
+        );
+        const sourceIndexInTodosArray = todos.findIndex(
+          (t) => t.id === draggingElementId
+        );
+
+        todos.splice(sourceIndexInTodosArray, 1);
+        todos.splice(destinationIndexInTodosArray, 0, editedTodo);
+
+        setTodos(todos);
+        return;
+      }
+
+      if (destinationDroppableId !== sourceDroppableId) {
+        const sourceIndexInTodosArray = todos.findIndex(
+          (t) => t.id === draggingElementId
+        );
+
+        if (destinationIndex === destinationTodosList.length) {
+          todos.splice(sourceIndexInTodosArray, 1);
+          const destinationIndexInTodosArray = todos.findIndex(
+            (todo) => todo.id === destinationTodosList[destinationIndex - 1].id
+          );
+          todos.splice(destinationIndexInTodosArray + 1, 0, editedTodo);
+          setTodos(todos);
+          return;
+        }
+
+        todos.splice(sourceIndexInTodosArray, 1);
+        const destinationIndexInTodosArray = todos.findIndex(
+          (t) => t.id === destinationTodosList[destinationIndex].id
+        );
+        todos.splice(destinationIndexInTodosArray, 0, editedTodo);
+        setTodos(todos);
+        return;
+      }
     }
 
     if (page === 'label') {
@@ -92,86 +139,83 @@ export const ContentContainer = ({
       );
 
       setTodos(
-        reorder(
-          todos,
-          draggingTodoIndexInTodosArray,
-          destinationIndexInTodosArray
-        )
+        reorder(todos, sourceIndexInTodosArray, destinationIndexInTodosArray)
       );
       return;
     }
 
-    if (
-      sourceDroppableType !== 'sections' &&
-      destinationDroppableType !== 'sections'
-    ) {
-      let todosCopy: ITodo[];
-      const destinationSectionIndex = sections.findIndex(
-        (s) => s.id === destinationId
-      );
+    if (page === 'project') {
+      if (
+        sourceDroppableType !== 'sections' &&
+        destinationDroppableType !== 'sections'
+      ) {
+        const destinationSectionIndex = sections.findIndex(
+          (s) => s.id === destinationId
+        );
 
-      const editedTodo: ITodo = {
-        ...draggingTodo,
-        section: sections[destinationSectionIndex],
-      };
+        const editedTodo: ITodo = {
+          ...draggingTodo,
+          section: sections[destinationSectionIndex],
+        };
 
-      const destinationTodosList = todos.filter((todo) =>
-        editedTodo.section !== undefined
-          ? todo.section?.id === destinationId
-          : !todo.section && todo.project.id === destinationId
-      );
+        const destinationTodosList = todos.filter((todo) =>
+          editedTodo.section !== undefined
+            ? todo.section?.id === destinationId
+            : !todo.section && todo.project.id === destinationId
+        );
 
-      if (destinationTodosList.length === 0) {
-        todosCopy = [...todos];
-        todosCopy.splice(draggingTodoIndexInTodosArray, 1, editedTodo);
-        setTodos(todosCopy);
-        return;
+        if (sourceDroppableId === destinationDroppableId) {
+          setTodos(
+            reorder(
+              todos,
+              sourceIndexInTodosArray,
+              sourceIndexInTodosArray + destinationIndex - sourceIndex
+            )
+          );
+          return;
+        }
+
+        if (destinationDroppableId !== sourceDroppableId) {
+          const todosCopy = [...todos];
+          if (destinationTodosList.length === 0) {
+            todosCopy.splice(sourceIndexInTodosArray, 1, editedTodo);
+            setTodos(todosCopy);
+            return;
+          }
+
+          if (destinationIndex === destinationTodosList.length) {
+            todosCopy.splice(sourceIndexInTodosArray, 1);
+            const destinationIndexInTodosArray = todosCopy.findIndex(
+              (todo) =>
+                todo.id === destinationTodosList[destinationIndex - 1].id
+            );
+            todosCopy.splice(destinationIndexInTodosArray + 1, 0, editedTodo);
+            setTodos(todosCopy);
+            return;
+          }
+
+          console.log('todos ', todosCopy);
+          todosCopy.splice(sourceIndexInTodosArray, 1);
+          console.log('todos ', todosCopy);
+
+          const destinationIndexInTodosArray = todosCopy.findIndex(
+            (t) => t.id === destinationTodosList[destinationIndex].id
+          );
+
+          todosCopy.splice(destinationIndexInTodosArray, 0, editedTodo);
+          console.log('todos ', todosCopy);
+          setTodos(todosCopy);
+          return;
+        }
       }
 
-      if (destinationIndex === destinationTodosList.length) {
-        todosCopy = todos.filter((todo) => todo.id !== editedTodo.id);
-        const lastTodoIndexOfDestinationArrayInTodosArray = todos.findIndex(
-          (el) => el.id === destinationTodosList[destinationIndex - 1].id
-        );
-        todosCopy.splice(
-          lastTodoIndexOfDestinationArrayInTodosArray + 1,
-          0,
-          editedTodo
-        );
-        setTodos(todosCopy);
+      if (
+        sourceDroppableType === 'sections' &&
+        destinationDroppableType === 'sections'
+      ) {
+        setSections(reorder(sections, sourceIndex, destinationIndex));
         return;
       }
-
-      if (sourceDroppableId === destinationDroppableId) {
-        todosCopy = [...todos];
-        setTodos(
-          reorder(
-            todosCopy,
-            draggingTodoIndexInTodosArray,
-            draggingTodoIndexInTodosArray + destinationIndex - sourceIndex
-          )
-        );
-        return;
-      }
-
-      if (sourceDroppableId !== destinationDroppableId) {
-        todosCopy = [...todos];
-        todosCopy.splice(draggingTodoIndexInTodosArray, 1);
-        const i = todosCopy.findIndex(
-          (t) => t.id === destinationTodosList[destinationIndex].id
-        );
-        todosCopy.splice(i, 0, editedTodo);
-        setTodos(todosCopy);
-        return;
-      }
-    }
-
-    if (
-      sourceDroppableType === 'sections' &&
-      destinationDroppableType === 'sections'
-    ) {
-      setSections(reorder(sections, sourceIndex, destinationIndex));
-      return;
     }
   };
 

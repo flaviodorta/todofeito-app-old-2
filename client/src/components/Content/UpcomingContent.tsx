@@ -140,87 +140,12 @@ export const UpcomingContent = () => {
     });
   }, [scrollIndex]);
 
-  const onDragEnd = (result: DropResult) => {
-    const { destination, source } = result;
-
-    if (!destination) return;
-
-    if (
-      destination.droppableId === source.droppableId &&
-      destination.index === source.index
-    )
-      return;
-
-    const sourceDroppableId = source.droppableId;
-    const destinationDroppableId = destination.droppableId;
-
-    // const sourceIndex = source.index;
-    const destinationIndex = destination.index;
-
-    const destinationDateIndex = dates.findIndex(
-      (s) => s.id === destinationDroppableId
-    );
-    const destinationDate = dates[destinationDateIndex];
-
-    const draggingTodo: ITodo = todos.filter(
-      (todo) => todo.id === draggingElementId
-    )[0];
-
-    const editedTodo: ITodo = {
-      ...draggingTodo,
-      date: destinationDate.date,
-    };
-
-    const destinationTodosList = todos.filter((todo) =>
-      isSameDay(todo.date, destinationDate.date)
-    );
-
-    if (destinationDroppableId === sourceDroppableId) {
-      const destinationIndexInTodosArray = todos.findIndex(
-        (t) => t.id === destinationTodosList[destinationIndex].id
-      );
-      const sourceIndexInTodosArray = todos.findIndex(
-        (t) => t.id === draggingElementId
-      );
-
-      todos.splice(sourceIndexInTodosArray, 1);
-      todos.splice(destinationIndexInTodosArray, 0, editedTodo);
-
-      setTodos(todos);
-      return;
-    }
-
-    if (destinationDroppableId !== sourceDroppableId) {
-      const hasTodoInDestinationDate =
-        todos.filter((todo) => isSameDay(destinationDate.date, todo.date))
-          .length > 0;
-      const sourceIndexInTodosArray = todos.findIndex(
-        (t) => t.id === draggingElementId
-      );
-
-      if (!hasTodoInDestinationDate) {
-        todos[sourceIndexInTodosArray] = editedTodo;
-        setTodos(todos);
-        return;
-      }
-      const destinationIndexInTodosArray = todos.findIndex(
-        (t) => t.id === destinationTodosList[destinationIndex].id
-      );
-
-      todos.splice(sourceIndexInTodosArray, 1);
-      todos.splice(destinationIndexInTodosArray, 0, editedTodo);
-
-      setTodos(todos);
-      return;
-    }
-  };
-
   const infinityListRef = useRef<HTMLDivElement>(null!);
 
   return (
     <ContentContainer
+      page='upcoming'
       heading={<HorizontalCalendar inputedDate={date} setDate={selectDate} />}
-      onDragEndPage={onDragEnd}
     >
       <div ref={infinityListRef} className='flex flex-col gap-8 px-11 md:px-0'>
         {dates.map((date, i) => (
