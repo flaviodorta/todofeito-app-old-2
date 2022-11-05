@@ -13,12 +13,20 @@
   *::after {
     @apply select-none box-border;
   }
+
+  input[type='file'] {
+    display: none;
+  }
 }
 
 @layer components {
   /* custom utilities */
   .flex-center {
     @apply flex items-center justify-center;
+  }
+
+  .clip-circle {
+    clip-path: circle();
   }
 
   /* navbar */
@@ -95,7 +103,7 @@
   }
 
   .dropdown-buttons-user-card-photo {
-    @apply w-12 h-12 flex items-center justify-center rounded-full border-purple-700 border-2 text-purple-700 text-xl font-medium;
+    @apply w-12 h-12 flex items-center justify-center rounded-full border-purple-700 border-4 text-purple-700 text-xl font-bold tracking-tighter;
   }
 
   .dropdown-buttons-user-info {

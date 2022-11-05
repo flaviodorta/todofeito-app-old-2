@@ -49,16 +49,17 @@
 - fix sidebar project link
 - fix project page
 - fix todos render in projects page
+- fix drag function in today, upcoming, label pages
+- fix placeholder calc when haven't todos in list
 
 # to do
 
-- fix drag function in today, upcoming, label pages
-- fix placeholder calc when haven't todos in list
 - user settings modal
 - add i18n
 - add flat design to no todos
 - add favicon
 - fix reponsible details
+- semantic tags html
 
 - refactor server
 - connect server with front end

@@ -18,6 +18,7 @@ import useWindowSize from '../hooks/useWindowSize';
 import { AnimatePresence } from 'framer-motion';
 import { AddTodoModal } from './AddTodoModal';
 import { useToggle } from '../hooks/useToggle';
+import { UserSettingsModal } from './UserSettings/UserSettingsModal';
 
 export const Navbar = () => {
   const { fullName, email } = useUserStore();
@@ -61,11 +62,20 @@ export const Navbar = () => {
 
   const [isAddTodoModalOpen, toggleAddTodoModal] = useToggle(false);
 
+  const [isUserSettingsModalOpen, setUserSettingsModal] = useState(false);
+
+  const openUserSettingsModal = () => setUserSettingsModal(true);
+  const closeUserSettingsModal = () => setUserSettingsModal(false);
+
   return (
     <>
       <AnimatePresence>
         {isAddTodoModalOpen && (
           <AddTodoModal closeAddTodoModal={toggleAddTodoModal} />
+        )}
+
+        {isUserSettingsModalOpen && (
+          <UserSettingsModal close={closeUserSettingsModal} />
         )}
       </AnimatePresence>
 
@@ -176,7 +186,10 @@ export const Navbar = () => {
             {buttonClicked === 'user-icon' && (
               <DropdownButtons className='right-0 w-64'>
                 <div className='dropdown-buttons-option-container'>
-                  <div className='dropdown-buttons-user-card-container'>
+                  <div
+                    onClick={openUserSettingsModal}
+                    className='dropdown-buttons-user-card-container'
+                  >
                     <span className='dropdown-buttons-user-card-photo'>
                       {firstLetterOfFirstName} {firstLetterOfLastName}
                     </span>
