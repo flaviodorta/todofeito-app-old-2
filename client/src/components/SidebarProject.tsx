@@ -80,6 +80,7 @@ export const SidebarProject = ({
         )}
       </AnimatePresence>
 
+      {/* fix hover working before animation finish */}
       <div
         onMouseEnter={toggle}
         onMouseLeave={toggle}
@@ -87,7 +88,11 @@ export const SidebarProject = ({
           isSidebarProjectsOpen ? 'hover:bg-gray-200' : ''
         } group relative cursor-pointer`}
       >
-        <div className='absolute top-1/2 -translate-y-1/2 right-1 z-[2] ml-auto'>
+        <div
+          className={`${
+            isSidebarProjectsOpen ? '' : 'hidden'
+          } absolute top-1/2 -translate-y-1/2 right-1 z-[2] ml-auto`}
+        >
           <span
             ref={optionsIconRef}
             className='h-full w-5'

@@ -22,3 +22,4 @@ export { CircleSolidIcon } from './Icons/CircleSolidIcon';
 export { SectionSolidIcon } from './Icons/SectionSolidIcon';
 export { SquareCheckRegularIcon } from './Icons/SquareCheckRegularIcon';
 export { ClockRegularIcon } from './Icons/ClockRegularIcon';
+export { GearSolidIcon } from './Icons/GearSolidIcon';

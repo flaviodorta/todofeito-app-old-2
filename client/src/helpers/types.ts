@@ -32,6 +32,14 @@ export interface ISearchedInputs {
 export interface IUserStore {
   fullName: string;
   email: string;
+  language: string;
+  photoURL: string | null;
+  homeView: string;
+  setFullName: (fullName: string) => void;
+  setEmail: (email: string) => void;
+  setLanguage: (language: string) => void;
+  setPhotoURL: (photo: string | null) => void;
+  setHomeView: (homeView: string) => void;
 }
 
 export interface ICalendarState {

@@ -21,7 +21,7 @@ import { useToggle } from '../hooks/useToggle';
 import { UserSettingsModal } from './UserSettings/UserSettingsModal';
 
 export const Navbar = () => {
-  const { fullName, email } = useUserStore();
+  const { fullName, email, photoURL } = useUserStore();
   const [buttonClicked, setButtonClicked] = useState('');
   const { isSidebarOpen, toggleSidebar } = useUIStore();
   const navigate = useNavigate();
@@ -64,7 +64,11 @@ export const Navbar = () => {
 
   const [isUserSettingsModalOpen, setUserSettingsModal] = useState(false);
 
-  const openUserSettingsModal = () => setUserSettingsModal(true);
+  const openUserSettingsModal = () => {
+    setUserSettingsModal(true);
+    setButtonClicked('');
+    setLabelShowById(null);
+  };
   const closeUserSettingsModal = () => setUserSettingsModal(false);
 
   return (
@@ -158,7 +162,9 @@ export const Navbar = () => {
           {/* user icon */}
           <button
             ref={userIconRef}
-            className='navbar-button group'
+            className={`${
+              photoURL ? '' : 'p-2'
+            } group relative outline-none rounded-md`}
             onClick={() => {
               onClickNavbarButton('user-icon');
               closeSidebar();
@@ -167,29 +173,39 @@ export const Navbar = () => {
             onMouseLeave={() => setLabelShowById(null)}
             onBlur={() => onClickNavbarButton('')}
           >
-            <UserIcon className='group navbar-icon' />
-
-            {buttonClicked !== 'user-icon' && labelShowById === 'user-icon' && (
-              <Label
-                style={{
-                  left:
-                    userIconSizes.left +
-                    userIconSizes.width / 2 +
-                    (isScreenMinorThanMedium ? -38 : -10),
-                  top: userIconSizes.top + 48,
-                }}
-                content='Open profile menu'
-                className='-left-1'
+            {photoURL ? (
+              <img
+                src={photoURL}
+                alt='User'
+                className='w-[36px] h-auto clip-circle'
               />
+            ) : (
+              <UserIcon className='group navbar-icon' />
             )}
+
+            {buttonClicked !== 'user-icon' &&
+              labelShowById === 'user-icon' &&
+              !isUserSettingsModalOpen && (
+                <Label
+                  style={{
+                    left:
+                      userIconSizes.left +
+                      userIconSizes.width / 2 +
+                      (isScreenMinorThanMedium ? -38 : -10),
+                    top: userIconSizes.top + 48,
+                  }}
+                  content='Open profile menu'
+                  className='-left-1'
+                />
+              )}
             {/* dropdow user icon */}
-            {buttonClicked === 'user-icon' && (
+            {buttonClicked === 'user-icon' && !isUserSettingsModalOpen && (
               <DropdownButtons className='right-0 w-64'>
-                <div className='dropdown-buttons-option-container'>
-                  <div
-                    onClick={openUserSettingsModal}
-                    className='dropdown-buttons-user-card-container'
-                  >
+                <div
+                  onClick={openUserSettingsModal}
+                  className='dropdown-buttons-option-container'
+                >
+                  <div className='dropdown-buttons-user-card-container'>
                     <span className='dropdown-buttons-user-card-photo'>
                       {firstLetterOfFirstName} {firstLetterOfLastName}
                     </span>

@@ -15,7 +15,7 @@ export const SearchResultsContent = () => {
     null
   );
 
-  const searchTextRegExp = new RegExp(searchedInputs.recentSearches[0]);
+  const searchTextRegExp = new RegExp(searchedText ? searchedText : '');
 
   const searchedTodos = todos.filter((todo) =>
     searchTextRegExp.test(todo.title)
@@ -29,17 +29,19 @@ export const SearchResultsContent = () => {
 
   return (
     <ContentContainer heading={<Heading />}>
-      {searchedTodos.map((todo) => (
-        <TodoItem
-          key={todo.id}
-          todo={todo}
-          todoInputOpenById={todoInputOpenById}
-          isDraggableDisabled={true}
-          setTodoInputOpenById={setTodoInputOpenById}
-          completeTodo={completeTodo}
-          editTodo={editTodo}
-        />
-      ))}
+      {searchedTodos
+        .filter((todo) => !todo.isCompleted)
+        .map((todo) => (
+          <TodoItem
+            key={todo.id}
+            todo={todo}
+            todoInputOpenById={todoInputOpenById}
+            isDraggableDisabled={true}
+            setTodoInputOpenById={setTodoInputOpenById}
+            completeTodo={completeTodo}
+            editTodo={editTodo}
+          />
+        ))}
     </ContentContainer>
   );
 };
