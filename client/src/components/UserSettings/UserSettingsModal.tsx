@@ -29,7 +29,7 @@ export const UserSettingsModal = ({ close }: { close: () => void }) => {
     initialRenderedElement.current
   );
 
-  const hasInputsChanged = useRef(false);
+  const [hasInputsChanged, setHasInputsChanged] = useState(false);
 
   const returnToMenu = () => setRenderedElement('');
 
@@ -100,6 +100,7 @@ export const UserSettingsModal = ({ close }: { close: () => void }) => {
         <AccountSettings
           isOpen={renderedElement === 'account'}
           hasInputsChanged={hasInputsChanged}
+          setHasInputsChanged={setHasInputsChanged}
           close={close}
           returnToMenu={returnToMenu}
           className={`${
@@ -114,6 +115,7 @@ export const UserSettingsModal = ({ close }: { close: () => void }) => {
         <GeneralSettings
           isOpen={renderedElement === 'general'}
           hasInputsChanged={hasInputsChanged}
+          setHasInputsChanged={setHasInputsChanged}
           close={close}
           returnToMenu={returnToMenu}
           className={`${
@@ -133,14 +135,16 @@ export const AccountSettings = ({
   hasInputsChanged,
   isOpen,
   className,
+  setHasInputsChanged,
   close,
   returnToMenu,
 }: {
-  hasInputsChanged: React.MutableRefObject<boolean>;
+  hasInputsChanged: boolean;
   isOpen: boolean;
+  className: string;
+  setHasInputsChanged: React.Dispatch<React.SetStateAction<boolean>>;
   close: () => void;
   returnToMenu: () => void;
-  className: string;
 }) => {
   const { email, fullName, photoURL, setFullName, setPhotoURL } =
     useUserStore();
@@ -173,12 +177,12 @@ export const AccountSettings = ({
 
   const updateChanges = () => {
     setFullName(inputs.fullName);
-    hasInputsChanged.current = false;
+    setHasInputsChanged(false);
   };
 
   useEffect(() => {
-    if (fullName !== inputs.fullName) hasInputsChanged.current = true;
-    if (fullName === inputs.fullName) hasInputsChanged.current = false;
+    if (fullName !== inputs.fullName) setHasInputsChanged(true);
+    if (fullName === inputs.fullName) setHasInputsChanged(false);
   }, [inputs]);
 
   const isScreenMinorThanMedium = useRef(
@@ -359,7 +363,7 @@ export const AccountSettings = ({
         </div>
       </form>
 
-      {hasInputsChanged.current && (
+      {hasInputsChanged && (
         <div className='w-full relative flex items-center gap-4 py-4 pr-4 justify-end bg-white border-t-[1px] border-t-gray-300'>
           <button
             onClick={cancelChanges}
@@ -384,12 +388,14 @@ export const GeneralSettings = ({
   hasInputsChanged,
   isOpen,
   className,
+  setHasInputsChanged,
   close,
   returnToMenu,
 }: {
   isOpen: boolean;
-  hasInputsChanged: React.MutableRefObject<boolean>;
+  hasInputsChanged: boolean;
   className: string;
+  setHasInputsChanged: React.Dispatch<React.SetStateAction<boolean>>;
   close: () => void;
   returnToMenu: () => void;
 }) => {
@@ -403,7 +409,7 @@ export const GeneralSettings = ({
   const updateChanges = () => {
     setLanguage(inputs.language);
     setHomeView(inputs.homeView);
-    hasInputsChanged.current = false;
+    setHasInputsChanged(false);
   };
 
   const cancelChanges = () => {
@@ -415,9 +421,9 @@ export const GeneralSettings = ({
 
   useEffect(() => {
     if (language !== inputs.language || homeView !== inputs.homeView)
-      hasInputsChanged.current = true;
+      setHasInputsChanged(true);
     if (language === inputs.language && homeView === inputs.homeView)
-      hasInputsChanged.current = false;
+      setHasInputsChanged(false);
   }, [inputs]);
 
   const languages = [
@@ -533,8 +539,8 @@ export const GeneralSettings = ({
         </div>
       </form>
 
-      {hasInputsChanged.current && (
-        <div className='mt-auto flex items-center gap-4 py-4 pr-4 justify-end border-t-[1px] border-t-gray-300'>
+      {hasInputsChanged && (
+        <div className='flex items-center gap-4 py-4 pr-4 justify-end border-t-[1px] border-t-gray-300'>
           <button
             onClick={cancelChanges}
             className='text-center select-none py-2 px-3 outline-none rounded-sm font-medium text-sm h-fit w-fit bg-gray-200 hover:bg-gray-300 hover:text-700 text-gray-600'
