@@ -10,22 +10,25 @@ import { EditProjectModal } from './EditProjectModal';
 import { PenSolidIcon } from './Icons/Icons/PenSolidIcon';
 import { useDimensions } from '../hooks/useDimensions';
 import { useNavigate } from 'react-router-dom';
-import fi from 'date-fns/esm/locale/fi/index.js';
 import { Link } from 'react-router-dom';
 
 export const SidebarProject = ({
   project,
   isSidebarProjectsOpen,
   projects,
+  i,
+  length,
   onClick,
 }: {
   project: IProject;
   projects: IProject[];
   isSidebarProjectsOpen: boolean;
+  i: number;
+  length: number;
   onClick?: () => void;
 }) => {
   const navigate = useNavigate();
-  const { deleteProject } = useTodosStore();
+  const { deleteProject, setTodos, todos } = useTodosStore();
   const [isOptionsDropdownOpen, setIsOptionsDropdownOpen] = useState<
     string | null
   >(null);
@@ -61,7 +64,8 @@ export const SidebarProject = ({
           ? projects.length
           : -1
         : findIndex;
-    const projectId = projects[index].id;
+    const projectId = projects[index - 1].id;
+    setTodos(todos.filter((todo) => todo.project.id !== project.id));
     deleteProject(project);
     if (index === -1) navigate('/inbox');
     navigate(`/inbox/${projectId}`);
@@ -81,7 +85,13 @@ export const SidebarProject = ({
       </AnimatePresence>
 
       {/* fix hover working before animation finish */}
-      <div
+      <motion.div
+        initial={false}
+        animate={
+          isSidebarProjectsOpen
+            ? { display: 'block', transition: { delay: i * 0.2 } }
+            : { display: 'none', transition: { delay: (length - i) * 0.2 } }
+        }
         onMouseEnter={toggle}
         onMouseLeave={toggle}
         className={`${
@@ -162,7 +172,7 @@ export const SidebarProject = ({
             </motion.div>
           </motion.div>
         </Link>
-      </div>
+      </motion.div>
     </>
   );
 };

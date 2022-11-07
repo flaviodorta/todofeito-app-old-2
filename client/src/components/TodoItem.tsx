@@ -202,7 +202,7 @@ export const TodoItem = ({
 
         <span className='h-fit w-fit flex-center gap-1'>
           <InboxSolidIcon className='fill-blue-600 w-3 h-3' />
-          <span className='capitalize'>{todo.project.title}</span>
+          <span>{todo.project.title}</span>
         </span>
       </div>
 

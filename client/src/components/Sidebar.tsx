@@ -162,11 +162,13 @@ export const Sidebar = () => {
             variants={sidebarProjectsWrapper}
             className='w-full flex flex-col py-2 pl-4'
           >
-            {projects.slice(1).map((project) => (
+            {projects.slice(1).map((project, i, arr) => (
               <SidebarProject
                 key={project.id}
                 project={project}
                 projects={projects}
+                i={i}
+                length={arr.length}
                 isSidebarProjectsOpen={isSidebarProjectsOpen}
                 // onClick={() =>
                 //   navigate(`/projects/${project.id}`, { replace: true })
