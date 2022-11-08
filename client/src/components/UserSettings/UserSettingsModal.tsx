@@ -8,8 +8,8 @@ import {
 } from '../Icons';
 import Select from 'react-select';
 import { motion } from 'framer-motion';
-import useWindowSize from '../../hooks/useWindowSize';
 import { useEventListener } from '../../hooks/useEventListener';
+import { useNavigate } from 'react-router-dom';
 
 export const UserSettingsModal = ({ close }: { close: () => void }) => {
   const isScreenMinorThanMedium = useRef(
@@ -35,7 +35,7 @@ export const UserSettingsModal = ({ close }: { close: () => void }) => {
 
   return (
     <Backdrop close={close} className='z-[2000] flex-center bg-black/50'>
-      <div className='z-[2001] min-w-[300px] relative bottom-0 top-16 md:-top-10 lg:mx-0 overflow-hidden max-w-5xl w-full max-h-[760px] h-full rounded-xl bg-white flex'>
+      <div className='z-[2001] min-w-[300px] rounded-t-3xl h-4/5 md:h-full md:rounded-2xl fixed bottom-0 md:top-24 lg:mx-0 overflow-hidden max-w-5xl w-full max-h-[760px] bg-white flex'>
         <motion.div
           initial={false}
           animate={
@@ -193,6 +193,8 @@ export const AccountSettings = ({
     isScreenMinorThanMedium.current =
       typeof window !== 'undefined' && document.body.clientWidth < 768;
   });
+
+  const navigate = useNavigate();
   return (
     <motion.div
       initial={false}
@@ -225,7 +227,7 @@ export const AccountSettings = ({
       className={`
         ${className}
         ${isScreenMinorThanMedium.current ? (isOpen ? 'z-[2]' : 'z-[1]') : ''}
-        relative w-full md:static bg-white right-0 flex flex-col 
+        relative w-full md:static bg-white right-0 h-full flex flex-col justify-between
       `}
     >
       <div className='text-xl pl-6 px-3 py-2 flex gap-2 items-center font-bold h-14 border-b-[1px] border-b-gray-300'>
@@ -243,7 +245,8 @@ export const AccountSettings = ({
         <button
           onClick={(e) => {
             e.stopPropagation();
-            close();
+            navigate(-1);
+            // close();
           }}
           className='group ml-auto flex-center hover:bg-gray-400/20 rounded-md relative h-8 w-8'
         >
@@ -252,7 +255,7 @@ export const AccountSettings = ({
         </button>
       </div>
 
-      <form className='p-6 text-[17px] sticky h-full flex flex-col gap-3 overflow-y-scroll '>
+      <form className='p-6 text-[17px] flex flex-col gap-3 h-full overflow-y-scroll'>
         <div className='flex flex-col gap-1 w-full'>
           <span className='font-bold'>Photo</span>
 
@@ -364,7 +367,7 @@ export const AccountSettings = ({
       </form>
 
       {hasInputsChanged && (
-        <div className='w-full relative flex items-center gap-4 py-4 pr-4 justify-end bg-white border-t-[1px] border-t-gray-300'>
+        <div className='w-full h-fit relative flex items-center gap-4 py-4 pr-4 justify-end bg-white border-t-[1px] border-t-gray-300'>
           <button
             onClick={cancelChanges}
             className='text-center select-none py-2 px-3 outline-none rounded-sm font-medium text-sm h-fit w-fit bg-gray-200 hover:bg-gray-300 hover:text-700 text-gray-600'
@@ -479,68 +482,70 @@ export const GeneralSettings = ({
       className={`
         ${className} 
         ${isScreenMinorThanMedium.current ? (isOpen ? 'z-[2]' : 'z-[1]') : ''}
-        absolute w-full md:static bg-white right-0 flex flex-col h-full
+        absolute w-full md:static bg-white right-0 flex flex-col justify-between h-full
       `}
     >
-      <div className='text-xl pl-6 px-3 py-2 flex gap-2 items-center font-bold h-14 border-b-[1px] border-b-gray-300'>
-        {isScreenMinorThanMedium.current && (
-          <span
-            onClick={returnToMenu}
-            className='group flex-center hover:bg-gray-400/20 rounded-md h-8 w-8'
-          >
-            <ArrowLeftLongSolidIcon className='fill-gray-400' />
-          </span>
-        )}
-        <h2>General</h2>
+      <div>
+        <div className='text-xl pl-6 px-3 py-2 flex gap-2 items-center font-bold h-14 border-b-[1px] border-b-gray-300'>
+          {isScreenMinorThanMedium.current && (
+            <span
+              onClick={returnToMenu}
+              className='group flex-center hover:bg-gray-400/20 rounded-md h-8 w-8'
+            >
+              <ArrowLeftLongSolidIcon className='fill-gray-400' />
+            </span>
+          )}
+          <h2>General</h2>
 
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            close();
-          }}
-          className='group ml-auto flex-center hover:bg-gray-400/20 rounded-md relative h-8 w-8'
-        >
-          <span className='w-5 h-[1px] absolute top-1/2 left-1/2 -translate-x-1/2 bg-gray-500 group-hover:bg-gray-600 rotate-45' />
-          <span className='w-5 h-[1px] absolute top-1/2 left-1/2 -translate-x-1/2 bg-gray-500 group-hover:bg-gray-600 -rotate-45' />
-        </button>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              close();
+            }}
+            className='group ml-auto flex-center hover:bg-gray-400/20 rounded-md relative h-8 w-8'
+          >
+            <span className='w-5 h-[1px] absolute top-1/2 left-1/2 -translate-x-1/2 bg-gray-500 group-hover:bg-gray-600 rotate-45' />
+            <span className='w-5 h-[1px] absolute top-1/2 left-1/2 -translate-x-1/2 bg-gray-500 group-hover:bg-gray-600 -rotate-45' />
+          </button>
+        </div>
+
+        <form className='h-[80%] p-6 text-[17px] flex flex-col gap-3 overflow-y-auto'>
+          <div className='flex flex-col gap-1 w-full md:w-1/2'>
+            <label htmlFor='name' className='text font-bold'>
+              Language
+            </label>
+
+            <Select
+              value={languages.find((e) => e.value === language)}
+              options={languages}
+              onChange={(e) =>
+                e
+                  ? setInputs((state) => ({ ...state, language: e.value }))
+                  : undefined
+              }
+            />
+          </div>
+
+          <div className='flex flex-col gap-1 w-full md:w-1/2'>
+            <label htmlFor='name' className='text font-bold'>
+              Home view
+            </label>
+
+            <Select
+              value={homeViews.find((e) => e.value === homeView)}
+              options={homeViews}
+              onChange={(e) =>
+                e
+                  ? setInputs((state) => ({ ...state, homeView: e.value }))
+                  : undefined
+              }
+            />
+          </div>
+        </form>
       </div>
 
-      <form className='h-[80%] p-6 text-[17px] flex flex-col gap-3 overflow-y-auto'>
-        <div className='flex flex-col gap-1 w-full md:w-1/2'>
-          <label htmlFor='name' className='text font-bold'>
-            Language
-          </label>
-
-          <Select
-            value={languages.find((e) => e.value === language)}
-            options={languages}
-            onChange={(e) =>
-              e
-                ? setInputs((state) => ({ ...state, language: e.value }))
-                : undefined
-            }
-          />
-        </div>
-
-        <div className='flex flex-col gap-1 w-full md:w-1/2'>
-          <label htmlFor='name' className='text font-bold'>
-            Home view
-          </label>
-
-          <Select
-            value={homeViews.find((e) => e.value === homeView)}
-            options={homeViews}
-            onChange={(e) =>
-              e
-                ? setInputs((state) => ({ ...state, homeView: e.value }))
-                : undefined
-            }
-          />
-        </div>
-      </form>
-
       {hasInputsChanged && (
-        <div className='flex items-center gap-4 py-4 pr-4 justify-end border-t-[1px] border-t-gray-300'>
+        <div className='w-full relative flex items-center gap-4 py-4 pr-4 justify-end bg-white border-t-[1px] border-t-gray-300'>
           <button
             onClick={cancelChanges}
             className='text-center select-none py-2 px-3 outline-none rounded-sm font-medium text-sm h-fit w-fit bg-gray-200 hover:bg-gray-300 hover:text-700 text-gray-600'
@@ -556,6 +561,24 @@ export const GeneralSettings = ({
           </button>
         </div>
       )}
+
+      {/* {hasInputsChanged && (
+        <div className='flex items-center gap-4 py-4 pr-4 justify-end border-t-[1px] border-t-gray-300'>
+          <button
+            onClick={cancelChanges}
+            className='text-center select-none py-2 px-3 outline-none rounded-sm font-medium text-sm h-fit w-fit bg-gray-200 hover:bg-gray-300 hover:text-700 text-gray-600'
+          >
+            Cancel
+          </button>
+
+          <button
+            onClick={updateChanges}
+            className='bg-blue-600 hover:bg-blue-700 text-center select-none py-2 px-3 outline-none rounded-sm font-medium text-sm h-fit w-fit text-white hover:text-gray-200'
+          >
+            Update
+          </button>
+        </div>
+      )} */}
     </motion.div>
   );
 };

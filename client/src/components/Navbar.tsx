@@ -11,7 +11,7 @@ import {
 } from './Icons';
 import { useRef, useState } from 'react';
 import { DropdownButtons } from './DropdownButtons';
-import { useNavigate } from 'react-router-dom';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { isMobile } from 'react-device-detect';
 import { useDimensions } from '../hooks/useDimensions';
 import useWindowSize from '../hooks/useWindowSize';
@@ -19,12 +19,14 @@ import { AnimatePresence } from 'framer-motion';
 import { AddTodoModal } from './AddTodoModal';
 import { useToggle } from '../hooks/useToggle';
 import { UserSettingsModal } from './UserSettings/UserSettingsModal';
+import { Link } from 'react-router-dom';
 
 export const Navbar = () => {
   const { fullName, email, photoURL } = useUserStore();
   const [buttonClicked, setButtonClicked] = useState('');
   const { isSidebarOpen, toggleSidebar } = useUIStore();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [labelShowById, setLabelShowById] = useState<string | null>(null);
 
@@ -65,7 +67,7 @@ export const Navbar = () => {
   const [isUserSettingsModalOpen, setUserSettingsModal] = useState(false);
 
   const openUserSettingsModal = () => {
-    setUserSettingsModal(true);
+    // setUserSettingsModal(true);
     setButtonClicked('');
     setLabelShowById(null);
   };
@@ -198,33 +200,38 @@ export const Navbar = () => {
                   className='-left-1'
                 />
               )}
+
             {/* dropdow user icon */}
             {buttonClicked === 'user-icon' && !isUserSettingsModalOpen && (
               <DropdownButtons className='right-0 w-64'>
-                <div
-                  onClick={openUserSettingsModal}
-                  className='dropdown-buttons-option-container'
-                >
-                  <div className='dropdown-buttons-user-card-container'>
-                    <span className='dropdown-buttons-user-card-photo'>
-                      {firstLetterOfFirstName} {firstLetterOfLastName}
-                    </span>
-                    <div className='dropdown-buttons-user-info'>
-                      <span className='text-sm font-bold'>
-                        {firstName} {lastName}
+                <Link to='/settings' state={{ background: location }}>
+                  <div
+                    onClick={openUserSettingsModal}
+                    className='dropdown-buttons-option-container'
+                  >
+                    <div className='dropdown-buttons-user-card-container'>
+                      <span className='dropdown-buttons-user-card-photo'>
+                        {firstLetterOfFirstName} {firstLetterOfLastName}
                       </span>
-                      <span className='text-xs font-light text-gray-900'>
-                        {email}
+                      <div className='dropdown-buttons-user-info'>
+                        <span className='text-sm font-bold'>
+                          {firstName} {lastName}
+                        </span>
+                        <span className='text-xs font-light text-gray-900'>
+                          {email}
+                        </span>
+                      </div>
+                    </div>
+                    <div className='dropdown-buttons-option'>
+                      <SettingsIcon className='fill-gray-600' />
+                      <span className='dropdown-buttons-option-text'>
+                        Settings
                       </span>
                     </div>
                   </div>
-                  <div className='dropdown-buttons-option'>
-                    <SettingsIcon className='fill-gray-600' />
-                    <span className='dropdown-buttons-option-text'>
-                      Settings
-                    </span>
-                  </div>
-                </div>
+
+                  <Outlet />
+                </Link>
                 <hr className='my-1' />
                 <div className='dropdown-buttons-option-container'>
                   <div className='dropdown-buttons-option'>

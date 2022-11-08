@@ -1,5 +1,5 @@
 import { Layout } from './components/Layout';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { TodayPage } from './pages/TodayPage';
 import { InboxPage } from './pages/InboxPage';
@@ -8,28 +8,41 @@ import { FiltersAndLabelsPage } from './pages/FiltersAndLabelsPage';
 import { LabelPage } from './pages/LabelPage';
 import { ProjectPage } from './pages/ProjectPage';
 import { SearchResultsPage } from './pages/SearchResultsPage';
+import { UserSettingsModal } from './components/UserSettings/UserSettingsModal';
 
 const queryClient = new QueryClient();
 
 export default function App() {
+  const location = useLocation();
+  const background = location.state && location.state.background;
+  const navigate = useNavigate();
+
   return (
     <QueryClientProvider client={queryClient}>
       <Layout>
-        <BrowserRouter>
+        <Routes>
+          <Route path='/inbox' element={<InboxPage />} />
+          <Route path='/today' element={<TodayPage />} />
+          <Route path='/upcoming' element={<UpcomingPage />} />
+          <Route path='/filters-labels' element={<FiltersAndLabelsPage />} />
+          <Route path='/filters-labels/:labelId' element={<LabelPage />} />
+          <Route path='/projects/:projectId' element={<ProjectPage />} />
+          <Route
+            path='/settings/account'
+            element={<UserSettingsModal close={() => undefined} />}
+          />
+          <Route path='/search/:searchedText' element={<SearchResultsPage />} />
+          <Route path='*' element={<InboxPage />} />
+        </Routes>
+
+        {background && (
           <Routes>
-            <Route path='/inbox' element={<InboxPage />} />
-            <Route path='/today' element={<TodayPage />} />
-            <Route path='/upcoming' element={<UpcomingPage />} />
-            <Route path='/filters-labels' element={<FiltersAndLabelsPage />} />
-            <Route path='/filters-labels/:labelId' element={<LabelPage />} />
-            <Route path='/projects/:projectId' element={<ProjectPage />} />
             <Route
-              path='/search/:searchedText'
-              element={<SearchResultsPage />}
+              path='/settings'
+              element={<UserSettingsModal close={() => navigate(-1)} />}
             />
-            <Route path='*' element={<InboxPage />} />
           </Routes>
-        </BrowserRouter>
+        )}
       </Layout>
     </QueryClientProvider>
   );
