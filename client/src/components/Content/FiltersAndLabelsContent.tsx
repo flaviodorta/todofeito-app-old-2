@@ -1,5 +1,6 @@
 import { AnimatePresence } from 'framer-motion';
 import { Fragment } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Outlet } from 'react-router-dom';
 import { useToggle } from '../../hooks/useToggle';
 import { useTodosStore } from '../../zustand';
@@ -16,9 +17,13 @@ export const FiltersAndLabelsContent = () => {
     useToggle(false);
   const [isOutletShow, toggleIsOutletShow] = useToggle(true);
 
+  const { t } = useTranslation();
+
   const Heading = () => (
     <div className='flex items-center gap-2'>
-      <h2 className='font-bold text-xl'>Filters & Labels</h2>
+      <h2 className='font-bold text-xl'>
+        {t('FiltersAndLabelsContent.labels')}
+      </h2>
     </div>
   );
 
@@ -36,7 +41,9 @@ export const FiltersAndLabelsContent = () => {
             <div className='flex flex-col h-fit w-full'>
               <div className='sticky top-[76px] z-[2]'>
                 <div className='relative flex justify-between items-center w-full text-sm  bg-white font-bold h-fit py-1 border-b-[1px] border-gray-300'>
-                  <span className='text-gray-500'>Labels</span>
+                  <span className='text-gray-500'>
+                    {t('FiltersAndLabelsContent.labels')}
+                  </span>
 
                   <span
                     onClick={toggleLabelsLinksListOpen}
@@ -61,14 +68,12 @@ export const FiltersAndLabelsContent = () => {
               {isLabelsLinksListOpen && (
                 <div className='flex flex-col '>
                   {labels.map((label) => (
-                    // <Fragment>
                     <LinkToLabelPage
                       key={label.id}
                       showLabelPage={toggleIsOutletShow}
                       icon={<LabelIcon className={`${label.color.class}`} />}
                       label={label}
                     />
-                    // </Fragment>
                   ))}
                 </div>
               )}

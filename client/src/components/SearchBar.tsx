@@ -17,6 +17,7 @@ import { ILabel, IProject, ISection, ITodo } from '../helpers/types';
 import { useNavigate } from 'react-router-dom';
 import { getDatasByIds, onKeyUpEnter } from '../helpers/functions';
 import { useOnClickOutside } from '../hooks/useOnClickOutside';
+import { useTranslation } from 'react-i18next';
 
 interface ISearchInput {
   value: string;
@@ -188,6 +189,8 @@ export const SearchBar = () => {
 
   const isSearchBarFocused = document.activeElement === searchBarRef.current;
 
+  const { t } = useTranslation();
+
   return (
     <div className='relative'>
       <div
@@ -240,7 +243,9 @@ export const SearchBar = () => {
           >
             {inputs.value ? (
               <div>
-                <span className='dropdown-searchbar-title'>Results</span>
+                <span className='dropdown-searchbar-title'>
+                  {t('SearchBar.results')}
+                </span>
 
                 {searchedProjects.length === 0 &&
                   searchedSections.length === 0 &&
@@ -248,7 +253,7 @@ export const SearchBar = () => {
                   searchedTodos.length === 0 &&
                   inputs.value && (
                     <span className='dropdown-searchbar-no-results'>
-                      No results
+                      {t('SearchBar.noResults')}
                     </span>
                   )}
 
@@ -339,12 +344,12 @@ export const SearchBar = () => {
               <div>
                 <div>
                   <span className='dropdown-searchbar-title flex justify-between'>
-                    Recente searches
+                    {t('SearchBar.recentSearches')}
                     <span
                       onClick={clearRecentSearches}
                       className='text-sm text-gray-500 font-light cursor-pointer'
                     >
-                      Clear
+                      {t('SearchBar.recentSearches')}
                     </span>
                   </span>
 
@@ -370,7 +375,7 @@ export const SearchBar = () => {
 
                 <div>
                   <span className='dropdown-searchbar-title'>
-                    Recently viewed
+                    {t('SearchBar.recentlyViewed')}
                   </span>
 
                   {recentlyViewed.slice(0, 5).map((recent) => (

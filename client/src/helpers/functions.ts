@@ -12,8 +12,9 @@ import {
 import React from 'react';
 import { language } from './constants';
 import { IDay } from './types';
+import i18next from 'i18next';
 
-const lang = language;
+const lang = i18next.language;
 
 export const getWeekNumber = (day: Date) => {
   const firstDayOfTheYear = new Date(day.getFullYear(), 0, 1);

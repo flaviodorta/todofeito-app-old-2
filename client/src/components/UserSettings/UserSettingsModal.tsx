@@ -10,6 +10,7 @@ import Select from 'react-select';
 import { motion } from 'framer-motion';
 import { useEventListener } from '../../hooks/useEventListener';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 export const UserSettingsModal = ({ close }: { close: () => void }) => {
   const isScreenMinorThanMedium = useRef(
@@ -32,6 +33,8 @@ export const UserSettingsModal = ({ close }: { close: () => void }) => {
   const [hasInputsChanged, setHasInputsChanged] = useState(false);
 
   const returnToMenu = () => setRenderedElement('');
+
+  const { t } = useTranslation();
 
   return (
     <Backdrop close={close} className='z-[2000] flex-center bg-black/50'>
@@ -71,7 +74,7 @@ export const UserSettingsModal = ({ close }: { close: () => void }) => {
           } absolute w-full md:static left-0 md:w-1/4 px-5 flex flex-col h-full bg-white`}
         >
           <h1 className='text-xl flex items-center font-bold h-14 mb-8'>
-            Settings
+            {t('UserSettingsModal.settings')}
           </h1>
 
           <div className='flex flex-col gap-2 text-[#404040]'>
@@ -82,7 +85,7 @@ export const UserSettingsModal = ({ close }: { close: () => void }) => {
               } text-[17px] flex items-center gap-3 cursor-pointer hover:bg-gray-400/10 py-2 px-3 rounded-md`}
             >
               <CircleUserSolidIcon className='fill-gray-500 w-6 h-6' />
-              Account
+              {t('UserSettingsModal.account')}
             </span>
 
             <span
@@ -92,7 +95,7 @@ export const UserSettingsModal = ({ close }: { close: () => void }) => {
               } text-[17px] flex items-center gap-3 cursor-pointer hover:bg-gray-500/10 py-2 px-3 rounded-md`}
             >
               <GearSolidIcon className='fill-gray-500 w-6 h-6' />
-              General
+              {t('UserSettingsModal.general')}
             </span>
           </div>
         </motion.div>
@@ -195,6 +198,9 @@ export const AccountSettings = ({
   });
 
   const navigate = useNavigate();
+
+  const { t } = useTranslation();
+
   return (
     <motion.div
       initial={false}
@@ -240,7 +246,7 @@ export const AccountSettings = ({
           </span>
         )}
 
-        <h2>Account</h2>
+        <h2>{t('UserSettingsModal.account')}</h2>
 
         <button
           onClick={(e) => {
@@ -257,7 +263,7 @@ export const AccountSettings = ({
 
       <form className='p-6 text-[17px] flex flex-col gap-3 h-full overflow-y-scroll'>
         <div className='flex flex-col gap-1 w-full'>
-          <span className='font-bold'>Photo</span>
+          <span className='font-bold'>{t('UserSettingsModal.photo')}</span>
 
           <div className='flex items-center gap-4'>
             {photoURL ? (
@@ -279,10 +285,10 @@ export const AccountSettings = ({
                 htmlFor='upload-image'
                 className='px-3 py-2 w-fit cursor-pointer rounded-md font-bold text-[#505050] hover:text-[#303030] bg-gray-300/40 hover:bg-gray-300/60'
               >
-                Upload photo
+                {t('UserSettingsModal.uploadPhoto')}
               </label>
               <span className='text-[13px] font-light text-[#505050]'>
-                Pick a photo up to 10MB.
+                {t('UserSettingsModal.pickAPhotoUpTo10MB')}
               </span>
               <input
                 id='upload-image'
@@ -298,7 +304,7 @@ export const AccountSettings = ({
                   onClick={deletePhoto}
                   className='rounded-md border-[1px] border-red-500 hover:border-red-600 text-red-500 hover:text-red-600 px-3 py-2 w-fit cursor-pointer font-bold'
                 >
-                  Remove photo
+                  {t('UserSettingsModal.removePhoto')}
                 </button>
                 <span className='h-[19.5px]' />
               </span>
@@ -308,7 +314,7 @@ export const AccountSettings = ({
 
         <div className='flex flex-col gap-1'>
           <label htmlFor='name' className='text font-bold'>
-            Name
+            {t('UserSettingsModal.name')}
           </label>
 
           <input
@@ -321,7 +327,7 @@ export const AccountSettings = ({
 
         <div className='flex flex-col gap-1'>
           <label htmlFor='name' className='text font-bold'>
-            Email
+            {t('UserSettingsModal.email')}
           </label>
 
           <p className='py-1'>{email}</p>
@@ -330,38 +336,37 @@ export const AccountSettings = ({
             onClick={(e) => e.preventDefault()}
             className='px-3 py-2 w-fit cursor-pointer rounded-md font-bold text-[#505050] hover:text-[#303030] bg-gray-300/40 hover:bg-gray-300/60'
           >
-            Change email
+            {t('UserSettingsModal.changeEmail')}
           </button>
         </div>
 
         <div className='flex flex-col gap-1'>
           <label htmlFor='name' className='text font-bold'>
-            Password
+            {t('UserSettingsModal.password')}
           </label>
 
           <button
             onClick={(e) => e.preventDefault()}
             className='px-3 py-2 w-fit cursor-pointer rounded-md font-bold text-[#505050] hover:text-[#303030] bg-gray-300/40 hover:bg-gray-300/60'
           >
-            Change password
+            {t('UserSettingsModal.changePassword')}
           </button>
         </div>
 
         <div className='flex flex-col gap-1'>
           <label htmlFor='name' className='text font-bold'>
-            Delete account
+            {t('UserSettingsModal.deleteAccount')}
           </label>
 
           <p className='text-[13px]'>
-            This will immediately delete all of your data including tasks,
-            projects, comments, and more. This can’t be undone.
+            {t('UserSettingsModal.deleteAccountWarning')}
           </p>
 
           <button
             onClick={(e) => e.preventDefault()}
             className='rounded-md border-[1px] border-red-500 hover:border-red-600 text-red-500 hover:text-red-600 px-3 py-2 w-fit cursor-pointer font-bold'
           >
-            Delete account
+            {t('UserSettingsModal.deleteAccount')}
           </button>
         </div>
       </form>
@@ -372,14 +377,14 @@ export const AccountSettings = ({
             onClick={cancelChanges}
             className='text-center select-none py-2 px-3 outline-none rounded-sm font-medium text-sm h-fit w-fit bg-gray-200 hover:bg-gray-300 hover:text-700 text-gray-600'
           >
-            Cancel
+            {t('UserSettingsModal.cancel')}
           </button>
 
           <button
             onClick={updateChanges}
             className='bg-blue-600 hover:bg-blue-700 text-center select-none py-2 px-3 outline-none rounded-sm font-medium text-sm h-fit w-fit text-white hover:text-gray-200'
           >
-            Update
+            {t('UserSettingsModal.update')}
           </button>
         </div>
       )}
@@ -450,6 +455,8 @@ export const GeneralSettings = ({
       typeof window !== 'undefined' && document.body.clientWidth < 768;
   });
 
+  const { t } = useTranslation();
+
   return (
     <motion.div
       initial={false}
@@ -495,7 +502,7 @@ export const GeneralSettings = ({
               <ArrowLeftLongSolidIcon className='fill-gray-400' />
             </span>
           )}
-          <h2>General</h2>
+          <h2>{t('UserSettingsModal.general')}</h2>
 
           <button
             onClick={(e) => {
@@ -512,7 +519,7 @@ export const GeneralSettings = ({
         <form className='h-[80%] p-6 text-[17px] flex flex-col gap-3 overflow-y-auto'>
           <div className='flex flex-col gap-1 w-full md:w-1/2'>
             <label htmlFor='name' className='text font-bold'>
-              Language
+              {t('UserSettingsModal.language')}
             </label>
 
             <Select
@@ -528,7 +535,7 @@ export const GeneralSettings = ({
 
           <div className='flex flex-col gap-1 w-full md:w-1/2'>
             <label htmlFor='name' className='text font-bold'>
-              Home view
+              {t('UserSettingsModal.homeView')}
             </label>
 
             <Select
@@ -550,14 +557,14 @@ export const GeneralSettings = ({
             onClick={cancelChanges}
             className='text-center select-none py-2 px-3 outline-none rounded-sm font-medium text-sm h-fit w-fit bg-gray-200 hover:bg-gray-300 hover:text-700 text-gray-600'
           >
-            Cancel
+            {t('UserSettingsModal.cancel')}
           </button>
 
           <button
             onClick={updateChanges}
             className='bg-blue-600 hover:bg-blue-700 text-center select-none py-2 px-3 outline-none rounded-sm font-medium text-sm h-fit w-fit text-white hover:text-gray-200'
           >
-            Update
+            {t('UserSettingsModal.update')}
           </button>
         </div>
       )}

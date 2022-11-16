@@ -1,6 +1,7 @@
 import { nanoid } from 'nanoid';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { DropResult } from 'react-beautiful-dnd';
+import { useTranslation } from 'react-i18next';
 import { reorder } from '../../helpers/functions';
 import { IProject, ITodo } from '../../helpers/types';
 import { useTodosStore, useUIStore } from '../../zustand';
@@ -68,9 +69,11 @@ export const InboxContent = () => {
     },
   };
 
+  const { t } = useTranslation();
+
   const Heading = () => (
     <div className='flex items-center gap-2'>
-      <h2 className='font-bold text-xl'>Inbox</h2>
+      <h2 className='font-bold text-xl'>{t('InboxContent.inbox')}</h2>
     </div>
   );
 
@@ -106,7 +109,7 @@ export const InboxContent = () => {
               </span>
 
               <span className='cursor-pointer font-light text-md text-gray-400 group-hover:text-blue-600'>
-                Add todo
+                {t('InboxContent.addTodo')}
               </span>
             </div>
           )}
@@ -152,7 +155,7 @@ export const InboxContent = () => {
                   sectionInputOpenById ? 'hidden' : 'block'
                 } font-medium text-md text-blue-600 z-10 px-2 bg-white`}
               >
-                Add section
+                {t('addSection')}
               </span>
               <span className='group absolute h-[1px] w-full top-1/2 left-0 rounded-full bg-blue-600' />
             </div>

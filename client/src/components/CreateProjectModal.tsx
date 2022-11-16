@@ -6,6 +6,7 @@ import { onKeyUpEnter } from '../helpers/functions';
 import { IProject } from '../helpers/types';
 import { nanoid } from 'nanoid';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 
 interface ICreateProjectModalProps {
   closeModal: () => void;
@@ -15,11 +16,12 @@ export const CreateProjectModal = ({
   closeModal,
 }: ICreateProjectModalProps) => {
   const { addProject } = useTodosStore();
+  const { t } = useTranslation();
 
   const [inputs, setInputs] = useState({
     title: '',
     color: {
-      name: 'Stone',
+      name: t('colors.stone'),
       class: 'fill-stone-600',
     },
   });
@@ -65,7 +67,9 @@ export const CreateProjectModal = ({
         className='fixed left-1/2 top-40 w-[90%] sm:w-96 h-fit -translate-x-1/2 z-100 bg-white rounded-lg'
       >
         <div className='py-3 px-6 text-center'>
-          <span className='text-lg font-medium'>Add project</span>
+          <span className='text-lg font-medium'>
+            {t('CreateProjectModal.addProject')}
+          </span>
         </div>
 
         <hr className='border-gray-300' />
@@ -74,11 +78,11 @@ export const CreateProjectModal = ({
           <div className='w-full flex flex-col gap-1 mb-4'>
             <div className='flex justify-between'>
               <label htmlFor='project-name' className='text-sm font-medium'>
-                Title
+                {t('CreateProjectModal.title')}
               </label>
               {inputs.title.length >= 100 && (
                 <span className='text-xs text-red-600 font-light'>
-                  Character limit: {inputs.title.length}/120
+                  {t('CreateProjectModal.title')}: {inputs.title.length}/120
                 </span>
               )}
             </div>
@@ -96,7 +100,7 @@ export const CreateProjectModal = ({
 
           <div className='relative w-full flex flex-col gap-1 mb-8'>
             <label htmlFor='project-color' className='text-sm font-medium'>
-              Color
+              {t('CreateProjectModal.color')}
             </label>
 
             <SelectColor inputedColor={inputs.color} setColor={setColor} />
@@ -107,7 +111,7 @@ export const CreateProjectModal = ({
               onClick={closeModal}
               className='text-center select-none p-2 outline-none rounded-sm font-medium text-sm h-fit w-fit bg-gray-200 hover:bg-gray-300 hover:text-700 text-gray-600'
             >
-              Cancel
+              {t('CreateProjectModal.cancel')}
             </button>
 
             <button
@@ -118,7 +122,7 @@ export const CreateProjectModal = ({
                   : 'bg-blue-600 hover:bg-blue-700'
               } text-center select-none py-2 px-4 outline-none rounded-sm font-medium text-sm h-fit w-fit text-white hover:text-gray-200`}
             >
-              Add
+              {t('CreateProjectModal.add')}
             </button>
           </div>
         </div>

@@ -1,5 +1,6 @@
 import { nanoid } from 'nanoid';
 import { useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { onKeyUpEnter } from '../helpers/functions';
 import { IProject, ISection } from '../helpers/types';
 
@@ -44,6 +45,8 @@ export const AddSection = ({
     sectionNameInputRef
   );
 
+  const { t } = useTranslation();
+
   return (
     <div className='w-full flex flex-col gap-2'>
       <input
@@ -67,7 +70,7 @@ export const AddSection = ({
               : 'bg-blue-600 hover:bg-blue-700'
           } text-center w-fit select-none p-2 outline-none rounded-sm font-medium text-sm h-fit text-white hover:text-gray-200`}
         >
-          Add section
+          {t('AddSection.addSection')}
         </button>
 
         <div className='flex gap-2'>

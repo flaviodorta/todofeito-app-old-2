@@ -9,9 +9,9 @@ import {
   GearIcon as SettingsIcon,
   LogoutIcon,
 } from './Icons';
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { DropdownButtons } from './DropdownButtons';
-import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { isMobile } from 'react-device-detect';
 import { useDimensions } from '../hooks/useDimensions';
 import useWindowSize from '../hooks/useWindowSize';
@@ -20,6 +20,7 @@ import { AddTodoModal } from './AddTodoModal';
 import { useToggle } from '../hooks/useToggle';
 import { UserSettingsModal } from './UserSettings/UserSettingsModal';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 export const Navbar = () => {
   const { fullName, email, photoURL } = useUserStore();
@@ -67,11 +68,13 @@ export const Navbar = () => {
   const [isUserSettingsModalOpen, setUserSettingsModal] = useState(false);
 
   const openUserSettingsModal = () => {
-    // setUserSettingsModal(true);
+    setUserSettingsModal(true);
     setButtonClicked('');
     setLabelShowById(null);
   };
   const closeUserSettingsModal = () => setUserSettingsModal(false);
+
+  const { t } = useTranslation();
 
   return (
     <>
@@ -106,7 +109,11 @@ export const Navbar = () => {
                     (isScreenMinorThanMedium ? 24 : 0),
                   top: sidebarIconSizes.top + 48,
                 }}
-                content={isSidebarOpen ? 'Close menu' : 'Open menu'}
+                content={
+                  isSidebarOpen
+                    ? `${t('Navbar.closeMenu')}`
+                    : `${t('Navbar.openMenu')}`
+                }
                 className=''
               />
             )}
@@ -128,8 +135,7 @@ export const Navbar = () => {
                   left: homeIconSizes.left + homeIconSizes.width / 2,
                   top: homeIconSizes.top + 48,
                 }}
-                content='Go to home'
-                className=''
+                content={t('Navbar.goToHome')}
               />
             )}
           </button>
@@ -155,7 +161,7 @@ export const Navbar = () => {
                   left: addTodoIconSizes.left + addTodoIconSizes.width / 2,
                   top: addTodoIconSizes.top + 48,
                 }}
-                content='Add todo'
+                content={t('Navbar.addTodo')}
                 className=''
               />
             )}
@@ -196,7 +202,7 @@ export const Navbar = () => {
                       (isScreenMinorThanMedium ? -38 : -10),
                     top: userIconSizes.top + 48,
                   }}
-                  content='Open profile menu'
+                  content={t('Navbar.openProfileMenu')}
                   className='-left-1'
                 />
               )}
@@ -204,39 +210,40 @@ export const Navbar = () => {
             {/* dropdow user icon */}
             {buttonClicked === 'user-icon' && !isUserSettingsModalOpen && (
               <DropdownButtons className='right-0 w-64'>
-                <Link to='/settings' state={{ background: location }}>
-                  <div
-                    onClick={openUserSettingsModal}
-                    className='dropdown-buttons-option-container'
-                  >
-                    <div className='dropdown-buttons-user-card-container'>
-                      <span className='dropdown-buttons-user-card-photo'>
-                        {firstLetterOfFirstName} {firstLetterOfLastName}
+                {/* <Link to='settings' state={{ background: location }}> */}
+                <div
+                  onClick={openUserSettingsModal}
+                  className='dropdown-buttons-option-container'
+                >
+                  <div className='dropdown-buttons-user-card-container'>
+                    <span className='dropdown-buttons-user-card-photo'>
+                      {firstLetterOfFirstName} {firstLetterOfLastName}
+                    </span>
+                    <div className='dropdown-buttons-user-info'>
+                      <span className='text-sm font-bold'>
+                        {firstName} {lastName}
                       </span>
-                      <div className='dropdown-buttons-user-info'>
-                        <span className='text-sm font-bold'>
-                          {firstName} {lastName}
-                        </span>
-                        <span className='text-xs font-light text-gray-900'>
-                          {email}
-                        </span>
-                      </div>
-                    </div>
-                    <div className='dropdown-buttons-option'>
-                      <SettingsIcon className='fill-gray-600' />
-                      <span className='dropdown-buttons-option-text'>
-                        Settings
+                      <span className='text-xs font-light text-gray-900'>
+                        {email}
                       </span>
                     </div>
                   </div>
+                  <div className='dropdown-buttons-option'>
+                    <SettingsIcon className='fill-gray-600' />
+                    <span className='dropdown-buttons-option-text'>
+                      {t('Navbar.settings')}
+                    </span>
+                  </div>
+                </div>
+                {/* </Link> */}
 
-                  <Outlet />
-                </Link>
                 <hr className='my-1' />
                 <div className='dropdown-buttons-option-container'>
                   <div className='dropdown-buttons-option'>
                     <LogoutIcon className='fill-gray-600' />
-                    <span className='dropdown-buttons-option-text'>Logout</span>
+                    <span className='dropdown-buttons-option-text'>
+                      {t('Navbar.logout')}
+                    </span>
                   </div>
                 </div>
               </DropdownButtons>

@@ -5,6 +5,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { onKeyUpEnter } from '../helpers/functions';
 import { IProject } from '../helpers/types';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 
 interface IEditProjectModalProps {
   project: IProject;
@@ -59,6 +60,8 @@ export const EditProjectModal = ({
   useEffect(() => {
     projectNameInputRef?.current?.focus();
   }, []);
+
+  const { t } = useTranslation();
 
   return (
     <Backdrop close={closeEditProjectModalOpen} className='z-90 bg-black/50'>

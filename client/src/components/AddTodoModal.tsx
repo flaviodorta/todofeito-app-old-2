@@ -219,7 +219,7 @@ export const AddTodoModal = (props: IAddTodoModalProps) => {
               <span className='text-xs capitalize'>
                 {inputs.date
                   ? `${monthNameShort} ${getDayNumberInMonth(inputs.date)}`
-                  : 'Due data'}
+                  : 'Due date'}
               </span>
 
               {renderedSelect === 'date-picker' && (

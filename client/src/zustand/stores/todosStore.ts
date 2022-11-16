@@ -14,13 +14,14 @@ import {
   IUpcomingSection,
   ITodosStore,
 } from '../../helpers/types';
+import { t } from 'i18next';
 
 export const todosStore = create<ITodosStore>((set, get) => {
   const projects: IProject[] = [
     {
       id: 'inbox',
       type: 'project',
-      title: 'Inbox',
+      title: t('InboxContent.inbox'),
       color: {
         name: 'Blue',
         class: 'fill-blue-600',
@@ -44,7 +45,11 @@ export const todosStore = create<ITodosStore>((set, get) => {
         title: `${capitalizeFirstLetter(
           getMonthName(date).substring(0, 3)
         )}  ${date.getDate()} ${
-          isToday(date) ? '‧ Today' : isTomorrow(date) ? '‧ Tomorrow' : ''
+          isToday(date)
+            ? `‧ ${t('dates.today')}`
+            : isTomorrow(date)
+            ? `‧ ${t('dates.tomorrow')}`
+            : ''
         } ‧ ${capitalizeFirstLetter(getDayNameInWeek(date))} `,
         isListOpen: false,
       });

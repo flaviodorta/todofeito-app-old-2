@@ -52,10 +52,10 @@
 - fix drag function in today, upcoming, label pages
 - fix placeholder calc when haven't todos in list
 - user settings modal
+- fix position update bar in user settings modal
 
 # to do
 
-- fix position update bar in user settings modal
 - add i18n
 
 - refactor server
@@ -73,5 +73,6 @@
 - todo modal
 - subtasks
 - lazy render in upcoming pages
+- user modal as route
 - create resizer observer hook with multiples refs
 - create useHover that take a screen tab

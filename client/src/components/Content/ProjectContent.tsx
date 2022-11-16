@@ -1,6 +1,7 @@
 import { omit } from 'lodash';
 import { nanoid } from 'nanoid';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import { IProject, ITodo } from '../../helpers/types';
 import { useUpdateState } from '../../hooks/useUpdateState';
@@ -70,6 +71,8 @@ export const ProjectContent = () => {
     </div>
   );
 
+  const { t } = useTranslation();
+
   return (
     <ContentContainer page='project' heading={<Heading />}>
       <div className='w-full px-9 md:px-0'>
@@ -100,7 +103,7 @@ export const ProjectContent = () => {
                 <PlusSolidIcon className='stroke-[1px] fill-blue-600 group-hover:fill-white' />
               </span>
               <span className='font-light text-md text-gray-400 group-hover:text-blue-600'>
-                Add task
+                {t('ProjectContent.addTodo')}
               </span>
             </div>
           )}
@@ -148,7 +151,7 @@ export const ProjectContent = () => {
                   sectionInputOpenById ? 'hidden' : 'block'
                 } font-medium text-md text-blue-600 z-10 px-2 bg-white`}
               >
-                Add section
+                {t('ProjectContent.addSection')}
               </span>
               <span className='group absolute h-[1px] w-full top-1/2 left-0 rounded-full bg-blue-600' />
             </div>

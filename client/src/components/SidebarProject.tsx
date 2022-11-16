@@ -11,6 +11,7 @@ import { PenSolidIcon } from './Icons/Icons/PenSolidIcon';
 import { useDimensions } from '../hooks/useDimensions';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 export const SidebarProject = ({
   project,
@@ -42,6 +43,8 @@ export const SidebarProject = ({
       class: '',
     },
   });
+
+  const { t } = useTranslation();
 
   const [isEditProjectModalOpen, toggleEditProjectModalOpen] = useToggle(false);
 
@@ -136,14 +139,14 @@ export const SidebarProject = ({
                 className='w-full flex items-center gap-2 px-2 py-1 hover:bg-gray-300/30'
               >
                 <PenSolidIcon className='fill-gray-400/70' />
-                <span>Edit project</span>
+                <span>{t('SidebarProject.editProject')}</span>
               </span>
               <span
                 onClick={() => onDeleteProject()}
                 className='w-full flex items-center gap-2 px-2 py-1 hover:bg-gray-300/30'
               >
                 <TrashSolidIcon className='fill-gray-400/70' />
-                <span>Delete section</span>
+                <span>{t('SidebarProject.')}</span>
               </span>
             </EditDropdown>
           )}

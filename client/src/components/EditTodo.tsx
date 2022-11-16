@@ -22,6 +22,7 @@ import { labelColors, labelHoverColors } from '../helpers/constants';
 import { ILabel, IProject, IRenderableElements, ITodo } from '../helpers/types';
 import { useTodosStore } from '../zustand';
 import { useDimensions } from '../hooks/useDimensions';
+import { useTranslation } from 'react-i18next';
 
 interface IEditTodoProps {
   todo: ITodo;
@@ -151,6 +152,8 @@ export const EditTodo = ({
     containerRef.current.scrollIntoView({ behavior: 'smooth' });
   }, [renderedSelect]);
 
+  const { t } = useTranslation();
+
   return (
     <>
       <div
@@ -172,7 +175,7 @@ export const EditTodo = ({
           <input
             ref={titleInputRef}
             type='text'
-            placeholder='Todo name'
+            placeholder={t('EditTodo.todoName')}
             value={inputs.title}
             onChange={(e) => setTitle(e.target.value)}
             onKeyUp={sendTodoOnKeyUpEnter}
@@ -180,7 +183,7 @@ export const EditTodo = ({
           />
 
           <Textarea
-            placeholder='Description'
+            placeholder={t('EditTodo.description')}
             rows={2}
             value={inputs.description}
             onChange={(e) => setDescription(e.target.value)}
@@ -209,7 +212,7 @@ export const EditTodo = ({
                 <span className='text-xs capitalize'>
                   {inputs.date
                     ? `${monthNameShort} ${getDayNumberInMonth(inputs.date)}`
-                    : 'Due date'}
+                    : `${t('EditTodo.dueDate')}`}
                 </span>
 
                 {renderedSelect === 'date-picker' && (
@@ -318,7 +321,7 @@ export const EditTodo = ({
             onClick={close}
             className='text-center select-none p-2 outline-none rounded-sm font-medium text-sm h-fit w-fit bg-gray-200 hover:bg-gray-300 hover:text-700 text-gray-600'
           >
-            Cancel
+            {t('EditTodo.cancel')}
           </button>
           <button
             onClick={sendEditedTodo}
@@ -328,7 +331,7 @@ export const EditTodo = ({
                 : 'bg-blue-600 hover:bg-blue-700'
             } text-center select-none p-2 outline-none rounded-sm font-medium text-sm h-fit w-16 text-white hover:text-gray-200`}
           >
-            Save
+            {t('EditTodo.save')}
           </button>
         </div>
       </div>

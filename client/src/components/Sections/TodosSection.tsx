@@ -8,6 +8,7 @@ import {
   DroppableStateSnapshot,
 } from 'react-beautiful-dnd';
 import { isMobile } from 'react-device-detect';
+import { useTranslation } from 'react-i18next';
 import { ISection, ITodo } from '../../helpers/types';
 import { useDimensions } from '../../hooks/useDimensions';
 import { IPlaceholderProps } from '../../hooks/useDndPlaceholder';
@@ -108,6 +109,8 @@ export const TodosSection = ({
     setSectionInputOpenById(editSectionIdRef.current);
   const openAddTodo = () => setTodoInputOpenById(addTodoIdRef.current);
 
+  const { t } = useTranslation();
+
   if (sectionInputOpenById === editSectionIdRef.current) {
     return (
       <EditSection
@@ -186,7 +189,7 @@ export const TodosSection = ({
                 className='w-full flex items-center gap-2 px-2 py-1 hover:bg-gray-300/30'
               >
                 <PenSolidIcon className='fill-gray-400/70' />
-                <span>Edit section</span>
+                <span>{t('TodosSection.editSection')}</span>
               </span>
 
               <span
@@ -194,7 +197,7 @@ export const TodosSection = ({
                 className='w-full flex items-center gap-2 px-2 py-1 hover:bg-gray-300/30'
               >
                 <TrashSolidIcon className='fill-gray-400/70' />
-                <span>Delete section</span>
+                <span>{t('TodosSection.deleteSection')}</span>
               </span>
             </EditDropdown>
           )}
@@ -232,7 +235,7 @@ export const TodosSection = ({
                   <PlusSolidIcon className='stroke-[1px] fill-blue-600 group-hover:fill-white' />
                 </span>
                 <span className='cursor-pointer font-light text-md text-gray-400 group-hover:text-blue-600'>
-                  Add todo
+                  {t('TodosSection.addTodo')}
                 </span>
               </div>
             )}
@@ -259,7 +262,7 @@ export const TodosSection = ({
                 sectionInputOpenById === addSectionIdRef.current ? '' : 'block'
               } cursor-pointer font-medium text-md text-blue-600 z-10 px-2 bg-white`}
             >
-              Add section
+              {t('TodosSection.addSection')}
             </span>
             <span className='group absolute h-[1px] w-full top-1/2 left-0 rounded-full bg-blue-600' />
           </div>

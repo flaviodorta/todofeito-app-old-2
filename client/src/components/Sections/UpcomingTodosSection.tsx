@@ -3,6 +3,7 @@ import { isSameDay } from 'date-fns/esm';
 import { isEqual } from 'lodash';
 import { nanoid } from 'nanoid';
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ITodo, IUpcomingSection } from '../../helpers/types';
 import { IPlaceholderProps } from '../../hooks/useDndPlaceholder';
 import { useIsomorphicLayoutEffect } from '../../hooks/useIsomorphicLayoutEffect';
@@ -43,6 +44,8 @@ export const UpcomingTodosSection = (props: IUpcomingTodosSection) => {
   const [todoInputOpenById, setTodoInputOpenById] = useState<string | null>(
     null
   );
+
+  const { t } = useTranslation();
 
   const notCompleteTodos = todos.filter((todo) => !todo.isCompleted);
 
@@ -154,7 +157,7 @@ export const UpcomingTodosSection = (props: IUpcomingTodosSection) => {
               <PlusSolidIcon className='stroke-[1px] fill-blue-600 group-hover:fill-white' />
             </span>
             <span className='font-light text-md text-gray-400 group-hover:text-blue-600'>
-              Add task
+              {t('UpcomingTodosSection.addTodo')}
             </span>
           </div>
         )}

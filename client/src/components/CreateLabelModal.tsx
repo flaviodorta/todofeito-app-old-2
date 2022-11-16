@@ -6,6 +6,7 @@ import { onKeyUpEnter } from '../helpers/functions';
 import { ILabel } from '../helpers/types';
 import { nanoid } from 'nanoid';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 
 interface ICreateLabelModalProps {
   closeModal: () => void;
@@ -13,11 +14,12 @@ interface ICreateLabelModalProps {
 
 export const CreateLabelModal = ({ closeModal }: ICreateLabelModalProps) => {
   const { addLabel } = useTodosStore();
+  const { t } = useTranslation();
 
   const [inputs, setInputs] = useState({
     title: '',
     color: {
-      name: 'Stone',
+      name: t('colors.stone'),
       class: 'fill-stone-600',
     },
   });
@@ -64,7 +66,9 @@ export const CreateLabelModal = ({ closeModal }: ICreateLabelModalProps) => {
         className='fixed left-1/2 top-40 w-[90%] sm:w-96 h-fit -translate-x-1/2 z-100 bg-white rounded-lg'
       >
         <div className='py-3 px-6 text-center'>
-          <span className='text-lg font-medium'>Add label</span>
+          <span className='text-lg font-medium'>
+            {t('CreateLabelModal.addLabel')}
+          </span>
         </div>
 
         <hr className='border-gray-300' />
@@ -73,11 +77,12 @@ export const CreateLabelModal = ({ closeModal }: ICreateLabelModalProps) => {
           <form className='w-full flex flex-col gap-1 mb-4'>
             <div className='flex justify-between'>
               <label htmlFor='label-name' className='text-sm font-medium'>
-                Label title
+                {t('CreateLabelModal.labelTitle')}
               </label>
               {inputs.title.length >= 100 && (
                 <span className='text-xs text-red-600 font-light'>
-                  Character limit: {inputs.title.length}/120
+                  {t('CreateLabelModal.characterLimit')}: {inputs.title.length}
+                  /120
                 </span>
               )}
             </div>
@@ -95,7 +100,7 @@ export const CreateLabelModal = ({ closeModal }: ICreateLabelModalProps) => {
 
           <form className='relative w-full flex flex-col gap-1 mb-8'>
             <label htmlFor='project-color' className='text-sm font-medium'>
-              Label color
+              {t('CreateLabelModal.labelColor')}
             </label>
 
             <SelectColor inputedColor={inputs.color} setColor={setColor} />
@@ -106,7 +111,7 @@ export const CreateLabelModal = ({ closeModal }: ICreateLabelModalProps) => {
               onClick={closeModal}
               className='text-center select-none p-2 outline-none rounded-sm font-medium text-sm h-fit w-fit bg-gray-200 hover:bg-gray-300 hover:text-700 text-gray-600'
             >
-              Cancel
+              {t('CreateLabelModal.cancel')}
             </button>
 
             <button
@@ -120,7 +125,7 @@ export const CreateLabelModal = ({ closeModal }: ICreateLabelModalProps) => {
                   : 'bg-blue-600 hover:bg-blue-700'
               } text-center select-none py-2 px-4 outline-none rounded-sm font-medium text-sm h-fit w-fit text-white hover:text-gray-200`}
             >
-              Add
+              {t('CreateLabelModal.add')}
             </button>
           </div>
         </div>

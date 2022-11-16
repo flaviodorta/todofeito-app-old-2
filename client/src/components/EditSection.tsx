@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { onKeyUpEnter } from '../helpers/functions';
 import { ISection } from '../helpers/types';
 // import { useTodosStore } from '../zustand';
@@ -37,6 +38,8 @@ export const EditSection = ({
     sectionNameInputRef
   );
 
+  const { t } = useTranslation();
+
   return (
     <div className='w-full flex flex-col gap-2'>
       <input
@@ -60,7 +63,7 @@ export const EditSection = ({
               : 'bg-blue-600 hover:bg-blue-700'
           } text-center w-fit select-none p-2 outline-none rounded-sm font-medium text-sm h-fit text-white hover:text-gray-200`}
         >
-          Add section
+          {t('EditSection.addSection')}
         </button>
 
         <div className='flex gap-2'>
@@ -68,7 +71,7 @@ export const EditSection = ({
             onClick={close}
             className='text-center select-none p-2 outline-none rounded-sm font-medium text-sm h-fit w-fit bg-gray-200 hover:bg-gray-300 hover:text-700 text-gray-600'
           >
-            Cancel
+            {t('EditSection.cancel')}
           </button>
         </div>
       </div>

@@ -13,8 +13,9 @@ import { useEventListener } from '../hooks/useEventListener';
 import { getDayNumberInMonth, getMonthName } from '../helpers/functions';
 import { isToday } from 'date-fns';
 import { useDimensions } from '../hooks/useDimensions';
-import { isEqual } from 'lodash';
+// import { isEqual } from 'lodash';
 import { EditTodo } from './EditTodo';
+import { useTranslation } from 'react-i18next';
 
 type ITodoItem = {
   todo: ITodo;
@@ -111,6 +112,8 @@ export const TodoItem = ({
     }
   }, [draggableSnapshot?.draggingOver]);
 
+  const { t } = useTranslation();
+
   if (todoInputOpenById === todo.id) {
     return (
       <EditTodo
@@ -185,7 +188,7 @@ export const TodoItem = ({
 
           <span className='text-xs capitalize'>
             {date && isToday(date)
-              ? 'Today'
+              ? `${t('TodoItem.today')}`
               : `${getMonthName(date)} ${getDayNumberInMonth(date)}`}
           </span>
 

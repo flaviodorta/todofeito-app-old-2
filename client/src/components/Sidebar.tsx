@@ -17,6 +17,7 @@ import useWindowSize from '../hooks/useWindowSize';
 import { useToggle } from '../hooks/useToggle';
 import { CreateProjectModal } from './CreateProjectModal';
 import { SidebarProject } from './SidebarProject';
+import { useTranslation } from 'react-i18next';
 
 export const Sidebar = () => {
   const {
@@ -55,6 +56,8 @@ export const Sidebar = () => {
 
   const isScreenMinorThanMedium = width < 768;
 
+  const { t } = useTranslation();
+
   return (
     <>
       {isSidebarOpen && (isMobile || isScreenMinorThanMedium) && (
@@ -90,7 +93,7 @@ export const Sidebar = () => {
             } w-full cursor-pointer hover:bg-gray-200 p-2 flex gap-3 items-center rounded-sm`}
           >
             <InboxSolidIcon className='fill-blue-600' />
-            <span className='text-gray-800 text-sm'>Inbox</span>
+            <span className='text-gray-800 text-sm'>{t('Sidebar.inbox')}</span>
             <span className='ml-auto text-gray-600 text-sm'>{inboxLength}</span>
           </div>
 
@@ -101,7 +104,7 @@ export const Sidebar = () => {
             } w-full cursor-pointer hover:bg-gray-200 p-2 flex gap-3 items-center rounded-sm`}
           >
             <CalendarRegularIcon className='fill-emerald-500' />
-            <span className='text-gray-800 text-sm '>Today</span>
+            <span className='text-gray-800 text-sm '>{t('Sidebar.today')}</span>
             <span className='ml-auto text-gray-600 text-sm'>{todayLength}</span>
           </div>
 
@@ -112,7 +115,9 @@ export const Sidebar = () => {
             } w-full cursor-pointer hover:bg-gray-200 p-2 flex gap-3 items-center rounded-sm`}
           >
             <CalendarDaysSolidIcon className='fill-orange-600' />
-            <span className='text-gray-800 text-sm '>Upcoming</span>
+            <span className='text-gray-800 text-sm '>
+              {t('Sidebar.upcoming')}
+            </span>
             <span className='ml-auto text-gray-600 text-sm'>
               {upcomingLength}
             </span>
@@ -125,7 +130,9 @@ export const Sidebar = () => {
             } w-full cursor-pointer hover:bg-gray-200 p-2 flex gap-3 items-center rounded-sm`}
           >
             <LabelIcon className='fill-violet-700' />
-            <span className='text-gray-800 text-sm '>Labels</span>
+            <span className='text-gray-800 text-sm '>
+              {t('Sidebar.labels')}
+            </span>
             <span className='ml-auto text-gray-600 text-sm'>
               {labelsLength}
             </span>
@@ -135,7 +142,9 @@ export const Sidebar = () => {
         {/* projects */}
         <div>
           <div className='w-full flex items-center gap-1 p-2'>
-            <span className='font-medium text-gray-500 text-md'>Projects</span>
+            <span className='font-medium text-gray-500 text-md'>
+              {t('Sidebar.projects')}
+            </span>
             <span
               onClick={toggleCreateProjectModalOpen}
               className='group cursor-pointer w-6 h-6 ml-auto rounded-sm hover:bg-gray-200 flex items-center justify-center'

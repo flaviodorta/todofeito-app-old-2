@@ -1,5 +1,6 @@
 import { nanoid } from 'nanoid';
 import { useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import { useTodosStore, useUIStore } from '../../zustand';
@@ -51,6 +52,8 @@ export const LabelContent = () => {
     </div>
   );
 
+  const { t } = useTranslation();
+
   return (
     <ContentContainer heading={<Heading />} page='label'>
       <div className='w-full px-9 md:px-0'>
@@ -81,7 +84,7 @@ export const LabelContent = () => {
                 <PlusSolidIcon className='stroke-[1px] fill-blue-600 group-hover:fill-white' />
               </span>
               <span className='font-light text-md text-gray-400 group-hover:text-blue-600'>
-                Add task
+                {t('LabelContent.addTodo')}
               </span>
             </div>
           )}

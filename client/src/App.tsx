@@ -13,36 +13,19 @@ import { UserSettingsModal } from './components/UserSettings/UserSettingsModal';
 const queryClient = new QueryClient();
 
 export default function App() {
-  const location = useLocation();
-  const background = location.state && location.state.background;
-  const navigate = useNavigate();
-
   return (
     <QueryClientProvider client={queryClient}>
       <Layout>
         <Routes>
-          <Route path='/inbox' element={<InboxPage />} />
-          <Route path='/today' element={<TodayPage />} />
-          <Route path='/upcoming' element={<UpcomingPage />} />
-          <Route path='/filters-labels' element={<FiltersAndLabelsPage />} />
-          <Route path='/filters-labels/:labelId' element={<LabelPage />} />
-          <Route path='/projects/:projectId' element={<ProjectPage />} />
-          <Route
-            path='/settings/account'
-            element={<UserSettingsModal close={() => undefined} />}
-          />
-          <Route path='/search/:searchedText' element={<SearchResultsPage />} />
+          <Route path='inbox' element={<InboxPage />} />
+          <Route path='today' element={<TodayPage />} />
+          <Route path='upcoming' element={<UpcomingPage />} />
+          <Route path='filters-labels' element={<FiltersAndLabelsPage />} />
+          <Route path='filters-labels/:labelId' element={<LabelPage />} />
+          <Route path='projects/:projectId' element={<ProjectPage />} />
+          <Route path='search/:searchedText' element={<SearchResultsPage />} />
           <Route path='*' element={<InboxPage />} />
         </Routes>
-
-        {background && (
-          <Routes>
-            <Route
-              path='/settings'
-              element={<UserSettingsModal close={() => navigate(-1)} />}
-            />
-          </Routes>
-        )}
       </Layout>
     </QueryClientProvider>
   );
