@@ -32,11 +32,12 @@ i18next
           },
 
           SearchBar: {
-            results: 'Resultados',
+            results: 'Results',
             noResults: 'No results',
             recentSearches: 'Recents searches',
             clear: 'Clear',
             recentlyViewed: 'Recently viewed',
+            search: 'Search',
           },
 
           Navbar: {
@@ -127,6 +128,7 @@ i18next
             update: 'Update',
             language: 'Language',
             homeView: 'Home view',
+            photo: 'Photo',
           },
 
           UpcomingTodosSection: {
@@ -150,7 +152,13 @@ i18next
           },
 
           InboxContent: {
+            inbox: 'Inbox',
             addTodo: 'Add todo',
+          },
+
+          TodayContent: {
+            addTodo: 'Add todo',
+            today: 'Today',
           },
 
           FiltersAndLabelsContent: {
@@ -210,6 +218,7 @@ i18next
             recentSearches: 'Pesquisas recentes',
             clear: 'Limpar',
             recentlyViewed: 'Vistos recentementes',
+            search: 'Buscar',
           },
 
           Navbar: {
@@ -286,7 +295,7 @@ i18next
           UserSettingsModal: {
             settings: 'Configurações',
             account: 'Conta',
-            general: 'General',
+            general: 'Geral',
             uploadPhoto: 'Carregar foto',
             pickAPhotoUpTo10MB: 'Escolha uma foto de até 10MB.',
             removePhoto: 'Remover foto',
@@ -302,6 +311,7 @@ i18next
             update: 'Atualizar',
             language: 'Idioma',
             homeView: 'Página inicial',
+            photo: 'Foto',
           },
 
           UpcomingTodosSection: {
@@ -329,6 +339,11 @@ i18next
             inbox: 'Entrada',
           },
 
+          TodayContent: {
+            addTodo: 'Adicionar tarefa',
+            today: 'Hoje',
+          },
+
           FiltersAndLabelsContent: {
             filtersAndLabels: 'Etiquetas',
             labels: 'Eitquetas',
@@ -348,7 +363,7 @@ i18next
             lime: 'Verde Limão',
             green: 'Verde',
             emerald: 'Esmeralda',
-            teal: 'Verde Azuldo',
+            teal: 'Verde Azulado',
             cyan: 'Ciano',
             sky: 'Azul Céu',
             blue: 'Azul',

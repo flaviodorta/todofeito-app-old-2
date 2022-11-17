@@ -11,6 +11,7 @@ import { motion } from 'framer-motion';
 import { useEventListener } from '../../hooks/useEventListener';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import i18next from 'i18next';
 
 export const UserSettingsModal = ({ close }: { close: () => void }) => {
   const isScreenMinorThanMedium = useRef(
@@ -408,14 +409,16 @@ export const GeneralSettings = ({
   returnToMenu: () => void;
 }) => {
   const { language, homeView, setLanguage, setHomeView } = useUserStore();
+  console.log(language);
 
   const [inputs, setInputs] = useState({
-    language,
+    language: i18next.language,
     homeView,
   });
 
   const updateChanges = () => {
-    setLanguage(inputs.language);
+    // setLanguage(inputs.language);
+    i18next.changeLanguage(inputs.language);
     setHomeView(inputs.homeView);
     setHasInputsChanged(false);
   };
@@ -428,15 +431,15 @@ export const GeneralSettings = ({
   };
 
   useEffect(() => {
-    if (language !== inputs.language || homeView !== inputs.homeView)
+    if (i18next.language !== inputs.language || homeView !== inputs.homeView)
       setHasInputsChanged(true);
-    if (language === inputs.language && homeView === inputs.homeView)
+    if (i18next.language === inputs.language && homeView === inputs.homeView)
       setHasInputsChanged(false);
   }, [inputs]);
 
   const languages = [
     { value: 'en', label: 'English' },
-    { value: 'pt', label: 'Portguês' },
+    { value: 'pt', label: 'Português' },
   ];
 
   const homeViews = [
@@ -523,7 +526,8 @@ export const GeneralSettings = ({
             </label>
 
             <Select
-              value={languages.find((e) => e.value === language)}
+              // defaultValue={languages.find((e) => e.value === language)}
+              value={languages.find((e) => e.value === inputs.language)}
               options={languages}
               onChange={(e) =>
                 e

@@ -16,6 +16,7 @@ import { useDimensions } from '../hooks/useDimensions';
 // import { isEqual } from 'lodash';
 import { EditTodo } from './EditTodo';
 import { useTranslation } from 'react-i18next';
+import { useUserStore } from '../zustand';
 
 type ITodoItem = {
   todo: ITodo;
@@ -45,6 +46,7 @@ export const TodoItem = ({
   const [checked, setChecked] = useState(todo.isCompleted);
   const [isHover, setIsHover] = useState(false);
   const [date, setDate] = useState(todo.date);
+  const { language } = useUserStore();
 
   const [renderedSelect, setRenderedSelect] =
     useState<IRenderableElements>(null);
@@ -113,6 +115,8 @@ export const TodoItem = ({
   }, [draggableSnapshot?.draggingOver]);
 
   const { t } = useTranslation();
+
+  console.log(language);
 
   if (todoInputOpenById === todo.id) {
     return (

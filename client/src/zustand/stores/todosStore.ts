@@ -15,6 +15,7 @@ import {
   ITodosStore,
 } from '../../helpers/types';
 import { t } from 'i18next';
+import '../../i18n';
 
 export const todosStore = create<ITodosStore>((set, get) => {
   const projects: IProject[] = [

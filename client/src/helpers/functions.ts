@@ -10,9 +10,8 @@ import {
   getMonth,
 } from 'date-fns';
 import React from 'react';
-import { language } from './constants';
-import { IDay } from './types';
 import i18next from 'i18next';
+import '../i18n';
 
 const lang = i18next.language;
 

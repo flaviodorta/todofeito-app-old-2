@@ -17,13 +17,13 @@ export default function App() {
     <QueryClientProvider client={queryClient}>
       <Layout>
         <Routes>
-          <Route path='inbox' element={<InboxPage />} />
-          <Route path='today' element={<TodayPage />} />
-          <Route path='upcoming' element={<UpcomingPage />} />
-          <Route path='filters-labels' element={<FiltersAndLabelsPage />} />
-          <Route path='filters-labels/:labelId' element={<LabelPage />} />
-          <Route path='projects/:projectId' element={<ProjectPage />} />
-          <Route path='search/:searchedText' element={<SearchResultsPage />} />
+          <Route path='/inbox' element={<InboxPage />} />
+          <Route path='/today' element={<TodayPage />} />
+          <Route path='/upcoming' element={<UpcomingPage />} />
+          <Route path='/filters-labels' element={<FiltersAndLabelsPage />} />
+          <Route path='/filters-labels/:labelId' element={<LabelPage />} />
+          <Route path='/projects/:projectId' element={<ProjectPage />} />
+          <Route path='/search/:searchedText' element={<SearchResultsPage />} />
           <Route path='*' element={<InboxPage />} />
         </Routes>
       </Layout>

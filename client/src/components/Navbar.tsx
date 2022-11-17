@@ -235,8 +235,8 @@ export const Navbar = () => {
                     </span>
                   </div>
                 </div>
-                {/* </Link> */}
 
+                {/* </Link> */}
                 <hr className='my-1' />
                 <div className='dropdown-buttons-option-container'>
                   <div className='dropdown-buttons-option'>

@@ -73,7 +73,9 @@ export const EditProjectModal = ({
         className='fixed left-1/2 top-40 w-[90%] sm:w-96 h-fit -translate-x-1/2 z-[1000] bg-white rounded-lg'
       >
         <div className='py-3 px-6 text-center'>
-          <span className='text-lg font-medium'>Edit project</span>
+          <span className='text-lg font-medium'>
+            {t('EditProjectModal.editProject')}
+          </span>
         </div>
 
         <hr className='border-gray-300' />
@@ -83,11 +85,12 @@ export const EditProjectModal = ({
             <div className='w-full flex flex-col gap-1 mb-4'>
               <div className='flex justify-between'>
                 <label htmlFor='project-name' className='text-sm font-medium'>
-                  Title
+                  {t('EditProjectModal.editProject')}
                 </label>
                 {project.title.length >= 100 && (
                   <span className='text-xs text-red-600 font-light'>
-                    Character limit: {project.title.length}/120
+                    {t('EditProjectModal.characterLimit')}:{' '}
+                    {project.title.length}/120
                   </span>
                 )}
               </div>
@@ -108,7 +111,7 @@ export const EditProjectModal = ({
 
             <div className='relative w-full flex flex-col gap-1 mb-8'>
               <label htmlFor='project-color' className='text-sm font-medium'>
-                Color
+                {t('EditProjectModal.color')}
               </label>
 
               <SelectColor inputedColor={inputs.color} setColor={setColor} />
@@ -119,7 +122,7 @@ export const EditProjectModal = ({
                 onClick={closeEditProjectModalOpen}
                 className='text-center select-none p-2 outline-none rounded-sm font-medium text-sm h-fit w-fit bg-gray-200 hover:bg-gray-300 hover:text-700 text-gray-600'
               >
-                Cancel
+                {t('EditProjectModal.cancel')}
               </button>
 
               <button
@@ -130,7 +133,7 @@ export const EditProjectModal = ({
                     : 'bg-blue-600 hover:bg-blue-700'
                 } text-center select-none py-2 px-4 outline-none rounded-sm font-medium text-sm h-fit w-fit text-white hover:text-gray-200`}
               >
-                Add
+                {t('EditProjectModal.add')}
               </button>
             </div>
           </form>

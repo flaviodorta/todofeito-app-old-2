@@ -78,7 +78,7 @@ export const AddSection = ({
             onClick={close}
             className='text-center select-none p-2 outline-none rounded-sm font-medium text-sm h-fit w-fit bg-gray-200 hover:bg-gray-300 hover:text-700 text-gray-600'
           >
-            Cancel
+            {t('AddSection.cancel')}
           </button>
         </div>
       </div>

@@ -28,6 +28,7 @@ import { useDimensions } from '../hooks/useDimensions';
 import useWindowSize from '../hooks/useWindowSize';
 import useResizeObserver from '@react-hook/resize-observer';
 import { useUIStore } from '../zustand';
+import { useTranslation } from 'react-i18next';
 
 interface IAddTodoItemProps {
   project?: IProject;
@@ -185,6 +186,8 @@ export const AddTodo = ({
     }
   }, [renderedSelect]);
 
+  const { t } = useTranslation();
+
   return (
     <div ref={sizesRef}>
       <div ref={containerRef} className='h-fit w-full'>
@@ -203,7 +206,7 @@ export const AddTodo = ({
           <input
             ref={titleInputRef}
             type='text'
-            placeholder='Todo name'
+            placeholder={t('AddTodoModal.todoName')}
             value={inputs.title}
             onChange={(e) => setTitle(e.target.value)}
             onKeyUp={sendTodoOnKeyUpEnter}
@@ -240,7 +243,7 @@ export const AddTodo = ({
                 <span className='text-xs capitalize'>
                   {inputs.date
                     ? `${monthNameShort} ${getDayNumberInMonth(inputs.date)}`
-                    : 'Due date'}
+                    : `${t('AddTodo.dueDate')}`}
                 </span>
 
                 {renderedSelect === 'date-picker' && (
@@ -349,7 +352,7 @@ export const AddTodo = ({
             onClick={close}
             className='text-center select-none p-2 outline-none rounded-sm font-medium text-sm h-fit w-fit bg-gray-200 hover:bg-gray-300 hover:text-700 text-gray-600'
           >
-            Cancel
+            {t('AddTodo.cancel')}
           </button>
           <button
             onClick={sendNewTodo}
@@ -359,7 +362,7 @@ export const AddTodo = ({
                 : 'bg-blue-600 hover:bg-blue-700'
             } text-center select-none p-2 outline-none rounded-sm font-medium text-sm h-fit w-fit text-white hover:text-gray-200`}
           >
-            Add todo
+            {t('AddTodo.addTodo')}
           </button>
         </div>
       </div>

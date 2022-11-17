@@ -1,6 +1,7 @@
 import { isToday } from 'date-fns';
 import { nanoid } from 'nanoid';
 import { useCallback, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ITodo } from '../../helpers/types';
 import { useTodosStore, useUIStore } from '../../zustand';
 import { AddTodo } from '../AddTodo';
@@ -32,9 +33,11 @@ export const TodayContent = () => {
     [todos]
   );
 
+  const { t } = useTranslation();
+
   const Heading = () => (
     <div className='flex items-center gap-2  md:w-[768px] md:max-w-[768px] md:min-w-[768px]'>
-      <h2 className='font-bold text-xl'>Today</h2>
+      <h2 className='font-bold text-xl'>{t('TodayContent.today')}</h2>
       <p className='text-gray-700 text-xs relative top-[3px] break-words whitespace-nowrap'>
         {dayOfWeek} {month} {dayOfMonth}
       </p>
@@ -71,7 +74,7 @@ export const TodayContent = () => {
                 <PlusSolidIcon className='stroke-[1px] fill-blue-600 group-hover:fill-white' />
               </span>
               <span className='font-light text-md text-gray-400 group-hover:text-blue-600'>
-                Add task
+                {t('TodayContent.addTodo')}
               </span>
             </div>
           )}

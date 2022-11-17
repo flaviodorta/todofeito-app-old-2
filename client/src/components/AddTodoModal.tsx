@@ -24,6 +24,7 @@ import { addTodoModal } from '../helpers/variants';
 import { nanoid } from 'nanoid';
 import { useTodosStore } from '../zustand';
 import { useDimensions } from '../hooks/useDimensions';
+import { useTranslation } from 'react-i18next';
 
 interface IAddTodoModalProps {
   closeAddTodoModal: () => void;
@@ -157,6 +158,8 @@ export const AddTodoModal = (props: IAddTodoModalProps) => {
     titleInputRef?.current?.focus();
   }, []);
 
+  const { t } = useTranslation()
+
   return (
     <Backdrop close={closeAddTodoModal} className='z-[1000]'>
       <motion.div
@@ -182,7 +185,7 @@ export const AddTodoModal = (props: IAddTodoModalProps) => {
         <input
           ref={titleInputRef}
           type='text'
-          placeholder='Todo name'
+          placeholder={t('AddTodoModal.todoName')}
           value={inputs.title}
           onChange={(e) => setTitle(e.target.value)}
           onKeyUp={sendTodoOnKeyUpEnter}
@@ -190,7 +193,7 @@ export const AddTodoModal = (props: IAddTodoModalProps) => {
         />
         <Textarea
           ref={textareaRef}
-          placeholder='Description'
+          placeholder={t('AddTodoModal.description')}
           rows={2}
           value={inputs.description}
           onChange={(e) => setDescription(e.target.value)}
@@ -219,7 +222,7 @@ export const AddTodoModal = (props: IAddTodoModalProps) => {
               <span className='text-xs capitalize'>
                 {inputs.date
                   ? `${monthNameShort} ${getDayNumberInMonth(inputs.date)}`
-                  : 'Due date'}
+                  : `${t('AddTodoModal.dueDate')}`}
               </span>
 
               {renderedSelect === 'date-picker' && (
@@ -328,7 +331,7 @@ export const AddTodoModal = (props: IAddTodoModalProps) => {
             onClick={closeAddTodoModal}
             className='text-center select-none p-2 outline-none rounded-sm font-medium text-sm h-fit w-fit bg-gray-200 hover:bg-gray-300 hover:text-700 text-gray-600'
           >
-            Cancel
+            {t('AddTodoModal.cancel')}
           </button>
 
           <button
@@ -339,7 +342,7 @@ export const AddTodoModal = (props: IAddTodoModalProps) => {
                 : 'bg-blue-600 hover:bg-blue-700'
             } text-center select-none p-2 outline-none rounded-sm font-medium text-sm h-fit w-fit text-white hover:text-gray-200`}
           >
-            Add todo
+            {t('AddTodoModal.addTodo')}
           </button>
         </div>
       </motion.div>
