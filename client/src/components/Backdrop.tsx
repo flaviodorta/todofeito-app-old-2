@@ -31,7 +31,9 @@ export const Backdrop = ({
           onClick={(e) =>
             e.target === backdropRef.current ? close() : undefined
           }
-          className={`${className} cursor-default fixed w-screen h-screen top-0 left-0`}
+          className={`${
+            className ? className : ''
+          } cursor-default fixed w-screen h-screen top-0 left-0`}
         >
           {children}
         </motion.div>

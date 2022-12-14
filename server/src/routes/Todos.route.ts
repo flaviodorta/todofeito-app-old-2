@@ -22,6 +22,10 @@ todosRouter.post(
     [Segments.BODY]: {
       title: Joi.string().required(),
       description: Joi.string().required(),
+      type: Joi.string().required(),
+      date: Joi.date().required(),
+      priority: Joi.number().required(),
+      isCompleted: Joi.boolean().required(),
     },
   }),
   todoController.create
@@ -34,6 +38,9 @@ todosRouter.put(
       id: Joi.string().uuid().required(),
       title: Joi.string().required(),
       description: Joi.string().required(),
+      date: Joi.date().required(),
+      priority: Joi.number().required(),
+      isCompleted: Joi.boolean().required(),
     },
   }),
   todoController.update

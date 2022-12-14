@@ -19,7 +19,7 @@ interface ITodosListProps {
   setTodoInputOpenById: (id: string | null) => void;
 }
 
-export const TodosList = ({
+export const TodosListMemoized = ({
   droppableId,
   todos,
   todoInputOpenById,
@@ -97,13 +97,13 @@ export const TodosList = ({
   );
 };
 
-// const todosListAreEqual = (
-//   prevProps: Readonly<ITodosListProps>,
-//   nextProps: Readonly<ITodosListProps>
-// ) =>
-//   isEqual(prevProps.todos, nextProps.todos) &&
-//   prevProps.todoInputOpenById !== nextProps.todoInputOpenById &&
-//   prevProps.draggingOverElementId !== prevProps.droppableId &&
-//   nextProps.draggingOverElementId !== nextProps.droppableId;
+const todosListAreEqual = (
+  prevProps: Readonly<ITodosListProps>,
+  nextProps: Readonly<ITodosListProps>
+) =>
+  isEqual(prevProps.todos, nextProps.todos) &&
+  prevProps.todoInputOpenById !== nextProps.todoInputOpenById &&
+  prevProps.draggingOverElementId !== prevProps.droppableId &&
+  nextProps.draggingOverElementId !== nextProps.droppableId;
 
-// export const TodosList = memo(TodosListMemoized, todosListAreEqual);
+export const TodosList = memo(TodosListMemoized, todosListAreEqual);

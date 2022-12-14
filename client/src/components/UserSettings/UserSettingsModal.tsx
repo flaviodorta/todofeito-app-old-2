@@ -490,7 +490,7 @@ export const GeneralSettings = ({
             }
       }
       className={`
-        ${className} 
+        ${className ? className : ''} 
         ${isScreenMinorThanMedium.current ? (isOpen ? 'z-[2]' : 'z-[1]') : ''}
         absolute w-full md:static bg-white right-0 flex flex-col justify-between h-full
       `}

@@ -2,9 +2,10 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
-  UpdateDateColumn,
 } from 'typeorm';
+import { Todo } from './Todo.entity';
 
 @Entity('users')
 export class User {
@@ -20,12 +21,15 @@ export class User {
   @Column()
   password: string;
 
+  @Column({ nullable: true })
+  photoURL: string;
+
   @Column()
-  avatar: string;
+  language: string;
 
   @CreateDateColumn()
   created_at: Date;
 
-  @UpdateDateColumn()
-  updated_at: Date;
+  @OneToMany(() => Todo, (todo) => todo.user)
+  todos: Todo[];
 }

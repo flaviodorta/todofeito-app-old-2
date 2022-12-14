@@ -1,7 +1,16 @@
 import { dataSource } from '../database';
+import { Label } from '../entities/Label.entity';
+import { Project } from '../entities/Project.entity';
+import { Section } from '../entities/Section.entity';
 import { Todo } from '../entities/Todo.entity';
 import { User } from '../entities/User.entity';
 import { UserToken } from '../entities/UserToken.entity';
+
+export const labelsRepository = dataSource.getRepository(Label);
+
+export const projectsRepository = dataSource.getRepository(Project);
+
+export const sectionsRepository = dataSource.getRepository(Section);
 
 export const todosRepository = dataSource.getRepository(Todo);
 

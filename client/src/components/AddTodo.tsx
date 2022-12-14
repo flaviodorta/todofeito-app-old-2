@@ -29,6 +29,7 @@ import useWindowSize from '../hooks/useWindowSize';
 import useResizeObserver from '@react-hook/resize-observer';
 import { useUIStore } from '../zustand';
 import { useTranslation } from 'react-i18next';
+import axios from 'axios';
 
 interface IAddTodoItemProps {
   project?: IProject;
@@ -123,10 +124,14 @@ export const AddTodo = ({
 
   const close = () => setTodoInputOpenById(null);
 
+  // const res =
+
   const sendNewTodo = () => {
     if (!inputs.title) return;
 
     addTodo(todo);
+
+    axios.post('http://localhost:8000', { todo });
 
     resetInputs();
 

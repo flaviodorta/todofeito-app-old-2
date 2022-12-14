@@ -148,7 +148,7 @@ export const UpcomingContent = () => {
       heading={<HorizontalCalendar inputedDate={date} setDate={selectDate} />}
     >
       <div ref={infinityListRef} className='flex flex-col gap-8 px-11 md:px-0'>
-        {dates.slice(0, 10).map((date, i) => (
+        {dates.map((date, i) => (
           <UpcomingTodosSection
             key={date.id}
             todos={todos.filter((todo) => isSameDay(todo.date, date.date))}

@@ -226,7 +226,7 @@ export const TodoItem = ({
       )}
 
       {isHover && (
-        <div className='absolute  flex items-center gap-2 top-1 right-0'>
+        <div className='absolute flex items-center gap-2 top-1 right-0'>
           <span
             onClick={() => {
               setTodoInputOpenById(todo.id);

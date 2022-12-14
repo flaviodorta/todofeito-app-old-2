@@ -33,7 +33,7 @@ export const todosStore = create<ITodosStore>((set, get) => {
   const dates: IUpcomingSection[] = (() => {
     const arr = [];
 
-    for (let i = 0; i < 60; i++) {
+    for (let i = 0; i < 90; i++) {
       const date = new Date(
         today.getFullYear(),
         today.getMonth(),

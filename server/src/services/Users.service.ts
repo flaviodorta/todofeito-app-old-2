@@ -16,7 +16,8 @@ interface IRequest {
   email: string;
   password: string;
   old_password: string;
-  avatar: string;
+  photoURL: string;
+  language: string;
   token: string;
 }
 
@@ -41,7 +42,12 @@ export class UsersServices {
     name,
     email,
     password,
-  }: Pick<IRequest, 'name' | 'email' | 'password'>): Promise<User> {
+    language,
+    photoURL,
+  }: Pick<
+    IRequest,
+    'name' | 'email' | 'password' | 'language' | 'photoURL'
+  >): Promise<User> {
     const emailExists = await usersRepository.findByEmail(email);
 
     if (emailExists) {
@@ -54,6 +60,8 @@ export class UsersServices {
       name,
       email,
       password: hashedPassword,
+      photoURL,
+      language,
     });
 
     await usersRepository.save(user);
@@ -66,7 +74,12 @@ export class UsersServices {
     name,
     email,
     password,
-  }: Pick<IRequest, 'id' | 'email' | 'name' | 'password'>): Promise<User> {
+    language,
+    photoURL,
+  }: Pick<
+    IRequest,
+    'id' | 'email' | 'name' | 'password' | 'language' | 'photoURL'
+  >): Promise<User> {
     const user = await usersRepository.findById(id);
 
     if (!user) {
@@ -76,6 +89,8 @@ export class UsersServices {
     if (name) user.name = name;
     if (email) user.email = email;
     if (password) user.password = password;
+    if (language) user.language = language;
+    if (photoURL) user.photoURL = photoURL;
 
     await usersRepository.save(user);
 
@@ -115,28 +130,33 @@ export class UsersServices {
     return { user, token };
   }
 
-  public async updateAvatar({
+  public async updatePhotoURL({
     id,
-    avatar,
-  }: Pick<IRequest, 'id' | 'avatar'>): Promise<User> {
+    photoURL,
+  }: Pick<IRequest, 'id' | 'photoURL'>): Promise<User> {
     const user = await usersRepository.findById(id);
 
     if (!user) throw new Error('User not found');
 
-    if (user.avatar) {
-      const userAvatarFilepath = path.join(uploadConfig.directory, user.avatar);
-      const userAvatarFileExist = await fs.promises.stat(userAvatarFilepath);
+    if (user.photoURL) {
+      const userPhotoURLFilepath = path.join(
+        uploadConfig.directory,
+        user.photoURL
+      );
+      const userPhotoURLFileExist = await fs.promises.stat(
+        userPhotoURLFilepath
+      );
 
-      if (userAvatarFileExist) {
-        await fs.promises.unlink(userAvatarFilepath);
+      if (userPhotoURLFileExist) {
+        await fs.promises.unlink(userPhotoURLFilepath);
       }
     }
 
-    user.avatar = avatar;
+    user.photoURL = photoURL;
 
     await usersRepository.save(user);
 
-    console.log(avatar);
+    console.log(photoURL);
 
     return user;
   }

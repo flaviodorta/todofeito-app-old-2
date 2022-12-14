@@ -20,6 +20,8 @@ usersRouter.post(
       name: Joi.string().required(),
       email: Joi.string().required(),
       password: Joi.string().required(),
+      language: Joi.string().required(),
+      photoURL: Joi.string(),
     },
   }),
   usersController.create
@@ -61,8 +63,8 @@ usersRouter.delete(
 );
 
 usersRouter.patch(
-  '/avatar',
+  '/photo',
   isAuthenticated,
-  upload.single('avatar'),
-  usersController.updateAvatar
+  upload.single('photo'),
+  usersController.updatePhotoURL
 );

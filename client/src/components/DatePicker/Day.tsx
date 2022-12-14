@@ -36,7 +36,7 @@ export const Day = (props: IDayProps) => {
     <span
       ref={ref}
       onClick={selectDay}
-      className={`${className} group ${
+      className={`${className ? className : ''} group ${
         isSelected ? 'font-bold bg-blue-600/90' : ''
       }
       ${isUpcoming ? 'cursor-pointer' : 'cursor-default text-gray-400'}

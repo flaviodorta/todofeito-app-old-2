@@ -6,7 +6,8 @@ interface IBody {
   name: string;
   email: string;
   password: string;
-  avatar: string;
+  photoURL: string;
+  language: string;
   token: string;
 }
 
@@ -30,21 +31,29 @@ class UsersController {
   }
 
   public async create(req: IRequest, res: Response): Promise<Response> {
-    const { name, email, password } = req.body;
+    const { name, email, password, photoURL, language } = req.body;
 
-    const user = await usersServices.create({ name, email, password });
+    const user = await usersServices.create({
+      name,
+      email,
+      password,
+      photoURL,
+      language,
+    });
 
     return res.json(user);
   }
 
   public async update(req: IRequest, res: Response): Promise<Response> {
-    const { id, name, email, password } = req.body;
+    const { id, name, email, password, language, photoURL } = req.body;
 
     const user = await usersServices.update({
       id,
       name,
       email,
       password,
+      language,
+      photoURL,
     });
 
     return res.json(user);
@@ -58,12 +67,12 @@ class UsersController {
     return res.json(user);
   }
 
-  public async updateAvatar(req: IRequest, res: Response): Promise<Response> {
-    const { id, avatar } = req.body;
+  public async updatePhotoURL(req: IRequest, res: Response): Promise<Response> {
+    const { id, photoURL } = req.body;
 
-    const user = await usersServices.updateAvatar({
+    const user = await usersServices.updatePhotoURL({
       id,
-      avatar,
+      photoURL,
     });
 
     return res.json(user);

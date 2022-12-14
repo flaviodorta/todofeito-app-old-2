@@ -27,7 +27,7 @@ interface IUpcomingTodosSection {
   setObservedHeight: (height: number, index: number) => void;
 }
 
-export const UpcomingTodosSection = (props: IUpcomingTodosSection) => {
+export const UpcomingTodosSectionMemoized = (props: IUpcomingTodosSection) => {
   const {
     section,
     todos,
@@ -166,12 +166,12 @@ export const UpcomingTodosSection = (props: IUpcomingTodosSection) => {
   );
 };
 
-// const sectionPropsAreEqual = (
-//   prevProps: Readonly<IUpcomingTodosSection>,
-//   nextProps: Readonly<IUpcomingTodosSection>
-// ) =>
-//   isEqual(prevProps.section, nextProps.section) &&
-//   isEqual(prevProps.todos, nextProps.todos) &&
-//   isEqual(prevProps.placeholderProps, nextProps.placeholderProps);
+const sectionPropsAreEqual = (
+  prevProps: Readonly<IUpcomingTodosSection>,
+  nextProps: Readonly<IUpcomingTodosSection>
+) =>
+  isEqual(prevProps.section, nextProps.section) &&
+  isEqual(prevProps.todos, nextProps.todos) &&
+  isEqual(prevProps.placeholderProps, nextProps.placeholderProps);
 
-// export const UpcomingTodosSection = memo(UpcomingTodosSectionMemoized);
+export const UpcomingTodosSection = memo(UpcomingTodosSectionMemoized);

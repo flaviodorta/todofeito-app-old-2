@@ -203,6 +203,7 @@ export const SearchBar = () => {
             isSearchBarOpen || isSearchBarFocused ? 'fill-gray-600' : ''
           }`}
         />
+        
         <button
           className={`navbar-open-search-icon ${
             isSearchBarOpen || isSearchBarFocused ? 'opacity-100' : ''
@@ -210,13 +211,14 @@ export const SearchBar = () => {
         >
           /
         </button>
+
         <motion.input
           ref={searchBarRef}
           variants={searchBar}
           initial={false}
           animate={isSearchBarOpen ? 'animate' : 'initial'}
           type='text'
-          placeholder='Search'
+          placeholder={t('SearchBar.search')}
           value={inputs.value}
           onChange={onChangeSearchBarValue}
           onBlur={onBlurSearchBarValue}

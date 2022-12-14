@@ -13,7 +13,9 @@ export const Label = ({
     <Portal node={document && document.getElementById('root')}>
       <div
         style={style}
-        className={`${className} z-[10000] fixed -translate-x-1/2 whitespace-nowrap bg-gray-900 text-xs text-white shadow-lg rounded-md px-3 py-2`}
+        className={`${
+          className ? className : ''
+        } z-[10000] fixed -translate-x-1/2 whitespace-nowrap bg-gray-900 text-xs text-white shadow-lg rounded-md px-3 py-2`}
       >
         {content}
       </div>

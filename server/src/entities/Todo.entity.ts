@@ -1,10 +1,17 @@
 import {
   Column,
-  CreateDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
-  UpdateDateColumn,
 } from 'typeorm';
+import { IProject } from '../types';
+import { Label } from './Label.entity';
+import { Project } from './Project.entity';
+import { Section } from './Section.entity';
+import { User } from './User.entity';
 
 @Entity('todos')
 export class Todo {
@@ -17,9 +24,32 @@ export class Todo {
   @Column()
   description?: string;
 
-  @CreateDateColumn()
-  created_at: Date;
+  @Column()
+  type: string;
 
-  @UpdateDateColumn()
-  updated_at: Date;
+  @Column({ type: 'timestamptz' })
+  date: Date;
+
+  @Column()
+  priority: number;
+
+  @Column()
+  isCompleted: boolean;
+
+  @OneToOne(() => Project)
+  @JoinColumn({ name: 'project_id' })
+  project: IProject;
+
+  @OneToOne(() => Section)
+  @JoinColumn({ name: 'section_id' })
+  section?: Section;
+
+  @OneToMany(() => Label, (label) => label.todo, {
+    cascade: true,
+  })
+  labels: Label[];
+
+  @ManyToOne(() => User, (user) => user.todos)
+  @JoinColumn({ name: 'user_id' })
+  user: User;
 }

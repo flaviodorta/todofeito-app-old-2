@@ -1,12 +1,20 @@
 import { todosRepository } from '../repositories';
 import { Todo } from '../entities/Todo.entity';
 import { Like } from 'typeorm';
+import { ILabel, IProject, ISection } from '../types';
 
 interface IRequest {
   id: string;
   title: string;
   description: string;
   searchedText: string;
+  type: string;
+  date: Date;
+  priority: number;
+  project: IProject;
+  section: ISection;
+  labels: ILabel[];
+  isCompleted: boolean;
 }
 
 export class TodosServices {
@@ -36,10 +44,38 @@ export class TodosServices {
   public async create({
     title,
     description,
-  }: Pick<IRequest, 'title' | 'description'>): Promise<Todo> {
-    if (!description) description = '';
+    type,
+    date,
+    priority,
+    project,
+    section,
+    labels,
+    isCompleted,
+  }: Pick<
+    IRequest,
+    | 'title'
+    | 'description'
+    | 'type'
+    | 'date'
+    | 'priority'
+    | 'project'
+    | 'section'
+    | 'labels'
+    | 'isCompleted'
+  >): Promise<Todo> {
+    // if (!description) description = '';
 
-    const todo = await todosRepository.create({ title, description });
+    const todo = await todosRepository.create({
+      title,
+      description,
+      type,
+      date,
+      priority,
+      project,
+      section,
+      labels,
+      isCompleted,
+    });
     await todosRepository.save(todo);
     return todo;
   }
@@ -48,7 +84,13 @@ export class TodosServices {
     id,
     title,
     description,
-  }: Pick<IRequest, 'id' | 'title' | 'description'>): Promise<Todo> {
+    date,
+    priority,
+    isCompleted,
+  }: Pick<
+    IRequest,
+    'id' | 'title' | 'description' | 'date' | 'priority' | 'isCompleted'
+  >): Promise<Todo> {
     const todo = await todosRepository.findOneBy({ id });
 
     if (todo === null) {
@@ -57,6 +99,9 @@ export class TodosServices {
 
     todo.title = title as string;
     todo.description = description as string;
+    todo.date = date;
+    todo.priority = priority;
+    todo.isCompleted = isCompleted;
 
     await todosRepository.save(todo);
 

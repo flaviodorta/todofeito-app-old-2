@@ -1,11 +1,19 @@
 import { Request, Response } from 'express';
 import { todosServices } from '../services/Todos.service';
+import { ILabel, IProject, ISection } from '../types';
 
 interface IBody {
   id: string;
   title: string;
   description: string;
   searchedText: string;
+  type: string;
+  date: Date;
+  priority: number;
+  project: IProject;
+  section: ISection;
+  labels: ILabel[];
+  isCompleted: boolean;
 }
 
 interface IRequest extends Request {
@@ -28,17 +36,44 @@ class TodosController {
   }
 
   public async create(req: IRequest, res: Response): Promise<Response> {
-    const { title, description } = req.body;
+    const {
+      title,
+      description,
+      type,
+      date,
+      priority,
+      project,
+      section,
+      labels,
+      isCompleted,
+    } = req.body;
 
-    const todo = await todosServices.create({ title, description });
+    const todo = await todosServices.create({
+      title,
+      description,
+      type,
+      date,
+      priority,
+      project,
+      section,
+      labels,
+      isCompleted,
+    });
 
     return res.json(todo);
   }
 
   public async update(req: IRequest, res: Response): Promise<Response> {
-    const { id, title, description } = req.body;
+    const { id, title, description, date, priority, isCompleted } = req.body;
 
-    const todo = await todosServices.update({ id, title, description });
+    const todo = await todosServices.update({
+      id,
+      title,
+      description,
+      date,
+      priority,
+      isCompleted,
+    });
 
     return res.json(todo);
   }

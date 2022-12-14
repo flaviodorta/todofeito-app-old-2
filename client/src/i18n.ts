@@ -93,6 +93,7 @@ i18next
           AddTodoModal: {
             todoName: 'Todo name',
             dueDate: 'Due date',
+            description: 'Description',
             inbox: 'Inbox',
             cancel: 'Cancel',
             addTodo: 'Add todo',

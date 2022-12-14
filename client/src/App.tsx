@@ -9,6 +9,7 @@ import { LabelPage } from './pages/LabelPage';
 import { ProjectPage } from './pages/ProjectPage';
 import { SearchResultsPage } from './pages/SearchResultsPage';
 import { UserSettingsModal } from './components/UserSettings/UserSettingsModal';
+import { LoginPage } from './pages/LoginPage';
 
 const queryClient = new QueryClient();
 
@@ -17,6 +18,7 @@ export default function App() {
     <QueryClientProvider client={queryClient}>
       <Layout>
         <Routes>
+          <Route path='/login' element={<LoginPage />} />
           <Route path='/inbox' element={<InboxPage />} />
           <Route path='/today' element={<TodayPage />} />
           <Route path='/upcoming' element={<UpcomingPage />} />
