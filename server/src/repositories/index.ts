@@ -8,7 +8,35 @@ import { UserToken } from '../entities/UserToken.entity';
 
 export const labelsRepository = dataSource.getRepository(Label);
 
-export const projectsRepository = dataSource.getRepository(Project);
+export const projectsRepository = dataSource.getRepository(Project).extend({
+  async findByTitle(title: string) {
+    return this.createQueryBuilder('project')
+      .where('project.title = :title', { title })
+      .getOne();
+  },
+
+  // async findByTitle(title: string) {
+  //   return this.createQueryBuilder('project')
+  //     .leftJoinAndSelect('project.user', 'user')
+  //     .where('project.title = :title', { title })
+  //     .getManyAndCount();
+  // },
+
+  async findAll() {
+    return (
+      this.createQueryBuilder('project')
+        .leftJoinAndSelect('project.user', 'user')
+        // .where('project.title = :title', { title })
+        .getManyAndCount()
+    );
+  },
+
+  async findById(id: string) {
+    return this.createQueryBuilder('project')
+      .where('project.id = :id', { id })
+      .getOne();
+  },
+});
 
 export const sectionsRepository = dataSource.getRepository(Section);
 

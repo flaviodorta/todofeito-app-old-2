@@ -2,7 +2,7 @@ import {
   Column,
   Entity,
   JoinColumn,
-  OneToOne,
+  OneToOne as ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { User } from './User.entity';
@@ -22,9 +22,9 @@ export class Project {
   colorName: string;
 
   @Column()
-  class: string;
+  className: string;
 
-  @OneToOne(() => User)
+  @ManyToOne(() => User)
   @JoinColumn({ name: 'user_id' })
   user: User;
 }

@@ -17,7 +17,7 @@ const app: Application = express();
 dataSource
   .initialize()
   .then(() => {
-    const PORT = config.port_server || 8000;
+    const PORT = config.port_server || 3333;
 
     const limiter = rateLimit({
       windowMs: 60 * 60 * 1000,

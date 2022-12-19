@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { passwordRouter } from './Password.route';
 import { profileRouter } from './Profile.route';
+import { projectsRouter } from './Projects.route';
 import { sessionsRouter } from './Sessions.route';
 import { todosRouter } from './Todos.route';
 import { usersRouter } from './Users.route';
@@ -12,3 +13,4 @@ routes.use('/users', usersRouter);
 routes.use('/sessions', sessionsRouter);
 routes.use('/password', passwordRouter);
 routes.use('/profile', profileRouter);
+routes.use('/projects', projectsRouter);

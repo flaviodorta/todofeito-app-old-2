@@ -7,11 +7,12 @@ const port_db = Number(config.port_db) || 5432;
 
 export const dataSource = new DataSource({
   type: 'postgres',
-  host: 'localhost',
+  host: 'db',
   port: port_db,
   username: postgres_username,
   password: postgres_password,
   database: postgres_db,
-  migrations: ['./src/migrations/*.ts'],
+  synchronize: true,
+  // migrations: ['./src/migrations/*.ts'],
   entities: ['./src/entities/*.ts'],
 });
