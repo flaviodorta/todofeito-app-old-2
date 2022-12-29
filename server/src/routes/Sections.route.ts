@@ -1,36 +1,34 @@
 import { Router } from 'express';
-import { projectsController } from '../controllers/Projects.controller';
+import { sectionsController } from '../controllers/Sections.controller';
 import { celebrate, Joi, Segments } from 'celebrate';
 
-export const projectsRouter = Router();
+export const sectionsRouter = Router();
 
-projectsRouter.get('/all', projectsController.getAll);
+sectionsRouter.get('/all', sectionsController.getAll);
 
-projectsRouter.get(
+sectionsRouter.get(
   '/',
   celebrate({
     [Segments.BODY]: {
       title: Joi.string(),
     },
   }),
-  projectsController.getByTitle
+  sectionsController.getByTitle
 );
 
-projectsRouter.post(
+sectionsRouter.post(
   '/',
   celebrate({
     [Segments.BODY]: {
       title: Joi.string().required(),
       type: Joi.string().required(),
-      colorName: Joi.string().required(),
-      className: Joi.string().required(),
-      // user_id: Joi.string().required(),
+      index: Joi.number().required(),
     },
   }),
-  projectsController.create
+  sectionsController.create
 );
 
-projectsRouter.put(
+sectionsRouter.put(
   '/:id',
   celebrate({
     [Segments.BODY]: {
@@ -38,15 +36,15 @@ projectsRouter.put(
       title: Joi.string().required(),
     },
   }),
-  projectsController.update
+  sectionsController.update
 );
 
-projectsRouter.delete(
+sectionsRouter.delete(
   '/:id',
   celebrate({
     [Segments.BODY]: {
       id: Joi.string().uuid().required(),
     },
   }),
-  projectsController.delete
+  sectionsController.delete
 );

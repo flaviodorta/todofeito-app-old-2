@@ -17,6 +17,7 @@ interface IRequest extends Request {
 
 export class ProjectsController {
   public async getAll(req: IRequest, res: Response): Promise<Response> {
+    // const allProjects = await projectsServices.getAll();
     const allProjects = await projectsServices.getAll();
 
     return res.json(allProjects);
@@ -66,9 +67,9 @@ export class ProjectsController {
   public async delete(req: IRequest, res: Response): Promise<Response> {
     const { id } = req.body;
 
-    const user = await projectsServices.delete({ id });
+    const project = await projectsServices.delete({ id });
 
-    return res.json(user);
+    return res.json(project);
   }
 }
 

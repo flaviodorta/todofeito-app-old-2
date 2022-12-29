@@ -14,10 +14,10 @@ interface IRequest {
 export class ProjectsServices {
   public async getAll(): Promise<Project[]> {
     // const allProjects = projectsRepository.find();
-    const allProjects = await projectsRepository.findAll();
+    const allProjects = await projectsRepository.find();
     console.log(allProjects);
 
-    return allProjects[0];
+    return allProjects;
   }
 
   public async getById({ id }: Pick<IRequest, 'id'>): Promise<Project> {

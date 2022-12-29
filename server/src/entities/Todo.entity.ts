@@ -37,19 +37,20 @@ export class Todo {
   isCompleted: boolean;
 
   @OneToOne(() => Project)
-  @JoinColumn({ name: 'project_id' })
+  @JoinColumn({ name: 'project_id', referencedColumnName: 'id' })
   project: IProject;
 
   @OneToOne(() => Section)
-  @JoinColumn({ name: 'section_id' })
+  @JoinColumn({ name: 'section_id', referencedColumnName: 'id' })
   section?: Section;
 
   @OneToMany(() => Label, (label) => label.todo, {
     cascade: true,
   })
+  // @JoinColumn({ name: 'label_id', referencedColumnName: 'id'})
   labels: Label[];
 
   @ManyToOne(() => User, (user) => user.todos)
-  @JoinColumn({ name: 'user_id' })
+  @JoinColumn({ name: 'user_id', referencedColumnName: 'id' })
   user: User;
 }

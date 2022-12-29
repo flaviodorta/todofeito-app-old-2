@@ -23,7 +23,9 @@ interface IRequest {
 
 export class UsersServices {
   public async getAll(): Promise<User[]> {
-    const allUsers = usersRepository.find();
+    const allUsers = await usersRepository.find({
+      relations: ['todos', 'projects'],
+    });
 
     return allUsers;
   }
@@ -51,7 +53,7 @@ export class UsersServices {
     const emailExists = await usersRepository.findByEmail(email);
 
     if (emailExists) {
-      throw new Error('Email addres already userd');
+      throw new Error('Email address already used');
     }
 
     const hashedPassword = await hash(password, 8);

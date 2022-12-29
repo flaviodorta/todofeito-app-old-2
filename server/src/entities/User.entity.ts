@@ -1,10 +1,14 @@
+import Joi from 'joi';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { projectsController } from '../controllers/Projects.controller';
+import { Project } from './Project.entity';
 import { Todo } from './Todo.entity';
 
 @Entity('users')
@@ -31,5 +35,10 @@ export class User {
   created_at: Date;
 
   @OneToMany(() => Todo, (todo) => todo.user)
+  @JoinColumn({ name: 'todo_id', referencedColumnName: 'id' })
   todos: Todo[];
+
+  @OneToMany(() => Project, (project) => project.user)
+  @JoinColumn({ name: 'project_id', referencedColumnName: 'id' })
+  projects: Project[];
 }

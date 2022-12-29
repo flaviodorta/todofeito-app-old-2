@@ -1,7 +1,9 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
   JoinColumn,
+  ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -10,7 +12,7 @@ import { Project } from './Project.entity';
 @Entity('sections')
 export class Section {
   @PrimaryGeneratedColumn('uuid')
-  readonly id: string;
+  id: string;
 
   @Column()
   index: number;
@@ -21,10 +23,10 @@ export class Section {
   @Column()
   title: string;
 
-  @Column({ type: 'timestamptz' })
-  readonly date: Date;
+  @CreateDateColumn({ type: 'timestamptz' })
+  date: Date;
 
-  @OneToOne(() => Project)
-  @JoinColumn({ name: 'project_id' })
+  @ManyToOne(() => Project, (project) => project.sections)
+  @JoinColumn({ name: 'project_id', referencedColumnName: 'id' })
   project: Project;
 }

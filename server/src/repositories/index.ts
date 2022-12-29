@@ -15,13 +15,6 @@ export const projectsRepository = dataSource.getRepository(Project).extend({
       .getOne();
   },
 
-  // async findByTitle(title: string) {
-  //   return this.createQueryBuilder('project')
-  //     .leftJoinAndSelect('project.user', 'user')
-  //     .where('project.title = :title', { title })
-  //     .getManyAndCount();
-  // },
-
   async findAll() {
     return (
       this.createQueryBuilder('project')
@@ -38,7 +31,28 @@ export const projectsRepository = dataSource.getRepository(Project).extend({
   },
 });
 
-export const sectionsRepository = dataSource.getRepository(Section);
+export const sectionsRepository = dataSource.getRepository(Section).extend({
+  async findByTitle(title: string) {
+    return this.createQueryBuilder('section')
+      .where('section.title = :title', { title })
+      .getOne();
+  },
+
+  async findAll() {
+    return (
+      this.createQueryBuilder('section')
+        // .leftJoinAndSelect('section.user', 'user')
+        // .where('project.title = :title', { title })
+        .getManyAndCount()
+    );
+  },
+
+  async findById(id: string) {
+    return this.createQueryBuilder('section')
+      .where('section.id = :id', { id })
+      .getOne();
+  },
+});
 
 export const todosRepository = dataSource.getRepository(Todo);
 

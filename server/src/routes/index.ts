@@ -5,6 +5,7 @@ import { projectsRouter } from './Projects.route';
 import { sessionsRouter } from './Sessions.route';
 import { todosRouter } from './Todos.route';
 import { usersRouter } from './Users.route';
+import { sectionsRouter } from './Sections.route';
 
 export const routes = Router();
 
@@ -14,3 +15,4 @@ routes.use('/sessions', sessionsRouter);
 routes.use('/password', passwordRouter);
 routes.use('/profile', profileRouter);
 routes.use('/projects', projectsRouter);
+routes.use('/sections', sectionsRouter);

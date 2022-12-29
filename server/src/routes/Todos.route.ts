@@ -18,16 +18,16 @@ todosRouter.get(
 
 todosRouter.post(
   '/',
-  celebrate({
-    [Segments.BODY]: {
-      title: Joi.string().required(),
-      description: Joi.string().required(),
-      type: Joi.string().required(),
-      date: Joi.date().required(),
-      priority: Joi.number().required(),
-      isCompleted: Joi.boolean().required(),
-    },
-  }),
+  // celebrate({
+  //   [Segments.BODY]: {
+  //     title: Joi.string().required(),
+  //     description: Joi.string().required(),
+  //     type: Joi.string().required(),
+  //     date: Joi.date().required(),
+  //     priority: Joi.number().required(),
+  //     isCompleted: Joi.boolean().required(),
+  //   },
+  // }),
   todoController.create
 );
 

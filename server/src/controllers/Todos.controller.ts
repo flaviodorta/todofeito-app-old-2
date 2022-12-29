@@ -14,6 +14,24 @@ interface IBody {
   section: ISection;
   labels: ILabel[];
   isCompleted: boolean;
+  todo: ITodo;
+}
+
+export type IDataTypes = 'project' | 'section' | 'label' | 'todo';
+
+export interface ITodo {
+  id: string;
+  type: IDataTypes;
+  title: string;
+  description: string;
+
+  date: Date;
+  priority: number;
+  project: IProject;
+  section?: ISection;
+  labels: ILabel[];
+
+  isCompleted: boolean;
 }
 
 interface IRequest extends Request {
@@ -37,45 +55,56 @@ class TodosController {
 
   public async create(req: IRequest, res: Response): Promise<Response> {
     const {
-      title,
-      description,
-      type,
-      date,
-      priority,
-      project,
-      section,
-      labels,
-      isCompleted,
+      todo,
+      id,
+      // title,
+      // description,
+      // type,
+      // date,
+      // priority,
+      // project,
+      // section,
+      // labels,
+      // isCompleted,
     } = req.body;
 
-    const todo = await todosServices.create({
-      title,
-      description,
-      type,
-      date,
-      priority,
-      project,
-      section,
-      labels,
-      isCompleted,
+    const newTodo = await todosServices.create({
+      todo,
+      id,
+      // title,
+      // description,
+      // type,
+      // date,
+      // priority,
+      // project,
+      // section,
+      // labels,
+      // isCompleted,
     });
 
-    return res.json(todo);
+    return res.json(newTodo);
   }
 
   public async update(req: IRequest, res: Response): Promise<Response> {
-    const { id, title, description, date, priority, isCompleted } = req.body;
+    // const { id, title, description, date, priority, isCompleted } = req.body;
 
-    const todo = await todosServices.update({
+    // const todo = await todosServices.update({
+    //   id,
+    //   title,
+    //   description,
+    //   date,
+    //   priority,
+    //   isCompleted,
+    // });
+
+    const { todo, id } = req.body;
+
+    const updatedTodo = await todosServices.update({
+      todo,
       id,
-      title,
-      description,
-      date,
-      priority,
-      isCompleted,
     });
 
-    return res.json(todo);
+    return res.json(updatedTodo);
   }
 
   public async delete(req: IRequest, res: Response): Promise<Response> {

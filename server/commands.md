@@ -13,3 +13,10 @@ yarn add --dev supertest
 docker start postgres
 
 typeorm migration:create ./src/migrations/CreateMigration
+
+docker stop $(docker ps -a -q)
+docker ps / ps -a
+docker rm $(docker ps -a -q)
+docker container prune
+docker rmi $(docker images -q)
+docker image prune

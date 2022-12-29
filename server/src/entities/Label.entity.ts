@@ -25,6 +25,6 @@ export class Label {
   class: string;
 
   @ManyToOne(() => Todo, (todo) => todo.labels)
-  @JoinColumn({ name: 'todo_id' })
+  @JoinColumn({ name: 'todo_id', referencedColumnName: 'id' })
   todo: Todo;
 }
